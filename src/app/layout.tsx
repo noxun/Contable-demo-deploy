@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 
 import "./globals.css";
 import { Providers } from "./providers";
-// import { Providers } from "@/modules/shared";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
+import { ThemeProvider } from "@/components/theme-provider";
 
 interface Props {
   children: React.ReactNode;
@@ -17,8 +11,15 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="es">
-      <body className={poppins.className}>
-        <Providers>{children}</Providers>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

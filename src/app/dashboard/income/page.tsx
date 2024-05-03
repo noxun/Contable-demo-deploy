@@ -2,6 +2,8 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import axios from "axios";
+import { TableIncome } from "@/modules/income/components/TableIncome";
+import { Button, Link } from "@nextui-org/react";
 
 const IncomePage = () => {
   const { isPending, error, data, isFetching } = useQuery({
@@ -15,9 +17,24 @@ const IncomePage = () => {
   if (isPending) return "Loading...";
 
   if (error) return "An error has occurred: " + error.message;
-  console.log(data.data);
 
-  return <div>page</div>;
+  return (
+    <section className="px-6">
+      <div className="flex justify-between">
+        <h2>Ingresos</h2>
+        <Button
+          href="/dashboard/income/new"
+          as={Link}
+          color="primary"
+          showAnchorIcon
+          variant="solid"
+        >
+          Nuevo ingreso
+        </Button>
+      </div>
+      <TableIncome />
+    </section>
+  );
 };
 
 export default IncomePage;
