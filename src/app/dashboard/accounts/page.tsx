@@ -147,9 +147,7 @@ export default function AccountsPage() {
   );
 }
 
-function AccountsChild() {
-  return <></>;
-}
+
 
 function AccountDeleteButton({
   children,
