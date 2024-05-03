@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { MenuOptions } from "./MenuOptions";
+import { ModeToggle } from "@/components/mode-toggle";
 // import logoPic from "../../../../../assets/images/logo-sistema-contable.svg";
 // import { LogoutButton } from "@/modules/auth";
 
@@ -13,6 +14,7 @@ export const SideMenu = () => {
       </div>
       <MenuOptions />
       <div className="flex-1"></div>
+      <ModeToggle/>
       {/* <LogoutButton /> */}
     </nav>
   );
