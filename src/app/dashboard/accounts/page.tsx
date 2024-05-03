@@ -21,8 +21,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -31,11 +31,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import { PropsWithChildren } from "react";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const accountsSchema = z.object({
   id: z.number(),
@@ -165,14 +174,12 @@ function AccountDeleteButton({
   );
 }
 
-function AccountCreateButton({children}:PropsWithChildren){
-
+function AccountCreateButton({ children }: PropsWithChildren) {
   const accountCreateForm = useForm();
 
   function onSubmit(values) {
-    console.log(values)
+    console.log(values);
   }
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -192,23 +199,23 @@ function AccountCreateButton({children}:PropsWithChildren){
               <FormField
                 control={accountCreateForm.control}
                 name="description"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Descripcion</FormLabel>
                     <FormControl>
-                      <Input placeholder="descripcion" {...field}/>
+                      <Input placeholder="descripcion" {...field} />
                     </FormControl>
                     <FormDescription>
                       La descripcion de la cuenta
                     </FormDescription>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={accountCreateForm.control}
                 name="coin"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Modeda</FormLabel>
                     <FormControl>
@@ -218,26 +225,40 @@ function AccountCreateButton({children}:PropsWithChildren){
                       >
                         <FormItem>
                           <FormControl>
-                            <RadioGroupItem value="bolivianos"/>
+                            <RadioGroupItem value="bolivianos" />
                           </FormControl>
-                          <FormLabel>
-                            Bolivianos
-                          </FormLabel>
+                          <FormLabel>Bolivianos</FormLabel>
                         </FormItem>
                         <FormItem>
                           <FormControl>
-                            <RadioGroupItem value="dolares"/>
+                            <RadioGroupItem value="dolares" />
                           </FormControl>
-                          <FormLabel>
-                            Dolares
-                          </FormLabel>
+                          <FormLabel>Dolares</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
                     <FormDescription>
                       Selecciona el tipo de moneda
                     </FormDescription>
-                    <FormMessage/>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={accountCreateForm.control}
+                name="mobile"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Movimientos</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+
+                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -250,5 +271,5 @@ function AccountCreateButton({children}:PropsWithChildren){
         </DialogFooter> */}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
