@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { Fragment } from "react";
 import { MENU_OPTIONS } from "../constants/menu-options";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +10,7 @@ export const SideMenu = () => {
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {MENU_OPTIONS.map((option, index) => (
-        <>
+        <Fragment key={index}>
           {option.routes.map((route) => (
             <Link
               key={route.path}
@@ -28,7 +28,7 @@ export const SideMenu = () => {
           {index < MENU_OPTIONS.length - 1 ? (
             <Separator className="my-2" />
           ) : null}
-        </>
+        </Fragment>
       ))}
     </nav>
   );

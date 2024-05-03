@@ -1,26 +1,33 @@
 "use client";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 //import { Button, Checkbox, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod"
-import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 
 function Login() {
   const router = useRouter();
   const loginSchema = z.object({
-    usernameOrEmail: z.string().min(4,{
-      message: 'Debe tener mínimo 4 caracteres'
+    usernameOrEmail: z.string().min(4, {
+      message: "Debe tener mínimo 4 caracteres",
     }),
-    password: z.string()
-  })
+    password: z.string(),
+  });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values)
-    router.push('/dashboard/accounts');
+    console.log(values);
+    router.push("/dashboard/accounts");
   }
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -28,9 +35,9 @@ function Login() {
     defaultValues: {
       usernameOrEmail: "",
       password: "",
-      
     },
-  })
+  });
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-black">
       <div className="flex flex-col rounded-xl border border-blue-500 bg-slate-800 p-3">
@@ -38,42 +45,37 @@ function Login() {
           <h1 className="mb-4 font-semibold text-blue-500">LOGIN</h1>
           <Form {...loginForm}>
             <form onSubmit={loginForm.handleSubmit(onSubmit)}>
-            <FormField
-               control={loginForm.control}
-              name="usernameOrEmail"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel> Email </FormLabel >
-                  <FormControl>
-                    <Input placeholder="" {...field}></Input>
-                  </FormControl>
-                  <FormDescription>
-                    Ingrese su usuario
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-               control={loginForm.control}
-              name="password"
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel> Contraseña </FormLabel >
-                  <FormControl>
-                    <Input type="password" placeholder="" {...field}></Input>
-                  </FormControl>
-                  <FormDescription>
-                    Ingrese su contraseña
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Ingresar</Button>
+              <FormField
+                control={loginForm.control}
+                name="usernameOrEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel> Email </FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormDescription>Ingrese su usuario</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={loginForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel> Contraseña </FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormDescription>Ingrese su contraseña</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Ingresar</Button>
             </form>
           </Form>
-    
         </div>
       </div>
     </div>
@@ -81,7 +83,8 @@ function Login() {
 }
 
 export default Login;
-{/* <Input
+{
+  /* <Input
             autoFocus
             // endContent={
             //   <IoMdMail className="pointer-events-none flex-shrink-0 text-2xl text-blue-500" />
@@ -125,4 +128,5 @@ export default Login;
                 Olvidaste tu Contraseña?
               </Link>
             </div>
-          </div> */}
+          </div> */
+}
