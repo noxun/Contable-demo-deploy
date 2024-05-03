@@ -246,7 +246,7 @@ function AccountCreateButton({ children }: PropsWithChildren) {
               />
               <FormField
                 control={accountCreateForm.control}
-                name="mobile"
+                name="movimientos"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Movimientos</FormLabel>
@@ -256,9 +256,36 @@ function AccountCreateButton({ children }: PropsWithChildren) {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-
-                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={accountCreateForm.control}
+                name="presupuestable"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Presupuestable</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={accountCreateForm.control}
+                name="costos"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Costos</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
