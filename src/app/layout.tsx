@@ -16,7 +16,7 @@ interface Props {
 
 export default function RootLayout({ children }: Props) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body className={poppins.className}>
         <Providers>{children}</Providers>
       </body>
