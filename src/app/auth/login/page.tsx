@@ -20,6 +20,7 @@ function Login() {
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     console.log(values)
+    router.push('/dashboard/accounts');
   }
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
