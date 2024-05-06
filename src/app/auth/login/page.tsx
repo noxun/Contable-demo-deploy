@@ -15,10 +15,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
+import { useState } from "react";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
+
+
+interface LoginFormInputs {
+  usernameOrEmail: string;
+  password: string;
+}
+
 
 
 function Login() {
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const router = useRouter();
   const loginSchema = z.object({
     usernameOrEmail: z.string().min(4, {
@@ -28,41 +39,39 @@ function Login() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    try{
-      const response  = await axios.post('/Auth/login',{
-        usernameOrEmail: values.usernameOrEmail,
-        password: values.password
-      },{
-        headers: {
-          'Content-Type': 'application/json' // Asegura que los datos sean interpretados correctamente
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/Auth/login`,
+        {
+          usernameOrEmail: values.usernameOrEmail,
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
-
-    );
+      );
       if (response.status === 200) {
-        console.log('Inicio de sesión exitoso');
-        router.push('/dashboard/accounts');
-        } else {
-        console.log('Error durante el inicio de sesión');
-       }
-    } catch (error) {
-      // Verifica si es un error de Axios
-      if (error instanceof AxiosError) {
-        // Accede a la información específica de Axios, como `response.data`
-        console.error('Error al iniciar sesión:', error.response?.data || 'Error desconocido');
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("token", response.data.token);
+
+        router.push("/dashboard/accounts");
       } else {
-        // Otro tipo de error, posiblemente de red u otros
-        console.error('Error al iniciar sesión:', String(error));
+        setErrorMessage("Error durante el inicio de sesión");
+        setDialogOpen(true);
       }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data || "Error desconocido");
+      } else {
+        setErrorMessage(String(error));
+      }
+      setDialogOpen(true);
     }
-    }
-    
+  }
 
-
-
-
-   
-  
+  const closeDialog = () => setDialogOpen(false);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -84,11 +93,10 @@ function Login() {
                 name="usernameOrEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel> Email </FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field}></Input>
                     </FormControl>
-                    <FormDescription>Ingrese su usuario</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -98,20 +106,36 @@ function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel> Contraseña </FormLabel>
+                    <FormLabel>Contraseña</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="" {...field}></Input>
                     </FormControl>
-                    <FormDescription>Ingrese su contraseña</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Ingresar</Button>
+              <div className="mt-5">
+                <Button type="submit">Ingresar</Button>
+              </div>
             </form>
           </Form>
         </div>
       </div>
+
+      <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-black border border-blue-500 p-4 shadow-lg rounded-lg">
+          <AlertDialog.Title className="text-lg font-bold text">
+            Error
+          </AlertDialog.Title>
+          <AlertDialog.Description>{errorMessage}</AlertDialog.Description>
+          <div className="flex justify-end mt-4">
+            <AlertDialog.Action asChild>
+              <Button onClick={closeDialog}>Cerrar</Button>
+            </AlertDialog.Action>
+          </div>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
     </div>
   );
 }
