@@ -15,6 +15,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios, {AxiosError} from "axios";
+
 
 function Login() {
   const router = useRouter();
@@ -25,10 +27,42 @@ function Login() {
     password: z.string(),
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
-    router.push("/dashboard/accounts");
-  }
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try{
+      const response  = await axios.post('/Auth/login',{
+        usernameOrEmail: values.usernameOrEmail,
+        password: values.password
+      },{
+        headers: {
+          'Content-Type': 'application/json' // Asegura que los datos sean interpretados correctamente
+        }
+      }
+
+    );
+      if (response.status === 200) {
+        console.log('Inicio de sesión exitoso');
+        router.push('/dashboard/accounts');
+        } else {
+        console.log('Error durante el inicio de sesión');
+       }
+    } catch (error) {
+      // Verifica si es un error de Axios
+      if (error instanceof AxiosError) {
+        // Accede a la información específica de Axios, como `response.data`
+        console.error('Error al iniciar sesión:', error.response?.data || 'Error desconocido');
+      } else {
+        // Otro tipo de error, posiblemente de red u otros
+        console.error('Error al iniciar sesión:', String(error));
+      }
+    }
+    }
+    
+
+
+
+
+   
+  
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
