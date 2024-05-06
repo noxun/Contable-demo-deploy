@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 interface Props {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: Props) {
           disableTransitionOnChange
         >
           <Providers>{children}</Providers>
+          <Toaster/>
         </ThemeProvider>
       </body>
     </html>
