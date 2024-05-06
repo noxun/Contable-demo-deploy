@@ -9,7 +9,7 @@ interface Props {
 
 export default function RootLayout({ children }: Props) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body>
         <ThemeProvider
           attribute="class"
