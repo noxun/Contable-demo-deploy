@@ -33,6 +33,8 @@ import { FormNewIncomeItems } from "./FormNewIncomeItems";
 import { useState } from "react";
 import { IIncomeItem } from "../interface/income";
 import { Save } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const FormNewIncome = () => {
   const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([
@@ -47,11 +49,14 @@ const FormNewIncome = () => {
     },
   ]);
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof incomeSchema>) {
+    console.log({
+      ...values,
+      items: incomeItems,
+    });
   }
 
-  const loginSchema = z.object({
+  const incomeSchema = z.object({
     exchangeRate: z.string(),
     coin: z.string(),
     checkNum: z.string(),
@@ -62,8 +67,8 @@ const FormNewIncome = () => {
     bankId: z.string(),
   });
 
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const incomeForm = useForm<z.infer<typeof incomeSchema>>({
+    resolver: zodResolver(incomeSchema),
     defaultValues: {
       exchangeRate: "",
       coin: "BOB",
@@ -75,76 +80,11 @@ const FormNewIncome = () => {
 
   return (
     <div>
-      <Form {...loginForm}>
-        <form onSubmit={loginForm.handleSubmit(onSubmit)}>
+      <Form {...incomeForm}>
+        <form onSubmit={incomeForm.handleSubmit(onSubmit)}>
           <div className="flex gap-2 mb-2">
             <FormField
-              control={loginForm.control}
-              name="exchangeRate"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>T/C</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field}></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={loginForm.control}
-              name="coin"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Moneda</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Moneda" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="BOB">Bolivianos</SelectItem>
-                      <SelectItem value="USD">Dolares</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={loginForm.control}
-              name="checkNum"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>N° de cheque</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field}></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={loginForm.control}
-              name="checkNum"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>N° de cheque</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field}></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex gap-2 items-center mb-2">
-            <FormField
-              control={loginForm.control}
+              control={incomeForm.control}
               name="canceledTo"
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2">
@@ -185,7 +125,59 @@ const FormNewIncome = () => {
               )}
             />
             <FormField
-              control={loginForm.control}
+              control={incomeForm.control}
+              name="exchangeRate"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>T/C</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={incomeForm.control}
+              name="coin"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Moneda</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Moneda" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="BOB">Bolivianos</SelectItem>
+                      <SelectItem value="USD">Dolares</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex gap-2 items-center mb-2">
+            <FormField
+              control={incomeForm.control}
+              name="checkNum"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>N° de cheque</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={incomeForm.control}
               name="bankId"
               render={({ field }) => (
                 <FormItem>
@@ -210,17 +202,13 @@ const FormNewIncome = () => {
             />
           </div>
           <FormField
-            control={loginForm.control}
+            control={incomeForm.control}
             name="gloss"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Glosa</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    className="resize-none"
-                    {...field}
-                  />
+                  <Textarea placeholder="" className="resize-none" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
