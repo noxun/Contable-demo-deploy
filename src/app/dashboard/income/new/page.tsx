@@ -4,7 +4,7 @@ import React from "react";
 const NewIncomePage = () => {
   return (
     <div className="px-6">
-      <h2>Formulario para crear ingreso</h2>
+      <h2 className="text-lg font-bold">Formulario para crear ingreso</h2>
       <FormNewIncome />
     </div>
   );

@@ -32,9 +32,20 @@ import { useForm } from "react-hook-form";
 import { FormNewIncomeItems } from "./FormNewIncomeItems";
 import { useState } from "react";
 import { IIncomeItem } from "../interface/income";
+import { Save } from "lucide-react";
 
 const FormNewIncome = () => {
-  const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([]);
+  const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([
+    {
+      debitBs: "",
+      debitSus: "",
+      assetBs: "",
+      assetSus: "",
+      gloss: "",
+      accountId: "",
+      voucherId: "",
+    },
+  ]);
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     console.log(values);
@@ -66,12 +77,12 @@ const FormNewIncome = () => {
     <div>
       <Form {...loginForm}>
         <form onSubmit={loginForm.handleSubmit(onSubmit)}>
-          <div className="flex gap-2">
+          <div className="flex gap-2 mb-2">
             <FormField
               control={loginForm.control}
               name="exchangeRate"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>T/C</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field}></Input>
@@ -84,7 +95,7 @@ const FormNewIncome = () => {
               control={loginForm.control}
               name="coin"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Moneda</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -108,7 +119,7 @@ const FormNewIncome = () => {
               control={loginForm.control}
               name="checkNum"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>N° de cheque</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field}></Input>
@@ -121,7 +132,7 @@ const FormNewIncome = () => {
               control={loginForm.control}
               name="checkNum"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>N° de cheque</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field}></Input>
@@ -131,7 +142,7 @@ const FormNewIncome = () => {
               )}
             />
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center mb-2">
             <FormField
               control={loginForm.control}
               name="canceledTo"
@@ -220,7 +231,10 @@ const FormNewIncome = () => {
             incomeItems={incomeItems}
             setIncomeItems={setIncomeItems}
           />
-          <Button type="submit">Guardar Ingreso</Button>
+          <Button type="submit">
+            <span className="mr-2">Guardar Ingreso</span>
+            <Save size={20} />
+          </Button>
         </form>
       </Form>
     </div>
