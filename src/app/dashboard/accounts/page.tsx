@@ -1,6 +1,6 @@
 "use client";
 import { z } from "zod";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -88,19 +88,21 @@ const accountsSchema = z.object({
 type Account = z.infer<typeof accountsSchema>;
 
 export default function AccountsPage() {
-
   const token = localStorage.getItem("token");
   // console.log(token)
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
     queryFn: async (): Promise<{ data: Account[] }> =>
-      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }),
+      ),
     staleTime: 1000 * 60 * 10, //volver a hacer fetch luego de 10 min
   });
 
@@ -178,29 +180,31 @@ function AccountDeleteButton({
   children,
   message,
   accountId,
-}: PropsWithChildren & { message: string ; accountId: number }) {
-
+}: PropsWithChildren & { message: string; accountId: number }) {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const deleteAccountMutation = useMutation({
-    mutationFn: async (id:number) => {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+    mutationFn: async (id: number) => {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
+      );
       return response.data;
     },
     onSuccess: () => {
-      toast("Account deleted succesfully")
-      queryClient.invalidateQueries({queryKey: ["accounts"]})
+      toast("Account deleted succesfully");
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
     onError: (error, variables, context) => {
-      console.log(error,variables,context);
+      console.log(error, variables, context);
       toast(error.message);
-    }
-  })
+    },
+  });
 
   return (
     <AlertDialog>
@@ -216,9 +220,11 @@ function AccountDeleteButton({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              deleteAccountMutation.mutate(accountId)
+              deleteAccountMutation.mutate(accountId);
             }}
-          >Continue</AlertDialogAction>
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -237,18 +243,16 @@ function AccountCreateButton({ children }: PropsWithChildren) {
 
   type AccountCreateForm = z.infer<typeof accountCreateFormSchema>;
 
- 
-
   const accountCreateForm = useForm<AccountCreateForm>({
     resolver: zodResolver(accountCreateFormSchema),
     defaultValues: {
       description: "",
       coin: "",
-      active: true
-    }
+      active: true,
+    },
   });
 
-  console.log(accountCreateForm.formState.errors)
+  console.log(accountCreateForm.formState.errors);
 
   const empresas = [
     { label: "Empresa 1", value: "1" },

@@ -33,10 +33,40 @@ import { FormNewIncomeItems } from "./FormNewIncomeItems";
 import { useState } from "react";
 import { IIncomeItem } from "../interface/income";
 import { Save } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { createIncome } from "../actions/actions";
+import { CircularProgress } from "@nextui-org/react";
+import { IBank } from "@/modules/banks/interface/banks";
+import { useRouter } from "next/navigation";
+
+const accountsSchema = z.object({
+  id: z.number(),
+  code: z.string(),
+  description: z.string(),
+  coin: z.string(),
+  active: z.boolean().default(true),
+  isBudgetable: z.boolean(),
+  isMotion: z.boolean(),
+  isCost: z.boolean(),
+  accountChild: z.array(
+    z.object({
+      id: z.number(),
+      code: z.string(),
+      description: z.string(),
+      coin: z.string(),
+      active: z.boolean().default(true),
+      isBudgetable: z.boolean(),
+      isMotion: z.boolean(),
+      isCost: z.boolean(),
+    })
+  ),
+});
+type Account = z.infer<typeof accountsSchema>;
 
 const FormNewIncome = () => {
+  const router = useRouter();
+  const token = localStorage.getItem("token");
   const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([
     {
       debitBs: "",
@@ -49,11 +79,57 @@ const FormNewIncome = () => {
     },
   ]);
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["banks"],
+    queryFn: async (): Promise<{ data: IBank[] }> =>
+      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: dataAccount, isLoading: isLoadingAccount } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async (): Promise<{ data: Account[] }> =>
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    staleTime: 1000 * 60 * 10,
+  });
+
   async function onSubmit(values: z.infer<typeof incomeSchema>) {
-    console.log({
-      ...values,
-      items: incomeItems,
-    });
+    const result = await createIncome(
+      {
+        ...values,
+        type: "0",
+        canceledTo: format(values.canceledTo, "dd-MM-yyyy"),
+      },
+      incomeItems.map((item) => ({
+        accountId:
+          dataAccount?.data.filter(
+            (account) =>
+              `${account.code} - ${account.description}` === item.accountId
+          )[0]?.id || 0,
+        debitBs: Number(item.debitBs),
+        debitSus: Number(item.debitSus),
+        assetBs: Number(item.assetBs),
+        assetSus: Number(item.assetSus),
+        gloss: item.gloss,
+      }))
+    );
+    if (result?.isSuccess) {
+      router.push("/dashboard/income");
+    } else {
+    }
   }
 
   const incomeSchema = z.object({
@@ -77,6 +153,15 @@ const FormNewIncome = () => {
       bankId: "",
     },
   });
+
+  if (
+    isLoading ||
+    data === undefined ||
+    isLoadingAccount ||
+    dataAccount === undefined
+  ) {
+    return <CircularProgress className="mx-auto" />;
+  }
 
   return (
     <div>
@@ -192,8 +277,11 @@ const FormNewIncome = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="BOB">Bolivianos</SelectItem>
-                      <SelectItem value="USD">Dolares</SelectItem>
+                      {data?.data.map((item) => (
+                        <SelectItem key={`${item.id}`} value={`${item.id}`}>
+                          {item.sigla} - {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -216,6 +304,7 @@ const FormNewIncome = () => {
           />
           <br />
           <FormNewIncomeItems
+            data={dataAccount}
             incomeItems={incomeItems}
             setIncomeItems={setIncomeItems}
           />
