@@ -63,8 +63,10 @@ const accountsSchema = z.object({
   ),
 });
 type Account = z.infer<typeof accountsSchema>;
-
-const FormNewIncome = () => {
+interface Props {
+  type: string;
+}
+const FormNewIncome = ({ type }: Props) => {
   const router = useRouter();
   const token = localStorage.getItem("token");
   const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([
@@ -110,7 +112,7 @@ const FormNewIncome = () => {
     const result = await createIncome(
       {
         ...values,
-        type: "0",
+        type: type,
         canceledTo: format(values.canceledTo, "dd-MM-yyyy"),
       },
       incomeItems.map((item) => ({
@@ -309,7 +311,7 @@ const FormNewIncome = () => {
             setIncomeItems={setIncomeItems}
           />
           <Button type="submit">
-            <span className="mr-2">Guardar Ingreso</span>
+            <span className="mr-2">Guardar Registro</span>
             <Save size={20} />
           </Button>
         </form>

@@ -10,10 +10,10 @@ import { IIncomeResponse } from "@/modules/income/interface/income";
 const IncomePage = () => {
   const token = localStorage.getItem("token");
   const { data, isLoading, error } = useQuery({
-    queryKey: ["Voucher"],
+    queryKey: ["VoucherIncome"],
     queryFn: async (): Promise<{ data: IIncomeResponse[] }> =>
       await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/All?type=0`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/All?type=2`,
         {
           headers: {
             "Content-Type": "application/json",
