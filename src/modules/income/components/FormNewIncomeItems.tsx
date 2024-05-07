@@ -29,6 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import { z } from "zod";
+import { IBank } from "@/modules/banks/interface/banks";
 
 const accountsSchema = z.object({
   id: z.number(),
@@ -58,16 +59,12 @@ type Account = z.infer<typeof accountsSchema>;
 interface Props {
   incomeItems: IIncomeItem[];
   setIncomeItems: Dispatch<SetStateAction<IIncomeItem[]>>;
+  data: {
+    data: Account[];
+  };
 }
 export const FormNewIncomeItems = (props: Props) => {
-  const { incomeItems, setIncomeItems } = props;
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["accounts"],
-    queryFn: async (): Promise<{ data: Account[] }> =>
-      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/Account/All`),
-    staleTime: 1000 * 60 * 10,
-  });
+  const { data, incomeItems, setIncomeItems } = props;
 
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
@@ -90,10 +87,6 @@ export const FormNewIncomeItems = (props: Props) => {
   function removeIncomeItem(index: number) {
     const updateIncomeItems = incomeItems.filter((_, i) => i != index);
     setIncomeItems([...updateIncomeItems]);
-  }
-
-  if (isLoading && data === undefined) {
-    return <CircularProgress />;
   }
 
   return (

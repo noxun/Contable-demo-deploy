@@ -7,3 +7,13 @@ export interface IIncomeItem {
   accountId: string;
   voucherId: string;
 }
+export interface IIncomeResponse {
+  id: number;
+  num: number;
+  exchangeRate: number;
+  coin: string;
+  checkNum: string;
+  canceledTo: string;
+  gloss: string;
+  bankId: number;
+}
