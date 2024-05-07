@@ -23,7 +23,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -33,7 +32,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import {
   Form,
   FormControl,
@@ -61,31 +60,8 @@ import {
   CommandInput,
 } from "@/components/ui/command";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const accountsSchema = z.object({
-  id: z.number(),
-  code: z.string(),
-  description: z.string(),
-  coin: z.string(),
-  active: z.boolean().default(true),
-  isBudgetable: z.boolean(),
-  isMotion: z.boolean(),
-  isCost: z.boolean(),
-  accountChild: z.array(
-    z.object({
-      id: z.number(),
-      code: z.string(),
-      description: z.string(),
-      coin: z.string(),
-      active: z.boolean().default(true),
-      isBudgetable: z.boolean(),
-      isMotion: z.boolean(),
-      isCost: z.boolean(),
-    })
-  ),
-});
-
-type Account = z.infer<typeof accountsSchema>;
+import { Account } from "@/modules/account/types/account";
+import AccountDeleteButton from "@/modules/account/components/AccountDeleteButton";
 
 export default function AccountsPage() {
   const token = localStorage.getItem("token");
@@ -156,7 +132,7 @@ export default function AccountsPage() {
                   </Accordion>
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <AccountCreateButton>Nuevo Registro</AccountCreateButton>
+                  <AccountCreateButton fatherId={item.id} >Nuevo Registro</AccountCreateButton>
                   <Button className="">Editar Registro</Button>
                   <AccountDeleteButton
                     accountId={item.id}
@@ -180,31 +156,29 @@ function AccountDeleteButton({
   children,
   message,
   accountId,
-}: PropsWithChildren & { message: string; accountId: number }) {
+}: PropsWithChildren & { message: string ; accountId: number }) {
+
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const deleteAccountMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+    mutationFn: async (id:number) => {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
-      );
+      })
       return response.data;
     },
     onSuccess: () => {
-      toast("Account deleted succesfully");
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      toast("Account deleted succesfully")
+      queryClient.invalidateQueries({queryKey: ["accounts"]})
     },
     onError: (error, variables, context) => {
-      console.log(error, variables, context);
+      console.log(error,variables,context);
       toast(error.message);
-    },
-  });
+    }
+  })
 
   return (
     <AlertDialog>
@@ -220,11 +194,9 @@ function AccountDeleteButton({
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              deleteAccountMutation.mutate(accountId);
+              deleteAccountMutation.mutate(accountId)
             }}
-          >
-            Continue
-          </AlertDialogAction>
+          >Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -233,13 +205,17 @@ function AccountDeleteButton({
 
 function AccountCreateButton({ children }: PropsWithChildren) {
   const accountCreateFormSchema = z.object({
+    companyId: z.number().default(1),//default de momento para probar
+    fatherId: z.number(),
     description: z.string().min(5),
     coin: z.string(),
     active: z.boolean().default(true),
-    isBudgetable: z.boolean(),
-    isMotion: z.boolean(),
-    isCost: z.boolean(),
+    isBudgetable: z.boolean().default(false),
+    isMotion: z.boolean().default(false),
+    isCost: z.boolean().default(false),
   });
+
+  const [open, setOpen] = useState(false);
 
   type AccountCreateForm = z.infer<typeof accountCreateFormSchema>;
 
@@ -249,7 +225,8 @@ function AccountCreateButton({ children }: PropsWithChildren) {
       description: "",
       coin: "",
       active: true,
-    },
+      fatherId: fatherId
+    }
   });
 
   console.log(accountCreateForm.formState.errors);
@@ -264,11 +241,38 @@ function AccountCreateButton({ children }: PropsWithChildren) {
     { label: "2023", value: "2023" },
   ];
 
-  function onSubmit(values) {
+  const token = localStorage.getItem("token");
+
+  const queryClient = useQueryClient();
+
+  const createAccountMutation = useMutation({
+    mutationFn: async (data: AccountCreateForm) => {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account`, data ,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+    onError: (error) => {toast.error(error.message)},
+    onSuccess: () => {
+      setOpen(false);
+      toast.success("Account created succesfully");
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    },
+  });
+
+
+  function onSubmit(values: AccountCreateForm) {
     console.log(values);
+    createAccountMutation.mutate(values);
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>{children}</Button>
       </DialogTrigger>
@@ -376,139 +380,9 @@ function AccountCreateButton({ children }: PropsWithChildren) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={accountCreateForm.control}
-                name="empresa"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Empresa</FormLabel>
-                    <Popover modal={true}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            role="combobox"
-                            className={cn(
-                              "w-[200px] justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? empresas.find(
-                                  (empresa) => empresa.value === field.value
-                                )?.label
-                              : "Selecciona una Empressa"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Buscar Empresa..." />
-                          <CommandEmpty>
-                            No se encontro ninguna empresa
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {empresas.map((empresa) => (
-                              <CommandItem
-                                value={empresa.label}
-                                key={empresa.value}
-                                onSelect={() => {
-                                  accountCreateForm.setValue(
-                                    "empresa",
-                                    empresa.value
-                                  );
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    empresa.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {empresa.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={accountCreateForm.control}
-                name="gestion"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>gestion</FormLabel>
-                    <Popover modal={true}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            role="combobox"
-                            className={cn(
-                              "w-[200px] justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? gestiones.find(
-                                  (gestion) => gestion.value === field.value
-                                )?.label
-                              : "Selecciona una Gestion"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Buscar gestion..." />
-                          <CommandEmpty>
-                            No se encontro ninguna gestion
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {gestiones.map((gestion) => (
-                              <CommandItem
-                                value={gestion.label}
-                                key={gestion.value}
-                                onSelect={() => {
-                                  accountCreateForm.setValue(
-                                    "gestion",
-                                    gestion.value
-                                  );
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    gestion.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {gestion.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormItem>
-                )}
-              />
               <Button type="submit">Guardar</Button>
             </form>
           </Form>
-        </div>
-        <div>
-          <Button>Adicionar</Button>
-          <Button>Borrar Todo</Button>
-          <div>
-            <Button>Importar Plan de Cuentas</Button>
-            <Button>Imprimir</Button>
-          </div>
         </div>
         {/* <DialogFooter>
           <Button type="submit">Save changes</Button>
