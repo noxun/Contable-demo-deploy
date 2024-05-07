@@ -11,17 +11,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -45,20 +34,6 @@ import {
 import { useForm } from "react-hook-form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandInput,
-} from "@/components/ui/command";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Account } from "@/modules/account/types/account";
 import AccountDeleteButton from "@/modules/account/components/AccountDeleteButton";
@@ -152,58 +127,7 @@ export default function AccountsPage() {
   );
 }
 
-function AccountDeleteButton({
-  children,
-  message,
-  accountId,
-}: PropsWithChildren & { message: string ; accountId: number }) {
-
-  const token = localStorage.getItem("token");
-  const queryClient = useQueryClient();
-  const deleteAccountMutation = useMutation({
-    mutationFn: async (id:number) => {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      return response.data;
-    },
-    onSuccess: () => {
-      toast("Account deleted succesfully")
-      queryClient.invalidateQueries({queryKey: ["accounts"]})
-    },
-    onError: (error, variables, context) => {
-      console.log(error,variables,context);
-      toast(error.message);
-    }
-  })
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button>{children}</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>{message}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              deleteAccountMutation.mutate(accountId)
-            }}
-          >Continue</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-function AccountCreateButton({ children }: PropsWithChildren) {
+function AccountCreateButton({ children, fatherId }: PropsWithChildren & {fatherId: number}) {
   const accountCreateFormSchema = z.object({
     companyId: z.number().default(1),//default de momento para probar
     fatherId: z.number(),
@@ -308,7 +232,7 @@ function AccountCreateButton({ children }: PropsWithChildren) {
                 name="coin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Modeda</FormLabel>
+                    <FormLabel>Moneda</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
