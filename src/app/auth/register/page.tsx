@@ -20,29 +20,49 @@ import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
 
-interface LoginFormInputs {
-  usernameOrEmail: string;
+
+interface registerFormInputs {
+  username: string;
   password: string;
 }
 
-function Login() {
+
+
+function Register() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const router = useRouter();
-  const loginSchema = z.object({
-    usernameOrEmail: z.string().min(4, {
+  const registerSchema = z.object({
+    username: z.string().min(4, {
       message: "Debe tener mínimo 4 caracteres",
     }),
-    password: z.string(),
+    password: z.string().min(4, {
+        message: "Debe tener mínimo 4 caracteres",
+      }),
+    email: z.string(),
+    name: z.string(),
+    ci: z.string(),
+    fatherLastName: z.string(),
+    motherLastName: z.string(),
+    appCode: z.string(),
+
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    console.log(values);
+    
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/Auth/login`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/Auth/register`,
         {
-          usernameOrEmail: values.usernameOrEmail,
+          username: values.username,
           password: values.password,
+          email: values.email,
+          name: values.name,
+          ci: values.ci,
+          fatherLastName: values.fatherLastName,
+          motherLastName: values.motherLastName,
+          appCode: values.appCode
         },
         {
           headers: {
@@ -50,13 +70,16 @@ function Login() {
           },
         }
       );
+      console.log("resuíuesutbsdkhbgds");
+      console.log(response);
+
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("token", response.data.token);
 
         router.push("/dashboard/accounts");
       } else {
-        setErrorMessage("Error durante el inicio de sesión");
+        setErrorMessage("Error durante la creación del usuario");
         setDialogOpen(true);
       }
     } catch (error) {
@@ -69,13 +92,20 @@ function Login() {
     }
   }
 
+
   const closeDialog = () => setDialogOpen(false);
 
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      usernameOrEmail: "",
+      username: "",
       password: "",
+      email: "",
+      name: "",
+      ci: "",
+      fatherLastName: "",
+      motherLastName: "",
+      appCode: "",
     },
   });
 
@@ -83,15 +113,15 @@ function Login() {
     <div className="flex min-h-screen w-full items-center justify-center bg-black">
       <div className="flex flex-col rounded-xl border border-blue-500 bg-slate-800 p-3">
         <div className="mx-10 mt-10 flex h-full flex-col items-center justify-center p-2 ">
-          <h1 className="mb-4 font-semibold text-blue-500">INICIAR SESIÓN</h1>
-          <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onSubmit)}>
+          <h1 className="mb-4 font-semibold text-blue-500">REGISTRATE</h1>
+          <Form {...registerForm}>
+            <form onSubmit={registerForm.handleSubmit(onSubmit)}>
               <FormField
-                control={loginForm.control}
-                name="usernameOrEmail"
+                control={registerForm.control}
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Nombre de Usuario</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field}></Input>
                     </FormControl>
@@ -100,7 +130,7 @@ function Login() {
                 )}
               />
               <FormField
-                control={loginForm.control}
+                control={registerForm.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -112,20 +142,87 @@ function Login() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={registerForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="fatherLastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Apellido Paterno</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="motherLastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Apellido Materno</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="ci"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CI</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <div className="mt-5 flex flex-col items-center space-y-4">
                 <Button type="submit" className="bg-blue-500 hover:bg-blue-700 font-bold py-5 px-8 rounded shadow" >
-                  Ingresar
+                  Registrar
                 </Button>
-                <Link href="/auth/register" passHref>
+                <Link href="/auth/login" passHref>
                   <button
                     type="button"
                     className="bg-green-800 hover:bg-green-900 text-black font-bold py-2 px-4 rounded shadow"
                   >
-                    Registrar
+                    Iniciar Sesión
                   </button>
                 </Link>
               </div>
             </form>
+
           </Form>
         </div>
       </div>
@@ -148,51 +245,4 @@ function Login() {
   );
 }
 
-export default Login;
-{
-  /* <Input
-            autoFocus
-            // endContent={
-            //   <IoMdMail className="pointer-events-none flex-shrink-0 text-2xl text-blue-500" />
-            // }
-            label="Email"
-            aria-autocomplete="none"
-            autoComplete="off"
-            placeholder="Enter your email"
-            variant="bordered"
-            className="my-2"
-          />
-          <Input
-            // endContent={
-            //   <RiLockPasswordFill className="pointer-events-none flex-shrink-0 text-2xl text-blue-500" />
-            // }
-            label="Password"
-            placeholder="Enter your password"
-            type="password"
-            variant="bordered"
-            className="my-2"
-          />
-          <div className="my-2 flex w-full justify-end">
-            <Button
-              color="primary"
-              onClick={() => router.push("/dashboard/income")}
-              variant="solid"
-            >
-              Ingresar
-            </Button>
-          </div>
-          <div className="flex w-full flex-col px-1 py-2">
-            <Checkbox
-              classNames={{
-                label: "text-small",
-              }}
-            >
-              Recordarme
-            </Checkbox>
-            <div className="mt-4 text-end">
-              <Link color="primary" href="#" size="sm" className="text-end">
-                Olvidaste tu Contraseña?
-              </Link>
-            </div>
-          </div> */
-}
+export default Register;
