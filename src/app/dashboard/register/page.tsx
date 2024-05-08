@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 //import { Button, Checkbox, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
@@ -29,9 +29,12 @@ interface registerFormInputs {
 
 
 function Register() {
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const router = useRouter();
+
   const registerSchema = z.object({
     username: z.string().min(4, {
       message: "Debe tener mínimo 4 caracteres",
@@ -47,6 +50,8 @@ function Register() {
     appCode: z.string(),
 
   });
+
+
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     console.log(values);
@@ -70,14 +75,12 @@ function Register() {
           },
         }
       );
-      console.log("resuíuesutbsdkhbgds");
       console.log(response);
 
       if (response.status === 200) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("token", response.data.token);
-
-        router.push("/dashboard/accounts");
+        setSuccessMessage("Éxito.");
+        setSuccessDialogOpen(true);
+        reset(); // Limpiar los campos del formulario
       } else {
         setErrorMessage("Error durante la creación del usuario");
         setDialogOpen(true);
@@ -94,6 +97,7 @@ function Register() {
 
 
   const closeDialog = () => setDialogOpen(false);
+  const closeSuccessDialog = () => setSuccessDialogOpen(false);
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -108,13 +112,16 @@ function Register() {
       appCode: "",
     },
   });
+  const { reset } = registerForm;
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-black">
-      <div className="flex flex-col rounded-xl border border-blue-500 bg-slate-800 p-3">
+    <div className="flex  items-center justify-center  ">
+      <div className="flex flex-col rounded-xl border border-primary-500 p-3 ">
+      <FormProvider {...registerForm}>
         <div className="mx-10 mt-10 flex h-full flex-col items-center justify-center p-2 ">
-          <h1 className="mb-4 font-semibold text-blue-500">REGISTRATE</h1>
+          <h1 className="mb-4 font-semibold ">REGISTRATE</h1>
           <Form {...registerForm}>
+            
             <form onSubmit={registerForm.handleSubmit(onSubmit)}>
               <FormField
                 control={registerForm.control}
@@ -212,19 +219,20 @@ function Register() {
                 <Button type="submit" className="bg-blue-500 hover:bg-blue-700 font-bold py-5 px-8 rounded shadow" >
                   Registrar
                 </Button>
-                <Link href="/auth/login" passHref>
+                {/* <Link href="/auth/login" passHref>
                   <button
                     type="button"
                     className="bg-green-800 hover:bg-green-900 text-black font-bold py-2 px-4 rounded shadow"
                   >
                     Iniciar Sesión
                   </button>
-                </Link>
+                </Link> */}
               </div>
             </form>
 
           </Form>
         </div>
+        </FormProvider>
       </div>
 
       <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
@@ -241,6 +249,21 @@ function Register() {
           </div>
         </AlertDialog.Content>
       </AlertDialog.Root>
+
+      <AlertDialog.Root open={isSuccessDialogOpen} onOpenChange={setSuccessDialogOpen}>
+        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg">
+          <AlertDialog.Title className="text-lg font-bold">Éxito</AlertDialog.Title>
+          <AlertDialog.Description>{successMessage}</AlertDialog.Description>
+          <div className="flex justify-end mt-4">
+            <AlertDialog.Action asChild>
+              <Button onClick={closeSuccessDialog}>Cerrar</Button>
+            </AlertDialog.Action>
+          </div>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
+
+
     </div>
   );
 }

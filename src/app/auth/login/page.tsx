@@ -116,14 +116,14 @@ function Login() {
                 <Button type="submit" className="bg-blue-500 hover:bg-blue-700 font-bold py-5 px-8 rounded shadow" >
                   Ingresar
                 </Button>
-                <Link href="/auth/register" passHref>
+                {/* <Link href="/auth/register" passHref>
                   <button
                     type="button"
                     className="bg-green-800 hover:bg-green-900 text-black font-bold py-2 px-4 rounded shadow"
                   >
                     Registrar
                   </button>
-                </Link>
+                </Link> */}
               </div>
             </form>
           </Form>

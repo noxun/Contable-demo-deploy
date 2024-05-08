@@ -1,24 +1,27 @@
 "use client";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import { User} from "lucide-react";
+import { User } from "lucide-react";
 import { MENU_OPTIONS } from "../constants/menu-options";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, redirect } from 'next/navigation';
 import { Separator } from "@/components/ui/separator";
 
 export const SideMenu = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const userName = user.name;
 
   const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    router.push('/auth/login');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    router.push("/auth/login");
   };
 
+  const toRegister = () =>{
+    router.push("/dashboard/register")
+  }
 
 
   return (
@@ -45,14 +48,22 @@ export const SideMenu = () => {
         </Fragment>
       ))}
 
-<div className="flex flex-col items-center mt-4">
+      <div className="flex flex-col items-center mt-4">
         <User className="text-4xl text-muted-foreground" />
-        <span className="mt-2 text-sm">{userName}</span>
-        <button onClick={logout} className="mt-2 text-sm text-primary hover:underline">
+        <span className="mt-2 text-large">{userName}</span>
+        <button
+          onClick={toRegister}
+          className="mt-2 text-large text-primary-500 hover:underline"
+        >
+          Registrar
+        </button>
+        <button
+          onClick={logout}
+          className="mt-2 text-large text-primary hover:underline"
+        >
           Cerrar Sesión
         </button>
       </div>
-      
     </nav>
   );
 };
