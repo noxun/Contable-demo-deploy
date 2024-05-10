@@ -74,7 +74,7 @@ function Register() {
       if (response.status === 200) {
         setSuccessMessage("Éxito.");
         setSuccessDialogOpen(true);
-        reset(); // Limpiar los campos del formulario
+        reset(); 
       } else {
         setErrorMessage("Error durante la creación del usuario");
         setDialogOpen(true);
@@ -105,6 +105,7 @@ function Register() {
       appCode: "",
     },
   });
+
   const { reset } = registerForm;
   return (
     <div className=" ">
@@ -241,8 +242,8 @@ function Register() {
       </div>
 
       <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-black border border-blue-500 p-4 shadow-lg rounded-lg">
+        <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
           <AlertDialog.Title className="text-lg font-bold text">
             Error
           </AlertDialog.Title>
@@ -259,8 +260,8 @@ function Register() {
         open={isSuccessDialogOpen}
         onOpenChange={setSuccessDialogOpen}
       >
-        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg">
+        <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
           <AlertDialog.Title className="text-lg font-bold">
             Éxito
           </AlertDialog.Title>

@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
-import { TableUser } from "@/modules/users/components/TableUser";
+import { TableBank } from "@/modules/banks/components/TableBank";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IIncomeResponse } from "@/modules/income/interface/income";
 
@@ -30,10 +30,10 @@ function Users() {
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
   const { data, isLoading, error } = useQuery({
-    queryKey: ["User"],
+    queryKey: ["Bank"],
     queryFn: async (): Promise<{ data: IIncomeResponse[] }> =>
       await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Users/All`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -41,6 +41,8 @@ function Users() {
           },
         }
       ),
+      
+      
     staleTime: 1000 * 60 * 10,
 
   });
@@ -48,19 +50,19 @@ function Users() {
 
   if (isLoading) return "Loading...";
 
-
+  console.log("ESDATA,",data);
   return (
     <div>
-    <h1 className="flex  items-center justify-center font-bold text-3xl">USUARIOS</h1>
+    <h1 className="flex  items-center justify-center font-bold text-3xl">BANCOS</h1>
     
       <section className="px-6">
         <div className="flex justify-between mb-2">
           <h2 className="text-lg font-semibold"></h2>
-          <Link href="/dashboard/users/new">
-            <Button>Nuevo Usuario</Button>
+          <Link href="/dashboard/banks/new">
+            <Button>Nuevo Banco</Button>
           </Link>
         </div>
-        <TableUser  data={data?.data!}/>
+        <TableBank data={data?.data!}/>
       </section>
       </div>
     

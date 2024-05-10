@@ -1,5 +1,5 @@
 "use client";
-import { IIncomeResponse } from "../interface/income";
+import { IIncomeResponse } from "../../income/interface/income";
 import {
   ColumnDef,
   flexRender,
@@ -29,12 +29,12 @@ import { MoreHorizontal } from "lucide-react";
 
 const columns: ColumnDef<IIncomeResponse>[] = [
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: "sigla",
+    header: "Sigla",
   },
   {
-    accessorKey: "status",
-    header: "Estado",
+    accessorKey: "nroCuentaBancaria",
+    header: "nroCuentaBancaria",
   },
   
   {
@@ -53,7 +53,7 @@ const columns: ColumnDef<IIncomeResponse>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opciones</DropdownMenuLabel>
             <DropdownMenuItem
-            // onClick={() => navigator.clipboard.writeText(payment.id)}
+            onClick={() => console.log(row.original)}
             >
               Editar
             </DropdownMenuItem>
@@ -68,7 +68,7 @@ const columns: ColumnDef<IIncomeResponse>[] = [
 interface Props {
   data: IIncomeResponse[];
 }
-export const TableUser = (props: Props) => {
+export const TableBank = (props: Props) => {
   const { data } = props;
   const table = useReactTable({
     data,

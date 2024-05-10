@@ -51,12 +51,12 @@ export const SideMenu = () => {
       <div className="flex flex-col items-center mt-4">
         <User className="text-4xl text-muted-foreground" />
         <span className="mt-2 text-large">{userName}</span>
-        <button
+        {/* <button
           onClick={toUsers}
           className="mt-2 text-large text-primary-500 hover:underline"
         >
           Usuarios
-        </button>
+        </button> */}
         <button
           onClick={logout}
           className="mt-2 text-large text-primary hover:underline"

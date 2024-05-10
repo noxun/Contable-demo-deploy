@@ -1,4 +1,4 @@
-import { FileCheck2, FileInput, FileOutput, ListTree } from "lucide-react";
+import { FileCheck2, FileInput, FileOutput, ListTree, User, Landmark } from "lucide-react";
 export const MENU_OPTIONS = [
   {
     name: "Transacciones",
@@ -17,6 +17,16 @@ export const MENU_OPTIONS = [
         path: "/dashboard/diary",
         name: "Diarios",
         icon: <FileCheck2 className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/users",
+        name: "Usuarios",
+        icon: <User className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/banks",
+        name: "Bancos",
+        icon: <Landmark className="h-5 w-5" />,
       },
     ],
   },
