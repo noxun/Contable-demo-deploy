@@ -19,8 +19,8 @@ export const SideMenu = () => {
     router.push("/auth/login");
   };
 
-  const toRegister = () =>{
-    router.push("/dashboard/register")
+  const toUsers = () =>{
+    router.push("/dashboard/users")
   }
 
 
@@ -52,10 +52,10 @@ export const SideMenu = () => {
         <User className="text-4xl text-muted-foreground" />
         <span className="mt-2 text-large">{userName}</span>
         <button
-          onClick={toRegister}
+          onClick={toUsers}
           className="mt-2 text-large text-primary-500 hover:underline"
         >
-          Registrar
+          Usuarios
         </button>
         <button
           onClick={logout}
