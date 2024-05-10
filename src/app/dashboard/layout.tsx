@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SideMenu } from "@/modules/shared/components/SideMenu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideMenuMobile from "@/modules/shared/components/SideMenuMobile";
-import { Archive, Bell, Menu } from "lucide-react";
+import { Archive, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
