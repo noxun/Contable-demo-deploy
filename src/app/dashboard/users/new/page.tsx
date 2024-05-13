@@ -19,6 +19,7 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface registerFormInputs {
   username: string;
@@ -31,6 +32,8 @@ function Register() {
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const registerSchema = z.object({
     username: z.string().min(4, {
@@ -75,6 +78,7 @@ function Register() {
         setSuccessMessage("Éxito.");
         setSuccessDialogOpen(true);
         reset(); 
+        queryClient.invalidateQueries({queryKey: ["User"]})
       } else {
         setErrorMessage("Error durante la creación del usuario");
         setDialogOpen(true);
