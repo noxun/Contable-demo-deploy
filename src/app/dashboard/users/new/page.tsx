@@ -31,7 +31,7 @@ function Register() {
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const router = useRouter();
+
 
   const queryClient = useQueryClient();
 
@@ -75,7 +75,7 @@ function Register() {
       console.log(response);
 
       if (response.status === 200) {
-        setSuccessMessage("Éxito.");
+        setSuccessMessage("Usuario registrado exitosamente.");
         setSuccessDialogOpen(true);
         reset(); 
         queryClient.invalidateQueries({queryKey: ["User"]})
@@ -126,7 +126,7 @@ function Register() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre de Usuario</FormLabel>
-                        <FormControl className="px-20">
+                        <FormControl className="px-5">
                           <Input placeholder="" {...field}></Input>
                         </FormControl>
                         <FormMessage />
@@ -139,7 +139,7 @@ function Register() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Contraseña</FormLabel>
-                        <FormControl className="px-20">
+                        <FormControl className="px-5">
                           <Input
                             type="password"
                             placeholder=""
@@ -159,7 +159,7 @@ function Register() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Email</FormLabel>
-                      <FormControl className="px-20"> 
+                      <FormControl className="px-5"> 
                         <Input placeholder="" {...field}></Input>
                       </FormControl>
                       <FormMessage />
@@ -248,10 +248,12 @@ function Register() {
       <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
         <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
-          <AlertDialog.Title className="text-lg font-bold text">
+          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
             Error
           </AlertDialog.Title>
-          <AlertDialog.Description>{errorMessage}</AlertDialog.Description>
+          <AlertDialog.Description className="text-black dark:text-white">
+            {errorMessage}
+          </AlertDialog.Description>
           <div className="flex justify-end mt-4">
             <AlertDialog.Action asChild>
               <Button onClick={closeDialog}>Cerrar</Button>
@@ -260,16 +262,15 @@ function Register() {
         </AlertDialog.Content>
       </AlertDialog.Root>
 
-      <AlertDialog.Root
-        open={isSuccessDialogOpen}
-        onOpenChange={setSuccessDialogOpen}
-      >
+      <AlertDialog.Root open={isSuccessDialogOpen} onOpenChange={setSuccessDialogOpen}>
         <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
         <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
-          <AlertDialog.Title className="text-lg font-bold">
+          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
             Éxito
           </AlertDialog.Title>
-          <AlertDialog.Description>{successMessage}</AlertDialog.Description>
+          <AlertDialog.Description className="text-black dark:text-white">
+            {successMessage}
+          </AlertDialog.Description>
           <div className="flex justify-end mt-4">
             <AlertDialog.Action asChild>
               <Button onClick={closeSuccessDialog}>Cerrar</Button>

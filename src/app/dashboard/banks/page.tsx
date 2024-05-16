@@ -21,7 +21,8 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
 import { TableBank } from "@/modules/banks/components/TableBank";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IIncomeResponse } from "@/modules/income/interface/income";
+// import { IIncomeResponse } from "@/modules/income/interface/income";
+import { IBank } from "@/modules/banks/interface/banks";
 
 
 
@@ -31,7 +32,7 @@ function Users() {
   const token = localStorage.getItem("token");
   const { data, isLoading, error } = useQuery({
     queryKey: ["Bank"],
-    queryFn: async (): Promise<{ data: IIncomeResponse[] }> =>
+    queryFn: async (): Promise<{ data: IBank[] }> =>
       await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`,
         {

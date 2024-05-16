@@ -19,6 +19,7 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface registerFormInputs {
   descripcion: string;
@@ -34,25 +35,25 @@ function RegisterBank() {
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const registerBankSchema = z.object({
     descripcion: z.string().min(4, {
-        message: "Debe tener mínimo 1 caracter",
+        message: "Debe tener mínimo 4 caracteres",
       }),
     name: z.string().min(4, {
-        message: "Debe tener mínimo 1 caracter",
+        message: "Debe tener mínimo 4 caracteres",
       }),
     nroCuentaBancaria: z.string().min(4, {
-        message: "Debe tener mínimo 1 caracter",
+        message: "Debe tener mínimo 4 caracteres",
       }),
     sigla: z.string().min(4, {
-        message: "Debe tener mínimo 1 caracter",
+        message: "Debe tener mínimo 4 caracteres",
       }),
   });
 
   async function onSubmit(values: z.infer<typeof registerBankSchema>) {
-    console.log("a");
 
     try {
       const response = await axios.post(
@@ -74,9 +75,10 @@ function RegisterBank() {
       console.log(response);
 
       if (response.status === 200 ||  response.status === 201) {
-        setSuccessMessage("Éxito.");
+        setSuccessMessage("Banco creado exitosamente");
         setSuccessDialogOpen(true);
         reset(); 
+        queryClient.invalidateQueries({queryKey: ["Bank"]})
       } else {
         setErrorMessage("Error durante la creación del banco");
         setDialogOpen(true);
@@ -120,7 +122,7 @@ function RegisterBank() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre del Banco</FormLabel>
-                        <FormControl className="px-20">
+                        <FormControl className="px-5">
                           <Input placeholder="" {...field}></Input>
                         </FormControl>
                         <FormMessage />
@@ -133,7 +135,7 @@ function RegisterBank() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Sigla</FormLabel>
-                        <FormControl className="px-10">
+                        <FormControl className="px-5">
                           <Input placeholder="" {...field}></Input>
                         </FormControl>
                         <FormMessage />
@@ -149,7 +151,7 @@ function RegisterBank() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nro de Cuenta Bancaria</FormLabel>
-                        <FormControl className="px-20">
+                        <FormControl className="px-5">
                           <Input placeholder="" {...field}></Input>
                         </FormControl>
                         <FormMessage />
@@ -194,12 +196,14 @@ function RegisterBank() {
       </div>
 
       <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialog.Overlay className="fixed inset-0 opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg">
-          <AlertDialog.Title className="text-lg font-bold text">
+        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 border border-blue-500 p-4 shadow-lg rounded-lg">
+          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
             Error
           </AlertDialog.Title>
-          <AlertDialog.Description>{errorMessage}</AlertDialog.Description>
+          <AlertDialog.Description className="text-black dark:text-white">
+            {errorMessage}
+          </AlertDialog.Description>
           <div className="flex justify-end mt-4">
             <AlertDialog.Action asChild>
               <Button onClick={closeDialog}>Cerrar</Button>
@@ -208,16 +212,15 @@ function RegisterBank() {
         </AlertDialog.Content>
       </AlertDialog.Root>
 
-      <AlertDialog.Root
-        open={isSuccessDialogOpen}
-        onOpenChange={setSuccessDialogOpen}
-      >
-        <AlertDialog.Overlay className="fixed inset-0 opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg">
-          <AlertDialog.Title className="text-lg font-bold">
+      <AlertDialog.Root open={isSuccessDialogOpen} onOpenChange={setSuccessDialogOpen}>
+        <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 border border-blue-500 p-4 shadow-lg rounded-lg">
+          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
             Éxito
           </AlertDialog.Title>
-          <AlertDialog.Description>{successMessage}</AlertDialog.Description>
+          <AlertDialog.Description className="text-black dark:text-white">
+            {successMessage}
+          </AlertDialog.Description>
           <div className="flex justify-end mt-4">
             <AlertDialog.Action asChild>
               <Button onClick={closeSuccessDialog}>Cerrar</Button>

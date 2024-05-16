@@ -19,9 +19,10 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
-import { TableUser } from "@/modules/users/components/TableUser";
+import { TableUser} from "@/modules/users/components/TableUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IIncomeResponse } from "@/modules/income/interface/income";
+import { IUserResponse } from "@/modules/users/interface/users";
 
 
 
@@ -31,7 +32,7 @@ function Users() {
   const token = localStorage.getItem("token");
   const { data, isLoading, error } = useQuery({
     queryKey: ["User"],
-    queryFn: async (): Promise<{ data: IIncomeResponse[] }> =>
+    queryFn: async (): Promise<{ data: IUserResponse[] }> =>
       await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Users/All`,
         {

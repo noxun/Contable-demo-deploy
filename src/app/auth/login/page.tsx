@@ -81,7 +81,7 @@ function Login() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-black">
-      <div className="flex flex-col rounded-xl border border-blue-500 bg-slate-800 p-3">
+      <div className="flex flex-col rounded-xl border border-blue-500 bg-slate-700 p-3">
         <div className="mx-10 mt-10 flex h-full flex-col items-center justify-center p-2 ">
           <h1 className="mb-4 font-semibold text-blue-500">INICIAR SESIÓN</h1>
           <Form {...loginForm}>
@@ -133,10 +133,10 @@ function Login() {
       <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialog.Overlay className="fixed inset-0 bg-black opacity-50" />
         <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-black border border-blue-500 p-4 shadow-lg rounded-lg">
-          <AlertDialog.Title className="text-lg font-bold text">
+          <AlertDialog.Title className="text-2xl font-bold text-blue-600">
             Error
           </AlertDialog.Title>
-          <AlertDialog.Description>{errorMessage}</AlertDialog.Description>
+          <AlertDialog.Description className="text-lg font-bold text-blue-500">{errorMessage}</AlertDialog.Description>
           <div className="flex justify-end mt-4">
             <AlertDialog.Action asChild>
               <Button onClick={closeDialog}>Cerrar</Button>

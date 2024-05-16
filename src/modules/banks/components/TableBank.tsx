@@ -1,12 +1,10 @@
 "use client";
-import { IIncomeResponse } from "../../income/interface/income";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -17,59 +15,68 @@ import {
 } from "@/components/ui/table";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import EditBank from "./EditBank";
+import { useState } from "react";
+import { IBank } from "../interface/banks";
 
-const columns: ColumnDef<IIncomeResponse>[] = [
-  {
-    accessorKey: "sigla",
-    header: "Sigla",
-  },
-  {
-    accessorKey: "nroCuentaBancaria",
-    header: "nroCuentaBancaria",
-  },
-  
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const income = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem
-            onClick={() => console.log(row.original)}
-            >
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem>Eliminar</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
-
-interface Props {
-  data: IIncomeResponse[];
-}
-export const TableBank = (props: Props) => {
+export const TableBank = (props: { data: IBank[] }) => {
   const { data } = props;
+  const [isEditBankOpen, setIsEditBankOpen] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<IBank | null>(null);
+
+  const openEditBank = (bank: IBank) => {
+    setSelectedBank(bank);
+    setIsEditBankOpen(true);
+  };
+
+  const closeEditBank = () => {
+    setIsEditBankOpen(false);
+    setSelectedBank(null);
+  };
+
+  const columns: ColumnDef<IBank>[] = [
+    {
+      accessorKey: "sigla",
+      header: "Sigla",
+    },
+    {
+      accessorKey: "nroCuentaBancaria",
+      header: "nroCuentaBancaria",
+    },
+
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const bank = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menú</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => openEditBank(bank)}>
+                Editar
+              </DropdownMenuItem>
+              <DropdownMenuItem>Eliminar</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
   const table = useReactTable({
     data,
     columns,
@@ -82,23 +89,21 @@ export const TableBank = (props: Props) => {
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -120,6 +125,13 @@ export const TableBank = (props: Props) => {
           )}
         </TableBody>
       </Table>
+      {selectedBank && (
+        <EditBank
+          isOpen={isEditBankOpen}
+          onClose={closeEditBank}
+          bank={selectedBank}
+        />
+      )}
     </div>
   );
 };
