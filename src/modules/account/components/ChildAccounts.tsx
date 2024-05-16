@@ -6,7 +6,7 @@ import { Account } from "../types/account";
 import { useState } from "react";
 
 type ChildAccountsProps = {
-  accounts: Account[]
+  accounts: Account[] | undefined
 }
 
 export default function ChildAccounts({ accounts }: ChildAccountsProps) {
@@ -18,7 +18,7 @@ export default function ChildAccounts({ accounts }: ChildAccountsProps) {
   };
 
   return (
-    <Accordion type="multiple" className="w-full" defaultValue={accounts.flatMap((account) => [account.code, ...getChildCodes(account)])}>
+    <Accordion type="multiple" className="w-full" defaultValue={accounts?.flatMap((account) => [account.code, ...getChildCodes(account)]) ?? []}>
       {accounts?.map((account, index) => (
         <AccordionItem key={index} value={account.code} className="px-2 border">
           <AccordionTrigger>
