@@ -1,4 +1,5 @@
 export interface IIncomeItem {
+  id?: number;
   debitBs: string;
   debitSus: string;
   assetBs: string;
