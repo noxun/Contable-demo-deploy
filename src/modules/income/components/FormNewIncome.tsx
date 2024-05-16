@@ -109,6 +109,7 @@ const FormNewIncome = ({ type }: Props) => {
   });
 
   async function onSubmit(values: z.infer<typeof incomeSchema>) {
+    console.log(values)
     const result = await createIncome(
       {
         ...values,
@@ -134,21 +135,33 @@ const FormNewIncome = ({ type }: Props) => {
     }
   }
 
+
+  const incomeItemSchema =  z.object({
+    debitBs: z.number(),
+    debitSus: z.number(),
+    assetBs: z.number(),
+    assetSus: z.number(),
+    gloss: z.string(),
+    accoutId: z.number(),
+    voucherId: z.number(),
+  })
+
   const incomeSchema = z.object({
-    exchangeRate: z.string(),
-    coin: z.string(),
-    checkNum: z.string(),
+    exchangeRate: z.coerce.number(),
+    coin: z.enum(["USD", "BOB"]),
+    checkNum: z.string().min(1),
     canceledTo: z.date({
       required_error: "Fecha requerida.",
     }),
     gloss: z.string(),
-    bankId: z.string(),
+    bankId: z.string().min(1),
+    items: z.array(incomeItemSchema).optional()
   });
 
   const incomeForm = useForm<z.infer<typeof incomeSchema>>({
     resolver: zodResolver(incomeSchema),
     defaultValues: {
-      exchangeRate: "",
+      exchangeRate: 6.97,
       coin: "BOB",
       checkNum: "",
       gloss: "",
@@ -164,6 +177,8 @@ const FormNewIncome = ({ type }: Props) => {
   ) {
     return <CircularProgress className="mx-auto" />;
   }
+
+  console.log(incomeForm.formState.errors)
 
   return (
     <div>
@@ -218,7 +233,7 @@ const FormNewIncome = ({ type }: Props) => {
                 <FormItem className="w-full">
                   <FormLabel>T/C</FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field}></Input>
+                    <Input placeholder="" type="number" {...field}></Input>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
