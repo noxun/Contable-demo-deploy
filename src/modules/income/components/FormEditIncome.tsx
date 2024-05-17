@@ -35,11 +35,10 @@ import { IIncomeItem } from "../interface/income";
 import { Save } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { createIncome } from "../actions/actions";
 import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
 import { useRouter } from "next/navigation";
-import {es} from "date-fns/locale"
+import { es } from "date-fns/locale";
 import { toast } from "sonner";
 
 const accountsSchema = z.object({
@@ -106,59 +105,38 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
   const queryClient = useQueryClient();
 
   const editIncomeMutation = useMutation({
-    mutationFn: async (data:any) => {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher`,data,{
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-    }, 
+    mutationFn: async (data: any) => {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ["VoucherIncome"]});
-      queryClient.invalidateQueries({queryKey: ["VoucherIncome", income.id.toString()]})
+      queryClient.invalidateQueries({ queryKey: ["VoucherIncome"] });
+      queryClient.invalidateQueries({
+        queryKey: ["VoucherIncome", income.id.toString()],
+      });
       toast.success("Income Edited Succesfully");
     },
     onError: (error) => {
-      console.log(error)
-      toast.error("There was an error while editing the income")
-    }
+      console.log(error);
+      toast.error("There was an error while editing the income");
+    },
   });
 
-  function onSubmit(values){
+  function onSubmit(values) {
     values["type"] = parseInt(type);
-    values["id"] = income.id  
-    values["canceledTo"] = format(values.canceledTo, "dd-MM-yyyy")
+    values["id"] = income.id;
+    values["canceledTo"] = format(values.canceledTo, "dd-MM-yyyy");
     console.log(values);
     editIncomeMutation.mutate(values);
   }
-
-  // async function onSubmit(values: z.infer<typeof incomeSchema>) {
-  //   console.log(values);
-  //   const result = await createIncome(
-  //     {
-  //       ...values,
-  //       type: type,
-  //       canceledTo: format(values.canceledTo, "dd-MM-yyyy"),
-  //     },
-  //     incomeItems.map((item) => ({
-  //       accountId:
-  //         dataAccount?.data.filter(
-  //           (account) =>
-  //             `${account.code} - ${account.description}` === item.accountId
-  //         )[0]?.id || 0,
-  //       debitBs: Number(item.debitBs),
-  //       debitSus: Number(item.debitSus),
-  //       assetBs: Number(item.assetBs),
-  //       assetSus: Number(item.assetSus),
-  //       gloss: item.gloss,
-  //     }))
-  //   );
-  //   if (result?.isSuccess) {
-  //     router.push("/dashboard/income");
-  //   } else {
-  //   }
-  // }
 
   const incomeItemSchema = z.object({
     debitBs: z.number(),
@@ -350,15 +328,15 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
             <span className="mr-2">Guardar Edicion de Registro</span>
             <Save size={20} />
           </Button>
-          <br />
-          <FormEditIncomeItems
-            voucherId={income.id}
-            data={dataAccount}
-            incomeItems={incomeItems}
-            setIncomeItems={setIncomeItems}
-          />
         </form>
       </Form>
+      <br />
+      <FormEditIncomeItems
+        voucherId={income.id}
+        data={dataAccount}
+        incomeItems={incomeItems}
+        setIncomeItems={setIncomeItems}
+      />
     </div>
   );
 };
