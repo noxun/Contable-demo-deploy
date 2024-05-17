@@ -40,6 +40,7 @@ import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { es } from "date-fns/locale";
 
 const accountsSchema = z.object({
   id: z.number(),
@@ -100,7 +101,7 @@ const FormNewIncome = ({ type }: Props) => {
     queryKey: ["accounts"],
     queryFn: async (): Promise<{ data: Account[] }> =>
       await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/Filter?isMotion=true`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -126,9 +127,9 @@ const FormNewIncome = ({ type }: Props) => {
               `${account.code} - ${account.description}` === item.accountId
           )[0]?.id || 0,
         debitBs: Number(item.debitBs),
-        debitSus: Number(item.debitSus),
+        debitSus: Number(item.debitBs / values.exchangeRate),
         assetBs: Number(item.assetBs),
-        assetSus: Number(item.assetSus),
+        assetSus: Number(item.assetBs / values.exchangeRate),
         gloss: item.gloss,
       }))
     );
@@ -209,7 +210,7 @@ const FormNewIncome = ({ type }: Props) => {
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP")
+                            format(field.value, "dd/MM/yyyy")
                           ) : (
                             <span>Seleccione la fecha</span>
                           )}
@@ -226,6 +227,7 @@ const FormNewIncome = ({ type }: Props) => {
                           date > new Date() || date < new Date("1900-01-01")
                         }
                         initialFocus
+                        locale={es}
                       />
                     </PopoverContent>
                   </Popover>
@@ -240,7 +242,7 @@ const FormNewIncome = ({ type }: Props) => {
                 <FormItem className="w-full">
                   <FormLabel>T/C</FormLabel>
                   <FormControl>
-                    <Input placeholder="" type="number" {...field}></Input>
+                    <Input placeholder="" type="text" {...field}></Input>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
