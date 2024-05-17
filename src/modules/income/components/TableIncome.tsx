@@ -84,6 +84,9 @@ const columns: ColumnDef<IIncomeResponse>[] = [
               <DropdownMenuItem asChild>
                 <Link href={`/dashboard/income/${income.id}/edit`}>Editar</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/dashboard/income/${income.id}/pdf`}>Reporte</Link>
+              </DropdownMenuItem>
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem>
                   <span>Eliminar</span>
