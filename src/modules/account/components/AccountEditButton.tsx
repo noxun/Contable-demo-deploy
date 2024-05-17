@@ -83,7 +83,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       <DialogTrigger asChild>
         <Button>{children}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] flex">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Account</DialogTitle>
           <DialogDescription>
@@ -118,6 +118,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
                     <FormLabel>Moneda</FormLabel>
                     <FormControl>
                       <RadioGroup
+                        className="flex"
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
@@ -142,51 +143,53 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
                   </FormItem>
                 )}
               />
-              <FormField
-                control={accountCreateForm.control}
-                name="isMotion"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Movimientos</FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={accountCreateForm.control}
-                name="isBudgetable"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Presupuestable</FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={accountCreateForm.control}
-                name="isCost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Costos</FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              <div className="flex">
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isMotion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Movimientos</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isBudgetable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Presupuestable</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isCost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Costos</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <Button type="submit">Guardar</Button>
             </form>
           </Form>
