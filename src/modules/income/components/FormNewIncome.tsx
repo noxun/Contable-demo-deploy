@@ -33,12 +33,13 @@ import { FormNewIncomeItems } from "./FormNewIncomeItems";
 import { useState } from "react";
 import { IIncomeItem } from "../interface/income";
 import { Save } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { createIncome } from "../actions/actions";
 import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const accountsSchema = z.object({
   id: z.number(),
@@ -69,6 +70,8 @@ interface Props {
 const FormNewIncome = ({ type }: Props) => {
   const router = useRouter();
   const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
+
   const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>([
     {
       debitBs: "",
@@ -130,8 +133,12 @@ const FormNewIncome = ({ type }: Props) => {
       }))
     );
     if (result?.isSuccess) {
+      toast.success("Ingreso creado correctamente")
       router.push("/dashboard/income");
+      queryClient.invalidateQueries({queryKey:["VoucherIncome"]});
+      //invalidar la query
     } else {
+      toast.error("error al insertar un ingreso")
     }
   }
 
