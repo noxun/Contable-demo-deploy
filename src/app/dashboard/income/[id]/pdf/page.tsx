@@ -72,7 +72,7 @@ export default function PdfPage({ params }: { params: { id: string }}) {
             <Text>Section #2</Text>
           </View>
           <View style={tw("mt-4")}>
-            <Text style={tw("font-bold mb-2")}>Items:</Text>
+            <Text style={tw("font-bold mb-2")}>Items contables:</Text>
             <View style={tw("flex flex-col border border-gray-500")}>
               <View style={tw("flex flex-row border-b border-gray-500 bg-gray-200")}>
                 <Text style={tw("flex-1 p-2 border-r border-gray-500")}>ID</Text>
