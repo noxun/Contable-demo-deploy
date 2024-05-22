@@ -1,7 +1,6 @@
 import FormNewIncome from "@/modules/income/components/FormNewIncome";
-import React from "react";
 
-const NewExpensePage = () => {
+export default function NewExpensePage() {
   return (
     <div className="px-6">
       <h2 className="text-lg font-bold">Formulario para crear egreso</h2>
@@ -9,5 +8,3 @@ const NewExpensePage = () => {
     </div>
   );
 };
-
-export default NewExpensePage;
