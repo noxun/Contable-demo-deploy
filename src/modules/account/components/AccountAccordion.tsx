@@ -14,7 +14,7 @@ function AccountAccordion() {
   // console.log(token)
 
   const accountsQuery = useQuery({
-    queryKey: ["accounts"],
+    queryKey: ["accountsAll"],
     queryFn: async (): Promise<{ data: Account[] }> =>
       await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`,
