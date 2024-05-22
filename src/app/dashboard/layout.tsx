@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideMenuMobile from "@/modules/shared/components/SideMenuMobile";
 import { Archive, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
@@ -41,23 +42,6 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               <SideMenuMobile />
             </SheetContent>
           </Sheet>
-          {/* <div className="w-full"></div> */}
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}
