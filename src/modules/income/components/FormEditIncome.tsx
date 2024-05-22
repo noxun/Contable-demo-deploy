@@ -37,33 +37,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
-import { useRouter } from "next/navigation";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-
-const accountsSchema = z.object({
-  id: z.number(),
-  code: z.string(),
-  description: z.string(),
-  coin: z.string(),
-  active: z.boolean().default(true),
-  isBudgetable: z.boolean(),
-  isMotion: z.boolean(),
-  isCost: z.boolean(),
-  accountChild: z.array(
-    z.object({
-      id: z.number(),
-      code: z.string(),
-      description: z.string(),
-      coin: z.string(),
-      active: z.boolean().default(true),
-      isBudgetable: z.boolean(),
-      isMotion: z.boolean(),
-      isCost: z.boolean(),
-    })
-  ),
-});
-type Account = z.infer<typeof accountsSchema>;
+import { Account } from "@/modules/account/types/account";
+import { Voucher } from "@/modules/shared/types/sharedTypes";
 
 type FormEditIncomeProps = {
   type: string;
@@ -71,7 +48,6 @@ type FormEditIncomeProps = {
 };
 
 const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
-  const router = useRouter();
   const token = localStorage.getItem("token");
   const [incomeItems, setIncomeItems] = useState<IIncomeItem[]>(income.items);
 
@@ -91,7 +67,7 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
     queryKey: ["accounts"],
     queryFn: async (): Promise<{ data: Account[] }> =>
       await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/Filter?isMotion=true`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -130,7 +106,7 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
     },
   });
 
-  function onSubmit(values) {
+  function onSubmit(values: Voucher) {
     values["type"] = parseInt(type);
     values["id"] = income.id;
     values["canceledTo"] = format(values.canceledTo, "dd-MM-yyyy");
@@ -148,7 +124,7 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
     voucherId: z.number(),
   });
 
-  const incomeSchema = z.object({
+  const incomeFormSchema = z.object({
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
     checkNum: z.string().min(1),
@@ -160,8 +136,8 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
     items: z.array(incomeItemSchema).optional(),
   });
 
-  const incomeForm = useForm<z.infer<typeof incomeSchema>>({
-    resolver: zodResolver(incomeSchema),
+  const incomeForm = useForm<z.infer<typeof incomeFormSchema>>({
+    resolver: zodResolver(incomeFormSchema),
     defaultValues: {
       canceledTo: income.canceledTo,
       exchangeRate: income.exchangeRate,
