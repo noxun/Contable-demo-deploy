@@ -117,7 +117,7 @@ const FormNewIncome = ({ type }: Props) => {
     const result = await createIncome(
       {
         ...values,
-        type: type,
+        type: parseInt(type),
         canceledTo: format(values.canceledTo, "dd-MM-yyyy"),
       },
       incomeItems.map((item) => ({
