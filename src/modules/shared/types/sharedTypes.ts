@@ -19,7 +19,8 @@ export type VoucherItem = {
       assetBs: number,
       assetSus: number,
       gloss: string,
-      accountId?: number
+      accountId?: number | string
+      voucherId?: number | string
 }
 
 export enum VoucherType {
