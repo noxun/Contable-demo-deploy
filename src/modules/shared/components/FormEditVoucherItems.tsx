@@ -432,6 +432,8 @@ type ComboboxVoucherItemProps = {
 export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherItemProps) {
   const [open, setOpen] = useState(false);
 
+  const selectedItem = list.find(item => item.value === value);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -441,9 +443,7 @@ export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherIt
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value
-            ? list.find((item) => item.value === value)?.label
-            : "Selecciona una opción..."}
+          {selectedItem ? selectedItem.label : "Selecciona una opción..."}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -457,7 +457,7 @@ export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherIt
                 key={item.value}
                 value={item.value}
                 onSelect={(currentValue) => {
-                  onChange(currentValue === value ? "" : currentValue);
+                  onChange(item.value);
                   setOpen(false);
                 }}
               >
