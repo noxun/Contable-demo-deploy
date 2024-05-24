@@ -36,11 +36,11 @@ import { Save } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { createIncome } from "../actions/actions";
-import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { es } from "date-fns/locale";
+import Spinner from "@/components/ui/spinner";
 
 const accountsSchema = z.object({
   id: z.number(),
@@ -183,7 +183,7 @@ const FormNewIncome = ({ type }: Props) => {
     isLoadingAccount ||
     dataAccount === undefined
   ) {
-    return <CircularProgress className="mx-auto" />;
+    return <Spinner/>;
   }
 
   console.log(incomeForm.formState.errors)

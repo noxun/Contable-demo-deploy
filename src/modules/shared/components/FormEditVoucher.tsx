@@ -12,7 +12,6 @@ import { format } from "date-fns";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircularProgress } from "@nextui-org/react";
 
 import {
   Form,
@@ -42,6 +41,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
+import Spinner from "@/components/ui/spinner";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -166,7 +166,7 @@ export default function FormEditVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined
   ) {
-    return <CircularProgress className="mx-auto" />;
+    return <Spinner/>;
   }
 
   return (

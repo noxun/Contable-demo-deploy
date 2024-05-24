@@ -17,7 +17,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircularProgress } from "@nextui-org/react";
 import {
   Form,
   FormControl,
@@ -47,6 +46,7 @@ import { Calendar } from "@/components/ui/calendar";
 import FormNewVoucherItems from "./FormNewVoucherItems";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import Spinner from "@/components/ui/spinner";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -200,7 +200,7 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined
   ) {
-    return <CircularProgress className="mx-auto" />;
+    return <Spinner/>
   }
 
   return (

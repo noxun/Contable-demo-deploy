@@ -27,7 +27,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { CircularProgress } from "@nextui-org/react";
 import { z } from "zod";
 import { IBank } from "@/modules/banks/interface/banks";
 import { toast } from "sonner";

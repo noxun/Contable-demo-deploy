@@ -35,12 +35,12 @@ import { IIncomeItem } from "../interface/income";
 import { Save } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { CircularProgress } from "@nextui-org/react";
 import { IBank } from "@/modules/banks/interface/banks";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { Account } from "@/modules/account/types/account";
 import { Voucher } from "@/modules/shared/types/sharedTypes";
+import Spinner from "@/components/ui/spinner";
 
 type FormEditIncomeProps = {
   type: string;
@@ -154,7 +154,7 @@ const FormEditIncome = ({ type, income }: FormEditIncomeProps) => {
     isLoadingAccount ||
     dataAccount === undefined
   ) {
-    return <CircularProgress className="mx-auto" />;
+    return <Spinner/>;
   }
 
   console.log(incomeForm.formState.errors);
