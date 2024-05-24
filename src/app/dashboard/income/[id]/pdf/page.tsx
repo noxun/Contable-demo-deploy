@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Document,
-  StyleSheet,
   Image,
   PDFViewer,
   Font
