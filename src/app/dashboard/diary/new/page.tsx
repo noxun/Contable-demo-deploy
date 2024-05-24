@@ -1,13 +1,17 @@
-import FormNewIncome from "@/modules/income/components/FormNewIncome";
-import React from "react";
+import FormNewVoucher from "@/modules/shared/components/FormNewVoucher";
+import {
+  VoucherType,
+  VoucherTypeRoute,
+} from "@/modules/shared/types/sharedTypes";
 
-const NewDiaryPage = () => {
+export default function NewDiaryPage() {
   return (
     <div className="px-6">
       <h2 className="text-lg font-bold">Formulario para crear un diario</h2>
-      <FormNewIncome type="0" />
+      <FormNewVoucher
+        type={VoucherType.DIARY}
+        routeType={VoucherTypeRoute.DIARY}
+      />
     </div>
   );
-};
-
-export default NewDiaryPage;
+}
