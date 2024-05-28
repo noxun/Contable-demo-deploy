@@ -98,8 +98,8 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell>
-                <ComboboxIncomeItem
+              <TableCell className="overflow-hidden">
+                <ComboboxVoucherItem
                   list={
                     accountData.map((account) => ({
                       value: `${account.id}`,
@@ -157,7 +157,7 @@ interface PropsCombobox {
   onChange: (value: any) => void;
 }
 
-export function ComboboxIncomeItem({ list, value, onChange }: PropsCombobox) {
+export function ComboboxVoucherItem({ list, value, onChange }: PropsCombobox) {
   const [open, setOpen] = useState(false);
 
   return (

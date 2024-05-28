@@ -448,7 +448,7 @@ export const FormEditIncomeItems = (props: Props) => {
                   size="icon"
                   type="button"
                   onClick={() => {
-                    removeIncomeItem(index, item?.id);
+                    removeIncomeItem(index, item!.id);
                   }}
                 >
                   <Trash2 size={16} />
