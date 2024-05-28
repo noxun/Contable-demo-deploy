@@ -3,7 +3,7 @@ import ListVouchers from "@/modules/shared/components/ListVouchers";
 import { VoucherType, VoucherTypeRoute } from "@/modules/shared/types/sharedTypes";
 import Link from "next/link";
 
-export default function ExpensesPage() {
+export default function DiariesPage() {
   return (
     <section className="px-6">
       <div className="flex justify-between mb-2">

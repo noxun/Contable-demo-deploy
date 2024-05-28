@@ -1,4 +1,3 @@
-"use client"
 import EditVoucher from "@/modules/shared/components/EditVoucher";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 
