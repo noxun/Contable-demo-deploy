@@ -62,7 +62,7 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
     onSuccess: () => {
       setOpen(false);
       toast.success("Account created succesfully");
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
 

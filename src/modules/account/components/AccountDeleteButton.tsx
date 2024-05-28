@@ -43,7 +43,7 @@ export default function AccountDeleteButton({
     },
     onSuccess: () => {
       toast("Account deleted succesfully");
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
     onError: (error, variables, context) => {
       console.log(error, variables, context);

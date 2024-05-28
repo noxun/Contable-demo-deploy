@@ -69,7 +69,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
     onSuccess: () => {
       setOpen(false);
       toast.success("Account edited succesfully");
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
 
