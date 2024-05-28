@@ -70,7 +70,6 @@ export default function FormEditVoucherItems({
   setVoucherItems,
   accountData,
 }: FormEditVoucherItemsProps) {
-
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
     let listVoucherItem = voucherItems;
@@ -91,7 +90,13 @@ export default function FormEditVoucherItems({
   const queryClient = useQueryClient();
 
   const deleteVoucherItemMutation = useMutation({
-    mutationFn: async ({ voucherItemId, type }: { voucherItemId: number; type: VoucherType }) => {
+    mutationFn: async ({
+      voucherItemId,
+      type,
+    }: {
+      voucherItemId: number;
+      type: VoucherType;
+    }) => {
       const response = await axios.delete(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
         {
@@ -117,10 +122,18 @@ export default function FormEditVoucherItems({
   });
 
   const editIncomeItemMutation = useMutation({
-    mutationFn: async ({ voucherItem, type }: { voucherItem: VoucherItem; type: VoucherType }) => {
+    mutationFn: async ({
+      voucherItem,
+      type,
+      voucherId,
+    }: {
+      voucherItem: VoucherItem;
+      type: VoucherType;
+      voucherId: number;
+    }) => {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}`,
-        voucherItem,
+        { ...voucherItem, voucherId },
         {
           headers: {
             "Content-Type": "application/json",
@@ -134,7 +147,7 @@ export default function FormEditVoucherItems({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
-        queryKey: ["VoucherIncome", voucherId?.toString(), type],
+        queryKey: ["Vouchers", voucherId?.toString(), type],
       });
       toast.success("Elemento editado correctamente");
     },
@@ -147,7 +160,7 @@ export default function FormEditVoucherItems({
   function removeVoucherItem(index: number, voucherItemId: number) {
     const updateVoucherItems = voucherItems.filter((_, i) => i != index);
     setVoucherItems([...updateVoucherItems]);
-    deleteVoucherItemMutation.mutate({voucherItemId, type});
+    deleteVoucherItemMutation.mutate({ voucherItemId, type });
   }
 
   const addVoucherItemSchema = z.object({
@@ -170,7 +183,13 @@ export default function FormEditVoucherItems({
   });
 
   const addVoucherItemMutation = useMutation({
-    mutationFn: async ({data, type}: {data: NewVoucherItem, type: VoucherType}) => {
+    mutationFn: async ({
+      data,
+      type,
+    }: {
+      data: NewVoucherItem;
+      type: VoucherType;
+    }) => {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
         [data],
@@ -184,8 +203,10 @@ export default function FormEditVoucherItems({
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey:["Vouchers", type]});
-      queryClient.resetQueries({queryKey:["Vouchers", voucherId?.toString(), type]})
+      queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
+      queryClient.resetQueries({
+        queryKey: ["Vouchers", voucherId?.toString(), type],
+      });
       toast.success("item creado correctamente");
     },
     onError: (error) => {
@@ -196,7 +217,7 @@ export default function FormEditVoucherItems({
 
   function onSubmit(values: NewVoucherItem) {
     console.log(values);
-    addVoucherItemMutation.mutate({data:values, type});
+    addVoucherItemMutation.mutate({ data: values, type });
     //setIncomeItems((previousItems) => [...previousItems, values]);
   }
 
@@ -211,18 +232,18 @@ export default function FormEditVoucherItems({
               <Plus size={18} />
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[800px] flex flex-col">
             <DialogHeader>
               <DialogTitle>Adicionar item</DialogTitle>
               <DialogDescription>
-                Agrega un nuevo item al ingreso actual
+                Agrega un nuevo item al voucher actual
               </DialogDescription>
             </DialogHeader>
             <div>
               <Form {...addVoucherItemForm}>
                 <form
                   onSubmit={addVoucherItemForm.handleSubmit(onSubmit)}
-                  className="flex"
+                  className="flex gap-8"
                 >
                   <FormField
                     control={addVoucherItemForm.control}
@@ -242,9 +263,15 @@ export default function FormEditVoucherItems({
                                 )}
                               >
                                 {field.value
-                                  ? accountData.find(
-                                      (account) => account.id === field.value
-                                    )?.description
+                                  ? `${
+                                      accountData.find(
+                                        (account) => account.id === field.value
+                                      )?.code
+                                    } - ${
+                                      accountData.find(
+                                        (account) => account.id === field.value
+                                      )?.description
+                                    }`
                                   : "Select Account"}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
@@ -257,7 +284,7 @@ export default function FormEditVoucherItems({
                               <CommandGroup>
                                 {accountData.map((account) => (
                                   <CommandItem
-                                    value={account.id.toString()}
+                                    value={`${account.code} - ${account.description}`} //este es el filtro
                                     key={account.id}
                                     onSelect={() => {
                                       addVoucherItemForm.setValue(
@@ -274,7 +301,7 @@ export default function FormEditVoucherItems({
                                           : "opacity-0"
                                       )}
                                     />
-                                    {account.description}
+                                    {account.code} - {account.description}
                                   </CommandItem>
                                 ))}
                               </CommandGroup>
@@ -357,7 +384,7 @@ export default function FormEditVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell>
+              <TableCell className="overflow-hidden">
                 <ComboboxVoucherItem
                   list={
                     accountData.map((item) => ({
@@ -365,6 +392,7 @@ export default function FormEditVoucherItems({
                       label: `${item.code} - ${item.description}`,
                     }))!
                   }
+                  //FIXME: El backend no acepta el account id en el metodo put
                   value={item.accountId!.toString()}
                   onChange={(value) => onChangeCombobox(value, index)}
                 />
@@ -396,7 +424,12 @@ export default function FormEditVoucherItems({
                   size="icon"
                   type="button"
                   onClick={() => {
-                    editIncomeItemMutation.mutate({voucherItem: item, type});
+                    console.log(item);
+                    editIncomeItemMutation.mutate({
+                      voucherItem: item,
+                      type,
+                      voucherId,
+                    });
                   }}
                 >
                   <Pencil size={16} />
@@ -427,12 +460,14 @@ type ComboboxVoucherItemProps = {
   }[];
   value: string;
   onChange: (value: any) => void;
-}
+};
 
-export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherItemProps) {
+export function ComboboxVoucherItem({
+  list,
+  value,
+  onChange,
+}: ComboboxVoucherItemProps) {
   const [open, setOpen] = useState(false);
-
-  const selectedItem = list.find(item => item.value === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -443,7 +478,9 @@ export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherIt
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {selectedItem ? selectedItem.label : "Selecciona una opción..."}
+          {value
+            ? list.find((item) => item.value === value)?.label
+            : "Selecciona una opción..."}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -457,7 +494,7 @@ export function ComboboxVoucherItem({ list, value, onChange }: ComboboxVoucherIt
                 key={item.value}
                 value={item.value}
                 onSelect={(currentValue) => {
-                  onChange(item.value);
+                  onChange(currentValue === value ? "" : currentValue);
                   setOpen(false);
                 }}
               >
