@@ -1,5 +1,5 @@
 "use client";
-
+import Select from "react-select";
 import {
   Table,
   TableBody,
@@ -10,24 +10,9 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -53,7 +38,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
 type FormEditVoucherItemsProps = {
   type: VoucherType;
@@ -163,13 +148,22 @@ export default function FormEditVoucherItems({
     deleteVoucherItemMutation.mutate({ voucherItemId, type });
   }
 
+  const accountOptions = accountData.map((item) => ({
+    value: item.id.toString(),
+    label: `${item.code} - ${item.description}`,
+    //...item
+  }));
+
+  //const formatOptionLabel = ({ label }) => <div>{label}</div>;
+  //const getOptionValue = (option) => option.value;
+
   const addVoucherItemSchema = z.object({
     debitBs: z.coerce.number(),
     debitSus: z.number().optional().default(0),
     assetBs: z.coerce.number(),
     assetSus: z.number().optional().default(0),
     gloss: z.string(),
-    accountId: z.number(),
+    accountId: z.coerce.number(),
     voucherId: z.number(),
   });
 
@@ -179,6 +173,7 @@ export default function FormEditVoucherItems({
     resolver: zodResolver(addVoucherItemSchema),
     defaultValues: {
       voucherId: voucherId,
+      accountId: '',
     },
   });
 
@@ -249,70 +244,24 @@ export default function FormEditVoucherItems({
                     control={addVoucherItemForm.control}
                     name="accountId"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Account</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-[200px] justify-between",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value
-                                  ? `${
-                                      accountData.find(
-                                        (account) => account.id === field.value
-                                      )?.code
-                                    } - ${
-                                      accountData.find(
-                                        (account) => account.id === field.value
-                                      )?.description
-                                    }`
-                                  : "Select Account"}
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[200px] p-0">
-                            <Command>
-                              <CommandInput placeholder="Search language..." />
-                              <CommandEmpty>No language found.</CommandEmpty>
-                              <CommandGroup>
-                                {accountData.map((account) => (
-                                  <CommandItem
-                                    value={`${account.code} - ${account.description}`} //este es el filtro
-                                    key={account.id}
-                                    onSelect={() => {
-                                      addVoucherItemForm.setValue(
-                                        "accountId",
-                                        account.id
-                                      );
-                                    }}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        account.id === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    {account.code} - {account.description}
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
+                      <FormItem>
+                        <FormLabel>Cuenta</FormLabel>
+                        <FormControl>
+                          <Select
+                            isSearchable={true}
+                            options={accountOptions}
+                            value={accountOptions.find(
+                              (option) => option.value === field.value?.toString()
+                            )}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption?.value || '')
+                            }
+                          />
+                        </FormControl>
                         <FormDescription>
-                          This is the language that will be used in the
-                          dashboard.
+                          El nombre de la cuenta
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessage/>
                       </FormItem>
                     )}
                   />
@@ -384,17 +333,22 @@ export default function FormEditVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="overflow-hidden">
-                <ComboboxVoucherItem
-                  list={
-                    accountData.map((item) => ({
-                      value: `${item.id}`,
-                      label: `${item.code} - ${item.description}`,
-                    }))!
-                  }
-                  //FIXME: El backend no acepta el account id en el metodo put
-                  value={item.accountId!.toString()}
-                  onChange={(value) => onChangeCombobox(value, index)}
+              <TableCell className="">
+                <Select
+                  isSearchable={true}
+                  options={accountOptions}
+                  value={accountOptions.find(
+                    (option) => option.value === item.accountId.toString()
+                  )}
+                  onChange={(selectedOption) => {
+                    const updatedItem = {
+                      ...item,
+                      accountId: parseInt(selectedOption?.value || '0')
+                    };
+                    const updatedItems = [...voucherItems];
+                    updatedItems[index] = updatedItem;
+                    setVoucherItems(updatedItems);
+                  }}
                 />
               </TableCell>
               <TableCell>
@@ -450,66 +404,5 @@ export default function FormEditVoucherItems({
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-type ComboboxVoucherItemProps = {
-  list: {
-    value: string;
-    label: string;
-  }[];
-  value: string;
-  onChange: (value: any) => void;
-};
-
-export function ComboboxVoucherItem({
-  list,
-  value,
-  onChange,
-}: ComboboxVoucherItemProps) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? list.find((item) => item.value === value)?.label
-            : "Selecciona una opción..."}
-          <ChevronsUpDown className="h-4 w-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Busca..." />
-          <CommandEmpty>No hay opciones.</CommandEmpty>
-          <CommandGroup>
-            {list.map((item) => (
-              <CommandItem
-                key={item.value}
-                value={item.value}
-                onSelect={(currentValue) => {
-                  onChange(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === item.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }

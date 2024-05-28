@@ -1,7 +1,8 @@
 "use client";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Plus, Trash2 } from "lucide-react";
+import Select, { SingleValue } from "react-select";
+import { Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,19 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { Account } from "@/modules/account/types/account";
 import { VoucherItem } from "../types/sharedTypes";
 
@@ -39,26 +27,42 @@ export default function FormNewVoucherItems({
 }: FormNewVoucherItemsProps) {
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
+
     let listVoucherItem = voucherItems;
-    listVoucherItem[index] = {
-      ...listVoucherItem[index],
-      [name]: value,
-    };
+    
+    if (name === 'debitBs' || name === 'assetBs') {
+      listVoucherItem[index] = {
+        ...listVoucherItem[index],
+        [name]: parseFloat(value) || 0,
+      };
+    } else {
+      listVoucherItem[index] = {
+        ...listVoucherItem[index],
+        [name]: value,
+      };
+    }
     setVoucherItems([...listVoucherItem]);
   }
-  function onChangeCombobox(value: string, index: number) {
-    let listVoucherItem = voucherItems;
+
+  function onSelectChange(option: SingleValue<{ value: string; label: string }> | null, index: number) {
+    let listVoucherItem = [...voucherItems];
     listVoucherItem[index] = {
       ...listVoucherItem[index],
-      accountId: parseInt(value),
+      accountId: option ? option.value : "",
     };
-    setVoucherItems([...listVoucherItem]);
+    setVoucherItems(listVoucherItem);
   }
 
   function removeVoucherItem(index: number) {
     const updateVoucherItems = voucherItems.filter((_, i) => i != index);
     setVoucherItems([...updateVoucherItems]);
   }
+
+  const accountOptions = accountData.map((item) => ({
+    value: item.id.toString(),
+    label: `${item.code} - ${item.description}`,
+    //...item
+  }));
 
   return (
     <div>
@@ -98,16 +102,12 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="overflow-hidden">
-                <ComboboxVoucherItem
-                  list={
-                    accountData.map((account) => ({
-                      value: `${account.id}`,
-                      label: `${account.code} - ${account.description}`,
-                    }))!
-                  }
-                  value={item!.accountId!.toString()}
-                  onChange={(value) => onChangeCombobox(value, index)}
+              <TableCell className="">
+                <Select
+                  isSearchable={true}
+                  options={accountOptions}
+                  value={accountOptions.find(option => option.value === item.accountId)}
+                  onChange={(option) => onSelectChange(option as SingleValue<{ value: string; label: string }>, index)}
                 />
               </TableCell>
               <TableCell>
@@ -115,6 +115,7 @@ export default function FormNewVoucherItems({
                   name="debitBs"
                   onChange={(e) => onChange(e, index)}
                   value={item.debitBs}
+                  defaultValue={0}
                 />
               </TableCell>
               <TableCell>
@@ -122,6 +123,8 @@ export default function FormNewVoucherItems({
                   name="assetBs"
                   onChange={(e) => onChange(e, index)}
                   value={item.assetBs}
+                  defaultValue={0}
+                  min={0}
                 />
               </TableCell>
               <TableCell>
@@ -146,61 +149,5 @@ export default function FormNewVoucherItems({
         </TableBody>
       </Table>
     </div>
-  );
-}
-interface PropsCombobox {
-  list: {
-    value: string;
-    label: string;
-  }[];
-  value: string;
-  onChange: (value: any) => void;
-}
-
-export function ComboboxVoucherItem({ list, value, onChange }: PropsCombobox) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? list.find((item) => item.value === value)?.label
-            : "Selecciona una opción..."}
-          <ChevronsUpDown className="h-4 w-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Busca..." />
-          <CommandEmpty>No hay opciones.</CommandEmpty>
-          <CommandGroup>
-            {list.map((item) => (
-              <CommandItem
-                key={item.value}
-                value={item.value}
-                onSelect={(currentValue) => {
-                  onChange(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === item.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }

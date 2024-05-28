@@ -9,7 +9,7 @@ import {
 } from "../types/sharedTypes";
 import { token } from "../constants/token";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IBank } from "@/modules/banks/interface/banks";
 import axios from "axios";
 import { Account } from "@/modules/account/types/account";
@@ -60,6 +60,7 @@ export default function FormNewVoucher({
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const [buttonEnabled, setButtonEnabled] = useState(true);
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
       debitBs: 0,
@@ -172,7 +173,7 @@ export default function FormNewVoucher({
     voucherDate: z.string().optional(),
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
-    checkNum: z.string().min(1),
+    checkNum: z.string().optional(),
     canceledTo: z
       .string({
         required_error: "Fecha requerida.",
@@ -193,6 +194,19 @@ export default function FormNewVoucher({
       bankId: "",
     },
   });
+
+  useEffect(() => {
+    let debitTotal = voucherItems.reduce((total, currentItem) => {
+      return total + currentItem.debitBs;
+    },0)
+  
+    let assetTotal =  voucherItems.reduce((total, currentItem) => {
+      return total + currentItem.assetBs;
+    },0)
+  
+    console.log(debitTotal === assetTotal)
+    setButtonEnabled(debitTotal === assetTotal)
+  }, [voucherItems]);
 
   if (
     banksQuery.isLoading ||
@@ -348,7 +362,7 @@ export default function FormNewVoucher({
             voucherItems={voucherItems}
             setVoucherItems={setVoucherItems}
           />
-          <Button type="submit">
+          <Button type="submit" disabled={!buttonEnabled}>
             <span className="mr-2">Guardar Registro</span>
             <Save size={20} />
           </Button>
