@@ -1,4 +1,4 @@
-import { FileCheck2, FileInput, FileOutput, ListTree, User, Landmark } from "lucide-react";
+import { FileCheck2, FileInput, FileOutput, ListTree, User, Landmark, NotebookText } from "lucide-react";
 export const MENU_OPTIONS = [
   {
     name: "Transacciones",
@@ -40,4 +40,14 @@ export const MENU_OPTIONS = [
       },
     ],
   },
+  {
+    name: "Estados de Resultado",
+    routes: [
+      {
+        path: "/dashboard/results",
+        name: "Reportes",
+        icon: <NotebookText className="h-5 w-5"/>
+      }
+    ]
+  }
 ];
