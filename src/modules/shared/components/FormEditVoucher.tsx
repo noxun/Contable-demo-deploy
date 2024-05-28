@@ -139,7 +139,7 @@ export default function FormEditVoucher({
     voucherDate: z.string().optional(),
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
-    checkNum: z.string().min(1),
+    checkNum: z.string().optional(),
     canceledTo: z.string({
       required_error: "Fecha requerida.",
     }),
@@ -223,7 +223,7 @@ export default function FormEditVoucher({
                 <FormItem className="w-full">
                   <FormLabel>T/C</FormLabel>
                   <FormControl>
-                    <Input placeholder="" type="number" {...field}></Input>
+                    <Input placeholder="" {...field}></Input>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
