@@ -1,4 +1,15 @@
-import { FileCheck2, FileInput, FileOutput, ListTree, User, Landmark, NotebookText, Radical, FileText } from "lucide-react";
+import {
+  FileCheck2,
+  FileInput,
+  FileOutput,
+  ListTree,
+  User,
+  Landmark,
+  NotebookText,
+  Radical,
+  FileText,
+  Folder,
+} from "lucide-react";
 export const MENU_OPTIONS = [
   {
     name: "Transacciones",
@@ -18,16 +29,6 @@ export const MENU_OPTIONS = [
         name: "Diarios",
         icon: <FileCheck2 className="h-5 w-5" />,
       },
-      {
-        path: "/dashboard/users",
-        name: "Usuarios",
-        icon: <User className="h-5 w-5" />,
-      },
-      {
-        path: "/dashboard/banks",
-        name: "Bancos",
-        icon: <Landmark className="h-5 w-5" />,
-      },
     ],
   },
   {
@@ -38,6 +39,21 @@ export const MENU_OPTIONS = [
         name: "Cuentas",
         icon: <ListTree className="h-5 w-5" />,
       },
+      {
+        path: "/dashboard/folders",
+        name: "Carpetas",
+        icon: <Folder className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/banks",
+        name: "Bancos",
+        icon: <Landmark className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/users",
+        name: "Usuarios",
+        icon: <User className="h-5 w-5" />,
+      },
     ],
   },
   {
@@ -46,18 +62,18 @@ export const MENU_OPTIONS = [
       {
         path: "/dashboard/results",
         name: "Reportes",
-        icon: <NotebookText className="h-5 w-5"/>
+        icon: <NotebookText className="h-5 w-5" />,
       },
       {
         path: "/dashboard/accounting",
         name: "Contabilidad",
-        icon: <Radical className="h-5 w-5"/>
+        icon: <Radical className="h-5 w-5" />,
       },
       {
         path: "/dashboard/accountingPdf",
         name: "ContabilidadPDF",
-        icon: <FileText className="h-5 w-5"/>
-      }
-    ]
-  }
+        icon: <FileText className="h-5 w-5" />,
+      },
+    ],
+  },
 ];

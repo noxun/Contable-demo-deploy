@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Voucher, VoucherType, VoucherTypeRoute } from "../types/sharedTypes";
-import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,13 +20,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 import Link from "next/link";
 import VoucherDeleteButton from "./VoucherDeleteButton";
 import PdfVoucher from "./PdfVoucher";
 
-export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeRoute): ColumnDef<Voucher>[] {
+export function columns(
+  voucherType: VoucherType,
+  voucherTypeRoute: VoucherTypeRoute
+): ColumnDef<Voucher>[] {
   return [
     {
       accessorKey: "num",
@@ -52,7 +55,6 @@ export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeR
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-  
         const voucher = row.original;
         return (
           <AlertDialog>
@@ -66,12 +68,20 @@ export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeR
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
                 <DropdownMenuItem asChild>
-                  <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}>Editar</Link>
+                  <Link
+                    href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}
+                  >
+                    Editar
+                  </Link>
                 </DropdownMenuItem>
                 {/* seria interesante probar tambien con asChild */}
-                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                  }}
+                >
                   {/* <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/pdf`}>Reporte</Link> */}
-                  <PdfVoucher id={voucher.id!}/>
+                  <PdfVoucher id={voucher.id!} />
                 </DropdownMenuItem>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>
@@ -80,18 +90,26 @@ export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeR
                 </AlertDialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
-  
+
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
-                  income with id {voucher.id} and remove the data from our servers.
+                  income with id {voucher.id} and remove the data from our
+                  servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild><VoucherDeleteButton voucherType={voucherType} id={voucher!.id}>Eliminar</VoucherDeleteButton></AlertDialogAction>
+                <AlertDialogAction asChild>
+                  <VoucherDeleteButton
+                    voucherType={voucherType}
+                    id={voucher!.id}
+                  >
+                    Eliminar
+                  </VoucherDeleteButton>
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
