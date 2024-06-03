@@ -21,22 +21,21 @@ const options = [
   { value: "balanceGeneral", label: "Balance General" },
 ];
 
-export default function AccountingPage() {
+export default function AccountingExcelPage() {
   const [selectType, setSelectType] = useState<string>("");
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2024, 0, 20),
     to: addDays(new Date(2024, 0, 20), 20),
   })
-
   const [fileLink, setFileLink] = useState<string | null>(null);
-
-  console.log(date, selectType);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
     if (selectType && date?.from && date?.to) {
+      setIsLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5050/api/Report/Xlxs/${selectType}`, {
-          params: {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/${selectType}`, {
+          params: { 
             InitDate: format(date.from, "yyyy/MM/dd"),
             EndDate: format(date.to, "yyyy/MM/dd"),
             Level: 5,
@@ -49,21 +48,29 @@ export default function AccountingPage() {
         }
       } catch (error) {
         console.error("Error al generar el reporte", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   return (
-    <div>
-      <Select options={options} onChange={(value) => setSelectType(value!.value)}/>
-      <div className={cn("grid gap-2")}>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 bg-gray-100">
+      <div className="w-72">
+        <Select 
+          options={options} 
+          onChange={(value) => setSelectType(value!.value)}
+          styles={{ container: (provided) => ({ ...provided, width: '100%' }) }}
+        />
+      </div>
+      <div className="w-72">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               id="date"
               variant={"outline"}
               className={cn(
-                "w-[300px] justify-start text-left font-normal",
+                "w-full justify-start text-left font-normal",
                 !date && "text-muted-foreground"
               )}
             >
@@ -94,9 +101,17 @@ export default function AccountingPage() {
           </PopoverContent>
         </Popover>
       </div>
-      <Button onClick={handleClick}>Generar Reporte</Button>
+      <Button onClick={handleClick} disabled={isLoading}>
+        {isLoading ? 'Generando Reporte...' : 'Generar Reporte'}
+      </Button>
       {fileLink && (
-        <a href={fileLink} target="_blank" rel="noopener noreferrer" download>
+        <a
+          className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          href={fileLink} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          download
+        >
           Descargar Reporte
         </a>
       )}

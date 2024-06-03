@@ -21,31 +21,38 @@ export default function BalanceAmountsPage() {
     to: addDays(new Date(2024, 0, 20), 20),
   });
   const [fileLink, setFileLink] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
     if (date?.from && date?.to) {
+      setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:5050/api/Report/BalanceAmounts', {
-          params: {
-            InitDate: format(date.from, "yyyy/MM/dd"),
-            EndDate: format(date.to, "yyyy/MM/dd"),
-          },
-          responseType: 'text', // Asegura que axios maneje la respuesta como texto plano
-        });
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceAmounts`,
+          {
+            params: {
+              InitDate: format(date.from, "yyyy/MM/dd"),
+              EndDate: format(date.to, "yyyy/MM/dd"),
+            },
+            responseType: "text", // Asegura que axios maneje la respuesta como texto plano
+          }
+        );
 
         if (response.data) {
           setFileLink(response.data); // Almacenar directamente el texto plano como enlace
         }
       } catch (error) {
         console.error("Error al generar el reporte", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 bg-gray-100">
       <h1>Balance de Sumas y Saldos PDF</h1>
-      <div className={cn("grid gap-2")}>
+      <div className={cn("grid gap-2 w-72")}>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -83,9 +90,17 @@ export default function BalanceAmountsPage() {
           </PopoverContent>
         </Popover>
       </div>
-      <Button onClick={handleClick}>Generar Reporte PDF</Button>
+      <Button onClick={handleClick} disabled={isLoading}>
+      {isLoading ? 'Generando Reporte...' : 'Generar Reporte PDF'}
+      </Button>
       {fileLink && (
-        <a href={fileLink} target="_blank" rel="noopener noreferrer" download>
+        <a
+          className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          href={fileLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+        >
           Descargar Reporte PDF
         </a>
       )}
