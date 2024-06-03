@@ -19,11 +19,13 @@ type FormNewVoucherItemsProps = {
   voucherItems: VoucherItem[];
   setVoucherItems: Dispatch<SetStateAction<VoucherItem[]>>;
   accountData: Account[];
+  applyGlossToAll?: boolean;
 };
 export default function FormNewVoucherItems({
   accountData,
   voucherItems,
   setVoucherItems,
+  applyGlossToAll
 }: FormNewVoucherItemsProps) {
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
@@ -41,6 +43,13 @@ export default function FormNewVoucherItems({
         [name]: value,
       };
     }
+
+    if(applyGlossToAll && name === 'gloss'){
+      listVoucherItem = listVoucherItem.map((item,i)=> (
+        i === index ? {...item, [name]: value} : {...item, gloss: value}
+      ))
+    }
+
     setVoucherItems([...listVoucherItem]);
   }
 

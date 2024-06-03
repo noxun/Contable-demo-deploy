@@ -47,6 +47,7 @@ import FormNewVoucherItems from "./FormNewVoucherItems";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -60,6 +61,7 @@ export default function FormNewVoucher({
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
@@ -137,8 +139,16 @@ export default function FormNewVoucher({
     },
   });
 
+  function handleCheckboxChange() {
+    setApplyGlossToAll(!applyGlossToAll);
+    if (!applyGlossToAll) {
+      const gloss = voucherForm.getValues("gloss");
+      setVoucherItems((items) => items.map((item) => ({ ...item, gloss })));
+    }
+  }
+
   function onSubmit(values: Voucher) {
-    values["canceledTo"] = format(values.canceledTo, "yyyy/MM/dd");
+    values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
       debitBs: Number(item.debitBs),
@@ -170,7 +180,12 @@ export default function FormNewVoucher({
   const voucherFormSchema = z.object({
     id: z.number().optional(),
     num: z.number().optional(),
-    voucherDate: z.string().optional(),
+    voucherDate: z
+      .string({
+        required_error: "Fecha requerida.",
+      })
+      .or(z.date())
+      .optional(),
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
     checkNum: z.string().optional(),
@@ -178,7 +193,8 @@ export default function FormNewVoucher({
       .string({
         required_error: "Fecha requerida.",
       })
-      .or(z.date()),
+      .or(z.date())
+      .optional(),
     gloss: z.string(),
     bankId: z.coerce.string().min(1),
     items: z.array(voucherItemSchema).optional(),
@@ -198,14 +214,14 @@ export default function FormNewVoucher({
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
       return total + currentItem.debitBs;
-    },0)
-  
-    let assetTotal =  voucherItems.reduce((total, currentItem) => {
+    }, 0);
+
+    let assetTotal = voucherItems.reduce((total, currentItem) => {
       return total + currentItem.assetBs;
-    },0)
-  
-    console.log(debitTotal === assetTotal)
-    setButtonEnabled(debitTotal === assetTotal)
+    }, 0);
+
+    console.log(debitTotal === assetTotal);
+    setButtonEnabled(debitTotal === assetTotal);
   }, [voucherItems]);
 
   if (
@@ -214,7 +230,7 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined
   ) {
-    return <Spinner/>
+    return <Spinner />;
   }
 
   return (
@@ -224,7 +240,7 @@ export default function FormNewVoucher({
           <div className="flex gap-2 mb-2">
             <FormField
               control={voucherForm.control}
-              name="canceledTo"
+              name="voucherDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2">
                   <FormLabel>Fecha</FormLabel>
@@ -356,13 +372,27 @@ export default function FormNewVoucher({
               </FormItem>
             )}
           />
+          <div className="flex items-center mb-2">
+            <label className="flex items-center">
+              <Checkbox
+                checked={applyGlossToAll}
+                onCheckedChange={handleCheckboxChange}
+                className="mr-2"
+              />
+              Aplicar glosa a todos los ítems
+            </label>
+          </div>
           <br />
           <FormNewVoucherItems
             accountData={accountsQuery.data.data}
             voucherItems={voucherItems}
             setVoucherItems={setVoucherItems}
+            applyGlossToAll={applyGlossToAll}
           />
-          <Button type="submit" disabled={!buttonEnabled}>
+          <Button
+            type="submit"
+            disabled={!buttonEnabled || newVoucherMutation.isPending}
+          >
             <span className="mr-2">Guardar Registro</span>
             <Save size={20} />
           </Button>
