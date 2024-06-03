@@ -117,7 +117,7 @@ export default function FormEditVoucher({
   function onSubmit(values: Voucher) {
     values["type"] = parseInt(type);
     values["id"] = voucher!.id; // no sera undefined te lo juro ts :sadface:
-    values["canceledTo"] = format(values.canceledTo, "yyyy-MM-dd");
+    values["voucherDate"] = format(values.voucherDate, "yyyy-MM-dd");
     console.log(values);
     editVoucherMutation.mutate(values);
   }
@@ -142,7 +142,7 @@ export default function FormEditVoucher({
     checkNum: z.string().optional(),
     canceledTo: z.string({
       required_error: "Fecha requerida.",
-    }),
+    }).optional(),
     gloss: z.string(),
     bankId: z.coerce.string().min(1),
     items: z.array(voucherItemSchema).optional(),
@@ -151,7 +151,7 @@ export default function FormEditVoucher({
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
-      canceledTo: format(voucher.canceledTo, 'MM/dd/yyyy'),
+      voucherDate: format(voucher.voucherDate, 'MM/dd/yyyy'),
       exchangeRate: voucher.exchangeRate,
       coin: voucher.coin,
       checkNum: voucher.checkNum,
@@ -176,7 +176,7 @@ export default function FormEditVoucher({
           <div className="flex gap-2 mb-2">
             <FormField
               control={voucherForm.control}
-              name="canceledTo"
+              name="voucherDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2">
                   <FormLabel>Fecha</FormLabel>
