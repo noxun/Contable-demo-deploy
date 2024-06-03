@@ -24,6 +24,7 @@ import {
 
 import Link from "next/link";
 import VoucherDeleteButton from "./VoucherDeleteButton";
+import PdfVoucher from "./PdfVoucher";
 
 export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeRoute): ColumnDef<Voucher>[] {
   return [
@@ -67,8 +68,10 @@ export function columns(voucherType: VoucherType, voucherTypeRoute: VoucherTypeR
                 <DropdownMenuItem asChild>
                   <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}>Editar</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/pdf`}>Reporte</Link>
+                {/* seria interesante probar tambien con asChild */}
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                  {/* <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/pdf`}>Reporte</Link> */}
+                  <PdfVoucher id={voucher.id!}/>
                 </DropdownMenuItem>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>
