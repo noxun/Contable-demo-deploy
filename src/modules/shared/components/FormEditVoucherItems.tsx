@@ -216,6 +216,9 @@ export default function FormEditVoucherItems({
     //setIncomeItems((previousItems) => [...previousItems, values]);
   }
 
+
+  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -333,8 +336,8 @@ export default function FormEditVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="">
-                <Select
+              <TableCell>
+                <Select 
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(

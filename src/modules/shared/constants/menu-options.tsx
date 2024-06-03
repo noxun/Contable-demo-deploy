@@ -64,16 +64,6 @@ export const MENU_OPTIONS = [
         name: "Reportes",
         icon: <NotebookText className="h-5 w-5" />,
       },
-      {
-        path: "/dashboard/accounting",
-        name: "Contabilidad",
-        icon: <Radical className="h-5 w-5" />,
-      },
-      {
-        path: "/dashboard/accountingPdf",
-        name: "ContabilidadPDF",
-        icon: <FileText className="h-5 w-5" />,
-      },
     ],
   },
 ];
