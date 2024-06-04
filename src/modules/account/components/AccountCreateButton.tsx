@@ -58,7 +58,10 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
       );
       return response.data;
     },
-    onError: (error) => {toast.error(error.message)},
+    onError: (error) => {
+      console.log(error)
+      toast.error(error.message)
+    },
     onSuccess: () => {
       setOpen(false);
       toast.success("Account created succesfully");
