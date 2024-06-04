@@ -25,14 +25,14 @@ export default function FormNewVoucherItems({
   accountData,
   voucherItems,
   setVoucherItems,
-  applyGlossToAll
+  applyGlossToAll,
 }: FormNewVoucherItemsProps) {
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
 
     let listVoucherItem = voucherItems;
-    
-    if (name === 'debitBs' || name === 'assetBs') {
+
+    if (name === "debitBs" || name === "assetBs") {
       listVoucherItem[index] = {
         ...listVoucherItem[index],
         [name]: parseFloat(value) || 0,
@@ -44,16 +44,19 @@ export default function FormNewVoucherItems({
       };
     }
 
-    if(applyGlossToAll && name === 'gloss'){
-      listVoucherItem = listVoucherItem.map((item,i)=> (
-        i === index ? {...item, [name]: value} : {...item, gloss: value}
-      ))
+    if (applyGlossToAll && name === "gloss") {
+      listVoucherItem = listVoucherItem.map((item, i) =>
+        i === index ? { ...item, [name]: value } : { ...item, gloss: value }
+      );
     }
 
     setVoucherItems([...listVoucherItem]);
   }
 
-  function onSelectChange(option: SingleValue<{ value: string; label: string }> | null, index: number) {
+  function onSelectChange(
+    option: SingleValue<{ value: string; label: string }> | null,
+    index: number
+  ) {
     let listVoucherItem = [...voucherItems];
     listVoucherItem[index] = {
       ...listVoucherItem[index],
@@ -115,15 +118,22 @@ export default function FormNewVoucherItems({
                 <Select
                   menuPosition="absolute"
                   styles={{
-                    menuList: base => ({
+                    menuList: (base) => ({
                       ...base,
-                      minHeight: "100px" // your desired height
-                  })
+                      minHeight: "100px", // your desired height
+                    }),
                   }}
                   isSearchable={true}
                   options={accountOptions}
-                  value={accountOptions.find(option => option.value === item.accountId)}
-                  onChange={(option) => onSelectChange(option as SingleValue<{ value: string; label: string }>, index)}
+                  value={accountOptions.find(
+                    (option) => option.value === item.accountId
+                  )}
+                  onChange={(option) =>
+                    onSelectChange(
+                      option as SingleValue<{ value: string; label: string }>,
+                      index
+                    )
+                  }
                 />
               </TableCell>
               <TableCell>

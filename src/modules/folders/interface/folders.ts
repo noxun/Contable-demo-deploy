@@ -11,3 +11,15 @@ export interface IResponseFolder {
   mercaderia: string;
   tipo: string;
 }
+export interface IResponseConceptFolder {
+  id: number;
+  acronym: string;
+  description: string;
+  typeOfExpense: string;
+  typeOfTax: string;
+  order: number;
+  accountId: number;
+  carpeta: string;
+  debitBs: number;
+  amount?: number;
+}

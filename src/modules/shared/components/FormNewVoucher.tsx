@@ -148,7 +148,7 @@ export default function FormNewVoucher({
   }
 
   function onSubmit(values: Voucher) {
-    values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
+    // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
       debitBs: Number(item.debitBs),

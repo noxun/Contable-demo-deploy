@@ -173,7 +173,7 @@ export default function FormEditVoucherItems({
     resolver: zodResolver(addVoucherItemSchema),
     defaultValues: {
       voucherId: voucherId,
-      accountId: '',
+      accountId: "",
     },
   });
 
@@ -216,9 +216,6 @@ export default function FormEditVoucherItems({
     //setIncomeItems((previousItems) => [...previousItems, values]);
   }
 
-
-  
-
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -254,17 +251,18 @@ export default function FormEditVoucherItems({
                             isSearchable={true}
                             options={accountOptions}
                             value={accountOptions.find(
-                              (option) => option.value === field.value?.toString()
+                              (option) =>
+                                option.value === field.value?.toString()
                             )}
                             onChange={(selectedOption) =>
-                              field.onChange(selectedOption?.value || '')
+                              field.onChange(selectedOption?.value || "")
                             }
                           />
                         </FormControl>
                         <FormDescription>
                           El nombre de la cuenta
                         </FormDescription>
-                        <FormMessage/>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -277,9 +275,7 @@ export default function FormEditVoucherItems({
                         <FormControl>
                           <Input placeholder="debe" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          El debe en Bolivianos
-                        </FormDescription>
+                        <FormDescription>El debe en Bolivianos</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -309,9 +305,7 @@ export default function FormEditVoucherItems({
                         <FormControl>
                           <Input placeholder="glosa" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          La glosa del voucher
-                        </FormDescription>
+                        <FormDescription>La glosa del voucher</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -337,7 +331,7 @@ export default function FormEditVoucherItems({
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
               <TableCell>
-                <Select 
+                <Select
                   menuPosition="absolute"
                   isSearchable={true}
                   options={accountOptions}
@@ -347,7 +341,7 @@ export default function FormEditVoucherItems({
                   onChange={(selectedOption) => {
                     const updatedItem = {
                       ...item,
-                      accountId: parseInt(selectedOption?.value || '0')
+                      accountId: parseInt(selectedOption?.value || "0"),
                     };
                     const updatedItems = [...voucherItems];
                     updatedItems[index] = updatedItem;

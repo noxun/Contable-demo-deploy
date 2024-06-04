@@ -2,7 +2,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { IResponseFolder } from "./interface/folders";
+import { IResponseFolder } from "../interface/folders";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -46,13 +46,13 @@ export const ListFolders = () => {
         enableHiding: false,
         cell: ({ row }) => {
           const procedure = row.original;
-          console.log(procedure);
           return (
             <div className="">
-              <Link href={`/folders/${procedure.id}/register-payment`}>
+              <Link
+                href={`/dashboard/folders/${procedure.numRef}/register-payment`}
+              >
                 <Button>
-                  Registar pagos{" "}
-                  <SquareArrowOutUpRight className="ml-2" size={15} />
+                  Ver pagos <SquareArrowOutUpRight className="ml-2" size={15} />
                 </Button>
               </Link>
             </div>

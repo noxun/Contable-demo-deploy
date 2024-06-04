@@ -12,11 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { createTw } from "react-pdf-tailwind";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 const tw = createTw({
@@ -62,16 +58,14 @@ export default function PdfVoucher({ id }: { id: number }) {
 
   const { items } = getSingleIncomeQuery.data;
 
-  const totalDebitBs = items.reduce((sum, item) => sum + item.debitBs, 0);
-  const totalDebitSus = items.reduce((sum, item) => sum + item.debitSus, 0);
-  const totalAssetBs = items.reduce((sum, item) => sum + item.assetBs, 0);
-  const totalAssetSus = items.reduce((sum, item) => sum + item.assetSus, 0);
+  const totalDebitBs = items?.reduce((sum, item) => sum + item.debitBs, 0);
+  const totalDebitSus = items?.reduce((sum, item) => sum + item.debitSus, 0);
+  const totalAssetBs = items?.reduce((sum, item) => sum + item.assetBs, 0);
+  const totalAssetSus = items?.reduce((sum, item) => sum + item.assetSus, 0);
 
   return (
     <Dialog>
-      <DialogTrigger>
-        Ver Reporte
-      </DialogTrigger>
+      <DialogTrigger>Ver Reporte</DialogTrigger>
       <DialogContent className="sm:max-w-[600px] h-[500px] w-full flex items-center justify-center">
         <PDFViewer showToolbar={true} className="h-full w-full">
           <Document>
@@ -162,7 +156,7 @@ export default function PdfVoucher({ id }: { id: number }) {
                       </Text>
                     </View>
                     <View style={tw("flex flex-col flex-1")}>
-                      {items.map((item) => (
+                      {items?.map((item) => (
                         <View
                           key={item.id}
                           style={tw("flex flex-row  border-gray-500")}
@@ -247,14 +241,14 @@ export default function PdfVoucher({ id }: { id: number }) {
                           "w-2/12 p-2 border-r border-gray-500 text-center"
                         )}
                       >
-                        {totalDebitSus.toFixed(2)}
+                        {totalDebitSus?.toFixed(2)}
                       </Text>
                       <Text
                         style={tw(
                           "w-2/12 p-2 border-r border-gray-500 text-center"
                         )}
                       >
-                        {totalAssetSus.toFixed(2)}
+                        {totalAssetSus?.toFixed(2)}
                       </Text>
                       <Text style={tw("w-2/12 p-2")}></Text>
                     </View>
