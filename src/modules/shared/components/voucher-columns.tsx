@@ -93,15 +93,14 @@ export function columns(
 
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>Esta absolutamente seguro?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  income with id {voucher.id} and remove the data from our
-                  servers.
+                  Esta accion no puede revertirse. Esto borrara permanentemente
+                  el voucher con id: {voucher.id}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction asChild>
                   <VoucherDeleteButton
                     voucherType={voucherType}

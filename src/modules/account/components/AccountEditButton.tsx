@@ -85,9 +85,9 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit Account</DialogTitle>
+          <DialogTitle>Editar Cuenta</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Haz cambios a la cuenta aqui. Dale click a guardar cuando estes listo.
           </DialogDescription>
         </DialogHeader>
         {/* Aqui vendria el componente form */}

@@ -278,7 +278,7 @@ export default function FormEditVoucherItems({
                           <Input placeholder="debe" {...field} />
                         </FormControl>
                         <FormDescription>
-                          This is your public display name.
+                          El debe en Bolivianos
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -291,10 +291,10 @@ export default function FormEditVoucherItems({
                       <FormItem>
                         <FormLabel>Haber Bs:</FormLabel>
                         <FormControl>
-                          <Input placeholder="shadcn" {...field} />
+                          <Input placeholder="haber" {...field} />
                         </FormControl>
                         <FormDescription>
-                          This is your public display name.
+                          El haber en bolivianos
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -307,10 +307,10 @@ export default function FormEditVoucherItems({
                       <FormItem>
                         <FormLabel>Glosa</FormLabel>
                         <FormControl>
-                          <Input placeholder="shadcn" {...field} />
+                          <Input placeholder="glosa" {...field} />
                         </FormControl>
                         <FormDescription>
-                          This is your public display name.
+                          La glosa del voucher
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -338,6 +338,7 @@ export default function FormEditVoucherItems({
             <TableRow key={index}>
               <TableCell>
                 <Select 
+                  menuPosition="absolute"
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(

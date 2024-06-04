@@ -111,8 +111,15 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="">
+              <TableCell className="h-fit">
                 <Select
+                  menuPosition="absolute"
+                  styles={{
+                    menuList: base => ({
+                      ...base,
+                      minHeight: "100px" // your desired height
+                  })
+                  }}
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(option => option.value === item.accountId)}

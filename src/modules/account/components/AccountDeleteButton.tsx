@@ -68,7 +68,7 @@ export default function AccountDeleteButton({
               deleteAccountMutation.mutate(accountId);
             }}
           >
-            Continue
+            Continuar
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

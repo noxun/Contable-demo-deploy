@@ -69,9 +69,8 @@ export default function ChildAccounts({ accounts }: ChildAccountsProps) {
                 <DropdownMenuItem asChild>
                   <AccountDeleteButton
                     accountId={account.id}
-                    message="This action cannot be undone. This will
-                              permanently delete the account and remove the
-                              data from our servers."
+                    message="Esta accion no puede revertirse. Esto borrara
+                    permanentemente la cuenta"
                   >
                     Borrar Registro
                   </AccountDeleteButton>
