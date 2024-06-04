@@ -57,11 +57,26 @@ export const MENU_OPTIONS = [
     ],
   },
   {
-    name: "Estados de Resultado",
+    name: "Reportes",
     routes: [
       {
-        path: "/dashboard/results",
-        name: "Reportes",
+        path: "/dashboard/results/balance-amounts",
+        name: "Balance de Sumas",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/results/balance-general",
+        name: "Balance General",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/results/statement-income",
+        name: "Estado de Resultados",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/results/bigger-book",
+        name: "Libro Mayor",
         icon: <NotebookText className="h-5 w-5" />,
       },
     ],

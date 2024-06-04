@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import React, { Fragment } from "react";
-import { LogOut, User } from "lucide-react";
+import React, { Fragment, useEffect, useState } from "react";
+import { LogOut, User, ChevronDown, ChevronRight } from "lucide-react";
 import { MENU_OPTIONS } from "../constants/menu-options";
 import { usePathname, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -11,8 +11,17 @@ export const SideMenu = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userName = user.name;
+  const [userName, setUserName] = useState(null);
+  const [openSubMenu, setOpenSubMenu] = useState(null);
+
+  useEffect(() => {
+    let user = JSON.parse(localStorage.getItem("user") || "{}");
+    setUserName(user.name ?? "");
+  }, []);
+
+  const toggleSubMenu = (index) => {
+    setOpenSubMenu(openSubMenu === index ? null : index);
+  };
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -25,23 +34,36 @@ export const SideMenu = () => {
       <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
         {MENU_OPTIONS.map((option, index) => (
           <Fragment key={index}>
-            {option.routes.map((route) => (
-              <Link
-                key={route.path}
-                href={route.path}
-                className={`flex items-center gap-3 rounded-lg ${
-                  pathname === route.path
-                    ? "bg-muted px-3 py-2 text-primary"
-                    : "px-3 py-2 text-muted-foreground"
-                } transition-all hover:text-primary`}
-              >
-                {route.icon}
-                {route.name}
-              </Link>
-            ))}
-            {index < MENU_OPTIONS.length - 1 ? (
-              <Separator className="my-2" />
-            ) : null}
+            <div
+              className="flex items-center justify-between cursor-pointer px-3 py-2"
+              onClick={() => toggleSubMenu(index)}
+            >
+              <span>{option.name}</span>
+              {openSubMenu === index ? (
+                <ChevronDown className="h-5 w-5" />
+              ) : (
+                <ChevronRight className="h-5 w-5" />
+              )}
+            </div>
+            {openSubMenu === index && (
+              <div className="pl-4">
+                {option.routes.map((route) => (
+                  <Link
+                    key={route.path}
+                    href={route.path}
+                    className={`flex items-center gap-3 rounded-lg ${
+                      pathname === route.path
+                        ? "bg-muted px-3 py-2 text-primary"
+                        : "px-3 py-2 text-muted-foreground"
+                    } transition-all hover:text-primary`}
+                  >
+                    {route.icon}
+                    {route.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+            {index < MENU_OPTIONS.length - 1 && <Separator className="my-2" />}
           </Fragment>
         ))}
       </nav>
@@ -52,14 +74,6 @@ export const SideMenu = () => {
           <span className="mr-2">Cerrar Sesión</span>
           <LogOut size={18} />
         </Button>
-
-        {/* <button
-          onClick={toUsers}
-          className="mt-2 text-large text-primary-500 hover:underline"
-        >
-          Usuarios
-        </button> */}
-        
       </div>
     </div>
   );
