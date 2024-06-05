@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ReactQueryClientProvider } from "./react-query-client-provider";
 
 interface Props {
   children: React.ReactNode;
@@ -10,19 +11,21 @@ interface Props {
 
 export default function RootLayout({ children }: Props) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className="">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>{children}</Providers>
-          <Toaster/>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ReactQueryClientProvider>
+      <html lang="es" suppressHydrationWarning>
+        <body className="">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Providers>{children}</Providers>
+            <Toaster />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }
 
