@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import VoucherDeleteButton from "./VoucherDeleteButton";
 import PdfVoucher from "./PdfVoucher";
+import { format } from "date-fns";
 
 export function columns(
   voucherType: VoucherType,
@@ -36,8 +37,11 @@ export function columns(
       header: "Nro",
     },
     {
-      accessorKey: "canceledTo",
+      accessorKey: "voucherDate",
       header: "Fecha",
+      cell: ({row}) => {
+        return format(row.getValue("voucherDate"), "yyyy-MM-dd");
+      }
     },
     {
       accessorKey: "bankId",
@@ -81,7 +85,7 @@ export function columns(
                   }}
                 >
                   {/* <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/pdf`}>Reporte</Link> */}
-                  <PdfVoucher id={voucher.id!} />
+                  <PdfVoucher id={voucher.id!} type={voucherType}/>
                 </DropdownMenuItem>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>
@@ -104,7 +108,7 @@ export function columns(
                 <AlertDialogAction asChild>
                   <VoucherDeleteButton
                     voucherType={voucherType}
-                    id={voucher!.id}
+                    id={voucher!.id!}
                   >
                     Eliminar
                   </VoucherDeleteButton>
