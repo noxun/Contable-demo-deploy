@@ -7,6 +7,7 @@ import { IUserResponse } from "../interface/users";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
+import useToken from "@/modules/shared/hooks/useToken";
 
 interface FormValues {
   name: string;
@@ -25,7 +26,7 @@ interface EditUserProps {
 }
 
 const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
-  const token = localStorage.getItem("token");
+  const {token} = useToken();
   const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       name: user.name,

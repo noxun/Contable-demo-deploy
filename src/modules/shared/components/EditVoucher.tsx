@@ -1,9 +1,9 @@
 "use client"
-import { token } from "@/modules/shared/constants/token"
 import { useQuery } from "@tanstack/react-query";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import axios from "axios";
 import FormEditVoucher from "./FormEditVoucher";
+import useToken from "../hooks/useToken";
 
 
 type EditVoucherProps = {
@@ -12,9 +12,12 @@ type EditVoucherProps = {
 }
 
 export default function EditVoucher({id,type}: EditVoucherProps) {
+
+  const {token} = useToken();
+
   const editVoucherQuery = useQuery({
     queryKey: ["Vouchers", id, type],
-    queryFn: async function (): Promise<{ data: Voucher }> {
+    queryFn: async function (): Promise<Voucher> {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher?id=${id}&type=${type}`,
         {
@@ -35,7 +38,7 @@ export default function EditVoucher({id,type}: EditVoucherProps) {
 
   return (
     <div>
-      <FormEditVoucher type={type} voucher={editVoucherQuery!.data}/>
+      <FormEditVoucher type={type} voucher={editVoucherQuery!.data!}/>
     </div>
   )
 }

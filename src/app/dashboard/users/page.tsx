@@ -22,13 +22,14 @@ import { TableUser} from "@/modules/users/components/TableUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IIncomeResponse } from "@/modules/income/interface/income";
 import { IUserResponse } from "@/modules/users/interface/users";
+import useToken from "@/modules/shared/hooks/useToken";
 
 
 
 function Users() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const token = localStorage.getItem("token");
+  const {token} = useToken();
   const { data, isLoading, error } = useQuery({
     queryKey: ["User"],
     queryFn: async (): Promise<{ data: IUserResponse[] }> =>
