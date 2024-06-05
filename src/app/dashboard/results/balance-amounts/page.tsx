@@ -127,7 +127,7 @@ export default function BalanceAmountsPage() {
             variant="outline"
             size="icon"
             disabled={!excelLink}
-            onClick={() => window.open(excelLink, "_self")}
+            onClick={() => window.open(excelLink ?? "", "_self")}
           >
             <Sheet className="h-4 w-4" />
           </Button>
@@ -135,7 +135,7 @@ export default function BalanceAmountsPage() {
             variant="outline"
             size="icon"
             disabled={!pdfLink}
-            onClick={() => window.open(pdfLink, "_blank")}
+            onClick={() => window.open(pdfLink ?? "", "_blank")}
           >
             <FileText className="h-4 w-4" />
           </Button>
