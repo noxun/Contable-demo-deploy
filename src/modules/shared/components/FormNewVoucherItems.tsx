@@ -116,11 +116,16 @@ export default function FormNewVoucherItems({
             <TableRow key={index}>
               <TableCell className="h-fit">
                 <Select
+                  maxMenuHeight={200}
+                  className="my-react-select-container"
+                  classNamePrefix="my-react-select"
                   menuPosition="absolute"
+                  menuPlacement="top"
                   styles={{
                     menuList: (base) => ({
                       ...base,
-                      minHeight: "100px", // your desired height
+                      height: 50,
+                      minHeight: 50, // your desired height
                     }),
                   }}
                   isSearchable={true}

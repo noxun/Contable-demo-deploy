@@ -1,11 +1,11 @@
 "use client";
 import { PropsWithChildren } from "react";
-import { token } from "../constants/token";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { VoucherType } from "../types/sharedTypes";
+import useToken from "../hooks/useToken";
 
 type VoucherDeleteButtonProps = {
   id: number;
@@ -17,6 +17,7 @@ export default function VoucherDeleteButton({
   id,
   voucherType,
 }: VoucherDeleteButtonProps) {
+  const {token} = useToken();
   const queryClient = useQueryClient();
   const voucherDeleteMutation = useMutation({
     mutationFn: async ({ id, type }: { id: number; type: VoucherType }) => {

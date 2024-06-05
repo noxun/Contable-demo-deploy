@@ -22,13 +22,14 @@ import { TableBank } from "@/modules/banks/components/TableBank";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import { IIncomeResponse } from "@/modules/income/interface/income";
 import { IBank } from "@/modules/banks/interface/banks";
+import useToken from "@/modules/shared/hooks/useToken";
 
 
 
 function Users() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const token = localStorage.getItem("token");
+  const {token} = useToken();
   const { data, isLoading, error } = useQuery({
     queryKey: ["Bank"],
     queryFn: async (): Promise<{ data: IBank[] }> =>

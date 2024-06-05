@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Voucher, VoucherType, VoucherTypeRoute } from "../types/sharedTypes";
 import axios from "axios";
-import { token } from "../constants/token";
 import VoucherTable from "./VoucherTable";
+import useToken from "../hooks/useToken";
 
 type ListVouchersProps = {
   voucherType: VoucherType;
@@ -15,6 +15,9 @@ export default function ListVouchers({
   voucherType,
   voucherTypeRoute,
 }: ListVouchersProps) {
+
+  const {token} = useToken();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["Vouchers", voucherType],
     queryFn: async (): Promise<{ data: Voucher[] }> =>

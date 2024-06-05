@@ -1,18 +1,14 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+"use client"
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
 import { Account } from "../types/account";
-import AccountDeleteButton from "./AccountDeleteButton";
-import AccountCreateButton from "./AccountCreateButton";
 import ChildAccounts from "./ChildAccounts";
+import useToken from "@/modules/shared/hooks/useToken";
 
 function AccountAccordion() {
   
-  const token = localStorage.getItem("token");
-  // console.log(token)
-
+  const {token} = useToken()
   const accountsQuery = useQuery({
     queryKey: ["accountsAll"],
     queryFn: async (): Promise<{ data: Account[] }> =>

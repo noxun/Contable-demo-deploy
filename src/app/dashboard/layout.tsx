@@ -6,7 +6,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideMenuMobile from "@/modules/shared/components/SideMenuMobile";
 import { Archive, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +19,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             </Link>
             <ModeToggle />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             <SideMenu />
           </div>
         </div>

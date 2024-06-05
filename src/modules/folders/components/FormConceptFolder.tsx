@@ -42,7 +42,6 @@ import {
 } from "@tanstack/react-query";
 import { IBank } from "@/modules/banks/interface/banks";
 import axios from "axios";
-import { token } from "@/modules/shared/constants/token";
 import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -52,6 +51,7 @@ import {
 } from "@/modules/shared/types/sharedTypes";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import useToken from "@/modules/shared/hooks/useToken";
 
 interface Props {
   data: IResponseConceptFolder[];
@@ -60,6 +60,7 @@ interface Props {
 export const FormConceptFolder = (props: Props) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const {token} = useToken();
   const { data, numRef } = props;
   const [concepts, setConcepts] = useState(
     data.map((item) => ({ ...item, amount: 0 }))
@@ -281,7 +282,7 @@ export const FormConceptFolder = (props: Props) => {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={new Date(field.value!)}
                         onSelect={field.onChange}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")

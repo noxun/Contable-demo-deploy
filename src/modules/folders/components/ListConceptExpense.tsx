@@ -2,14 +2,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { IResponseConceptFolder, IResponseFolder } from "../interface/folders";
 import axios from "axios";
-import { token } from "@/modules/shared/constants/token";
 import { FormConceptFolder } from "./FormConceptFolder";
+import useToken from "@/modules/shared/hooks/useToken";
 
 interface Props {
   numRef: string;
   close?: boolean;
 }
 export const ListConceptExpense = ({ numRef, close = false }: Props) => {
+  const { token } = useToken();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["ConceptExpense", numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>

@@ -19,6 +19,7 @@ import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
+import useToken from "@/modules/shared/hooks/useToken";
 
 interface registerFormInputs {
   descripcion: string;
@@ -33,14 +34,12 @@ function RegisterBank() {
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const token = localStorage.getItem("token");
+  const {token} = useToken();
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const registerBankSchema = z.object({
-    descripcion: z.string().min(4, {
-        message: "Debe tener mínimo 4 caracteres",
-      }),
+    descripcion: z.string().optional(),
     name: z.string().min(4, {
         message: "Debe tener mínimo 4 caracteres",
       }),
