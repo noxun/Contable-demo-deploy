@@ -34,7 +34,7 @@ function RegisterBank() {
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
   const queryClient = useQueryClient();
   const router = useRouter();
 

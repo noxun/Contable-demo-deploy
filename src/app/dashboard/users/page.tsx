@@ -29,8 +29,8 @@ import useToken from "@/modules/shared/hooks/useToken";
 function Users() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token} = useToken();
-  const { data, isLoading, error } = useQuery({
+  const {token, isTokenReady} = useToken();
+  const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["User"],
     queryFn: async (): Promise<{ data: IUserResponse[] }> =>
       await axios.get(
@@ -42,12 +42,13 @@ function Users() {
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
 
   });
 
 
-  if (isLoading) return "Loading...";
+  if (isLoading || isPending) return "Loading...";
 
 
   return (

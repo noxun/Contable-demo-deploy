@@ -16,9 +16,9 @@ export default function ListVouchers({
   voucherTypeRoute,
 }: ListVouchersProps) {
 
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["Vouchers", voucherType],
     queryFn: async (): Promise<{ data: Voucher[] }> =>
       await axios.get(
@@ -30,10 +30,11 @@ export default function ListVouchers({
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 30 * 10,
   });
 
-  if (isLoading) return "Loading...";
+  if (isLoading || isPending) return "Loading...";
 
   if (error) return "An error has occurred: " + error.message;
   return (

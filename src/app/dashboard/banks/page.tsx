@@ -29,8 +29,8 @@ import useToken from "@/modules/shared/hooks/useToken";
 function Users() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token} = useToken();
-  const { data, isLoading, error } = useQuery({
+  const {token, isTokenReady} = useToken();
+  const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["Bank"],
     queryFn: async (): Promise<{ data: IBank[] }> =>
       await axios.get(
@@ -43,13 +43,13 @@ function Users() {
         }
       ),
       
-      
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
 
   });
 
 
-  if (isLoading) return "Loading...";
+  if (isLoading || isPending) return "Loading...";
 
   console.log("ESDATA,",data);
   return (
@@ -63,7 +63,7 @@ function Users() {
             <Button>Nuevo Banco</Button>
           </Link>
         </div>
-        <TableBank data={data?.data!}/>
+        <TableBank data={data?.data! ?? []}/>
       </section>
       </div>
     

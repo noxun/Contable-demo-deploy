@@ -55,7 +55,7 @@ export default function FormEditVoucher({
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
   );
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
 
   console.log(voucher)
 
@@ -68,6 +68,7 @@ export default function FormEditVoucher({
           Authorization: `Bearer ${token}`,
         },
       }),
+    enabled: isTokenReady,
     staleTime: 1000 * 30 * 10,
   });
 
@@ -83,6 +84,7 @@ export default function FormEditVoucher({
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 30 * 10,
   });
 

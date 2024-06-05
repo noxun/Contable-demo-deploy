@@ -10,9 +10,9 @@ interface Props {
   close?: boolean;
 }
 export const ListConceptExpense = ({ numRef, close = false }: Props) => {
-  const { token } = useToken();
+  const {token, isTokenReady} = useToken();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["ConceptExpense", numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>
       await axios.get(
@@ -24,6 +24,7 @@ export const ListConceptExpense = ({ numRef, close = false }: Props) => {
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 30 * 10,
   });
 
@@ -41,7 +42,7 @@ export const ListConceptExpense = ({ numRef, close = false }: Props) => {
     staleTime: 1000 * 30 * 10,
   });
 
-  if (isLoading || isLoadingFolder) return "Loading...";
+  if (isLoading || isLoadingFolder || isPending) return "Loading...";
   if (error) return "An error has occurred: " + error.message;
   if (errorFolder) return "An error has occurred: " + errorFolder.message;
 

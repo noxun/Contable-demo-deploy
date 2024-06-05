@@ -13,7 +13,7 @@ type EditVoucherProps = {
 
 export default function EditVoucher({id,type}: EditVoucherProps) {
 
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
 
   const editVoucherQuery = useQuery({
     queryKey: ["Vouchers", id, type],
@@ -29,12 +29,13 @@ export default function EditVoucher({id,type}: EditVoucherProps) {
       );
       return response.data;
     },
+    enabled: isTokenReady,
     staleTime: 1000*30*10,
   })
 
   console.log(editVoucherQuery.data);
 
-  if(editVoucherQuery.isLoading) return <div>Loading..</div>
+  if(editVoucherQuery.isLoading || editVoucherQuery.isPending) return <div>Loading..</div>
 
   return (
     <div>

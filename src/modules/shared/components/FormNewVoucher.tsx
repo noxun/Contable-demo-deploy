@@ -60,7 +60,7 @@ export default function FormNewVoucher({
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -85,6 +85,7 @@ export default function FormNewVoucher({
           Authorization: `Bearer ${token}`,
         },
       }),
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -100,6 +101,7 @@ export default function FormNewVoucher({
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -227,7 +229,9 @@ export default function FormNewVoucher({
 
   if (
     banksQuery.isLoading ||
+    banksQuery.isPending ||
     banksQuery.data === undefined ||
+    accountsQuery.isPending ||
     accountsQuery.isLoading ||
     accountsQuery.data === undefined
   ) {

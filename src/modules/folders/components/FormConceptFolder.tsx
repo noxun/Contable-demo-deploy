@@ -60,7 +60,7 @@ interface Props {
 export const FormConceptFolder = (props: Props) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token} = useToken();
+  const {token, isTokenReady} = useToken();
   const { data, numRef } = props;
   const [concepts, setConcepts] = useState(
     data.map((item) => ({ ...item, amount: 0 }))
@@ -75,6 +75,7 @@ export const FormConceptFolder = (props: Props) => {
           Authorization: `Bearer ${token}`,
         },
       }),
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
   });
 

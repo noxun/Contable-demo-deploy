@@ -8,7 +8,7 @@ import useToken from "@/modules/shared/hooks/useToken";
 
 function AccountAccordion() {
   
-  const {token} = useToken()
+  const {token, isTokenReady} = useToken()
   const accountsQuery = useQuery({
     queryKey: ["accountsAll"],
     queryFn: async (): Promise<{ data: Account[] }> =>
@@ -21,10 +21,11 @@ function AccountAccordion() {
           },
         }
       ),
+    enabled: isTokenReady,
     staleTime: 1000 * 60 * 10, //volver a hacer fetch luego de 10 min
   });
 
-  if (accountsQuery.isLoading) {
+  if (accountsQuery.isLoading || accountsQuery.isPending) {
     return (
       <div className="flex items-center space-x-4">
         <Skeleton className="h-12 w-12 rounded-full" />

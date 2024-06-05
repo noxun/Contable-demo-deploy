@@ -17,7 +17,7 @@ interface Props {
   params: { numRef: string };
 }
 export default function FolderPage({ params }: Props) {
-  const { token } = useToken();
+  const { token, isTokenReady } = useToken();
   const { data, isLoading, error } = useQuery({
     queryKey: ["ConceptExpense", params.numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>
@@ -31,6 +31,7 @@ export default function FolderPage({ params }: Props) {
         }
       ),
     staleTime: 1000 * 30 * 10,
+    enabled: isTokenReady,
   });
 
   const {
@@ -45,6 +46,7 @@ export default function FolderPage({ params }: Props) {
         { headers: { "Content-Type": "application/json" } }
       ),
     staleTime: 1000 * 30 * 10,
+    enabled: isTokenReady
   });
 
   if (isLoading || isLoadingFolder) return "Loading...";
