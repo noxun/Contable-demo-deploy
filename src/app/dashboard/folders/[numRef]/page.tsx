@@ -7,16 +7,17 @@ import {
   IResponseConceptFolder,
   IResponseFolder,
 } from "@/modules/folders/interface/folders";
-import { token } from "@/modules/shared/constants/token";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Link from "next/link";
+import useToken from "@/modules/shared/hooks/useToken";
 
 interface Props {
   params: { numRef: string };
 }
 export default function FolderPage({ params }: Props) {
+  const { token } = useToken();
   const { data, isLoading, error } = useQuery({
     queryKey: ["ConceptExpense", params.numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>
