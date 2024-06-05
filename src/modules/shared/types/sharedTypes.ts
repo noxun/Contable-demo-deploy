@@ -5,7 +5,7 @@ export type Voucher = {
   exchangeRate: number;
   voucherDate?: string | Date;
   coin: "USD" | "BOB";//this should be an enum
-  checkNum: string;
+  checkNum?: string | undefined;
   canceledTo?: string | Date;
   gloss: string
   bankId: number | string
