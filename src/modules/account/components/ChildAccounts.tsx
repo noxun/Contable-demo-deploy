@@ -1,3 +1,4 @@
+"use client"
 import {
   Accordion,
   AccordionContent,
@@ -19,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type ChildAccountsProps = {
   accounts: Account[] | undefined;
@@ -26,8 +28,8 @@ type ChildAccountsProps = {
 
 export default function ChildAccounts({ accounts }: ChildAccountsProps) {
   const getChildCodes = (account: Account): string[] => {
-    const childCodes = account.accountChild.map((child) => child.code);
-    const grandChildCodes = account.accountChild.flatMap((child) =>
+    const childCodes = account.accountChild!.map((child) => child.code);
+    const grandChildCodes = account.accountChild!.flatMap((child) =>
       getChildCodes(child)
     );
     return [...childCodes, ...grandChildCodes];
@@ -77,9 +79,14 @@ export default function ChildAccounts({ accounts }: ChildAccountsProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <AccordionTrigger>
+            <AccordionTrigger className="w-full">
               {account.code}:{account.description}
             </AccordionTrigger>
+            <section>
+              {account.isMotion === true ? <Badge>Movimiento</Badge> : ""}
+              {account.isCost === true ? <Badge>Costo</Badge> : ""}
+              {account.isBudgetable === true ? <Badge>Presupuestable</Badge> : ""}
+            </section>
           </div>
           <AccordionContent>
             <div>
