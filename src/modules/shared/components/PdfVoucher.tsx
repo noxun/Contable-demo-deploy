@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 import {
   Page,
@@ -13,7 +14,7 @@ import axios from "axios";
 import { createTw } from "react-pdf-tailwind";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Voucher, VoucherType } from "../types/sharedTypes";
 
 const tw = createTw({
   theme: {
@@ -32,14 +33,20 @@ Font.register({
     },
   ],
 });
-export default function PdfVoucher({ id }: { id: number }) {
+export default function PdfVoucher({
+  id,
+  type,
+}: {
+  id: number;
+  type: VoucherType;
+}) {
   const token = localStorage.getItem("token");
 
-  const getSingleIncomeQuery = useQuery({
-    queryKey: ["VoucherIncome", id],
-    queryFn: async function (): Promise<{ data: any }> {
+  const getSingleVoucherQuery = useQuery({
+    queryKey: ["Vouchers", id, type],
+    queryFn: async function (): Promise<Voucher> {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher?id=${id}&type=2`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher?id=${id}&type=${type}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -52,21 +59,33 @@ export default function PdfVoucher({ id }: { id: number }) {
     },
   });
 
-  if (getSingleIncomeQuery.isLoading) {
+  if (getSingleVoucherQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  const { items } = getSingleIncomeQuery.data;
+  const { items } = getSingleVoucherQuery.data!;
 
-  const totalDebitBs = items?.reduce((sum, item) => sum + item.debitBs, 0);
-  const totalDebitSus = items?.reduce((sum, item) => sum + item.debitSus, 0);
-  const totalAssetBs = items?.reduce((sum, item) => sum + item.assetBs, 0);
-  const totalAssetSus = items?.reduce((sum, item) => sum + item.assetSus, 0);
+  const totalDebitBs = items?.reduce(
+    (sum: number, item) => sum + item.debitBs,
+    0
+  );
+  const totalDebitSus = items?.reduce(
+    (sum: number, item) => sum + item.debitSus,
+    0
+  );
+  const totalAssetBs = items?.reduce(
+    (sum: number, item) => sum + item.assetBs,
+    0
+  );
+  const totalAssetSus = items?.reduce(
+    (sum: number, item) => sum + item.assetSus,
+    0
+  );
 
   return (
     <Dialog>
       <DialogTrigger>Ver Reporte</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] h-[500px] w-full flex items-center justify-center">
+      <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
         <PDFViewer showToolbar={true} className="h-full w-full">
           <Document>
             <Page size="A4" style={tw("p-4 flex flex-col h-full text-base")}>
@@ -95,9 +114,8 @@ export default function PdfVoucher({ id }: { id: number }) {
                   <Text style={tw("text-xl")}>(Expresado en Bs)</Text>
                 </View>
                 <View>
-                  <Text>Fecha: {getSingleIncomeQuery?.data?.canceledTo}</Text>
-                  <Text>Pagado a: {getSingleIncomeQuery?.data?.gloss}</Text>
-                  {/* <Text>Section #2</Text> */}
+                  <Text><>Fecha: {getSingleVoucherQuery?.data?.voucherDate}</></Text>
+                  <Text>Pagado a: {getSingleVoucherQuery?.data?.gloss}</Text>
                 </View>
                 <View style={tw("mt-4 flex-1")}>
                   <Text style={tw("font-bold mb-2")}>Items contables:</Text>
