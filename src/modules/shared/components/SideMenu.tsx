@@ -12,15 +12,22 @@ export const SideMenu = () => {
   const router = useRouter();
 
   const [userName, setUserName] = useState(null);
-  const [openSubMenu, setOpenSubMenu] = useState(null);
+  const [openSubMenu, setOpenSubMenu] = useState<number[]>([]);
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem("user") || "{}");
     setUserName(user.name ?? "");
+
+    // Iniciar todos los submenús abiertos por defecto
+    setOpenSubMenu(MENU_OPTIONS.map((_, index) => index));
   }, []);
 
-  const toggleSubMenu = (index) => {
-    setOpenSubMenu(openSubMenu === index ? null : index);
+  const toggleSubMenu = (index: number) => {
+    setOpenSubMenu((prevOpenSubMenu) =>
+      prevOpenSubMenu.includes(index)
+        ? prevOpenSubMenu.filter((i) => i !== index)
+        : [...prevOpenSubMenu, index]
+    );
   };
 
   const logout = () => {
@@ -30,7 +37,7 @@ export const SideMenu = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-screen">
       <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
         {MENU_OPTIONS.map((option, index) => (
           <Fragment key={index}>
@@ -39,13 +46,13 @@ export const SideMenu = () => {
               onClick={() => toggleSubMenu(index)}
             >
               <span>{option.name}</span>
-              {openSubMenu === index ? (
+              {openSubMenu.includes(index) ? (
                 <ChevronDown className="h-5 w-5" />
               ) : (
                 <ChevronRight className="h-5 w-5" />
               )}
             </div>
-            {openSubMenu === index && (
+            {openSubMenu.includes(index) && (
               <div className="pl-4">
                 {option.routes.map((route) => (
                   <Link
