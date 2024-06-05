@@ -7,7 +7,6 @@ import {
   VoucherType,
   VoucherTypeRoute,
 } from "../types/sharedTypes";
-import { token } from "../constants/token";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { IBank } from "@/modules/banks/interface/banks";
@@ -48,6 +47,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
+import useToken from "../hooks/useToken";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -60,6 +60,7 @@ export default function FormNewVoucher({
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const {token} = useToken();
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -265,7 +266,7 @@ export default function FormNewVoucher({
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={new Date(field.value!)}
                         onSelect={field.onChange}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
