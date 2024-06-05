@@ -29,16 +29,16 @@ export const MENU_OPTIONS = [
         name: "Diarios",
         icon: <FileCheck2 className="h-5 w-5" />,
       },
-    ],
-  },
-  {
-    name: "Utilitarios",
-    routes: [
       {
         path: "/dashboard/accounts",
         name: "Cuentas",
         icon: <ListTree className="h-5 w-5" />,
       },
+    ],
+  },
+  {
+    name: "Entidades",
+    routes: [
       {
         path: "/dashboard/folders",
         name: "Carpetas",
@@ -53,6 +53,16 @@ export const MENU_OPTIONS = [
         path: "/dashboard/users",
         name: "Usuarios",
         icon: <User className="h-5 w-5" />,
+      },
+    ],
+  },
+  {
+    name: "Facturas y Planillas",
+    routes: [
+      {
+        path: "/dashboard/invoices",
+        name: "Facturas",
+        icon: <NotebookText className="h-5 w-5" />,
       },
     ],
   },
