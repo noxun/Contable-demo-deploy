@@ -25,5 +25,6 @@ export interface IResponseConceptFolder {
   accountId: number;
   carpeta: string;
   debitBs: number;
+  assetBs: number;
   amount?: number;
 }

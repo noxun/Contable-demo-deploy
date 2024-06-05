@@ -22,6 +22,7 @@ interface Props {
     accountId: number;
     carpeta: string;
     debitBs: number;
+    assetBs: number;
   }[];
   setConcepts: Dispatch<
     SetStateAction<
@@ -36,6 +37,7 @@ interface Props {
         accountId: number;
         carpeta: string;
         debitBs: number;
+        assetBs: number;
       }[]
     >
   >;
@@ -71,7 +73,9 @@ export const FormConceptItems = (props: Props) => {
               <TableCell className="h-fit">{item.acronym}</TableCell>
               <TableCell className="h-fit">{item.description}</TableCell>
               <TableCell className="h-fit">{item.typeOfExpense}</TableCell>
-              <TableCell className="h-fit">{item.debitBs}</TableCell>
+              <TableCell className="h-fit">
+                {item.typeOfExpense === "Factura" ? item.assetBs : item.debitBs}
+              </TableCell>
               <TableCell>
                 <Input
                   name="amount"

@@ -437,7 +437,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                         }}
                       >
                         <Text style={{ ...styles.title1 }}>
-                          {item.debitBs.toLocaleString("en-US", {
+                          {item.assetBs.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           }) ?? "-"}
@@ -453,7 +453,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                         }}
                       >
                         <Text style={{ ...styles.title1 }}>
-                          {item.debitBs.toLocaleString("en-US", {
+                          {item.assetBs.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           }) ?? "-"}
@@ -476,7 +476,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                         .filter((item) => item.typeOfExpense === "Factura")
                         .reduce(
                           (total, payment) =>
-                            Number(total) + Number(payment.debitBs ?? 0),
+                            Number(total) + Number(payment.assetBs ?? 0),
                           0
                         )
                         .toFixed(2)
@@ -528,7 +528,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                               )
                               .reduce(
                                 (total, payment) =>
-                                  Number(total) + Number(payment.debitBs ?? 0),
+                                  Number(total) + Number(payment.assetBs ?? 0),
                                 0
                               )
                               .toFixed(2)
@@ -618,7 +618,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                               )
                               .reduce(
                                 (total, payment) =>
-                                  Number(total) + Number(payment.debitBs ?? 0),
+                                  Number(total) + Number(payment.assetBs ?? 0),
                                 0
                               )
                               .toFixed(2)
@@ -708,7 +708,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                               )
                               .reduce(
                                 (total, payment) =>
-                                  Number(total) + Number(payment.debitBs ?? 0),
+                                  Number(total) + Number(payment.assetBs ?? 0),
                                 0
                               )
                               .toFixed(2)
@@ -761,7 +761,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                               )
                               .reduce(
                                 (total, payment) =>
-                                  Number(total) + Number(payment.debitBs ?? 0),
+                                  Number(total) + Number(payment.assetBs ?? 0),
                                 0
                               )
                               .toFixed(2)

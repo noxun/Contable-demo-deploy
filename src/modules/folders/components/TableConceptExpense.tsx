@@ -26,6 +26,16 @@ export const TableConceptExpense = ({ numRef, data }: Props) => {
       {
         accessorKey: "debitBs",
         header: "Pago",
+        cell: ({ row }) => {
+          const conceptFolder = row.original;
+          return (
+            <div className="flex gap-2">
+              {conceptFolder.typeOfExpense === "Factura"
+                ? conceptFolder.assetBs
+                : conceptFolder.debitBs}
+            </div>
+          );
+        },
       },
     ];
   }

@@ -320,7 +320,7 @@ export const ButtonPlanillaPdf = (props: Props) => {
                               )
                               .reduce(
                                 (total, payment) =>
-                                  Number(total) + Number(payment.debitBs ?? 0),
+                                  Number(total) + Number(payment.assetBs ?? 0),
                                 0
                               )
                               .toFixed(2)
