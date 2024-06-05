@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { token } from "../constants/token";
 import { Voucher, VoucherItem, VoucherType } from "../types/sharedTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBank } from "@/modules/banks/interface/banks";
@@ -42,6 +41,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
+import useToken from "../hooks/useToken";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -55,6 +55,7 @@ export default function FormEditVoucher({
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
   );
+  const {token} = useToken();
 
   console.log(voucher)
 
@@ -110,14 +111,14 @@ export default function FormEditVoucher({
     },
     onError: (error) => {
       console.log(error);
-      toast.error("There was an error while editing the income");
+      toast.error("Hubo un error mientras se editaba el voucher");
     },
   });
 
   function onSubmit(values: Voucher) {
     values["type"] = parseInt(type);
     values["id"] = voucher!.id; // no sera undefined te lo juro ts :sadface:
-    values["voucherDate"] = format(values.voucherDate, "yyyy-MM-dd");
+    values["voucherDate"] = format(values.voucherDate!, "yyyy-MM-dd");
     console.log(values);
     editVoucherMutation.mutate(values);
   }
@@ -136,7 +137,7 @@ export default function FormEditVoucher({
   const voucherFormSchema = z.object({
     id: z.number().optional(),
     num: z.number().optional(),
-    voucherDate: z.string().optional(),
+    voucherDate: z.string().or(z.date()).optional(),
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
     checkNum: z.string().optional(),
@@ -151,12 +152,12 @@ export default function FormEditVoucher({
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
-      voucherDate: format(voucher.voucherDate, 'MM/dd/yyyy'),
+      voucherDate: format(voucher.voucherDate!, 'MM/dd/yyyy'),
       exchangeRate: voucher.exchangeRate,
       coin: voucher.coin,
       checkNum: voucher.checkNum,
       gloss: voucher.gloss,
-      bankId: voucher?.bankId?.toString(),
+      bankId: voucher!.bankId!.toString(),
     },
   });
 
@@ -203,7 +204,7 @@ export default function FormEditVoucher({
                       <Calendar
                         locale={es}
                         mode="single"
-                        selected={field.value}
+                        selected={new Date(field.value!)}
                         onSelect={field.onChange}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
@@ -319,7 +320,7 @@ export default function FormEditVoucher({
       <br />
       <FormEditVoucherItems
         type={type}
-        voucherId={voucher!.id}
+        voucherId={voucher!.id!}
         accountData={accountsQuery.data.data}
         voucherItems={voucherItems}
         setVoucherItems={setVoucherItems}

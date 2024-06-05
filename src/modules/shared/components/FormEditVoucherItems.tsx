@@ -31,7 +31,6 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { VoucherItem, VoucherType } from "../types/sharedTypes";
 import { Account } from "@/modules/account/types/account";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { token } from "../constants/token";
 import axios from "axios";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -39,6 +38,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus, Trash2 } from "lucide-react";
+import useToken from "../hooks/useToken";
 
 type FormEditVoucherItemsProps = {
   type: VoucherType;
@@ -55,20 +55,14 @@ export default function FormEditVoucherItems({
   setVoucherItems,
   accountData,
 }: FormEditVoucherItemsProps) {
+  const { token } = useToken();
+
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
     let listVoucherItem = voucherItems;
     listVoucherItem[index] = {
       ...listVoucherItem[index],
       [name]: value,
-    };
-    setVoucherItems([...listVoucherItem]);
-  }
-  function onChangeCombobox(value: string, index: number) {
-    let listVoucherItem = voucherItems;
-    listVoucherItem[index] = {
-      ...listVoucherItem[index],
-      accountId: parseInt(value),
     };
     setVoucherItems([...listVoucherItem]);
   }
@@ -114,7 +108,7 @@ export default function FormEditVoucherItems({
     }: {
       voucherItem: VoucherItem;
       type: VoucherType;
-      voucherId: number;
+      voucherId: number | undefined;
     }) => {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}`,
@@ -163,7 +157,7 @@ export default function FormEditVoucherItems({
     assetBs: z.coerce.number(),
     assetSus: z.number().optional().default(0),
     gloss: z.string(),
-    accountId: z.coerce.number(),
+    accountId: z.coerce.number().or(z.string()),
     voucherId: z.number(),
   });
 
@@ -248,6 +242,18 @@ export default function FormEditVoucherItems({
                         <FormLabel>Cuenta</FormLabel>
                         <FormControl>
                           <Select
+                            maxMenuHeight={200}
+                            className="my-react-select-container"
+                            classNamePrefix="my-react-select"
+                            menuPosition="absolute"
+                            menuPlacement="top"
+                            styles={{
+                              menuList: (base) => ({
+                                ...base,
+                                height: 50,
+                                minHeight: 50, // your desired height
+                              }),
+                            }}
                             isSearchable={true}
                             options={accountOptions}
                             value={accountOptions.find(
@@ -310,7 +316,7 @@ export default function FormEditVoucherItems({
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">Guardar</Button>
                 </form>
               </Form>
             </div>
@@ -332,11 +338,22 @@ export default function FormEditVoucherItems({
             <TableRow key={index}>
               <TableCell>
                 <Select
+                  maxMenuHeight={200}
+                  className="my-react-select-container"
+                  classNamePrefix="my-react-select"
                   menuPosition="absolute"
+                  menuPlacement="top"
+                  styles={{
+                    menuList: (base) => ({
+                      ...base,
+                      height: 50,
+                      minHeight: 50, // your desired height
+                    }),
+                  }}
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(
-                    (option) => option.value === item.accountId.toString()
+                    (option) => option.value === item.accountId!.toString()
                   )}
                   onChange={(selectedOption) => {
                     const updatedItem = {
