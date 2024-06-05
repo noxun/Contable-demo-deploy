@@ -42,19 +42,32 @@ export const ListFolders = () => {
       },
       {
         id: "actions",
-        header: "Acciones",
+        header: "Pagos",
         enableHiding: false,
         cell: ({ row }) => {
           const procedure = row.original;
           return (
-            <div className="">
-              <Link
+            <div className="flex gap-2">
+              <Link href={`/dashboard/folders/${procedure.numRef}`}>
+                <Button>
+                  Ver Pagos <SquareArrowOutUpRight className="ml-2" size={15} />
+                </Button>
+              </Link>
+              {/* <Link
                 href={`/dashboard/folders/${procedure.numRef}/register-payment`}
               >
                 <Button>
-                  Ver pagos <SquareArrowOutUpRight className="ml-2" size={15} />
+                  Registrar Pagos{" "}
+                  <SquareArrowOutUpRight className="ml-2" size={15} />
                 </Button>
               </Link>
+              <Link
+                href={`/dashboard/folders/${procedure.numRef}/close-payment`}
+              >
+                <Button variant="destructive">
+                  Planillar <SquareArrowOutUpRight className="ml-2" size={15} />
+                </Button>
+              </Link> */}
             </div>
           );
         },

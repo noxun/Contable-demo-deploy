@@ -7,8 +7,9 @@ import { FormConceptFolder } from "./FormConceptFolder";
 
 interface Props {
   numRef: string;
+  close?: boolean;
 }
-export const ListConceptExpense = ({ numRef }: Props) => {
+export const ListConceptExpense = ({ numRef, close = false }: Props) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["ConceptExpense", numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>

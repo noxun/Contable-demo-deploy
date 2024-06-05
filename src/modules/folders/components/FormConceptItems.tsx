@@ -61,6 +61,7 @@ export const FormConceptItems = (props: Props) => {
             <TableHead>Sigla</TableHead>
             <TableHead>Descripción</TableHead>
             <TableHead>Pagado</TableHead>
+            <TableHead>Tipo</TableHead>
             <TableHead>A pagar</TableHead>
           </TableRow>
         </TableHeader>
@@ -69,6 +70,7 @@ export const FormConceptItems = (props: Props) => {
             <TableRow key={index}>
               <TableCell className="h-fit">{item.acronym}</TableCell>
               <TableCell className="h-fit">{item.description}</TableCell>
+              <TableCell className="h-fit">{item.typeOfExpense}</TableCell>
               <TableCell className="h-fit">{item.debitBs}</TableCell>
               <TableCell>
                 <Input

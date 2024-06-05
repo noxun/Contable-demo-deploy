@@ -10,6 +10,10 @@ export interface IResponseFolder {
   clienteNombre: string;
   mercaderia: string;
   tipo: string;
+  referenciaCliente?: string;
+  fobUsd?: string;
+  cifBs?: string;
+  nitCi?: string;
 }
 export interface IResponseConceptFolder {
   id: number;

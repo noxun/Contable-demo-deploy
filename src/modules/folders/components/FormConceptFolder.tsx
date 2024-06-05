@@ -87,12 +87,13 @@ export const FormConceptFolder = (props: Props) => {
     exchangeRate: z.coerce.number(),
     checkNum: z.string().optional(),
     gloss: z.string(),
-    bankId: z.coerce.string().min(1),
+    bankId: z.coerce.string(),
   });
 
   const conceptForm = useForm<z.infer<typeof conceptFormSchema>>({
     resolver: zodResolver(conceptFormSchema),
     defaultValues: {
+      date: "",
       exchangeRate: 6.97,
       checkNum: "",
       gloss: "",
@@ -101,64 +102,109 @@ export const FormConceptFolder = (props: Props) => {
   });
 
   function onSubmit(values: any) {
-    // values["date"] = format(values.date, "yyyy/MM/dd");
     values["voucherDate"] = values.date;
-    let validatedVoucherItems = concepts
+    let validatedVoucherItems: {
+      accountId: number;
+      debitBs: number;
+      debitSus: number;
+      assetBs: number;
+      assetSus: number;
+      gloss: any;
+      conceptExpenseId?: number;
+      carpeta?: string;
+    }[] = concepts
       .filter((item) => item.amount && item.amount > 0)
       .map((item) => ({
         accountId: Number(item.accountId),
-        debitBs: Number(item.amount),
-        debitSus: Number(item.amount / values.exchangeRate),
-        assetBs: 0,
-        assetSus: 0,
+        debitBs: item.typeOfExpense === "Planilla" ? Number(item.amount) : 0,
+        debitSus:
+          item.typeOfExpense === "Planilla"
+            ? Number(item.amount / values.exchangeRate)
+            : 0,
+        assetBs: item.typeOfExpense === "Factura" ? Number(item.amount) : 0,
+        assetSus:
+          item.typeOfExpense === "Factura"
+            ? Number(item.amount / values.exchangeRate)
+            : 0,
         gloss: values.gloss,
         conceptExpenseId: item.id,
         carpeta: numRef,
       }));
-    const bank = banksQuery
-      ? banksQuery?.data?.data.filter(
-          (item) => item.id === Number(values.bankId)
-        )[0]
-      : null;
-    console.log(bank);
+
+    const totalDebitBs = Number(
+      validatedVoucherItems
+        .reduce(
+          (total, payment) => Number(total) + Number(payment.debitBs ?? 0),
+          0
+        )
+        .toFixed(2)
+    );
+
+    const totalDebitSus = Number(
+      validatedVoucherItems
+        .reduce(
+          (total, payment) => Number(total) + Number(payment.debitSus ?? 0),
+          0
+        )
+        .toFixed(2)
+    );
+
+    const totalAssetBs = Number(
+      validatedVoucherItems
+        .reduce(
+          (total, payment) => Number(total) + Number(payment.assetBs ?? 0),
+          0
+        )
+        .toFixed(2)
+    );
+
+    const totalAssetSus = Number(
+      validatedVoucherItems
+        .reduce(
+          (total, payment) => Number(total) + Number(payment.assetSus ?? 0),
+          0
+        )
+        .toFixed(2)
+    );
+
+    if (totalDebitBs > 0) {
+      const bank = banksQuery
+        ? banksQuery?.data?.data.filter(
+            (item) => item.id === Number(values.bankId)
+          )[0]
+        : null;
+
+      if (bank) {
+        validatedVoucherItems.push({
+          accountId: Number(bank.nroCuentaBancaria),
+          debitBs: 0,
+          debitSus: 0,
+          assetBs: totalDebitBs,
+          assetSus: totalDebitSus,
+          gloss: values.gloss,
+        });
+      }
+    }
+
+    if (totalAssetBs > 0) {
+      validatedVoucherItems.push({
+        accountId: 164,
+        debitBs: 0,
+        debitSus: 0,
+        assetBs: totalAssetBs,
+        assetSus: totalAssetSus,
+        gloss: values.gloss,
+      });
+    }
 
     let newValues = {
       voucher: {
         ...values,
         coin: "BOB",
       },
-      voucherItems: bank
-        ? [
-            ...validatedVoucherItems,
-            {
-              accountId: Number(bank.nroCuentaBancaria),
-              debitBs: 0,
-              debitSus: 0,
-              assetBs: Number(
-                validatedVoucherItems
-                  .reduce(
-                    (total, payment) =>
-                      Number(total) + Number(payment.debitBs ?? 0),
-                    0
-                  )
-                  .toFixed(2)
-              ),
-              assetSus: Number(
-                validatedVoucherItems
-                  .reduce(
-                    (total, payment) =>
-                      Number(total) + Number(payment.debitSus ?? 0),
-                    0
-                  )
-                  .toFixed(2)
-              ),
-              gloss: values.gloss,
-            },
-          ]
-        : validatedVoucherItems,
+      voucherItems: validatedVoucherItems,
       type: 1,
     };
-    console.log(newValues);
     newVoucherMutation.mutate(newValues);
   }
 
@@ -275,48 +321,67 @@ export const FormConceptFolder = (props: Props) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={conceptForm.control}
-              name="bankId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Banco</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione un banco" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {banksQuery.data.data.map((bank) => (
-                        <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
-                          {bank.sigla} - {bank.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
-          <FormField
-            control={conceptForm.control}
-            name="gloss"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Glosa</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="" className="resize-none" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormConceptItems concepts={concepts} setConcepts={setConcepts} />
+          <div className="flex gap-2 mb-3">
+            {/* {concepts.reduce(
+              (total, payment) =>
+                Number(total) +
+                Number(
+                  payment.typeOfExpense === "Planilla" ? payment.amount ?? 0 : 0
+                ),
+              0
+            ) > 0 ? (
+            ) : null} */}
+            <div className="w-1/3">
+              <FormField
+                control={conceptForm.control}
+                name="bankId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Banco</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione un banco" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {banksQuery.data.data.map((bank) => (
+                          <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
+                            {bank.sigla} - {bank.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full">
+              <FormField
+                control={conceptForm.control}
+                name="gloss"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Glosa</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder=""
+                        {...field}
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <Button
             type="submit"
             // disabled={!buttonEnabled || newVoucherMutation.isPending}
