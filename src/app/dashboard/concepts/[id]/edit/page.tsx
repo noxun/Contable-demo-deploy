@@ -252,3 +252,10 @@
 //     </main>
 //   );
 // }
+
+
+export default function EditConceptPage() {
+  return (
+    <div>En construccion</div>
+  )
+}
