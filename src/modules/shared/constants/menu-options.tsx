@@ -9,6 +9,7 @@ import {
   Radical,
   FileText,
   Folder,
+  Text,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -54,6 +55,11 @@ export const MENU_OPTIONS = [
         name: "Usuarios",
         icon: <User className="h-5 w-5" />,
       },
+      {
+        path: "/dashboard/concepts",
+        name: "Conceptos",
+        icon: <Text className="h-5 w-5" />
+      }
     ],
   },
   {
