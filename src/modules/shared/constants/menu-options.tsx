@@ -10,6 +10,7 @@ import {
   FileText,
   Folder,
   Text,
+  Building,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -40,6 +41,11 @@ export const MENU_OPTIONS = [
   {
     name: "Entidades",
     routes: [
+      {
+        path: "/dashboard/entities",
+        name: "Entidades",
+        icon: <Building className="h-5 w-5"/>,
+      },
       {
         path: "/dashboard/folders",
         name: "Carpetas",
