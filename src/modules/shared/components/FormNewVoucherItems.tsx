@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { NumericFormat } from "react-number-format";
 import { Input } from "@/components/ui/input";
 import { Account } from "@/modules/account/types/account";
 import { VoucherItem } from "../types/sharedTypes";
@@ -65,6 +66,16 @@ export default function FormNewVoucherItems({
     setVoucherItems(listVoucherItem);
   }
 
+  const totalDebitValue = voucherItems.reduce((total, num) => {
+    return total + num.debitBs;
+  }, 0);
+
+  const totalAssetValue = voucherItems.reduce((total,num) => {
+    return total + num.assetBs
+  }, 0);
+
+  //console.log(voucherItems);
+
   function removeVoucherItem(index: number) {
     const updateVoucherItems = voucherItems.filter((_, i) => i != index);
     setVoucherItems([...updateVoucherItems]);
@@ -114,13 +125,14 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="h-fit w-80">
+              <TableCell className="h-fit w-72">
                 <Select
                   maxMenuHeight={200}
                   className="my-react-select-container"
                   classNamePrefix="my-react-select"
                   menuPosition="absolute"
                   menuPlacement="top"
+                  placeholder="Selecciona una Cuenta.."
                   styles={{
                     menuList: (base) => ({
                       ...base,
@@ -142,20 +154,41 @@ export default function FormNewVoucherItems({
                 />
               </TableCell>
               <TableCell>
-                <Input
+                <NumericFormat
                   name="debitBs"
-                  onChange={(e) => onChange(e, index)}
                   value={item.debitBs}
+                  onValueChange={(values) => {
+                    const event = {
+                      target: {
+                        name: "debitBs",
+                        value: values.floatValue?.toString() || "0",
+                      },
+                    } as ChangeEvent<HTMLInputElement>;
+                    onChange(event, index);
+                  }}
+                  customInput={Input}
+                  thousandSeparator
+                  decimalScale={2}
                   defaultValue={0}
                 />
               </TableCell>
               <TableCell>
-                <Input
+                <NumericFormat
                   name="assetBs"
-                  onChange={(e) => onChange(e, index)}
                   value={item.assetBs}
+                  onValueChange={(values) => {
+                    const event = {
+                      target: {
+                        name: "assetBs",
+                        value: values.floatValue?.toString() || "0",
+                      },
+                    } as ChangeEvent<HTMLInputElement>;
+                    onChange(event, index);
+                  }}
+                  customInput={Input}
+                  thousandSeparator
+                  decimalScale={2}
                   defaultValue={0}
-                  min={0}
                 />
               </TableCell>
               <TableCell>
@@ -177,6 +210,11 @@ export default function FormNewVoucherItems({
               </TableCell>
             </TableRow>
           ))}
+          <TableRow>
+            <TableCell>Total</TableCell>
+            <TableCell>{totalDebitValue}</TableCell>
+            <TableCell>{totalAssetValue}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </div>
