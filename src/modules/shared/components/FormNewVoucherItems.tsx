@@ -114,7 +114,7 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="h-fit">
+              <TableCell className="h-fit w-80">
                 <Select
                   maxMenuHeight={200}
                   className="my-react-select-container"
