@@ -1,7 +1,15 @@
 "use client";
+
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Concept } from "../types/concept";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Account } from "@/modules/account/types/account";
+import axios from "axios";
+import useToken from "@/modules/shared/hooks/useToken";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import {
@@ -14,15 +22,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useToken from "@/modules/shared/hooks/useToken";
-import { Account } from "@/modules/account/types/account";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "sonner";
-import { Concept } from "@/modules/concepts/types/concept";
-import { useRouter } from "next/navigation";
 
-const newConceptFormSchema = z.object({
+type FormEditProps = {
+  concept: Concept;
+};
+
+const editConceptFormSchema = z.object({
+  id: z.coerce.number(),
   acronym: z.string(),
   description: z.string(),
   typeOfExpense: z.string(),
@@ -31,29 +37,12 @@ const newConceptFormSchema = z.object({
   accountId: z.coerce.number().or(z.string()),
 });
 
-export default function NewConceptPage() {
+type EditConceptForm = z.infer<typeof editConceptFormSchema>;
 
+export default function FormEditConcept({ concept }: FormEditProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  const newConceptForm = useForm<z.infer<typeof newConceptFormSchema>>({
-    resolver: zodResolver(newConceptFormSchema),
-    defaultValues: {
-      acronym: "",
-      description: "",
-      typeOfExpense: "",
-      typeOfTax: "",
-      order: 0,
-      accountId: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof newConceptFormSchema>) {
-    console.log(values);
-    newConceptMutation.mutate(values);
-  }
-
-  const {token, isTokenReady} = useToken();
+  const { token, isTokenReady } = useToken();
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
@@ -66,16 +55,29 @@ export default function NewConceptPage() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
       return response.data;
     },
     enabled: isTokenReady,
     staleTime: 1000 * 30 * 10,
   });
 
-  const newConceptMutation = useMutation({
-    mutationFn: async (data: Concept) => {
-      const response = await axios.post(
+  const editConceptForm = useForm<EditConceptForm>({
+    resolver: zodResolver(editConceptFormSchema),
+    defaultValues: {
+      id: concept.id,
+      acronym: concept.acronym,
+      description: concept.description,
+      typeOfExpense: concept.typeOfExpense,
+      typeOfTax: concept.typeOfTax,
+      order: concept.order,
+      accountId: concept.accountId,
+    },
+  });
+
+  const editConceptMutation = useMutation({
+    mutationFn: async (data: EditConceptForm) => {
+      const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/ConceptExpense`,
         data,
         {
@@ -84,41 +86,47 @@ export default function NewConceptPage() {
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
       return response.data;
-    },
-    onSuccess: () => {
-      toast.success("Concepto creado exitosamente");
-      queryClient.invalidateQueries({queryKey:["Concepts"]});
-      router.push("/dashboard/concepts");
     },
     onError: (error) => {
       console.log(error);
-      toast.error("Hubo un error al crear el concepto")
-    }
-  })
+      toast.error("Hubo un error al editar el concepto");
+    },
+    onSuccess: () => {
+      toast.success("Concepto Editado Correctamente");
+      queryClient.invalidateQueries({ queryKey: ["Concepts"] });
+      router.push("/dashboard/concepts");
+    },
+  });
+
+  function onSubmit(values: EditConceptForm) {
+    console.log(values);
+    editConceptMutation.mutate(values);
+  }
 
   const accountData = accountsQuery.data ?? [];
 
   const accountOptions = accountData!.map((item) => ({
     value: item.id.toString(),
     label: `${item.code} - ${item.description}`,
-    //...item
   }));
 
   if (accountsQuery.isLoading || accountsQuery.isPending) {
-    return <div>Cargando...</div>
+    return <div>Cargando...</div>;
   }
 
+  //console.log(editConceptForm.formState.errors);
+
   return (
-    <main>
-      <Form {...newConceptForm}>
+    <>
+      <Form {...editConceptForm}>
         <form
-          onSubmit={newConceptForm.handleSubmit(onSubmit)}
+          onSubmit={editConceptForm.handleSubmit(onSubmit)}
           className="space-y-8"
         >
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="acronym"
             render={({ field }) => (
               <FormItem>
@@ -132,7 +140,7 @@ export default function NewConceptPage() {
             )}
           />
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="description"
             render={({ field }) => (
               <FormItem>
@@ -146,7 +154,7 @@ export default function NewConceptPage() {
             )}
           />
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="typeOfExpense"
             render={({ field }) => (
               <FormItem>
@@ -160,7 +168,7 @@ export default function NewConceptPage() {
             )}
           />
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="typeOfTax"
             render={({ field }) => (
               <FormItem>
@@ -176,7 +184,7 @@ export default function NewConceptPage() {
             )}
           />
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="order"
             render={({ field }) => (
               <FormItem>
@@ -190,7 +198,7 @@ export default function NewConceptPage() {
             )}
           />
           <FormField
-            control={newConceptForm.control}
+            control={editConceptForm.control}
             name="accountId"
             render={({ field }) => (
               <FormItem>
@@ -227,6 +235,6 @@ export default function NewConceptPage() {
           <Button type="submit">Guardar</Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
