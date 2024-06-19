@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { IResponseConceptFolder, IResponseFolder } from "../interface/folders";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";

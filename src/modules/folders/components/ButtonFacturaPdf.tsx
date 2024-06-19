@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { IResponseConceptFolder, IResponseFolder } from "../interface/folders";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -11,7 +12,6 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import CustomTablePDF from "@/modules/shared/components/generatePdf/CustomTablePDF";
 
 interface Props {
   data: IResponseConceptFolder[];
@@ -22,7 +22,9 @@ export const ButtonFacturaPdf = (props: Props) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button variant="secondary">Ver Factura</Button>
+        <Button type="button" variant="secondary">
+          Ver Factura
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] h-[98vh] w-full flex items-center justify-center p-0 border-none">
         <PDFViewer showToolbar={true} className="h-full w-full rounded-lg">

@@ -44,7 +44,7 @@ export const MENU_OPTIONS = [
       {
         path: "/dashboard/entities",
         name: "Entidades",
-        icon: <Building className="h-5 w-5"/>,
+        icon: <Building className="h-5 w-5" />,
       },
       {
         path: "/dashboard/folders",
@@ -64,8 +64,8 @@ export const MENU_OPTIONS = [
       {
         path: "/dashboard/concepts",
         name: "Conceptos",
-        icon: <Text className="h-5 w-5" />
-      }
+        icon: <Text className="h-5 w-5" />,
+      },
     ],
   },
   {
@@ -96,11 +96,11 @@ export const MENU_OPTIONS = [
         name: "Estado de Resultados",
         icon: <NotebookText className="h-5 w-5" />,
       },
-      {
-        path: "/dashboard/results/bigger-book",
-        name: "Libro Mayor",
-        icon: <NotebookText className="h-5 w-5" />,
-      },
+      // {
+      //   path: "/dashboard/results/bigger-book",
+      //   name: "Libro Mayor",
+      //   icon: <NotebookText className="h-5 w-5" />,
+      // },
     ],
   },
 ];

@@ -60,7 +60,7 @@ interface Props {
 export const FormConceptFolder = (props: Props) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token, isTokenReady} = useToken();
+  const { token, isTokenReady } = useToken();
   const { data, numRef } = props;
   const [concepts, setConcepts] = useState(
     data.map((item) => ({ ...item, amount: 0 }))
@@ -191,10 +191,10 @@ export const FormConceptFolder = (props: Props) => {
     if (totalAssetBs > 0) {
       validatedVoucherItems.push({
         accountId: 164,
-        debitBs: 0,
-        debitSus: 0,
-        assetBs: totalAssetBs,
-        assetSus: totalAssetSus,
+        debitBs: totalAssetBs,
+        debitSus: totalAssetSus,
+        assetBs: 0,
+        assetSus: 0,
         gloss: values.gloss,
       });
     }
@@ -239,7 +239,7 @@ export const FormConceptFolder = (props: Props) => {
     onSuccess: () => {
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", "1"] });
-      router.push(`/dashboard/expenses`); //de momento, luego pasar el route
+      router.push(`/dashboard/folders/${numRef}`); //de momento, luego pasar el route
     },
     onError: (error) => {
       console.log(error);

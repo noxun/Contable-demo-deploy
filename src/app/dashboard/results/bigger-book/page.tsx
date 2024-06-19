@@ -40,7 +40,7 @@ export default function BiggerBookPage() {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
-              type: "xlsx"
+              type: "xlsx",
               //Level: 5,
             },
             responseType: "text",
@@ -48,25 +48,25 @@ export default function BiggerBookPage() {
         );
 
         // Generar el reporte de PDF
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-          {
-            params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
-              //Level: 5,
-              type: "pdf"
-            },
-            responseType: "text",
-          }
-        );
+        // const pdfResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
+        //   {
+        //     params: {
+        //       InitDate: format(date.from, "yyyy/MM/dd"),
+        //       EndDate: format(date.to, "yyyy/MM/dd"),
+        //       //Level: 5,
+        //       type: "pdf"
+        //     },
+        //     responseType: "text",
+        //   }
+        // );
 
         if (excelResponse.data) {
           setExcelLink(excelResponse.data);
         }
-        if (pdfResponse.data) {
-          setPdfLink(pdfResponse.data);
-        }
+        // if (pdfResponse.data) {
+        //   setPdfLink(pdfResponse.data);
+        // }
 
         toast.success("Reporte Generado Exitosamente");
       } catch (error) {
@@ -142,7 +142,7 @@ export default function BiggerBookPage() {
           </Button>
         </div>
       </div>
-      <DataTable columns={[]} data={[]}/>
+      <DataTable columns={[]} data={[]} />
     </div>
   );
 }

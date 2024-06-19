@@ -48,29 +48,28 @@ export default function BalanceAmountsPage() {
         );
 
         // Generar el reporte de PDF
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceAmounts`,
-          {
-            params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
-              Level: 5,
-            },
-            responseType: "text",
-          }
-        );
+        // const pdfResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceAmounts`,
+        //   {
+        //     params: {
+        //       InitDate: format(date.from, "yyyy/MM/dd"),
+        //       EndDate: format(date.to, "yyyy/MM/dd"),
+        //       Level: 5,
+        //     },
+        //     responseType: "text",
+        //   }
+        // );
 
         if (excelResponse.data) {
           setExcelLink(excelResponse.data);
         }
-        if (pdfResponse.data) {
-          setPdfLink(pdfResponse.data);
-        }
+        // if (pdfResponse.data) {
+        //   setPdfLink(pdfResponse.data);
+        // }
         toast.success("Reporte generado exitosamente");
       } catch (error) {
         console.error("Error al generar los reportes", error);
         toast.error("Error al generar el reporte, intente nuevamente");
-
       } finally {
         setIsLoading(false);
       }
@@ -141,7 +140,7 @@ export default function BalanceAmountsPage() {
           </Button>
         </div>
       </div>
-      <DataTable columns={[]} data={[]}/>
+      <DataTable columns={[]} data={[]} />
     </div>
   );
 }
