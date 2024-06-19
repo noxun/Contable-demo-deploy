@@ -202,13 +202,13 @@ export default function NewConceptPage() {
                     classNamePrefix="my-react-select"
                     menuPosition="absolute"
                     menuPlacement="top"
-                    styles={{
-                      menuList: (base) => ({
-                        ...base,
-                        height: 50,
-                        minHeight: 50, // your desired height
-                      }),
-                    }}
+                    // styles={{
+                    //   menuList: (base) => ({
+                    //     ...base,
+                    //     height: 50,
+                    //     minHeight: 50, // your desired height
+                    //   }),
+                    // }}
                     isSearchable={true}
                     options={accountOptions}
                     value={accountOptions.find(
