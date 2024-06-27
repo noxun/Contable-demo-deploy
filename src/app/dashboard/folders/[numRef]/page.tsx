@@ -12,6 +12,7 @@ import axios from "axios";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Link from "next/link";
 import useToken from "@/modules/shared/hooks/useToken";
+import { ButtonSendEmail } from "@/modules/folders/components/ButtonSendEmail";
 
 interface Props {
   params: { numRef: string };
@@ -46,7 +47,7 @@ export default function FolderPage({ params }: Props) {
         { headers: { "Content-Type": "application/json" } }
       ),
     staleTime: 1000 * 30 * 10,
-    enabled: isTokenReady
+    enabled: isTokenReady,
   });
 
   if (isLoading || isLoadingFolder) return "Loading...";
@@ -60,6 +61,7 @@ export default function FolderPage({ params }: Props) {
           Lista de pagos <span className="text-blue-500">{params.numRef}</span>
         </h2>
         <div className="flex gap-2">
+          <ButtonSendEmail />
           <ButtonPlanillaPdf
             data={data?.data ?? []}
             dataFolder={dataFolder?.data}

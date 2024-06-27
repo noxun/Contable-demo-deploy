@@ -6,11 +6,12 @@ import {
   User,
   Landmark,
   NotebookText,
-  Radical,
-  FileText,
   Folder,
   Text,
   Building,
+  ListRestart,
+  ListTodo,
+  SquareGanttChart,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -76,6 +77,16 @@ export const MENU_OPTIONS = [
         name: "Facturas",
         icon: <NotebookText className="h-5 w-5" />,
       },
+      {
+        path: "/dashboard/status-entities",
+        name: "Estado de cuentas",
+        icon: <ListTodo className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/kardex-entities",
+        name: "Kardex",
+        icon: <ListRestart className="h-5 w-5" />,
+      },
     ],
   },
   {
@@ -84,17 +95,17 @@ export const MENU_OPTIONS = [
       {
         path: "/dashboard/results/balance-amounts",
         name: "Balance de Sumas",
-        icon: <NotebookText className="h-5 w-5" />,
+        icon: <SquareGanttChart className="h-5 w-5" />,
       },
       {
         path: "/dashboard/results/balance-general",
         name: "Balance General",
-        icon: <NotebookText className="h-5 w-5" />,
+        icon: <SquareGanttChart className="h-5 w-5" />,
       },
       {
         path: "/dashboard/results/statement-income",
         name: "Estado de Resultados",
-        icon: <NotebookText className="h-5 w-5" />,
+        icon: <SquareGanttChart className="h-5 w-5" />,
       },
       // {
       //   path: "/dashboard/results/bigger-book",
