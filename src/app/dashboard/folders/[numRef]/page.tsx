@@ -15,12 +15,15 @@ import Link from "next/link";
 import useToken from "@/modules/shared/hooks/useToken";
 import { ButtonSendEmail } from "@/modules/folders/components/ButtonSendEmail";
 import QRCode from "qrcode";
+import { useEffect, useState } from "react";
 
 interface Props {
   params: { numRef: string };
 }
 export default function FolderPage({ params }: Props) {
   const { token, isTokenReady } = useToken();
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["ConceptExpense", params.numRef],
     queryFn: async (): Promise<{ data: IResponseConceptFolder[] }> =>
@@ -73,6 +76,18 @@ export default function FolderPage({ params }: Props) {
     enabled: isTokenReady,
   });
 
+  useEffect(() => {
+    if (dispatchDocument?.data?.url1) {
+      QRCode.toDataURL(dispatchDocument.data.url1)
+        .then((url) => {
+          setQrCodeUrl(url);
+        })
+        .catch(() => {
+          setQrCodeUrl(null);
+        });
+    }
+  }, [dispatchDocument?.data?.url1]);
+
   if (isLoading || isLoadingFolder || isLoadingDispatchDocument)
     return "Loading...";
   if (error) return "An error has occurred: " + error.message;
@@ -99,9 +114,7 @@ export default function FolderPage({ params }: Props) {
                 data={data?.data ?? []}
                 dataFolder={dataFolder?.data}
                 dispatchDocument={dispatchDocument?.data}
-                src={QRCode.toDataURL(dispatchDocument.data.url1)
-                  .then()
-                  .catch(() => null)}
+                src={qrCodeUrl}
               />
             </>
           ) : null}
