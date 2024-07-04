@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { IResponseConceptFolder, IResponseFolder } from "../interface/folders";
+import {
+  IResponseConceptFolder,
+  IResponseDispatchDocument,
+  IResponseFolder,
+} from "../interface/folders";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Document,
@@ -17,9 +21,10 @@ import CustomTablePDF from "@/modules/shared/components/generatePdf/CustomTableP
 interface Props {
   data: IResponseConceptFolder[];
   dataFolder: IResponseFolder | undefined;
+  dispatchDocument: IResponseDispatchDocument;
 }
 export const ButtonPlanillaPdf = (props: Props) => {
-  const { data, dataFolder } = props;
+  const { data, dataFolder, dispatchDocument } = props;
 
   return (
     <Dialog>

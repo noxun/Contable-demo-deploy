@@ -28,3 +28,24 @@ export interface IResponseConceptFolder {
   assetBs: number;
   amount?: number;
 }
+export interface IResponseDispatchDocument {
+  id: number;
+  num: number;
+  carpeta: string;
+  invoiceId: number;
+  totalSheet: number;
+  totalInvoice: number;
+  totalProcedure: number;
+  url1: string | null;
+  url2: string | null;
+  simpleDispatch: boolean;
+  status: string | null;
+  registerDate: string | null;
+  entityId: number;
+  totalSheetText: string;
+  totalInvoiceText: string;
+  totalProcedureText: string;
+  createdAt: string;
+  createdById: number;
+  entityDetail: null;
+}

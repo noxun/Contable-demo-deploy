@@ -10,7 +10,7 @@ interface Props {
   close?: boolean;
 }
 export const ListConceptExpense = ({ numRef, close = false }: Props) => {
-  const {token, isTokenReady} = useToken();
+  const { token, isTokenReady } = useToken();
 
   const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["ConceptExpense", numRef],

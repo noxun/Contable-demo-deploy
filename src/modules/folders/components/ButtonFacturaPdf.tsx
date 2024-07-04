@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { IResponseConceptFolder, IResponseFolder } from "../interface/folders";
+import {
+  IResponseConceptFolder,
+  IResponseDispatchDocument,
+  IResponseFolder,
+} from "../interface/folders";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Document,
@@ -13,13 +17,19 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { MakeInvoiceButton } from "./MakeInvoiceButton";
+import { numberWithDecimals } from "@/modules/shared/utils/validate";
 
 interface Props {
   data: IResponseConceptFolder[];
   dataFolder: IResponseFolder | undefined;
+  dispatchDocument: IResponseDispatchDocument;
+  src: string | null;
 }
 export const ButtonFacturaPdf = (props: Props) => {
-  const { data, dataFolder } = props;
+  const { data, dataFolder, dispatchDocument, src } = props;
+  const urlSiat = dispatchDocument.url1
+    ? new URL(dispatchDocument.url1).searchParams.get("cuf")
+    : null;
   return (
     <Dialog>
       <DialogTrigger>
@@ -29,12 +39,18 @@ export const ButtonFacturaPdf = (props: Props) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] h-[98vh] w-full flex flex-col justify-center p-0 border-none">
         <div className="h-full w-full">
-          <div className="flex items-center py-1 px-4 gap-4">
-            <h4 className="font-semibold text-lg">
-              Previsualización de la factura
-            </h4>
-            <MakeInvoiceButton />
-          </div>
+          {dispatchDocument.url1 ? null : (
+            <div className="flex items-center py-1 px-4 gap-4">
+              <h4 className="font-semibold text-lg">
+                Previsualización de la factura
+              </h4>
+              <MakeInvoiceButton
+                data={data}
+                dataFolder={dataFolder!}
+                dispatchDocument={dispatchDocument}
+              />
+            </div>
+          )}
           <PDFViewer showToolbar={true} className="h-full w-full rounded-lg">
             <Document>
               <Page
@@ -513,20 +529,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                         marginTop: "5px",
                       }}
                     >
-                      SON:{" "}
-                      {Number(
-                        data
-                          .filter((item) => item.typeOfExpense === "Factura")
-                          .reduce(
-                            (total, payment) =>
-                              Number(total) + Number(payment.assetBs ?? 0),
-                            0
-                          )
-                          .toFixed(2)
-                      ).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
+                      SON: {dispatchDocument?.totalInvoiceText}
                     </Text>
                     <View style={{ minWidth: "231px" }}>
                       <View
@@ -564,22 +567,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                           }}
                         >
                           <Text style={{ ...styles.title1 }}>
-                            {Number(
-                              data
-                                .filter(
-                                  (item) => item.typeOfExpense === "Factura"
-                                )
-                                .reduce(
-                                  (total, payment) =>
-                                    Number(total) +
-                                    Number(payment.assetBs ?? 0),
-                                  0
-                                )
-                                .toFixed(2)
-                            ).toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }) ?? "-"}
+                            {numberWithDecimals(dispatchDocument.totalInvoice)}
                           </Text>
                         </View>
                       </View>
@@ -655,22 +643,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                           }}
                         >
                           <Text style={{ ...styles.title1 }}>
-                            {Number(
-                              data
-                                .filter(
-                                  (item) => item.typeOfExpense === "Factura"
-                                )
-                                .reduce(
-                                  (total, payment) =>
-                                    Number(total) +
-                                    Number(payment.assetBs ?? 0),
-                                  0
-                                )
-                                .toFixed(2)
-                            ).toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }) ?? "-"}
+                            {numberWithDecimals(dispatchDocument.totalInvoice)}
                           </Text>
                         </View>
                       </View>
@@ -746,22 +719,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                           }}
                         >
                           <Text style={{ ...styles.title1 }}>
-                            {Number(
-                              data
-                                .filter(
-                                  (item) => item.typeOfExpense === "Factura"
-                                )
-                                .reduce(
-                                  (total, payment) =>
-                                    Number(total) +
-                                    Number(payment.assetBs ?? 0),
-                                  0
-                                )
-                                .toFixed(2)
-                            ).toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }) ?? "-"}
+                            {numberWithDecimals(dispatchDocument.totalInvoice)}
                           </Text>
                         </View>
                       </View>
@@ -800,22 +758,7 @@ export const ButtonFacturaPdf = (props: Props) => {
                           }}
                         >
                           <Text style={{ ...styles.title1 }}>
-                            {Number(
-                              data
-                                .filter(
-                                  (item) => item.typeOfExpense === "Factura"
-                                )
-                                .reduce(
-                                  (total, payment) =>
-                                    Number(total) +
-                                    Number(payment.assetBs ?? 0),
-                                  0
-                                )
-                                .toFixed(2)
-                            ).toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }) ?? "-"}
+                            {numberWithDecimals(dispatchDocument.totalInvoice)}
                           </Text>
                         </View>
                       </View>
@@ -865,11 +808,11 @@ export const ButtonFacturaPdf = (props: Props) => {
                         facturación en línea
                       </Text>
                     </View>
-                    {/* {src ? (
-                    <ImagePdf src={src} style={{ width: 100 }} />
-                  ) : (
-                    <View></View>
-                  )} */}
+                    {src ? (
+                      <Image src={src} style={{ width: 100 }} />
+                    ) : (
+                      <View></View>
+                    )}
                     <View></View>
                   </View>
                   <View

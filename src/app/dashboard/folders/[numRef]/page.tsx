@@ -5,6 +5,7 @@ import { ButtonPlanillaPdf } from "@/modules/folders/components/ButtonPlanillaPd
 import { TableConceptExpense } from "@/modules/folders/components/TableConceptExpense";
 import {
   IResponseConceptFolder,
+  IResponseDispatchDocument,
   IResponseFolder,
 } from "@/modules/folders/interface/folders";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import Link from "next/link";
 import useToken from "@/modules/shared/hooks/useToken";
 import { ButtonSendEmail } from "@/modules/folders/components/ButtonSendEmail";
+import QRCode from "qrcode";
 
 interface Props {
   params: { numRef: string };
@@ -50,9 +52,33 @@ export default function FolderPage({ params }: Props) {
     enabled: isTokenReady,
   });
 
-  if (isLoading || isLoadingFolder) return "Loading...";
+  const {
+    data: dispatchDocument,
+    isLoading: isLoadingDispatchDocument,
+    error: errorDispatchDocument,
+  } = useQuery({
+    queryKey: ["DispatchDocument", params.numRef],
+    queryFn: async (): Promise<{ data: IResponseDispatchDocument }> =>
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/DispatchDocument`,
+        { carpeta: params.numRef },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    staleTime: 1000 * 30 * 10,
+    enabled: isTokenReady,
+  });
+
+  if (isLoading || isLoadingFolder || isLoadingDispatchDocument)
+    return "Loading...";
   if (error) return "An error has occurred: " + error.message;
   if (errorFolder) return "An error has occurred: " + errorFolder.message;
+  if (errorDispatchDocument)
+    return "An error has occurred: " + errorDispatchDocument.message;
 
   return (
     <section className="px-6">
@@ -61,15 +87,24 @@ export default function FolderPage({ params }: Props) {
           Lista de pagos <span className="text-blue-500">{params.numRef}</span>
         </h2>
         <div className="flex gap-2">
-          <ButtonSendEmail />
-          <ButtonPlanillaPdf
-            data={data?.data ?? []}
-            dataFolder={dataFolder?.data}
-          />
-          <ButtonFacturaPdf
-            data={data?.data ?? []}
-            dataFolder={dataFolder?.data}
-          />
+          {dispatchDocument ? (
+            <>
+              {dispatchDocument.data.url1 ? <ButtonSendEmail /> : null}
+              <ButtonPlanillaPdf
+                data={data?.data ?? []}
+                dataFolder={dataFolder?.data}
+                dispatchDocument={dispatchDocument?.data}
+              />
+              <ButtonFacturaPdf
+                data={data?.data ?? []}
+                dataFolder={dataFolder?.data}
+                dispatchDocument={dispatchDocument?.data}
+                src={QRCode.toDataURL(dispatchDocument.data.url1)
+                  .then()
+                  .catch(() => null)}
+              />
+            </>
+          ) : null}
           <Link href={`/dashboard/folders/${params.numRef}/register-payment`}>
             <Button>
               Registrar Pagos{" "}

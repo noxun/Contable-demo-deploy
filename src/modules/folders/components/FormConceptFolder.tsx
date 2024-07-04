@@ -114,6 +114,7 @@ export const FormConceptFolder = (props: Props) => {
       gloss: any;
       conceptExpenseId?: number;
       carpeta?: string;
+      typeOfExpense?: string;
     }[] = concepts
       .filter((item) => item.amount && item.amount > 0)
       .map((item) => ({
@@ -131,6 +132,7 @@ export const FormConceptFolder = (props: Props) => {
         gloss: values.gloss,
         conceptExpenseId: item.id,
         carpeta: numRef,
+        typeOfExpense: item.typeOfExpense,
       }));
 
     const totalDebitBs = Number(
