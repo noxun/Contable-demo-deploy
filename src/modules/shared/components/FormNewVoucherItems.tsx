@@ -1,7 +1,13 @@
 "use client";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Button } from "@/components/ui/button";
-import Select, { SingleValue } from "react-select";
+import Select, {
+  CSSObjectWithLabel,
+  ControlProps,
+  GroupBase,
+  SingleValue,
+  StylesConfig,
+} from "react-select";
 import { Plus, Trash2 } from "lucide-react";
 import {
   Table,
@@ -87,13 +93,24 @@ export default function FormNewVoucherItems({
     //...item
   }));
 
-  const customStyles = {
-    control: (base, state) => ({
+  const customStyles: StylesConfig<any, false, GroupBase<any>> = {
+    // control: (base, state) => ({
+    //   ...base,
+    //   backgroundColor: state.isFocused ? "#1F2937" : "#FFFFFF", // dark:bg-neutral-700 or bg-white
+    //   borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:border-neutral-400 or border-neutral-300
+    //   "&:hover": {
+    //     borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:hover:border-neutral-400 or hover:border-neutral-300
+    //   },
+    // }),
+    control: (
+      base: CSSObjectWithLabel,
+      props: ControlProps<any, false, GroupBase<any>>
+    ) => ({
       ...base,
-      backgroundColor: state.isFocused ? "#1F2937" : "#FFFFFF", // dark:bg-neutral-700 or bg-white
-      borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:border-neutral-400 or border-neutral-300
+      backgroundColor: props.isFocused ? "#1F2937" : "#FFFFFF", // dark:bg-neutral-700 or bg-white
+      borderColor: props.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:border-neutral-400 or border-neutral-300
       "&:hover": {
-        borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:hover:border-neutral-400 or hover:border-neutral-300
+        borderColor: props.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:hover:border-neutral-400 or hover:border-neutral-300
       },
     }),
     menu: (base) => ({
