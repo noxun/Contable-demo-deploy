@@ -108,10 +108,15 @@ export const MENU_OPTIONS = [
         icon: <SquareGanttChart className="h-5 w-5" />,
       },
       // {
-      //   path: "/dashboard/results/bigger-book",
-      //   name: "Libro Mayor",
+      //   path: "/dashboard/results/diary-book",
+      //   name: "Libro Diario",
       //   icon: <NotebookText className="h-5 w-5" />,
       // },
+      {
+        path: "/dashboard/results/bigger-book",
+        name: "Libro Mayor",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
     ],
   },
 ];
