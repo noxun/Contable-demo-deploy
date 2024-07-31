@@ -60,7 +60,7 @@ export default function FormNewVoucher({
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {token, isTokenReady} = useToken();
+  const { token, isTokenReady } = useToken();
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -187,8 +187,7 @@ export default function FormNewVoucher({
       .string({
         required_error: "Fecha requerida.",
       })
-      .or(z.date())
-      .optional(),
+      .or(z.date()),
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
     checkNum: z.string().optional(),
@@ -260,7 +259,9 @@ export default function FormNewVoucher({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "dd/MM/yyyy")
+                            format(field.value, "dd 'de' MMMM 'de' yyyy", {
+                              locale: es,
+                            })
                           ) : (
                             <span>Seleccione la fecha</span>
                           )}
