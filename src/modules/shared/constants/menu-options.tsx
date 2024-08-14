@@ -117,6 +117,16 @@ export const MENU_OPTIONS = [
         name: "Libro Mayor",
         icon: <NotebookText className="h-5 w-5" />,
       },
+      {
+        path: "/dashboard/results/cash-flow",
+        name: "Flujo de Efectivo",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/results/heritage-evaluation",
+        name: "Evolucion del Patrimonio",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
     ],
   },
 ];
