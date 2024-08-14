@@ -33,6 +33,7 @@ export const SideMenu = () => {
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("loginResponse");
     router.push("/auth/login");
   };
 
