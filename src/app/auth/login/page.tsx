@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import axios, { AxiosError } from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { LoginResponse } from "@/lib/types";
+import useUserStore from "@/lib/userStore";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(4, {
@@ -26,36 +28,25 @@ const loginSchema = z.object({
 });
 
 type Login = z.infer<typeof loginSchema>;
-type LoginResponse = {
-  token: string;
-  user: User;
-};
 
-type User = {
-  id: number;
-  username: string;
-  name: string;
-  email: string;
-  fatherLastName: string;
-  motherLastName: string;
-  ci: string;
-  status: string;
-  photoUrl: any;
-  creationDate: string;
-  lastActive: string;
-};
 
 export default function LoginPage() {
+  const setLoginData = useUserStore((state)=> state.setLoginData);
   const router = useRouter();
 
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (data: LoginResponse) => {
       if (typeof window !== "undefined") {
+        localStorage.setItem("loginResponse", JSON.stringify(data));
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
+        setLoginData(data);
         toast.success("Inicio de Sesion Exitoso");
-        router.push("/dashboard/accounts");
+        if(!data.ufvRegister){
+          toast.warning("Registro de UFVs requerido");
+        }
+        router.push("/dashboard/income");
       }
     },
     onError: (error: AxiosError) => {
