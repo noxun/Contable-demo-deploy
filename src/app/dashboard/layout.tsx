@@ -6,8 +6,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideMenuMobile from "@/modules/shared/components/SideMenuMobile";
 import { Archive, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
+import UfvRegistrationDialog from "@/modules/ufv/components/UfvRegistrationDialog";
+import { useInitializeUserStore } from "@/modules/shared/hooks/useInitializeUserStore";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
+  
+  useInitializeUserStore();
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] ">
       <div className="hidden border-r bg-muted/40 md:block border-gray-700">
@@ -46,6 +51,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+      <UfvRegistrationDialog/>
     </div>
   );
 }
