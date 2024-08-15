@@ -21,23 +21,39 @@ export default function HeritageEvaluationPage() {
   const [showDialog, setShowDialog] = useState(false);
   const [documentLink, setDocumentLink] = useState<string | null>(null);
 
+  let token = null;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await axios.post("/api/Ufv/update-accounts", {
-        inSus,
-        exchangeRate,
-        date,
-      });
-      const response = await axios.get(`/api/Report/HeritageEvaluation`, {
+      await axios.post(
+        "http://localhost:5050/api/Ufv/update-accounts",
+        {
+          inSus,
+          exchangeRate,
+          date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const response = await axios.get(`http://localhost:5050/api/Report/HeritageEvaluation`, {
         params: {
           gestionInit,
           endDate: date,
           inSus,
         },
         responseType: "text",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setDocumentLink(response.data);

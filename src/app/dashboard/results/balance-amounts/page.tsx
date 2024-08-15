@@ -36,12 +36,13 @@ export default function BalanceAmountsPage() {
       try {
         // Generar el reporte de Excel
         const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/balanceDeSumas`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceAmounts`,
           {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
-              Level: 5,
+              inSus: true,
+              businessId: 0
             },
             responseType: "text",
           }

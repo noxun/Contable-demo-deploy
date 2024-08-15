@@ -41,7 +41,8 @@ export default function BiggerBookPage() {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
               type: "xlsx",
-              //Level: 5,
+              inSus: true,
+              businessId: 0
             },
             responseType: "text",
           }

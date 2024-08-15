@@ -35,12 +35,15 @@ export default function StatementIncomePage() {
       try {
         // Generar el reporte de Excel
         const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/estadoDeResultado`,
+          //Pedir arreglo en el backend que sea Statement y no Stament
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/StamentIncome`,
           {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
               Level: 5,
+              inSus: true,
+              businessId: 0,
             },
             responseType: "text",
           }

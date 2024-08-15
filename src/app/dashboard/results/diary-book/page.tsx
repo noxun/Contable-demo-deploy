@@ -35,38 +35,37 @@ export default function BiggerBookPage() {
       try {
         // Generar el reporte de Excel
         const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/DiaryBook`,
           {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
               type: "xlsx",
-              //Level: 5,
+              inSus: false,
             },
             responseType: "text",
           }
         );
 
         // Generar el reporte de PDF
-        // const pdfResponse = await axios.get(
-        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-        //   {
-        //     params: {
-        //       InitDate: format(date.from, "yyyy/MM/dd"),
-        //       EndDate: format(date.to, "yyyy/MM/dd"),
-        //       //Level: 5,
-        //       type: "pdf"
-        //     },
-        //     responseType: "text",
-        //   }
-        // );
-
+        const pdfResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/DiaryBook`,
+          {
+            params: {
+              InitDate: format(date.from, "yyyy/MM/dd"),
+              EndDate: format(date.to, "yyyy/MM/dd"),
+              type: "pdf",
+              inSus: false,
+            },
+            responseType: "text",
+          }
+        );
         if (excelResponse.data) {
           setExcelLink(excelResponse.data);
         }
-        // if (pdfResponse.data) {
-        //   setPdfLink(pdfResponse.data);
-        // }
+        if (pdfResponse.data) {
+          setPdfLink(pdfResponse.data);
+        }
 
         toast.success("Reporte Generado Exitosamente");
       } catch (error) {

@@ -35,7 +35,7 @@ export default function ClashFlowPage() {
   const [pdfLink, setPdfLink] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [docs, setDocs] = useState<{ uri: string }[]>([]);
+  const [docs, setDocs] = useState<{ uri: string }[]>([{uri:"https://res.cloudinary.com/dm0aq4bey/raw/upload/v1717432529/report/balanceSum.xlsx"}]);
   const [generatedFiles, setGeneratedFiles] = useState<
     { type: string; date: string; link: string }[]
   >([]);
@@ -52,12 +52,13 @@ export default function ClashFlowPage() {
       try {
         // Generar el reporte de Excel
         const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/ClashFlow`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/ClashFlow`,
           {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
-              Level: 5,
+              type: "xlsx",
+              inSus: true,
             },
             responseType: "text",
           }
@@ -70,7 +71,8 @@ export default function ClashFlowPage() {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
-              Level: 5,
+              type: "pdf",
+              inSus: true,
             },
             responseType: "text",
           }
