@@ -107,11 +107,11 @@ export const MENU_OPTIONS = [
         name: "Estado de Resultados",
         icon: <SquareGanttChart className="h-5 w-5" />,
       },
-      // {
-      //   path: "/dashboard/results/diary-book",
-      //   name: "Libro Diario",
-      //   icon: <NotebookText className="h-5 w-5" />,
-      // },
+      {
+        path: "/dashboard/results/diary-book",
+        name: "Libro Diario",
+        icon: <NotebookText className="h-5 w-5" />,
+      },
       {
         path: "/dashboard/results/bigger-book",
         name: "Libro Mayor",
