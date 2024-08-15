@@ -11,10 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function HeritageEvaluationPage() {
   const [gestionInit, setGestionInit] = useState<number | "">(2022);
-  const [inSus, setInSus] = useState(true);
+  const [inSus, setInSus] = useState<boolean | "indeterminate">(true);
   const [exchangeRate, setExchangeRate] = useState(6.97);
   const [date, setDate] = useState<string>("2024-02-20");
   const [isLoading, setIsLoading] = useState(false);
@@ -44,23 +46,26 @@ export default function HeritageEvaluationPage() {
           },
         }
       );
-      const response = await axios.get(`http://localhost:5050/api/Report/HeritageEvaluation`, {
-        params: {
-          gestionInit,
-          endDate: date,
-          inSus,
-        },
-        responseType: "text",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `http://localhost:5050/api/Report/HeritageEvaluation`,
+        {
+          params: {
+            gestionInit,
+            endDate: date,
+            inSus,
+          },
+          responseType: "text",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       setDocumentLink(response.data);
       setShowDialog(true);
     } catch (error) {
       console.error("Error al enviar o recibir datos", error);
-      alert("Error al procesar la solicitud");
+      toast.error("Error al procesar la solicitud");
     } finally {
       setIsLoading(false);
     }
@@ -85,12 +90,7 @@ export default function HeritageEvaluationPage() {
           <label htmlFor="inSus" className="block text-sm font-medium">
             En Sus
           </label>
-          <Input
-            id="inSus"
-            type="checkbox"
-            checked={inSus}
-            onChange={(e) => setInSus(e.target.checked)}
-          />
+          <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
         </div>
         <div>
           <label htmlFor="exchangeRate" className="block text-sm font-medium">
