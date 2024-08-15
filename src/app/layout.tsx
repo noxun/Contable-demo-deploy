@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "@cyntler/react-doc-viewer/dist/index.css";
 import { Providers } from "./providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: Props) {
             disableTransitionOnChange
           >
             <Providers>{children}</Providers>
-            <Toaster />
+            <Toaster expand richColors/>
           </ThemeProvider>
         </body>
       </html>
