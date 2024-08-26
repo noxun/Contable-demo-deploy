@@ -1,6 +1,7 @@
 import { Ufv } from "./types";
 import { api } from "./api";
 import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
+import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -28,4 +29,34 @@ export async function postUfvValues(data: UfvRegister) {
   setAuthToken(token);
   const response = await api.post(`/api/Ufv/registerUfvDollar`, data);
   return response.data;
+}
+
+export async function fetchVouchers(
+  voucherType: VoucherType,
+  page: number = 1,
+  pageSize: number = 10
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Voucher/All`, {
+    params: {
+      type: voucherType,
+      PageNumber: page,
+      PageSize: pageSize,
+    },
+  });
+
+  const paginationHeader = response.headers
+
+  console.log(response)
+  const paginationInfo = paginationHeader ? JSON.parse(paginationHeader["pagination"]) : null;
+
+  //console.log("what",paginationInfo);
+  return {
+    data: response.data as Voucher[],
+    pagination: paginationInfo,
+  };
 }
