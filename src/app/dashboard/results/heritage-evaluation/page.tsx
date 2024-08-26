@@ -136,7 +136,12 @@ export default function HeritageEvaluationPage() {
             </DialogDescription>
           </DialogHeader>
           {documentLink && (
-            <a className="text-blue-500 underline" href={documentLink} target="_blank" rel="noopener noreferrer">
+            <a
+              className="text-blue-500 underline"
+              href={documentLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Descargar Documento
             </a>
           )}
