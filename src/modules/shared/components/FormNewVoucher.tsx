@@ -183,6 +183,7 @@ export default function FormNewVoucher({
   const voucherFormSchema = z.object({
     id: z.number().optional(),
     num: z.number().optional(),
+    branch: z.string().optional(),
     voucherDate: z
       .string({
         required_error: "Fecha requerida.",
@@ -206,6 +207,7 @@ export default function FormNewVoucher({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
       exchangeRate: 6.97,
+      branch: "",
       coin: "BOB",
       checkNum: "",
       gloss: "",
@@ -222,7 +224,6 @@ export default function FormNewVoucher({
       return total + currentItem.assetBs;
     }, 0);
 
-    console.log(debitTotal === assetTotal);
     setButtonEnabled(debitTotal === assetTotal);
   }, [voucherItems]);
 
@@ -358,6 +359,81 @@ export default function FormNewVoucher({
                           {bank.sigla} - {bank.name}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="branch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sucursal</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sucursal" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Sucursal 1">Sucursal 1</SelectItem>
+                      <SelectItem value="Sucursal 2">Sucursal 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="branch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Centro de costos</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Centro de costos" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Diego">Diego</SelectItem>
+                      <SelectItem value="Daniel">Daniel</SelectItem>
+                      <SelectItem value="Carmen">Carmen</SelectItem>
+                      <SelectItem value="Monroy">Monroy</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="branch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de registro</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tipo de registro" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Ingreso">Ingreso</SelectItem>
+                      <SelectItem value="Egreso">Egreso</SelectItem>
+                      <SelectItem value="Traspaso">Traspaso</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
