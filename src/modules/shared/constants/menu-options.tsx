@@ -18,20 +18,25 @@ export const MENU_OPTIONS = [
     name: "Transacciones",
     routes: [
       {
-        path: "/dashboard/income",
-        name: "Ingresos",
-        icon: <FileInput className="h-5 w-5" />,
-      },
-      {
-        path: "/dashboard/expenses",
-        name: "Egresos",
-        icon: <FileOutput className="h-5 w-5" />,
-      },
-      {
-        path: "/dashboard/diary",
-        name: "Diarios",
+        path: "/dashboard/transactions",
+        name: "Transacciones",
         icon: <FileCheck2 className="h-5 w-5" />,
       },
+      // {
+      //   path: "/dashboard/income",
+      //   name: "Ingresos",
+      //   icon: <FileInput className="h-5 w-5" />,
+      // },
+      // {
+      //   path: "/dashboard/expenses",
+      //   name: "Egresos",
+      //   icon: <FileOutput className="h-5 w-5" />,
+      // },
+      // {
+      //   path: "/dashboard/diary",
+      //   name: "Diarios",
+      //   icon: <FileCheck2 className="h-5 w-5" />,
+      // },
       {
         path: "/dashboard/accounts",
         name: "Cuentas",

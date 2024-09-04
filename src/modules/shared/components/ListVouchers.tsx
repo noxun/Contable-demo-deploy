@@ -39,8 +39,6 @@ export default function ListVouchers({
   const vouchers = data?.data ?? [];
   const pagination = data.pagination;
 
-  console.log(pagination);
-
   const handlePrevious = () => {
     if (page > 1) {
       setPage((prev) => prev - 1);

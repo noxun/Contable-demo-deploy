@@ -49,10 +49,11 @@ export async function fetchVouchers(
     },
   });
 
-  const paginationHeader = response.headers
+  const paginationHeader = response.headers;
 
-  console.log(response)
-  const paginationInfo = paginationHeader ? JSON.parse(paginationHeader["pagination"]) : null;
+  const paginationInfo = paginationHeader
+    ? JSON.parse(paginationHeader["pagination"])
+    : null;
 
   //console.log("what",paginationInfo);
   return {
