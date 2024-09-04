@@ -46,7 +46,7 @@ export default function LoginPage() {
         if(!data.ufvRegister){
           toast.warning("Registro de UFVs requerido");
         }
-        router.push("/dashboard/income");
+        router.push("/dashboard/transactions");
       }
     },
     onError: (error: AxiosError) => {
