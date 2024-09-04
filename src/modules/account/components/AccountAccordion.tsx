@@ -57,7 +57,7 @@ function AccountAccordion() {
     if (!typeCompanyQuery.isLoading && !typeCompanyQuery.isPending) {
       accountsQuery.refetch();
     }
-  }, [type]);
+  }, [accountsQuery, type, typeCompanyQuery.isLoading, typeCompanyQuery.isPending]);
 
   if (typeCompanyQuery.isLoading || typeCompanyQuery.isPending) {
     return null;
