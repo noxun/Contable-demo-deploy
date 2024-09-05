@@ -247,7 +247,7 @@ export default function FormNewVoucher({
               control={voucherForm.control}
               name="voucherDate"
               render={({ field }) => (
-                <FormItem className="flex flex-col mt-2">
+                <FormItem className="flex flex-col mt-2 justify-around">
                   <FormLabel>Fecha</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -286,7 +286,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="exchangeRate"
               render={({ field }) => (
@@ -298,7 +298,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={voucherForm.control}
               name="coin"
@@ -415,7 +415,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="branch"
               render={({ field }) => (
@@ -439,7 +439,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <FormField
             control={voucherForm.control}
