@@ -13,7 +13,7 @@ import Select, {
   SingleValue,
   StylesConfig,
 } from "react-select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function AccountAccordion() {
   const { token, isTokenReady } = useToken();
@@ -36,7 +36,7 @@ function AccountAccordion() {
   });
 
   const accountsQuery = useQuery({
-    queryKey: ["accountsAll"],
+    queryKey: ["accountsAll", type],
     queryFn: async (): Promise<{ data: Account[] }> =>
       await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/All${
@@ -49,15 +49,15 @@ function AccountAccordion() {
           },
         }
       ),
-    enabled: isTokenReady,
+    enabled: isTokenReady && !typeCompanyQuery.isLoading,
     staleTime: 1000 * 60 * 10, //volver a hacer fetch luego de 10 min
   });
 
-  useEffect(() => {
-    if (!typeCompanyQuery.isLoading && !typeCompanyQuery.isPending) {
-      accountsQuery.refetch();
-    }
-  }, [accountsQuery, type, typeCompanyQuery.isLoading, typeCompanyQuery.isPending]);
+  // useEffect(() => {
+  //   if (!typeCompanyQuery.isLoading && !typeCompanyQuery.isPending) {
+  //     accountsQuery.refetch();
+  //   }
+  // }, [accountsQuery, type, typeCompanyQuery.isLoading, typeCompanyQuery.isPending]);
 
   if (typeCompanyQuery.isLoading || typeCompanyQuery.isPending) {
     return null;
