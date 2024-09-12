@@ -206,7 +206,7 @@ export default function FormNewVoucherItems({
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(
-                    (option) => option.value === item.accountId
+                    (option) => option.value === item?.accountId?.toString()
                   )}
                   onChange={(option) =>
                     onSelectChange(

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import MySelect from "react-select"
 import {
   Form,
   FormControl,
@@ -48,6 +49,7 @@ import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import useToken from "../hooks/useToken";
+import { fetchAllModelSeats, fetchModelSeatsItems } from "@/lib/data";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -61,6 +63,8 @@ export default function FormNewVoucher({
   const router = useRouter();
   const queryClient = useQueryClient();
   const { token, isTokenReady } = useToken();
+
+  const [selectedModelSeat, setSelectedModelSeat] = useState(null);
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -87,6 +91,15 @@ export default function FormNewVoucher({
       }),
     enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
+  });
+
+  const {
+    data: modelSeats,
+    isLoading: isLoadingModelSeats,
+    isPending: isPendingModelSeats,
+  } = useQuery({
+    queryKey: ["AllModelSeats"],
+    queryFn: fetchAllModelSeats,
   });
 
   const accountsQuery = useQuery({
@@ -215,6 +228,17 @@ export default function FormNewVoucher({
     },
   });
 
+  const handleModelSeatChange = async (selectedOption: any) => {
+    setSelectedModelSeat(selectedOption);
+    const modelSeatDetails = await fetchModelSeatsItems(selectedOption.value);
+    const updatedVoucherItems = modelSeatDetails.accounts.map((item) => ({
+      ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
+      accountId: item.accountId,
+    }));
+
+    setVoucherItems(updatedVoucherItems);
+  };
+
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
       return total + currentItem.debitBs;
@@ -233,7 +257,10 @@ export default function FormNewVoucher({
     banksQuery.data === undefined ||
     accountsQuery.isPending ||
     accountsQuery.isLoading ||
-    accountsQuery.data === undefined
+    accountsQuery.data === undefined ||
+    modelSeats === undefined ||
+    isLoadingModelSeats ||
+    isPendingModelSeats
   ) {
     return <Spinner />;
   }
@@ -242,6 +269,21 @@ export default function FormNewVoucher({
     <div>
       <Form {...voucherForm}>
         <form onSubmit={voucherForm.handleSubmit(onSubmit)}>
+          <div className="mb-4">
+            <label className="mb-2 block text-sm font-medium">
+              Selecciona un Model Seat
+            </label>
+            <MySelect
+              options={modelSeats.map((seat) => ({
+                label: seat.description,
+                value: seat.id,
+              }))}
+              value={selectedModelSeat}
+              onChange={handleModelSeatChange}
+              isLoading={isLoadingModelSeats}
+              placeholder="Selecciona un Model Seat"
+            />
+          </div>
           <div className="flex gap-2 mb-2">
             <FormField
               control={voucherForm.control}
