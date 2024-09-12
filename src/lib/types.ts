@@ -42,3 +42,28 @@ export type SiatMotionAccount = {
   isMotion: boolean;
   isCost: boolean;
 };
+
+export type ModelSeat = {
+  id: number;
+  description: string;
+  accountModelSeats: any;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ModelSeatItem = {
+  accountId: number | string;
+  debit: boolean;
+  asset: boolean;
+}
+
+export type PostModelSeat = {
+  description: string;
+  accounts: ModelSeatItem[]
+}
+
+export type ModelSeatDetailResponse = {
+  id: number
+  description: string
+  accounts: ModelSeatItem[]
+}

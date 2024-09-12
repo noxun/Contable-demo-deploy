@@ -13,6 +13,7 @@ import {
   ListTodo,
   SquareGanttChart,
   Link,
+  LayoutTemplate,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -47,6 +48,11 @@ export const MENU_OPTIONS = [
         path: "/dashboard/link",
         name: "Enlazar Cuentas",
         icon: <Link className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/model-seats",
+        name: "Asientos Modelo",
+        icon: <LayoutTemplate className="h-5 w-5" />,
       },
     ],
   },

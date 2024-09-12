@@ -1,8 +1,9 @@
-import { AccountRelation, SiatMotionAccount, Ufv } from "./types";
+import { AccountRelation, ModelSeat, ModelSeatDetailResponse, PostModelSeat, SiatMotionAccount, Ufv } from "./types";
 import { api } from "./api";
 import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
+import { Account } from "@/modules/account/types/account";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -102,4 +103,56 @@ export async function deleteConciliation(data: LinkAccountForm) {
   //cambiar esto para que reciba ya sea paths o queryStrings
   const response = await api.delete(`/api/Conciliation`, { data: data });
   return response.data;
+}
+
+export async function fetchAllModelSeats() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/ModelSeat`);
+  return response.data as ModelSeat[];
+}
+
+export async function deleteModelSeat() {
+  return; //WIP
+}
+
+export async function fetchAllMotionAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Account/Filter`, {
+    params: {
+      isMotion: true,
+    },
+  });
+  return response.data as Account[]
+}
+
+export async function postModelSeat(data:PostModelSeat) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post('/api/ModelSeat', data)
+  return response.data;
+}
+
+export async function fetchModelSeatsItems(modelSeatId:string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/ModelSeat/detail`,{
+    params: {
+      modelSeatId: modelSeatId
+    }
+  })
+  return response.data as ModelSeatDetailResponse
 }
