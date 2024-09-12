@@ -21,4 +21,24 @@ export type User = {
 export type Ufv = {
   tc: string;
   ufv: string;
-}
+};
+
+export type AccountRelation = {
+  accountId: number;
+  accountCode: string;
+  accountDescription: string;
+  accountIdRef: number;
+  accountCodeRef: any;
+  accountDescriptionRef: any;
+};
+
+export type SiatMotionAccount = {
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+};

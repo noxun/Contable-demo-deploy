@@ -12,6 +12,7 @@ import {
   ListRestart,
   ListTodo,
   SquareGanttChart,
+  Link,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -41,6 +42,11 @@ export const MENU_OPTIONS = [
         path: "/dashboard/accounts",
         name: "Cuentas",
         icon: <ListTree className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/link",
+        name: "Enlazar Cuentas",
+        icon: <Link className="h-5 w-5" />,
       },
     ],
   },

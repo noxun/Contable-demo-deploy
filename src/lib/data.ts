@@ -1,7 +1,8 @@
-import { Ufv } from "./types";
+import { AccountRelation, SiatMotionAccount, Ufv } from "./types";
 import { api } from "./api";
 import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
+import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -60,4 +61,45 @@ export async function fetchVouchers(
     data: response.data as Voucher[],
     pagination: paginationInfo,
   };
+}
+
+export async function fetchAllMotionAccountsWithRelations() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Account/Relations`);
+  return response.data as AccountRelation[];
+}
+
+export async function fetchAllSiatMotionAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Account/SiatMotion`);
+  return response.data as SiatMotionAccount[];
+}
+
+export async function postConciliation(data: LinkAccountForm) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/Conciliation`, data);
+  return response.data;
+}
+
+export async function deleteConciliation(data: LinkAccountForm) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  //cambiar esto para que reciba ya sea paths o queryStrings
+  const response = await api.delete(`/api/Conciliation`, { data: data });
+  return response.data;
 }
