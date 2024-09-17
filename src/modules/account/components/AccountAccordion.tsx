@@ -14,6 +14,7 @@ import Select, {
   StylesConfig,
 } from "react-select";
 import { useState } from "react";
+import ImportAccountDialog from "./ImportAccountDialog";
 
 function AccountAccordion() {
   const { token, isTokenReady } = useToken();
@@ -145,7 +146,7 @@ function AccountAccordion() {
 
   return (
     <div>
-      <div className="w-[300px]">
+      <div className="w-full flex justify-between">
         <Select
           maxMenuHeight={200}
           className="my-react-select-container"
@@ -173,6 +174,7 @@ function AccountAccordion() {
             )
           }
         />
+        <ImportAccountDialog/>
       </div>
       <br />
       <ChildAccounts accounts={accountsQuery.data?.data} />
