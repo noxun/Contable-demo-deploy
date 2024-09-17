@@ -55,15 +55,20 @@ export type ModelSeatItem = {
   accountId: number | string;
   debit: boolean;
   asset: boolean;
-}
+};
 
 export type PostModelSeat = {
   description: string;
-  accounts: ModelSeatItem[]
-}
+  accounts: ModelSeatItem[];
+};
 
 export type ModelSeatDetailResponse = {
-  id: number
-  description: string
-  accounts: ModelSeatItem[]
-}
+  id: number;
+  description: string;
+  accounts: ModelSeatItem[];
+};
+
+export type TypeCompany = {
+  id: number;
+  name: string;
+};
