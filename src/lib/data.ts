@@ -1,4 +1,12 @@
-import { AccountRelation, ModelSeat, ModelSeatDetailResponse, PostModelSeat, SiatMotionAccount, Ufv } from "./types";
+import {
+  AccountRelation,
+  ModelSeat,
+  ModelSeatDetailResponse,
+  PostModelSeat,
+  SiatMotionAccount,
+  TypeCompany,
+  Ufv,
+} from "./types";
 import { api } from "./api";
 import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
@@ -130,29 +138,51 @@ export async function fetchAllMotionAccounts() {
       isMotion: true,
     },
   });
-  return response.data as Account[]
+  return response.data as Account[];
 }
 
-export async function postModelSeat(data:PostModelSeat) {
+export async function postModelSeat(data: PostModelSeat) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post('/api/ModelSeat', data)
+  const response = await api.post("/api/ModelSeat", data);
   return response.data;
 }
 
-export async function fetchModelSeatsItems(modelSeatId:string) {
+export async function fetchModelSeatsItems(modelSeatId: string) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/ModelSeat/detail`,{
+  const response = await api.get(`/api/ModelSeat/detail`, {
     params: {
-      modelSeatId: modelSeatId
-    }
-  })
-  return response.data as ModelSeatDetailResponse
+      modelSeatId: modelSeatId,
+    },
+  });
+  return response.data as ModelSeatDetailResponse;
+}
+
+export async function fetchTypeCompanies() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/TypeCompany`);
+  return response.data as TypeCompany[];
+}
+
+export async function importAccountFromExcel(data: FormData) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/Account/ReadXlxs`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
 }
