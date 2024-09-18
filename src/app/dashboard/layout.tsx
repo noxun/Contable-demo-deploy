@@ -4,13 +4,12 @@ import { Button } from "@/components/ui/button";
 import { SideMenu } from "@/modules/shared/components/SideMenu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideMenuMobile from "@/modules/shared/components/SideMenuMobile";
-import { Archive, Menu } from "lucide-react";
+import { Archive, Bolt, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import UfvRegistrationDialog from "@/modules/ufv/components/UfvRegistrationDialog";
 import { useInitializeUserStore } from "@/modules/shared/hooks/useInitializeUserStore";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
-  
   useInitializeUserStore();
 
   return (
@@ -46,12 +45,17 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               <SideMenuMobile />
             </SheetContent>
           </Sheet>
+          <Button asChild variant="outline" size="icon">
+            <Link className="sm:ml-auto" href="/dashboard/config">
+              <Bolt className="size-4" />
+            </Link>
+          </Button>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}
         </main>
       </div>
-      <UfvRegistrationDialog/>
+      <UfvRegistrationDialog />
     </div>
   );
 }
