@@ -43,12 +43,12 @@ export const TableBank = (props: { data: IBank[] }) => {
 
   const columns: ColumnDef<IBank>[] = [
     {
-      accessorKey: "sigla",
-      header: "Sigla",
+      accessorKey: "name",
+      header: "Nombre",
     },
     {
-      accessorKey: "nroCuentaBancaria",
-      header: "nroCuentaBancaria",
+      accessorKey: "descripcion",
+      header: "descripcion",
     },
 
     {
