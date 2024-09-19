@@ -14,12 +14,14 @@ import {
 import { Account } from "@/modules/account/types/account";
 import { ModelSeatItem } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 type FormNewModelSeatItemsProps = {
   modelSeatItems: ModelSeatItem[];
   setModelSeatItems: Dispatch<SetStateAction<ModelSeatItem[]>>;
   accountData: Account[];
 };
+
 export default function FormNewModelSeatItems({
   accountData,
   modelSeatItems,
@@ -29,6 +31,17 @@ export default function FormNewModelSeatItems({
   function removeVoucherItem(index: number) {
     const updatedModelSeatItems = modelSeatItems.filter((_, i) => i != index);
     setModelSeatItems([...updatedModelSeatItems]);
+  }
+
+  function handlePercentageChange(index: number, value: string) {
+    const percentage = parseFloat(value);
+    if (!isNaN(percentage)) {
+      setModelSeatItems((prev) => {
+        const updatedItems = [...prev];
+        updatedItems[index].percentage = percentage;
+        return updatedItems;
+      });
+    }
   }
 
   return (
@@ -44,6 +57,7 @@ export default function FormNewModelSeatItems({
                 accountId: "",
                 debit: false,
                 asset: false,
+                percentage: 0
               },
             ])
           }
@@ -58,6 +72,7 @@ export default function FormNewModelSeatItems({
             <TableHead>Cuenta</TableHead>
             <TableHead>Es Debe</TableHead>
             <TableHead>Es Haber</TableHead>
+            <TableHead>Porcentaje</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -113,6 +128,16 @@ export default function FormNewModelSeatItems({
                       return updatedItems;
                     })
                   }
+                />
+              </TableCell>
+              <TableCell>
+                <Input
+                  type="number"
+                  value={item.percentage}
+                  onChange={(e) => handlePercentageChange(index, e.target.value)}
+                  min="0"
+                  max="100"
+                  step="0.01"
                 />
               </TableCell>
               <TableCell>

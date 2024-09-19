@@ -16,11 +16,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { Input } from "@/components/ui/input";
-//import FormNewVoucherItems from "./FormNewVoucherItems";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Spinner from "@/components/ui/spinner";
 import useMotionAccounts from "@/modules/shared/hooks/useMotionAccounts";
 import { ModelSeatItem, PostModelSeat } from "@/lib/types";
@@ -36,9 +41,9 @@ export default function FormNewModelSeat() {
       accountId: "",
       debit: false,
       asset: false,
+      percentage: 0,
     },
   ]);
-  
 
   const {
     data: motionAccounts,
@@ -51,7 +56,7 @@ export default function FormNewModelSeat() {
     onSuccess: () => {
       toast.success("Asiento Modelo Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
-      router.push(`/dashboard/model-seats`); //de momento, luego pasar el route
+      router.push(`/dashboard/model-seats`);
     },
     onError: (error) => {
       console.log(error);
@@ -62,6 +67,7 @@ export default function FormNewModelSeat() {
   function onSubmit(values: z.infer<typeof modelSeatFormSchema>) {
     const newValues = {
       description: values.description,
+      typeTransaction: values.typeTransaction,
       accounts: modelSeatItems
     }
     console.log(newValues)
@@ -76,6 +82,7 @@ export default function FormNewModelSeat() {
 
   const modelSeatFormSchema = z.object({
     description: z.string(),
+    typeTransaction: z.enum(["ingresos", "egresos", "diarios"]),
     accounts: z.array(modelSeatItemSchema).optional(),
   });
 
@@ -83,6 +90,7 @@ export default function FormNewModelSeat() {
     resolver: zodResolver(modelSeatFormSchema),
     defaultValues: {
       description: "",
+      typeTransaction: "ingresos",
     },
   });
 
@@ -105,6 +113,31 @@ export default function FormNewModelSeat() {
                 </FormControl>
                 <FormDescription>
                   La descripcion del asiento a guardar
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={modelSeatForm.control}
+            name="typeTransaction"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de Transacción</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione el tipo de transacción" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="ingresos">Ingresos</SelectItem>
+                    <SelectItem value="egresos">Egresos</SelectItem>
+                    <SelectItem value="diarios">Diarios</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  Seleccione el tipo de transacción para este asiento modelo
                 </FormDescription>
                 <FormMessage />
               </FormItem>

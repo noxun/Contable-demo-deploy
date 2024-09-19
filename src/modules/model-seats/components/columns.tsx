@@ -15,6 +15,10 @@ export const columns: ColumnDef<ModelSeat>[] = [
     header: "Descripciom",
   },
   {
+    accessorKey:"typeTransaction",
+    header: "Tipo de transaccion"
+  },
+  {
     accessorKey: "createdAt",
     header: "Creado el",
   },
