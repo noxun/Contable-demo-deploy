@@ -46,6 +46,7 @@ export type SiatMotionAccount = {
 export type ModelSeat = {
   id: number;
   description: string;
+  typeTransaction: string;
   accountModelSeats: any;
   createdAt: string;
   updatedAt: string;
@@ -55,6 +56,7 @@ export type ModelSeatItem = {
   accountId: number | string;
   debit: boolean;
   asset: boolean;
+  percentage: number;
 };
 
 export type PostModelSeat = {

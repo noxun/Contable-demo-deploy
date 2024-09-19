@@ -12,6 +12,7 @@ import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
+import axios from "axios";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -185,4 +186,42 @@ export async function importAccountFromExcel(data: FormData) {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
+}
+
+interface AccountingBox {
+  // Define aquí los campos específicos de AccountingBox
+  // Por ejemplo:
+  // id: number;
+  // name: string;
+  [key: string]: any; // Permite cualquier propiedad adicional
+}
+
+interface CostCenter {
+  // Define aquí los campos específicos de CostCenter
+  // Por ejemplo:
+  // id: number;
+  // code: string;
+  // description: string;
+  [key: string]: any; // Permite cualquier propiedad adicional
+}
+
+export async function fetchAccountingBox(): Promise<AccountingBox[]> {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/AccountingBox`);
+  return response.data as AccountingBox[];
+}
+
+
+export async function fetchCostCenter(): Promise<CostCenter[]> {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/CostCenter`);
+  return response.data as CostCenter[];
 }

@@ -75,6 +75,16 @@ export const MENU_OPTIONS = [
         icon: <Landmark className="h-5 w-5" />,
       },
       {
+        path: "/dashboard/accounting-box",
+        name: "Caja",
+        icon: <Landmark className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/cost-center",
+        name: "Centro de costos",
+        icon: <Landmark className="h-5 w-5" />,
+      },
+      {
         path: "/dashboard/users",
         name: "Usuarios",
         icon: <User className="h-5 w-5" />,
