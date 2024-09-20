@@ -129,7 +129,7 @@ export default function ImportAccountForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Guardar</Button>
+        <Button disabled={importAccountMutation.isPending} type="submit">Guardar</Button>
       </form>
     </Form>
   );
