@@ -10,7 +10,7 @@ import {
 import { File } from "lucide-react";
 import ListBankExcerpt from "./ListBankExcerpt";
 
-export default function DialogNewExcerpt({
+export default function DialogExcerptTable({
   bankId,
 }: {
   bankId: string | number;

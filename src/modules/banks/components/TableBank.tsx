@@ -26,6 +26,7 @@ import EditBank from "./EditBank";
 import { useState } from "react";
 import { IBank } from "../interface/banks";
 import DialogNewExcerpt from "./DialogNewExcerpt";
+import DialogExcerptTable from "./DialogExcerptTable";
 
 export const TableBank = (props: { data: IBank[] }) => {
   const { data } = props;
@@ -59,6 +60,7 @@ export const TableBank = (props: { data: IBank[] }) => {
         const bank = row.original;
         return (
           <>
+          <DialogExcerptTable bankId={bank.id}/>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
