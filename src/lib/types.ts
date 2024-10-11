@@ -2,7 +2,23 @@ export type LoginResponse = {
   token: string;
   user: User;
   ufvRegister: boolean;
+  rols: Role[];
 };
+
+export type Role = {
+  id: number;
+  name: string;
+  main: boolean;
+  nameRef: number;
+};
+
+export type RoleMenu = {
+  id: number;
+  name: string;
+  main: boolean;
+  nameRef: number;
+  rolsList?: Role[]
+}
 
 export type User = {
   id: number;
@@ -73,4 +89,13 @@ export type ModelSeatDetailResponse = {
 export type TypeCompany = {
   id: number;
   name: string;
+};
+
+export type Branch = {
+  nameSucutsal: string;
+  address: string;
+  phone: string;
+  email: string;
+  personInCharge: string;
+  status: boolean;
 };
