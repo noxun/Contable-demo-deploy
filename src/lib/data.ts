@@ -1,5 +1,6 @@
 import {
   AccountRelation,
+  BankExcerpt,
   Branch,
   ModelSeat,
   ModelSeatDetailResponse,
@@ -191,6 +192,18 @@ export async function importAccountFromExcel(data: FormData) {
   return response.data;
 }
 
+export async function importBankExcerptFromExcel(data: FormData) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/bank/extract`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+}
+
 interface AccountingBox {
   // Define aquí los campos específicos de AccountingBox
   // Por ejemplo:
@@ -266,4 +279,14 @@ export async function fetchUserRoles(userId: number) {
   setAuthToken(token);
   const response = await api.get(`/api/Users/getRol/${userId}`);
   return response.data as Role[];
+}
+
+export async function fetchBankExcerpt(bankId: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/bank/getextract/${bankId}`);
+  return response.data as BankExcerpt[];
 }

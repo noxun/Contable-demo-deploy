@@ -17,8 +17,8 @@ export type RoleMenu = {
   name: string;
   main: boolean;
   nameRef: number;
-  rolsList?: Role[]
-}
+  rolsList?: Role[];
+};
 
 export type User = {
   id: number;
@@ -98,4 +98,15 @@ export type Branch = {
   email: string;
   personInCharge: string;
   status: boolean;
+};
+
+export type BankExcerpt = {
+  id: number;
+  date: string;
+  hour: string;
+  description: string;
+  meansOfCare: string;
+  place: string;
+  amount: number;
+  balance: number;
 };
