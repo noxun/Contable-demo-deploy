@@ -22,7 +22,7 @@ export default function DialogExcerptTable({
           <File className="size-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-auto overflow-y-auto">
+      <DialogContent className="min-w-full overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Extracto de Banco</DialogTitle>
           <DialogDescription>Tabla del extracto del Banco</DialogDescription>

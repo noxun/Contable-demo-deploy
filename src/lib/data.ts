@@ -287,6 +287,6 @@ export async function fetchBankExcerpt(bankId: string) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/bank/getextract/${bankId}`);
+  const response = await api.get(`/api/bank/getextract/${bankId}`);
   return response.data as BankExcerpt[];
 }
