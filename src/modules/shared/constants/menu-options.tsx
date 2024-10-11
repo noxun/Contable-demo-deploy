@@ -14,6 +14,7 @@ import {
   SquareGanttChart,
   Link,
   LayoutTemplate,
+  MapPinHouse,
 } from "lucide-react";
 export const MENU_OPTIONS = [
   {
@@ -24,21 +25,6 @@ export const MENU_OPTIONS = [
         name: "Transacciones",
         icon: <FileCheck2 className="h-5 w-5" />,
       },
-      // {
-      //   path: "/dashboard/income",
-      //   name: "Ingresos",
-      //   icon: <FileInput className="h-5 w-5" />,
-      // },
-      // {
-      //   path: "/dashboard/expenses",
-      //   name: "Egresos",
-      //   icon: <FileOutput className="h-5 w-5" />,
-      // },
-      // {
-      //   path: "/dashboard/diary",
-      //   name: "Diarios",
-      //   icon: <FileCheck2 className="h-5 w-5" />,
-      // },
       {
         path: "/dashboard/accounts",
         name: "Cuentas",
@@ -63,6 +49,11 @@ export const MENU_OPTIONS = [
         path: "/dashboard/entities",
         name: "Entidades",
         icon: <Building className="h-5 w-5" />,
+      },
+      {
+        path: "/dashboard/branches",
+        name: "Sucursales",
+        icon: <MapPinHouse className="size-5"/>
       },
       {
         path: "/dashboard/folders",
