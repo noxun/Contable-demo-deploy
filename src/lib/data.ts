@@ -1,8 +1,11 @@
 import {
   AccountRelation,
+  Branch,
   ModelSeat,
   ModelSeatDetailResponse,
   PostModelSeat,
+  Role,
+  RoleMenu,
   SiatMotionAccount,
   TypeCompany,
   Ufv,
@@ -215,7 +218,6 @@ export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   return response.data as AccountingBox[];
 }
 
-
 export async function fetchCostCenter(): Promise<CostCenter[]> {
   let token;
   if (typeof window !== "undefined") {
@@ -224,4 +226,44 @@ export async function fetchCostCenter(): Promise<CostCenter[]> {
   setAuthToken(token);
   const response = await api.get(`/api/CostCenter`);
   return response.data as CostCenter[];
+}
+
+export async function fetchBranches() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Sucursal`);
+  return response.data as Branch[];
+}
+
+export async function createNewBranch(data: Branch) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/Sucursal`, data);
+  return response.data;
+}
+
+export async function fetchAllRoles() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Rol`);
+  return response.data as RoleMenu[];
+}
+
+export async function fetchUserRoles(userId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Users/getRol/${userId}`);
+  return response.data as Role[];
 }
