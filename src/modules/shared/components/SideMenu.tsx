@@ -6,21 +6,35 @@ import { MENU_OPTIONS } from "../constants/menu-options";
 import { usePathname, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import useUserStore from "@/lib/userStore";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAllRoles, fetchUserRoles } from "@/lib/data";
 
 export const SideMenu = () => {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname()
+  const getLoginData = useUserStore(state => state.getLoginData);
+  const loginData = getLoginData();
+  const userName = loginData?.user.name;
+  const userId = loginData?.user.id;
 
-  const [userName, setUserName] = useState(null);
+  const { data: allRoles, isPending: isPendingAllRoles } = useQuery({
+    queryKey: ["allRoles"],
+    queryFn: fetchAllRoles,
+  });
+  const { data: userRoles, isPending: isPendingUserRoles } = useQuery({
+    queryKey: ["userRoles", userId],
+    queryFn: () => fetchUserRoles(userId!),
+    enabled: !!userId,
+  });
+
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([]);
 
   useEffect(() => {
-    let user = JSON.parse(localStorage.getItem("user") || "{}");
-    setUserName(user.name ?? "");
-
-    // Iniciar todos los submenús abiertos por defecto
-    setOpenSubMenu(MENU_OPTIONS.map((_, index) => index));
-  }, []);
+    if (allRoles) {
+      setOpenSubMenu(allRoles.map((_, index) => index));
+    }
+  }, [allRoles]);
 
   const toggleSubMenu = (index: number) => {
     setOpenSubMenu((prevOpenSubMenu) =>
@@ -29,6 +43,16 @@ export const SideMenu = () => {
         : [...prevOpenSubMenu, index]
     );
   };
+
+  console.log(userRoles)
+
+  const userHasAccess = (roleName: string) => {
+    return userRoles?.some((role) => role.name === roleName);
+  };
+
+  if (isPendingAllRoles || isPendingUserRoles) {
+    return <div>Loading...</div>;
+  }
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -40,38 +64,56 @@ export const SideMenu = () => {
   return (
     <div className="flex flex-col justify-between h-screen">
       <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-        {MENU_OPTIONS.map((option, index) => (
+        {allRoles?.map((category, index) => (
           <Fragment key={index}>
-            <div
-              className="flex items-center justify-between cursor-pointer px-3 py-2"
-              onClick={() => toggleSubMenu(index)}
-            >
-              <span>{option.name}</span>
-              {openSubMenu.includes(index) ? (
-                <ChevronDown className="h-5 w-5" />
-              ) : (
-                <ChevronRight className="h-5 w-5" />
-              )}
-            </div>
-            {openSubMenu.includes(index) && (
-              <div className="pl-4">
-                {option.routes.map((route) => (
-                  <Link
-                    key={route.path}
-                    href={route.path}
-                    className={`flex items-center gap-3 rounded-lg ${
-                      pathname === route.path
-                        ? "bg-muted px-3 py-2 text-primary"
-                        : "px-3 py-2 text-muted-foreground"
-                    } transition-all hover:text-primary`}
-                  >
-                    {route.icon}
-                    {route.name}
-                  </Link>
-                ))}
-              </div>
+            {category?.rolsList?.some((role) => userHasAccess(role.name)) && (
+              <>
+                <div
+                  className="flex items-center justify-between cursor-pointer px-3 py-2"
+                  onClick={() => toggleSubMenu(index)}
+                >
+                  <span>{category.name}</span>
+                  {openSubMenu.includes(index) ? (
+                    <ChevronDown className="h-5 w-5" />
+                  ) : (
+                    <ChevronRight className="h-5 w-5" />
+                  )}
+                </div>
+                {openSubMenu.includes(index) && (
+                  <div className="pl-4">
+                    {category?.rolsList?.map(
+                      (role) =>
+                        userHasAccess(role.name) && (
+                          <Link
+                            key={role.name}
+                            href={`/dashboard/${role.name}`}
+                            className={`flex items-center gap-3 rounded-lg ${
+                              pathname === `/dashboard/${role.name}`
+                                ? "bg-muted px-3 py-2 text-primary"
+                                : "px-3 py-2 text-muted-foreground"
+                            } transition-all hover:text-primary`}
+                          >
+                            {/* You'll need to map role names to icons */}
+                            {
+                              MENU_OPTIONS.find((opt) =>
+                                opt.routes.some(
+                                  (route) =>
+                                    route.name.toLowerCase() === role.name
+                                )
+                              )?.routes.find(
+                                (route) =>
+                                  route.name.toLowerCase() === role.name
+                              )?.icon
+                            }
+                            {role.name}
+                          </Link>
+                        )
+                    )}
+                  </div>
+                )}
+              </>
             )}
-            {index < MENU_OPTIONS.length - 1 && <Separator className="my-2" />}
+            {index < allRoles.length - 1 && <Separator className="my-2" />}
           </Fragment>
         ))}
       </nav>
