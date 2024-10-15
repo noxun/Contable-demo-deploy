@@ -1,6 +1,7 @@
 import {
   AccountRelation,
   BankExcerpt,
+  BankExcerptData,
   Branch,
   ModelSeat,
   ModelSeatDetailResponse,
@@ -289,4 +290,14 @@ export async function fetchBankExcerpt(bankId: string) {
   setAuthToken(token);
   const response = await api.get(`/api/bank/getextract/${bankId}`);
   return response.data as BankExcerpt[];
+}
+
+export async function fetchBankExcerptData(bankExcerptId: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/bank/getextractDetail/${bankExcerptId}`);
+  return response.data as BankExcerptData[];
 }
