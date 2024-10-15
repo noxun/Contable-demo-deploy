@@ -1,36 +1,32 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { BankExcerpt } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-
+import Link from "next/link";
 
 export const columns: ColumnDef<BankExcerpt>[] = [
   {
-    accessorKey: "description",
-    header: "Descripcion",
+    accessorKey: "id",
+    header: "Id",
   },
   {
-    accessorKey:"date",
-    header: "Fecha"
+    accessorKey: "bankId",
+    header: "Id del banco",
   },
   {
-    accessorKey: "hour",
-    header: "Hour",
+    accessorKey: "createdAt",
+    header: "Creado el",
   },
   {
-    accessorKey: "meansOfCare",
-    header: "Medios de Atencion",
+    header: "Acciones",
+    cell: ({ row }) => {
+      const bankExcerpt = row.original;
+      return (
+        <Button asChild>
+          <Link href={`/dashboard/banks/extract/${bankExcerpt.id}`}>Ver Detalles</Link>
+        </Button>
+      );
+    },
   },
-  {
-    accessorKey: "place",
-    header: "Lugar"
-  },
-  {
-    accessorKey: "amount",
-    header: "Cantidad"
-  },
-  {
-    accessorKey: "balance",
-    header: "Balance"
-  }
 ];
