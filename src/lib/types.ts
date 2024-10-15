@@ -102,11 +102,38 @@ export type Branch = {
 
 export type BankExcerpt = {
   id: number;
-  date: string;
-  hour: string;
-  description: string;
-  meansOfCare: string;
-  place: string;
-  amount: number;
-  balance: number;
+  bankId: number;
+  createdAt: string;
 };
+
+export type BankExcerptData = {
+  id: number
+  date: string
+  agency: string
+  description: string
+  nroDocument: string
+  amount: number
+  balance: number
+  bankAccount: string
+  accountingAccount: any
+  internCode: any
+  dateEdited: string
+  importer: any
+  glossInExtract: string
+  specialMovementIdentifier: any
+  income: number
+  exitAmount: number
+  balanceAmount: number
+  totalAmount: number
+  trazoRegister: boolean
+  accountingEntry: boolean
+  bankExtract: any
+  bankExtractId: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}
+
