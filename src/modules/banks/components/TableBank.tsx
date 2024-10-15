@@ -27,6 +27,7 @@ import { useState } from "react";
 import { IBank } from "../interface/banks";
 import DialogNewExcerpt from "./DialogNewExcerpt";
 import DialogExcerptTable from "./DialogExcerptTable";
+import Link from "next/link";
 
 export const TableBank = (props: { data: IBank[] }) => {
   const { data } = props;
@@ -60,7 +61,8 @@ export const TableBank = (props: { data: IBank[] }) => {
         const bank = row.original;
         return (
           <>
-          <DialogExcerptTable bankId={bank.id}/>
+          {/* <DialogExcerptTable bankId={bank.id}/> */}
+          <Button asChild><Link href={`/dashboard/banks/${bank.id}/${bank.name}/extracts`}>Ver Extractos</Link></Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
