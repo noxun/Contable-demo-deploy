@@ -10,48 +10,38 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBank } from "@/modules/banks/interface/banks";
 import useToken from "@/modules/shared/hooks/useToken";
 
-
-
 function Users() {
-  const {token, isTokenReady} = useToken();
+  const { token, isTokenReady } = useToken();
   const { data, isLoading, isPending, error } = useQuery({
     queryKey: ["Bank"],
     queryFn: async (): Promise<{ data: IBank[] }> =>
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ),
-      
+      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+
     enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
-
   });
-
 
   if (isLoading || isPending) return "Loading...";
 
-  console.log("ESDATA,",data);
+  console.log("ESDATA,", data);
   return (
-    <div>
-    <h1 className="flex  items-center justify-center font-bold text-3xl">BANCOS</h1>
-    
-      <section className="px-6">
-        <div className="flex justify-between mb-2">
-          <h2 className="text-lg font-semibold"></h2>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="w-full flex flex-col items-center">
+        <h1 className="font-bold text-3xl">BANCOS</h1>
+        <div className="flex w-full items-center gap-4 justify-end">
+          <Link href="/files/example_extract_bank.xlsx" download><Button>Descargar Plantilla Extracto</Button></Link>
           <Link href="/dashboard/banks/new">
             <Button>Nuevo Banco</Button>
           </Link>
         </div>
-        <TableBank data={data?.data! ?? []}/>
-      </section>
       </div>
-    
-   
+      <TableBank data={data?.data! ?? []} />
+    </div>
   );
 }
 
