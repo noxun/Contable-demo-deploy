@@ -60,9 +60,10 @@ export const TableBank = (props: { data: IBank[] }) => {
       cell: ({ row }) => {
         const bank = row.original;
         return (
-          <>
+          <div className="flex items-center justify-center gap-2">
           {/* <DialogExcerptTable bankId={bank.id}/> */}
           <Button asChild><Link href={`/dashboard/banks/${bank.id}/${bank.name}/extracts`}>Ver Extractos</Link></Button>
+          <DialogNewExcerpt bankId={bank.id}/>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -78,8 +79,7 @@ export const TableBank = (props: { data: IBank[] }) => {
               <DropdownMenuItem>Eliminar</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <DialogNewExcerpt bankId={bank.id}/>
-          </>
+          </div>
         );
       },
     },
