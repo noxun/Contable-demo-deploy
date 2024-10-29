@@ -10,6 +10,7 @@ export type Role = {
   name: string;
   main: boolean;
   nameRef: number;
+  title?: string;
 };
 
 export type RoleMenu = {
@@ -17,6 +18,7 @@ export type RoleMenu = {
   name: string;
   main: boolean;
   nameRef: number;
+  title?: string;
   rolsList?: Role[];
 };
 
@@ -102,8 +104,11 @@ export type Branch = {
 
 export type BankExcerpt = {
   id: number;
-  bankId: number;
-  createdAt: string;
+  date: string;
+  nroDocument: string;
+  amount: number
+  glossInExtract: string
+  internCode: any
 };
 
 export type BankExcerptData = {
@@ -135,5 +140,10 @@ export type BankExcerptData = {
   createdById: any
   updatedById: any
   deletedById: any
+}
+
+export type BranchToList = {
+  id: number;
+  nameSucutsal: string;
 }
 
