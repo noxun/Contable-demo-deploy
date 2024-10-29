@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { File } from "lucide-react";
-import ListBankExcerptData from "./ListBankExcerptData";
 
 export default function DialogExcerptTable({
   bankId,
