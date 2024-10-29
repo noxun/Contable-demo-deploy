@@ -3,29 +3,44 @@
 import { Button } from "@/components/ui/button";
 import { BankExcerpt } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
+import { Save, PlaneIcon } from "lucide-react";
+import AccountsSelect from "./AccountsSelect";
 
 export const columns: ColumnDef<BankExcerpt>[] = [
   {
-    accessorKey: "id",
-    header: "Id",
+    accessorKey: "date",
+    header: "Fecha",
   },
   {
-    accessorKey: "bankId",
-    header: "Id del banco",
+    accessorKey: "nroDocument",
+    header: "Numero de Doc.",
   },
   {
-    accessorKey: "createdAt",
-    header: "Creado el",
+    accessorKey: "amount",
+    header: "Monto",
+  },
+  {
+    header: "Cuenta de banco",
+    cell: ({ row }) => {
+      return <AccountsSelect />;
+    },
+  },
+  {
+    accessorKey: "glossInExtract",
+    header: "Glosa",
   },
   {
     header: "Acciones",
     cell: ({ row }) => {
-      const bankExcerpt = row.original;
       return (
-        <Button asChild>
-          <Link href={`/dashboard/banks/extract/${bankExcerpt.id}`}>Ver Detalles</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" title="Guardar como Asiento">
+            <Save />
+          </Button>
+          <Button variant="outline" size="icon" title="Registrar en el trazo">
+            <PlaneIcon />
+          </Button>
+        </div>
       );
     },
   },
