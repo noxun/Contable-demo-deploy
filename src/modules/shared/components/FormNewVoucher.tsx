@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import MySelect from "react-select"
+import MySelect from "react-select";
 import {
   Form,
   FormControl,
@@ -49,7 +49,11 @@ import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import useToken from "../hooks/useToken";
-import { fetchAllModelSeats, fetchModelSeatsItems } from "@/lib/data";
+import {
+  fetchAllModelSeats,
+  fetchBranchList,
+  fetchModelSeatsItems,
+} from "@/lib/data";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -116,6 +120,11 @@ export default function FormNewVoucher({
       ),
     enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
+  });
+
+  const branchListQuery = useQuery({
+    queryKey: ["branchList"],
+    queryFn: fetchBranchList,
   });
 
   const newVoucherMutation = useMutation({
@@ -252,6 +261,7 @@ export default function FormNewVoucher({
   }, [voucherItems]);
 
   if (
+    branchListQuery.isPending ||
     banksQuery.isLoading ||
     banksQuery.isPending ||
     banksQuery.data === undefined ||
@@ -423,8 +433,11 @@ export default function FormNewVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Sucursal 1">Sucursal 1</SelectItem>
-                      <SelectItem value="Sucursal 2">Sucursal 2</SelectItem>
+                      {branchListQuery.data?.map((branch) => (
+                        <SelectItem key={branch.id} value={branch.id.toString()}>
+                          {branch.nameSucutsal}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
