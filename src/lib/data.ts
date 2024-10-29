@@ -3,6 +3,7 @@ import {
   BankExcerpt,
   BankExcerptData,
   Branch,
+  BranchToList,
   ModelSeat,
   ModelSeatDetailResponse,
   PostModelSeat,
@@ -292,12 +293,64 @@ export async function fetchBankExcerpt(bankId: string) {
   return response.data as BankExcerpt[];
 }
 
-export async function fetchBankExcerptData(bankExcerptId: string) {
+// export async function fetchBankExcerptData(bankExcerptId: string) {
+//   let token;
+//   if (typeof window !== "undefined") {
+//     token = localStorage.getItem("token");
+//   }
+//   setAuthToken(token);
+//   const response = await api.get(`/api/bank/getextractDetail/${bankExcerptId}`);
+//   return response.data as BankExcerptData[];
+// }
+
+export async function fetchBranchList() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/bank/getextractDetail/${bankExcerptId}`);
-  return response.data as BankExcerptData[];
+  const response = await api.get(`/api/Sucursal/list`);
+  return response.data as BranchToList[];
+}
+
+export async function registerExtractToSeat(
+  bankExtractId: number,
+  accountId: number //accountId contra cuenta
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/api/Bank/registerSeat", {
+    bankExtractId,
+    accountId,
+  });
+  return response.data;
+}
+
+export async function registerToTrazo(
+  bankExtractId: number,
+  accountId: number
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/api/Bank/registerTrazo", {
+    bankExtractId,
+    accountId,
+  });
+  return response.data;
+}
+
+export async function fetchAllAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Account/Filter?isMotion=true");
+  return response.data as Account[];
 }
