@@ -1,51 +1,71 @@
-'use client'; // Esto convierte el componente en un Client Component
+"use client"; // Esto convierte el componente en un Client Component
 
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ListVouchers from "@/modules/shared/components/ListVouchers";
 import {
   VoucherType,
   VoucherTypeRoute,
 } from "@/modules/shared/types/sharedTypes";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function IncomesPage() {
-  const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState<string>("");
+type VoucherInfo = {
+  label?: string;
+  voucherType: string;
+  voucherTypeRoute: string;
+};
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setSelectedOption(value);
+const voucherOptions: VoucherInfo[] = [
+  { label: "Traspaso", voucherType: "0", voucherTypeRoute: "diary" },
+  { label: "Egresos", voucherType: "1", voucherTypeRoute: "expenses" },
+  { label: "Ingresos", voucherType: "2", voucherTypeRoute: "income" },
+];
 
-    // Redirigir a la ruta correspondiente
-    if (value) {
-      router.push(value);
-    }
+export default function TransactionsPage() {
+  const [selectedOption, setSelectedOption] = useState<null | VoucherInfo>(
+    null
+  );
+
+  const handleSelectChange = (value: string) => {
+    const newValue: VoucherInfo = JSON.parse(value);
+    setSelectedOption(newValue);
   };
 
   return (
     <section className="px-6">
       <div className="flex justify-between mb-2">
         <h2 className="text-lg font-semibold">Transacciones</h2>
-        <div className="">                         
-            <select 
-              value={selectedOption} 
-              onChange={handleSelectChange} 
-              className="bg-[#3A72EC] text-[#F8FAFC] border-none rounded-md font-semibold h-10 "
-            >            
-              <option value="" disabled>
-                Seleccione el tipo de transacción
-              </option>
-              <option value="/dashboard/income/new">Ingresos</option>
-              <option value="/dashboard/expenses/new">Egresos</option>
-              <option value="/dashboard/diary/new">Traspaso</option>
-            </select>          
+        <div>
+          <Select
+            // value={selectedOption}
+            onValueChange={handleSelectChange}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Seleccione el tipo de transaccion" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectContent>
+                {voucherOptions.map((option) => (
+                  <SelectItem
+                    key={option.voucherType}
+                    value={JSON.stringify(option)}
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <ListVouchers
-        voucherType={VoucherType.INCOME}
-        voucherTypeRoute={VoucherTypeRoute.INCOME}
+        voucherType={selectedOption?.voucherType as VoucherType}
+        voucherTypeRoute={selectedOption?.voucherTypeRoute as VoucherTypeRoute}
       />
     </section>
   );
