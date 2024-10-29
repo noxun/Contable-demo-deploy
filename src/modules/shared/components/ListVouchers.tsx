@@ -12,6 +12,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type ListVouchersProps = {
   voucherType: VoucherType;
@@ -52,7 +54,10 @@ export default function ListVouchers({
   };
 
   return (
-    <>
+    <section className="flex flex-col gap-4">
+      <Button asChild>
+        <Link href={`/dashboard/${voucherTypeRoute}/new`}>Crear Nuevo</Link>
+      </Button>
       <VoucherTable
         voucherType={voucherType}
         voucherTypeRoute={voucherTypeRoute}
@@ -90,6 +95,6 @@ export default function ListVouchers({
           </PaginationContent>
         </Pagination>
       )}
-    </>
+    </section>
   );
 }
