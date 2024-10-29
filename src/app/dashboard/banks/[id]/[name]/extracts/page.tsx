@@ -8,8 +8,8 @@ export default function BankExtractsPage({
   const { id, name } = params;
 
   return (
-    <main>
-      <h1 className="text-3xl">Lista de Extractos del banco {id}, {decodeURIComponent(name)}</h1>
+    <main className="space-y-4">
+      <h1 className="text-3xl font-bold">Lista de Extractos del banco {decodeURIComponent(name)}</h1>
       <ListBankExcerpts bankId={id} />
     </main>
   );
