@@ -53,7 +53,8 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
               bankId={bankId}
               bankExtractId={bankExtract.id}
               disabled={
-                !bankExtract.accountingEntry && !bankExtract.trazoRegister
+                bankExtract.trazoRegister ? bankExtract.trazoRegister :
+                (!bankExtract.accountingEntry && !bankExtract.trazoRegister) 
               }
             />
           </div>
