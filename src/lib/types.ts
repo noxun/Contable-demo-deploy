@@ -10,6 +10,7 @@ export type Role = {
   name: string;
   main: boolean;
   nameRef: number;
+  icon: string;
   title?: string;
 };
 
@@ -18,6 +19,7 @@ export type RoleMenu = {
   name: string;
   main: boolean;
   nameRef: number;
+  icon: string;
   title?: string;
   rolsList?: Role[];
 };
@@ -106,44 +108,46 @@ export type BankExcerpt = {
   id: number;
   date: string;
   nroDocument: string;
-  amount: number
-  glossInExtract: string
-  internCode: any
+  amount: number;
+  glossInExtract: string;
+  internCode: any;
+  accountId: number;
+  trazoRegister: boolean;
+  accountingEntry: boolean;
 };
 
 export type BankExcerptData = {
-  id: number
-  date: string
-  agency: string
-  description: string
-  nroDocument: string
-  amount: number
-  balance: number
-  bankAccount: string
-  accountingAccount: any
-  internCode: any
-  dateEdited: string
-  importer: any
-  glossInExtract: string
-  specialMovementIdentifier: any
-  income: number
-  exitAmount: number
-  balanceAmount: number
-  totalAmount: number
-  trazoRegister: boolean
-  accountingEntry: boolean
-  bankExtract: any
-  bankExtractId: number
-  createdAt: string
-  updatedAt: string
-  deletedAt: string
-  createdById: any
-  updatedById: any
-  deletedById: any
-}
+  id: number;
+  date: string;
+  agency: string;
+  description: string;
+  nroDocument: string;
+  amount: number;
+  balance: number;
+  bankAccount: string;
+  accountingAccount: any;
+  internCode: any;
+  dateEdited: string;
+  importer: any;
+  glossInExtract: string;
+  specialMovementIdentifier: any;
+  income: number;
+  exitAmount: number;
+  balanceAmount: number;
+  totalAmount: number;
+  trazoRegister: boolean;
+  accountingEntry: boolean;
+  bankExtract: any;
+  bankExtractId: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  createdById: any;
+  updatedById: any;
+  deletedById: any;
+};
 
 export type BranchToList = {
   id: number;
   nameSucutsal: string;
-}
-
+};
