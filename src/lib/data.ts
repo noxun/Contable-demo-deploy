@@ -313,19 +313,16 @@ export async function fetchBranchList() {
   return response.data as BranchToList[];
 }
 
-export async function registerExtractToSeat(
-  bankExtractId: number,
-  accountId: number //accountId contra cuenta
-) {
+export async function registerExtractToSeat(data: {
+  bankExtractId: number;
+  accountId: number; //accountId de contra cuenta
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post("/api/Bank/registerSeat", {
-    bankExtractId,
-    accountId,
-  });
+  const response = await api.post("/api/Bank/registerSeat", data);
   return response.data;
 }
 
