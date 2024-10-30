@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import useUserStore from "@/lib/userStore";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllRoles, fetchUserRoles } from "@/lib/data";
+import { getIconComponent } from "../utils/getIconComponent";
 
 export const SideMenu = () => {
   const router = useRouter();
@@ -36,6 +37,12 @@ export const SideMenu = () => {
     }
   }, [allRoles]);
 
+  console.log(userRoles, allRoles)
+
+  if (isPendingAllRoles || isPendingUserRoles || userRoles === undefined || allRoles === undefined) {
+    return <div>Loading...</div>;
+  }
+
   const toggleSubMenu = (index: number) => {
     setOpenSubMenu((prevOpenSubMenu) =>
       prevOpenSubMenu.includes(index)
@@ -43,16 +50,9 @@ export const SideMenu = () => {
         : [...prevOpenSubMenu, index]
     );
   };
-
-  console.log(userRoles)
-
   const userHasAccess = (roleName: string) => {
     return userRoles?.some((role) => role.name === roleName);
   };
-
-  if (isPendingAllRoles || isPendingUserRoles) {
-    return <div>Loading...</div>;
-  }
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -93,19 +93,8 @@ export const SideMenu = () => {
                                 : "px-3 py-2 text-muted-foreground"
                             } transition-all hover:text-primary`}
                           >
-                            {/* You'll need to map role names to icons */}
-                            {
-                              MENU_OPTIONS.find((opt) =>
-                                opt.routes.some(
-                                  (route) =>
-                                    route.name.toLowerCase() === role.name
-                                )
-                              )?.routes.find(
-                                (route) =>
-                                  route.name.toLowerCase() === role.name
-                              )?.icon
-                            }
-                            {role.name}
+                            {role.icon ? getIconComponent(role.icon) : null}
+                            {role?.title![0]?.toUpperCase() + role.title?.slice(1)}
                           </Link>
                         )
                     )}
