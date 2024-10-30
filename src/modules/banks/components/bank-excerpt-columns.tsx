@@ -21,6 +21,10 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
       header: "Monto",
     },
     {
+      accessorKey: "internCode",
+      header: "Cod. Interno",
+    },
+    {
       accessorKey: "glossInExtract",
       header: "Glosa",
     },
