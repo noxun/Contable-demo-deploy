@@ -18,5 +18,5 @@ export default function ListBankExcerpts({
 
   if (isLoading || isPending || data === undefined) return <Spinner />;
 
-  return <DataTable data={data} columns={columns} />;
+  return <DataTable data={data} columns={columns(bankId)} />;
 }
