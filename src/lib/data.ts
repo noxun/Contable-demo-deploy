@@ -326,10 +326,7 @@ export async function registerExtractToSeat(data: {
   return response.data;
 }
 
-export async function registerToTrazo(
-  bankExtractId: number,
-  accountId: number
-) {
+export async function registerToTrazo(bankExtractId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -337,7 +334,6 @@ export async function registerToTrazo(
   setAuthToken(token);
   const response = await api.post("/api/Bank/registerTrazo", {
     bankExtractId,
-    accountId,
   });
   return response.data;
 }
