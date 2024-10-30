@@ -14,6 +14,9 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== "undefined") {
+        localStorage.removeItem("loginResponse");
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
         window.location.replace("/auth/login");
       }
     }
