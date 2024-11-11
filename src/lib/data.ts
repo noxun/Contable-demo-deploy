@@ -1,5 +1,6 @@
 import {
   AccountingBox,
+  AccountingBoxItems,
   AccountRelation,
   BankExcerpt,
   BankExcerptData,
@@ -364,7 +365,7 @@ export async function fetchAccountingBoxItemsById(accountingBoxId: number){
       AccountingBoxId: accountingBoxId
     }
   });
-  return response.data as AccountingBox[];
+  return response.data as AccountingBoxItems[];
 }
 
 export async function createAccountingBoxItems(data: NewAccountingBox) {
