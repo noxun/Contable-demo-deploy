@@ -13,8 +13,8 @@ import { getIconComponent } from "../utils/getIconComponent";
 
 export const SideMenu = () => {
   const router = useRouter();
-  const pathname = usePathname()
-  const getLoginData = useUserStore(state => state.getLoginData);
+  const pathname = usePathname();
+  const getLoginData = useUserStore((state) => state.getLoginData);
   const loginData = getLoginData();
   const userName = loginData?.user.name;
   const userId = loginData?.user.id;
@@ -37,9 +37,14 @@ export const SideMenu = () => {
     }
   }, [allRoles]);
 
-  console.log(userRoles, allRoles)
+  //console.log(userRoles, allRoles)
 
-  if (isPendingAllRoles || isPendingUserRoles || userRoles === undefined || allRoles === undefined) {
+  if (
+    isPendingAllRoles ||
+    isPendingUserRoles ||
+    userRoles === undefined ||
+    allRoles === undefined
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -94,7 +99,8 @@ export const SideMenu = () => {
                             } transition-all hover:text-primary`}
                           >
                             {role.icon ? getIconComponent(role.icon) : null}
-                            {role?.title![0]?.toUpperCase() + role.title?.slice(1)}
+                            {role?.title![0]?.toUpperCase() +
+                              role.title?.slice(1)}
                           </Link>
                         )
                     )}
