@@ -168,7 +168,7 @@ export default function NewAccountingBoxForm() {
             name="costCenterId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Centro de Costos</FormLabel>
+                <FormLabel>Gestor</FormLabel>
                 <ReactSelect
                   options={costCenter}
                   getOptionLabel={(costCenter) => costCenter.name}
