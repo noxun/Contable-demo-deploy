@@ -1,9 +1,11 @@
 import {
+  AccountingBox,
   AccountRelation,
   BankExcerpt,
   BankExcerptData,
   Branch,
   BranchToList,
+  CostCenter,
   ModelSeat,
   ModelSeatDetailResponse,
   PostModelSeat,
@@ -206,22 +208,13 @@ export async function importBankExcerptFromExcel(data: FormData) {
   return response.data;
 }
 
-interface AccountingBox {
-  // Define aquí los campos específicos de AccountingBox
-  // Por ejemplo:
-  // id: number;
-  // name: string;
-  [key: string]: any; // Permite cualquier propiedad adicional
-}
-
-interface CostCenter {
-  // Define aquí los campos específicos de CostCenter
-  // Por ejemplo:
-  // id: number;
-  // code: string;
-  // description: string;
-  [key: string]: any; // Permite cualquier propiedad adicional
-}
+// interface AccountingBox {
+//   // Define aquí los campos específicos de AccountingBox
+//   // Por ejemplo:
+//   // id: number;
+//   // name: string;
+//   [key: string]: any; // Permite cualquier propiedad adicional
+// }
 
 export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   let token;

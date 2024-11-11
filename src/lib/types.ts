@@ -151,3 +151,39 @@ export type BranchToList = {
   id: number;
   nameSucutsal: string;
 };
+
+export type CostCenter = {
+  id: number
+  name: string
+  descripcion: string
+  account: any
+  accountId: number
+  diaryVouchers: any
+  egressVouchers: any
+  incomeVouchers: any
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}
+
+export type AccountingBox = {
+  id: number
+  name: string
+  descripcion: string
+  account: any
+  accountId: number
+  diaryVouchers: any
+  egressVouchers: any
+  incomeVouchers: any
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}
+
+
