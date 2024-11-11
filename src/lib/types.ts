@@ -186,4 +186,10 @@ export type AccountingBox = {
   deletedById: any
 }
 
+export type TrazoInternCode = {
+  id: number
+  value: string
+  procedureId: number
+  fieldId: number
+}
 
