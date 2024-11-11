@@ -12,6 +12,7 @@ import {
   Role,
   RoleMenu,
   SiatMotionAccount,
+  TrazoInternCode,
   TypeCompany,
   Ufv,
 } from "./types";
@@ -21,6 +22,7 @@ import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import axios from "axios";
+import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -339,4 +341,38 @@ export async function fetchAllAccounts() {
   setAuthToken(token);
   const response = await api.get("/api/Account/Filter?isMotion=true");
   return response.data as Account[];
+}
+
+export async function fetchTrazoInternCodes() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Trazo/interncode");
+  return response.data as TrazoInternCode[];
+}
+
+export async function fetchAccountingBoxItemsById(accountingBoxId: number){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/AccountingBox/items", {
+    params: {
+      AccountingBoxId: accountingBoxId
+    }
+  });
+  return response.data as AccountingBox[];
+}
+
+export async function createAccountingBoxItems(data: NewAccountingBox) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/api/AccountingBox/createItems", data);
+  return response.data;
 }
