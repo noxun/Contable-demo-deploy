@@ -1,29 +1,50 @@
-import { AccountingBox } from "@/lib/types";
+import { AccountingBoxItems } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<AccountingBox>[] = [
+export const columns: ColumnDef<AccountingBoxItems>[] = [
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: "mes",
+    header: "Mes",
   },
   {
-    accessorKey:"descripcion",
-    header: "Descripcion"
+    accessorKey: "fecha",
+    header: "Fecha",
   },
   {
-    accessorKey: "account",
-    header: "Cuenta",
+    accessorKey: "reciboInterno",
+    header: "Recibo Interno",
   },
   {
-    accessorKey: "diaryVouchers",
-    header: "Diarios",
+    accessorKey: "tipoComprobante",
+    header: "Tipo Comprobante",
   },
   {
-    accessorKey: "egressVouchers",
-    header: "Egresos",
-  },{
-    accessorKey: "incomeVouchers",
-    header: "Ingresos",
+    accessorKey: "comprobanteProveedor",
+    header: "Proveedor",
+  },
+  {
+    accessorKey: "hojaDeRuta",
+    header: "Hoja de Ruta",
+  },
+  {
+    accessorKey: "cliente",
+    header: "Cliente",
+  },
+  {
+    accessorKey: "detalle",
+    header: "Detalle",
+  },
+  {
+    accessorKey: "ingreso",
+    header: "Ingreso",
+  },
+  {
+    accessorKey: "egreso",
+    header: "Egreso",
+  },
+  {
+    accessorKey: "saldo",
+    header: "Saldo",
   },
   // {
   //   id: "actions",
