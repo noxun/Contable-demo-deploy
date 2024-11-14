@@ -28,13 +28,14 @@ import { IBank } from "../interface/banks";
 import DialogNewExcerpt from "./DialogNewExcerpt";
 import DialogExcerptTable from "./DialogExcerptTable";
 import Link from "next/link";
+import { Bank } from "@/lib/types";
 
-export const TableBank = (props: { data: IBank[] }) => {
+export const TableBank = (props: { data: Bank[] }) => {
   const { data } = props;
   const [isEditBankOpen, setIsEditBankOpen] = useState(false);
-  const [selectedBank, setSelectedBank] = useState<IBank | null>(null);
+  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
 
-  const openEditBank = (bank: IBank) => {
+  const openEditBank = (bank: Bank) => {
     setSelectedBank(bank);
     setIsEditBankOpen(true);
   };
@@ -44,7 +45,7 @@ export const TableBank = (props: { data: IBank[] }) => {
     setSelectedBank(null);
   };
 
-  const columns: ColumnDef<IBank>[] = [
+  const columns: ColumnDef<Bank>[] = [
     {
       accessorKey: "name",
       header: "Nombre",
