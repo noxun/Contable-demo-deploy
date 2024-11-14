@@ -213,3 +213,12 @@ export type AccountingBoxItems = {
   costCenterId: number
 }
 
+export type Bank = {
+  id: number,
+  name: string,
+  descripcion: string,
+  sigla: any,
+  nroCuentaBancaria: any,
+  accountId: number,
+  code: string | null,
+}
