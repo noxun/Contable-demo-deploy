@@ -8,6 +8,7 @@ import {
   Branch,
   BranchToList,
   CostCenter,
+  InvoiceRegistry,
   ModelSeat,
   ModelSeatDetailResponse,
   PostModelSeat,
@@ -398,4 +399,14 @@ export async function registerUser(data: RegisterForm){
   setAuthToken(token);
   const response = await api.post("/Auth/register", data)
   return response.data;
+}
+
+export async function fetchInvoiceRegistryList() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/");//TODO:ADD CORRECT ENDPOINT
+  return response.data as InvoiceRegistry[];
 }

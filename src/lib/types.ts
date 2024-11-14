@@ -222,3 +222,21 @@ export type Bank = {
   accountId: number,
   code: string | null,
 }
+
+export type InvoiceRegistry = {
+  id: number;
+  nitProvider: number | string;
+  providerName: string;
+  authorizationCode: number | string;
+  invoiceNumber: string | number;
+  duiDimNumber: number;
+  duiDimInvoiceDate: string;
+  purchaseTotalCost: number;
+  discount: number
+  giftCardAmount: number;
+  baseTaxCredit: number;
+  taxCredit: number;
+  purchaseType: string;
+  controlCode: string | number;
+  consolidationStatus: string;
+}
