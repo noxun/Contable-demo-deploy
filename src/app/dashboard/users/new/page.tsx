@@ -14,25 +14,37 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useState } from "react";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import Link from "next/link";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchAllRoles } from "@/lib/data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchAllRoles, registerUser } from "@/lib/data";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RoleMenu } from "@/lib/types";
+import { toast } from "sonner";
 
-interface registerFormInputs {
-  username: string;
-  password: string;
-}
+const registerSchema = z.object({
+  username: z.string().min(4, {
+    message: "Debe tener mínimo 4 caracteres",
+  }),
+  password: z.string().min(4, {
+    message: "Debe tener mínimo 4 caracteres",
+  }),
+  email: z.string(),
+  name: z.string(),
+  ci: z.string(),
+  fatherLastName: z.string(),
+  motherLastName: z.string(),
+  appCode: z.string(),
+  rols: z.array(
+    z.object({
+      rolId: z.number(),
+    })
+  ),
+});
 
-function Register() {
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [isSuccessDialogOpen, setSuccessDialogOpen] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
+export type RegisterForm = z.infer<typeof registerSchema>;
+
+export default function Register() {
 
   const { data: allRoles } = useQuery({
     queryKey: ["allRoles"],
@@ -41,73 +53,28 @@ function Register() {
   const [expandedRoles, setExpandedRoles] = useState<number[]>([]);
   const queryClient = useQueryClient();
 
-  const registerSchema = z.object({
-    username: z.string().min(4, {
-      message: "Debe tener mínimo 4 caracteres",
-    }),
-    password: z.string().min(4, {
-      message: "Debe tener mínimo 4 caracteres",
-    }),
-    email: z.string(),
-    name: z.string(),
-    ci: z.string(),
-    fatherLastName: z.string(),
-    motherLastName: z.string(),
-    appCode: z.string(),
-    rols: z.array(
-      z.object({
-        rolId: z.number(),
-      })
-    ),
+  const router = useRouter();
+
+  const registerUserMutation = useMutation({
+    mutationFn: registerUser,
+    onError: (error: AxiosError) => {
+      console.log(error);
+      toast.error("Hubo un error al registar el usuario");
+    },
+    onSuccess: () => {
+      toast.success("Usuario registrado correctamente");
+      queryClient.invalidateQueries({ queryKey: ["User"] });
+      router.push("/dashboard/users");
+    },
   });
 
-  async function onSubmit(values: z.infer<typeof registerSchema>) {
+  async function onSubmit(values: RegisterForm) {
     console.log(values);
-
-    // try {
-    //   const response = await axios.post(
-    //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/Auth/register`,
-    //     {
-    //       username: values.username,
-    //       password: values.password,
-    //       email: values.email,
-    //       name: values.name,
-    //       ci: values.ci,
-    //       fatherLastName: values.fatherLastName,
-    //       motherLastName: values.motherLastName,
-    //       appCode: values.appCode,
-    //     },
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   );
-    //   console.log(response);
-
-    //   if (response.status === 200) {
-    //     setSuccessMessage("Usuario registrado exitosamente.");
-    //     setSuccessDialogOpen(true);
-    //     reset();
-    //     queryClient.invalidateQueries({ queryKey: ["User"] });
-    //   } else {
-    //     setErrorMessage("Error durante la creación del usuario");
-    //     setDialogOpen(true);
-    //   }
-    // } catch (error) {
-    //   if (error instanceof AxiosError) {
-    //     setErrorMessage(error.response?.data || "Error desconocido");
-    //   } else {
-    //     setErrorMessage(String(error));
-    //   }
-    //   setDialogOpen(true);
-    // }
+    registerUserMutation.mutate(values);
   }
 
-  const closeDialog = () => setDialogOpen(false);
-  const closeSuccessDialog = () => setSuccessDialogOpen(false);
 
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
+  const registerForm = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
@@ -170,7 +137,6 @@ function Register() {
       </label>
     </div>
   );
-  const { reset } = registerForm;
   return (
     <div className=" ">
       <div className=" ">
@@ -310,44 +276,6 @@ function Register() {
           </div>
         </FormProvider>
       </div>
-
-      <AlertDialog.Root open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
-          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
-            Error
-          </AlertDialog.Title>
-          <AlertDialog.Description className="text-black dark:text-white">
-            {errorMessage}
-          </AlertDialog.Description>
-          <div className="flex justify-end mt-4">
-            <AlertDialog.Action asChild>
-              <Button onClick={closeDialog}>Cerrar</Button>
-            </AlertDialog.Action>
-          </div>
-        </AlertDialog.Content>
-      </AlertDialog.Root>
-
-      <AlertDialog.Root
-        open={isSuccessDialogOpen}
-        onOpenChange={setSuccessDialogOpen}
-      >
-        <AlertDialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 dark:bg-gray-700 dark:bg-opacity-50" />
-        <AlertDialog.Content className="fixed top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 border border-blue-500 p-4 shadow-lg rounded-lg bg-white dark:bg-gray-800">
-          <AlertDialog.Title className="text-lg font-bold text-black dark:text-white">
-            Éxito
-          </AlertDialog.Title>
-          <AlertDialog.Description className="text-black dark:text-white">
-            {successMessage}
-          </AlertDialog.Description>
-          <div className="flex justify-end mt-4">
-            <AlertDialog.Action asChild>
-              <Button onClick={closeSuccessDialog}>Cerrar</Button>
-            </AlertDialog.Action>
-          </div>
-        </AlertDialog.Content>
-      </AlertDialog.Root>
     </div>
   );
 }
-export default Register;
