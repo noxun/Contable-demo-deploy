@@ -2,6 +2,7 @@ import {
   AccountingBox,
   AccountingBoxItems,
   AccountRelation,
+  Bank,
   BankExcerpt,
   BankExcerptData,
   Branch,
@@ -24,6 +25,7 @@ import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import axios from "axios";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
+import { RegisterForm } from "@/app/dashboard/users/new/page";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -375,5 +377,25 @@ export async function createAccountingBoxItems(data: NewAccountingBox) {
   }
   setAuthToken(token);
   const response = await api.post("/api/AccountingBox/createItems", data);
+  return response.data;
+}
+
+export async function fetchAllBanks() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Bank");
+  return response.data as Bank[];
+}
+
+export async function registerUser(data: RegisterForm){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/Auth/register")
   return response.data;
 }
