@@ -396,6 +396,6 @@ export async function registerUser(data: RegisterForm){
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post("/Auth/register")
+  const response = await api.post("/Auth/register", data)
   return response.data;
 }
