@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "banks",
     "data",
-    "users"
+    "users",
+    "invoice-registry"
   ]
 }
