@@ -346,6 +346,20 @@ export async function fetchAllAccounts() {
   return response.data as Account[];
 }
 
+export async function fetchAccountsByType(type: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Account/All", {
+    params: {
+      typeCompanyId: type
+    }
+  });
+  return response.data as Account[];
+}
+
 export async function fetchTrazoInternCodes() {
   let token;
   if (typeof window !== "undefined") {
