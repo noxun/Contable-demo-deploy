@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { fetchAllRoles, fetchUserRoles } from '@/lib/data';
 import useUserStore from '@/lib/userStore';
 import useToken from '@/modules/shared/hooks/useToken';
+import { cn } from '@/lib/utils';
 
 interface FormValues {
   name: string;
@@ -134,8 +135,14 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
   };
 
   const renderRoleCheckbox = (role: Role) => (
-    <div key={role.id} className={role.main ? "mb-2" : "ml-4 mb-1"}>
-      <div className="flex items-center">
+    <div key={role.id} 
+      // className={role.main ? "mb-2" : "ml-4 mb-1"}
+      className={cn("flex-1", {
+        "mb-2": role.main,
+        "ml-4 mb-1": role.main === false
+      })}
+    >
+      <div className="">
         <Controller
           name="roles"
           control={control}
@@ -161,14 +168,14 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="min-w-[80%]">
         <DialogHeader>
           <DialogTitle>Editar Usuario</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 py-4">
+          <div className="flex flex-col">
             {/* Existing form fields */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="">
               <Label htmlFor="username" className="text-right">
                 Usuario
               </Label>
@@ -178,12 +185,9 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
                 className="col-span-3"
               />
             </div>
-            {/* ... (other form fields) */}
-
-            {/* Roles section */}
-            <div className="col-span-4">
+            <div className="flex-1">
               <Label>Roles</Label>
-              <div className="mt-2 space-y-2">
+              <div className="flex border">
                 {allRoles?.map(renderRoleCheckbox)}
               </div>
             </div>
