@@ -89,7 +89,7 @@ export default function FormNewVoucherItems({
 
   const accountOptions = accountData.map((item) => ({
     value: item.id.toString(),
-    label: `${item.code} - ${item.description}`,
+    label: item.description,
     //...item
   }));
 
