@@ -58,7 +58,7 @@ export default function Register() {
     mutationFn: registerUser,
     onError: (error: AxiosError) => {
       console.log(error);
-      toast.error("Hubo un error al registar el usuario");
+      toast.error(error?.response?.data as string ?? "Hubo un error al registrar el usuario");
     },
     onSuccess: () => {
       toast.success("Usuario registrado correctamente");
