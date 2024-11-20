@@ -83,9 +83,9 @@ export default function ChildAccounts({ accounts }: ChildAccountsProps) {
               {account.code}:{account.description}
             </AccordionTrigger>
             <section>
-              {account.isMotion === true ? <Badge>Movimiento</Badge> : ""}
-              {account.isCost === true ? <Badge>Costo</Badge> : ""}
-              {account.isBudgetable === true ? <Badge>Presupuestable</Badge> : ""}
+              {account.isMotion ? <Badge>Movimiento</Badge> : ""}
+              {account.isCost ? <Badge>Costo</Badge> : ""}
+              {account.isBudgetable ? <Badge>Presupuestable</Badge> : ""}
             </section>
           </div>
           <AccordionContent>
