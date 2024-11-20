@@ -5,5 +5,7 @@ export default function useTypeCompanies() {
   return useQuery({
     queryKey: ["typeCompanies"],
     queryFn: fetchTypeCompanies,
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000 * 10,//10 min
   });
 }
