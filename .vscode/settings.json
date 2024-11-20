@@ -3,6 +3,7 @@
     "banks",
     "data",
     "users",
-    "accounts"
+    "accounts",
+    "vouchers"
   ]
 }
