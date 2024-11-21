@@ -12,7 +12,7 @@ export default function DiariesPage() {
           <Button>Nuevo Diario</Button>
         </Link>
       </div>
-      <ListVouchers voucherType={VoucherType.DIARY} voucherTypeRoute={VoucherTypeRoute.DIARY}/>
+      {/* <ListVouchers voucherType={VoucherType.DIARY} voucherTypeRoute={VoucherTypeRoute.DIARY}/> */}
     </section>
   );
 };
