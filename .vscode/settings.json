@@ -4,6 +4,7 @@
     "data",
     "users",
     "accounts",
-    "vouchers"
+    "vouchers",
+    "auth"
   ]
 }
