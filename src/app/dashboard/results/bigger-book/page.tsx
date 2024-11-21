@@ -23,12 +23,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+
 } from "@/components/ui/dialog";
 import DocViewer, {
   PDFRenderer,
   MSDocRenderer,
-  IDocument,
+
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";

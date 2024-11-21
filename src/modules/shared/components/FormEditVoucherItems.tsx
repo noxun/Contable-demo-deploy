@@ -1,19 +1,6 @@
-"use client";
-import Select, {
-  ControlProps,
-  CSSObjectWithLabel,
-  GroupBase,
-  StylesConfig,
-} from "react-select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+import Select, {ControlProps, CSSObjectWithLabel, GroupBase, StylesConfig,} from "react-select";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
+import {Input} from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -22,33 +9,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 
-import {
-  ChangeEvent,
-  CSSProperties,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
-import { VoucherItem, VoucherType } from "../types/sharedTypes";
-import { Account } from "@/modules/account/types/account";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {ChangeEvent, Dispatch, SetStateAction,} from "react";
+import {VoucherItem, VoucherType} from "../types/sharedTypes";
+import {Account} from "@/modules/account/types/account";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "sonner";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import {toast} from "sonner";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Button} from "@/components/ui/button";
+import {Pencil, Plus, Trash2} from "lucide-react";
 import useToken from "../hooks/useToken";
 
 type FormEditVoucherItemsProps = {
@@ -87,16 +60,15 @@ export default function FormEditVoucherItems({
       voucherItemId: number;
       type: VoucherType;
     }) => {
-      const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      return await axios.delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
-      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
@@ -190,17 +162,16 @@ export default function FormEditVoucherItems({
       data: NewVoucherItem;
       type: VoucherType;
     }) => {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
-        [data],
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      return await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
+          [data],
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
-      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });

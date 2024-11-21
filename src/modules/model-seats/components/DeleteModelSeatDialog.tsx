@@ -11,7 +11,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 
 export default function DeleteModelSeatDialog() {

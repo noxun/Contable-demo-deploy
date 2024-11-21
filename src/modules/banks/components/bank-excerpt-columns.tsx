@@ -1,9 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { BankExcerpt } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Save, PlaneIcon } from "lucide-react";
 import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
 

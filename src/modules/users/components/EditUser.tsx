@@ -139,7 +139,7 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
       // className={role.main ? "mb-2" : "ml-4 mb-1"}
       className={cn("flex-1", {
         "mb-2": role.main,
-        "ml-4 mb-1": role.main === false
+        "ml-4 mb-1": !role.main
       })}
     >
       <div className="">

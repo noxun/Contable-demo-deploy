@@ -189,9 +189,6 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
             </form>
           </Form>
         </div>
-        {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

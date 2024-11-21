@@ -3,11 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { ModelSeat } from "@/lib/types";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
 import EditModelSeatButton from "./EditModelSeatButton";
-import DeleteModelSeatDialog from "./DeleteModelSeatDialog";
 
 export const columns: ColumnDef<ModelSeat>[] = [
   {

@@ -4,7 +4,6 @@ import {
   AccountRelation,
   Bank,
   BankExcerpt,
-  BankExcerptData,
   Branch,
   BranchToList,
   CostCenter,
@@ -23,7 +22,6 @@ import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
-import axios from "axios";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/users/new/page";
 
@@ -212,14 +210,6 @@ export async function importBankExcerptFromExcel(data: FormData) {
   });
   return response.data;
 }
-
-// interface AccountingBox {
-//   // Define aquí los campos específicos de AccountingBox
-//   // Por ejemplo:
-//   // id: number;
-//   // name: string;
-//   [key: string]: any; // Permite cualquier propiedad adicional
-// }
 
 export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   let token;

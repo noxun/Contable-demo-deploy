@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import { Input } from "@/components/ui/input";
 import { PropsWithChildren, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,7 @@ import { z } from "zod";
 import { Account } from "../types/account";
 
 export default function AccountEditButton({ children, account }: PropsWithChildren & {account: Account}) {
-  const accountCreateFormSchema = z.object({
-    // companyId: z.number().default(1),
-    //default de momento para probar
-    // fatherId: z.number(),
+  const accountEditFormSchema = z.object({
     id: z.number(),
     code: z.string(),
     description: z.string().min(5),
@@ -30,10 +27,10 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
 
   const [open, setOpen] = useState(false);
 
-  type AccountCreateForm = z.infer<typeof accountCreateFormSchema>;
+  type AccountEditForm = z.infer<typeof accountEditFormSchema>;
 
-  const accountCreateForm = useForm<AccountCreateForm>({
-    resolver: zodResolver(accountCreateFormSchema),
+  const accountEditForm = useForm<AccountEditForm>({
+    resolver: zodResolver(accountEditFormSchema),
     defaultValues: {
       id: account.id,
       code: account.code,
@@ -45,15 +42,13 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       isCost: account.isCost
     }
   });
-
   //console.log(accountCreateForm.formState.errors);
-
   const token = localStorage.getItem("token");
 
   const queryClient = useQueryClient();
 
-  const createAccountMutation = useMutation({
-    mutationFn: async (data: AccountCreateForm) => {
+  const editAccountMutation = useMutation({
+    mutationFn: async (data: AccountEditForm) => {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${data.id}`, data ,
         {
@@ -65,18 +60,18 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       );
       return response.data;
     },
-    onError: (error) => {toast.error(error.message)},
+    onError: (error: AxiosError) => {toast.error(error.message)},
     onSuccess: () => {
       setOpen(false);
-      toast.success("Account edited succesfully");
+      toast.success("Account edited successfully");
       queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
 
 
-  function onSubmit(values: AccountCreateForm) {
+  function onSubmit(values: AccountEditForm) {
     console.log(values);
-    createAccountMutation.mutate(values);
+    editAccountMutation.mutate(values);
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -92,10 +87,10 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
         </DialogHeader>
         {/* Aqui vendria el componente form */}
         <div>
-          <Form {...accountCreateForm}>
-            <form onSubmit={accountCreateForm.handleSubmit(onSubmit)}>
+          <Form {...accountEditForm}>
+            <form onSubmit={accountEditForm.handleSubmit(onSubmit)}>
               <FormField
-                control={accountCreateForm.control}
+                control={accountEditForm.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
@@ -111,7 +106,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
                 )}
               />
               <FormField
-                control={accountCreateForm.control}
+                control={accountEditForm.control}
                 name="coin"
                 render={({ field }) => (
                   <FormItem>
@@ -145,7 +140,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
               />
               <div className="flex">
                 <FormField
-                  control={accountCreateForm.control}
+                  control={accountEditForm.control}
                   name="isMotion"
                   render={({ field }) => (
                     <FormItem>
@@ -160,7 +155,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
                   )}
                 />
                 <FormField
-                  control={accountCreateForm.control}
+                  control={accountEditForm.control}
                   name="isBudgetable"
                   render={({ field }) => (
                     <FormItem>
@@ -175,7 +170,7 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
                   )}
                 />
                 <FormField
-                  control={accountCreateForm.control}
+                  control={accountEditForm.control}
                   name="isCost"
                   render={({ field }) => (
                     <FormItem>
@@ -194,9 +189,6 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
             </form>
           </Form>
         </div>
-        {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

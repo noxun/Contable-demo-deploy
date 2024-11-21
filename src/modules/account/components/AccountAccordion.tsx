@@ -22,7 +22,7 @@ function AccountAccordion() {
 
   if (accountsQuery.isPending || typeCompanyQuery.isPending) {
     return <AccountLayoutSkeleton />;
-    //aca se puede retornar algun skeleton
+    //aca se puede retornar algún skeleton
   }
 
   function handleChange(value: string){

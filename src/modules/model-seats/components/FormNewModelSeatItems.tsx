@@ -1,5 +1,4 @@
-"use client";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import { Plus, Trash2 } from "lucide-react";

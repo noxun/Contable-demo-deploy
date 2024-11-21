@@ -1,5 +1,4 @@
-"use client";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import Select, {
   CSSObjectWithLabel,

@@ -24,9 +24,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import EditBank from "./EditBank";
 import { useState } from "react";
-import { IBank } from "../interface/banks";
 import DialogNewExcerpt from "./DialogNewExcerpt";
-import DialogExcerptTable from "./DialogExcerptTable";
 import Link from "next/link";
 import { Bank } from "@/lib/types";
 
