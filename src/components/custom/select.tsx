@@ -7,6 +7,6 @@ export default function CustomSelect<
   Group extends GroupBase<Option> = GroupBase<Option>
 >(props: Props<Option, IsMulti, Group>) {
   return (
-    <Select {...props} theme={(theme) => ({ ...theme, borderRadius: 0 })} />
+    <Select className="my-react-select-container w-full" classNamePrefix="my-react-select" {...props}/>
   );
 }
