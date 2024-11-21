@@ -33,7 +33,7 @@ export default function ListVouchers({
     placeholderData: keepPreviousData,
   });
 
-  if (isLoading || isPending) return "Cargando...";
+  if (isLoading || isPending) return <div>Cargando...</div>;
 
   if (error)
     return "Ocurrio un error al obtener los vouchers: " + error.message;
