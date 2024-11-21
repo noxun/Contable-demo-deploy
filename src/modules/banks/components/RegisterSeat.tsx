@@ -7,7 +7,8 @@ import useAccounts from "@/modules/shared/hooks/useAccounts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
-import Select, { SingleValue } from "react-select";
+import { SingleValue } from "react-select";
+import CustomSelect from "@/components/custom/select";
 import { toast } from "sonner";
 
 type RegisterSeatProps = {
@@ -56,7 +57,7 @@ export default function RegisterSeat({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <Select
+      <CustomSelect
         isDisabled={hasBeenRegisteredToAccount}
         onChange={(option) => {
           setSelectedAccount(option);

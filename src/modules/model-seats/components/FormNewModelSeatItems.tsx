@@ -80,7 +80,9 @@ export default function FormNewModelSeatItems({
             <TableRow key={index}>
               <TableCell className="h-fit w-72">
                 <Select
-                  menuPortalTarget={document.body}
+                  className="my-react-select-container"
+                  classNamePrefix="my-react-select"
+                  // menuPortalTarget={document.body}
                   minMenuHeight={10}
                   maxMenuHeight={300}
                   menuPlacement="top"

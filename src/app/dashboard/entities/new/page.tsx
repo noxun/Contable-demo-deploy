@@ -20,6 +20,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import CustomSelect from "@/components/custom/select";
 
 const newEntityFormSchema = z.object({
   code: z.coerce.number().or(z.string()),
@@ -115,7 +116,7 @@ export default function NewEntityPage() {
       <Form {...newEntityForm}>
         <form
           onSubmit={newEntityForm.handleSubmit(onSubmit)}
-          className="space-y-8"
+          className="grid grid-cols-2 gap-4"
         >
           <FormField
             control={newEntityForm.control}
@@ -209,23 +210,11 @@ export default function NewEntityPage() {
             control={newEntityForm.control}
             name="accountId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel>Cuenta</FormLabel>
                 <FormControl>
-                  <Select
-                    maxMenuHeight={200}
-                    className="my-react-select-container"
-                    classNamePrefix="my-react-select"
-                    menuPosition="absolute"
+                  <CustomSelect
                     menuPlacement="top"
-                    styles={{
-                      menuList: (base) => ({
-                        ...base,
-                        height: 50,
-                        minHeight: 50, // your desired height
-                      }),
-                    }}
-                    isSearchable={true}
                     options={accountOptions}
                     value={accountOptions.find(
                       (option) => option.value === field.value?.toString()
@@ -240,7 +229,7 @@ export default function NewEntityPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Guardar</Button>
+          <Button className="col-span-2" type="submit">Guardar</Button>
         </form>
       </Form>
     </main>
