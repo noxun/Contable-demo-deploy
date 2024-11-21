@@ -16,17 +16,19 @@ import {
 function AccountAccordion() {
   const [type, setType] = useState(1);
 
-  const typeCompanyQuery = useTypeCompanies();
+  const { data: typeCompanies, isPending: isPendingTypeCompanies } =
+    useTypeCompanies();
 
-  const accountsQuery = useAccountsByType(type);
+  const { data: accounts, isPending: isPendingAccounts } =
+    useAccountsByType(type);
 
-  if (accountsQuery.isPending || typeCompanyQuery.isPending) {
+  if (isPendingAccounts || isPendingTypeCompanies) {
     return <AccountLayoutSkeleton />;
     //aca se puede retornar algún skeleton
   }
 
-  function handleChange(value: string){
-    setType(parseInt(value ?? 1))
+  function handleChange(value: string) {
+    setType(parseInt(value ?? 1));
   }
 
   return (
@@ -37,7 +39,7 @@ function AccountAccordion() {
             <SelectValue placeholder="Selecciona un Tipo" />
           </SelectTrigger>
           <SelectContent>
-            {typeCompanyQuery.data?.map((item) => (
+            {typeCompanies?.map((item) => (
               <SelectItem key={item.id} value={item.id.toString()}>
                 {item.name}
               </SelectItem>
@@ -47,7 +49,7 @@ function AccountAccordion() {
         <ImportAccountDialog />
       </div>
       <br />
-      <ChildAccounts accounts={accountsQuery.data} />
+      <ChildAccounts accounts={accounts} />
     </div>
   );
 }
