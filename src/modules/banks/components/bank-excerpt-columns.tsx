@@ -4,6 +4,7 @@ import { BankExcerpt } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
+import DialogAccountDetails from "./DialogAccountDetails";
 
 export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
   return [
@@ -51,9 +52,14 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
               bankId={bankId}
               bankExtractId={bankExtract.id}
               disabled={
-                bankExtract.trazoRegister ? bankExtract.trazoRegister :
-                (!bankExtract.accountingEntry && !bankExtract.trazoRegister) 
+                bankExtract.trazoRegister
+                  ? bankExtract.trazoRegister
+                  : !bankExtract.accountingEntry && !bankExtract.trazoRegister
               }
+            />
+            <DialogAccountDetails
+              bankExtractId={bankExtract.id}
+              accountId={bankExtract.accountId}
             />
           </div>
         );
