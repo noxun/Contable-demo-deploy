@@ -263,6 +263,7 @@ export default function FormNewVoucher({
 
   if (
     branchListQuery.isPending ||
+    branchListQuery.data === undefined ||
     banksQuery.isLoading ||
     banksQuery.isPending ||
     banksQuery.data === undefined ||

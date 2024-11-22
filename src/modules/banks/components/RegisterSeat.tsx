@@ -28,7 +28,7 @@ export default function RegisterSeat({
     useState<null | SingleValue<Account>>(null);
   const queryClient = useQueryClient();
   const { data: accounts, isPending } = useAccounts();
-
+  console.log(accounts);
   const registerSeatMutation = useMutation({
     mutationFn: registerExtractToSeat,
     onError: (error: AxiosError) => {
@@ -57,20 +57,25 @@ export default function RegisterSeat({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <CustomSelect
-        isDisabled={hasBeenRegisteredToAccount}
-        onChange={(option) => {
-          setSelectedAccount(option);
-        }}
-        value={
-          selectedAccount ?? extractAccountId !== 0
-            ? accounts?.find((item) => item.id === extractAccountId)
-            : null
-        }
-        options={accounts}
-        getOptionValue={(account) => account.id.toString()}
-        getOptionLabel={(account) => `${account.code}-${account.description}`}
-      />
+      {accounts !== undefined ? (
+        <CustomSelect
+          isDisabled={hasBeenRegisteredToAccount}
+          onChange={(option) => {
+            setSelectedAccount(option);
+          }}
+          value={
+            selectedAccount ??
+            (extractAccountId !== 0 && Array.isArray(accounts)
+              ? accounts.find((item) => item.id === extractAccountId)
+              : null)
+          }
+          options={accounts}
+          getOptionValue={(account) => account.id.toString()}
+          getOptionLabel={(account) => `${account.code}-${account.description}`}
+        />
+      ) : (
+        <Spinner />
+      )}
       <Button
         disabled={hasBeenRegisteredToAccount}
         title="Registrar Asiento Contable"
