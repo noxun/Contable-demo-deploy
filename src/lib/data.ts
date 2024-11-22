@@ -344,8 +344,8 @@ export async function fetchAccountsByType(type: number) {
   setAuthToken(token);
   const response = await api.get("/api/Account/All", {
     params: {
-      typeCompanyId: type
-    }
+      typeCompanyId: type,
+    },
   });
   return response.data as Account[];
 }
@@ -360,7 +360,7 @@ export async function fetchTrazoInternCodes() {
   return response.data as TrazoInternCode[];
 }
 
-export async function fetchAccountingBoxItemsById(accountingBoxId: number){
+export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -368,8 +368,8 @@ export async function fetchAccountingBoxItemsById(accountingBoxId: number){
   setAuthToken(token);
   const response = await api.get("/api/AccountingBox/items", {
     params: {
-      AccountingBoxId: accountingBoxId
-    }
+      AccountingBoxId: accountingBoxId,
+    },
   });
   return response.data as AccountingBoxItems[];
 }
@@ -394,12 +394,30 @@ export async function fetchAllBanks() {
   return response.data as Bank[];
 }
 
-export async function registerUser(data: RegisterForm){
+export async function registerUser(data: RegisterForm) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post("/Auth/register", data)
+  const response = await api.post("/Auth/register", data);
+  return response.data;
+}
+
+export async function fetchBankExtractAccountDetails(
+  BankExtractId: number,
+  AccountId: number
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Bank/seatContable", {
+    params: {
+      BankExtractId,
+      AccountId,
+    },
+  });
   return response.data;
 }
