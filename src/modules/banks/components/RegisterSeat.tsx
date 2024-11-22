@@ -51,7 +51,7 @@ export default function RegisterSeat({
     }
   }
 
-  if (isPending) {
+  if (isPending || accounts === undefined) {
     return <Spinner />;
   }
 
