@@ -36,7 +36,7 @@ export default function ListVouchers({
   if (isLoading || isPending) return <div>Cargando...</div>;
 
   if (error)
-    return "Ocurrio un error al obtener los vouchers: " + error.message;
+    return "Ocurrió un error al obtener los vouchers: " + error.message;
 
   const vouchers = data?.data ?? [];
   const pagination = data.pagination;
