@@ -58,23 +58,17 @@ export default function ChildAccounts({ accounts }: ChildAccountsProps) {
               <DropdownMenuContent className="flex flex-col gap-1">
                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                 <DropdownMenuItem asChild>
-                  <AccountCreateButton fatherId={account.id}>
-                    Nuevo Registro
-                  </AccountCreateButton>
+                  <AccountCreateButton fatherId={account.id}/>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <AccountEditButton account={account}>
-                    Editar Registro
-                  </AccountEditButton>
+                  <AccountEditButton account={account}/>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <AccountDeleteButton
                     accountId={account.id}
                     message="Esta accion no puede revertirse. Esto borrara
                     permanentemente la cuenta"
-                  >
-                    Borrar Registro
-                  </AccountDeleteButton>
+                  />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
