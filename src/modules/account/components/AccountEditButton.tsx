@@ -1,19 +1,35 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import { Input } from "@/components/ui/input";
-import { PropsWithChildren, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Account } from "../types/account";
+import { Pencil } from "lucide-react";
 
-export default function AccountEditButton({ children, account }: PropsWithChildren & {account: Account}) {
+export default function AccountEditButton({ account }: { account: Account }) {
   const accountEditFormSchema = z.object({
     id: z.number(),
     code: z.string(),
@@ -39,9 +55,25 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       active: account.active,
       isBudgetable: account.isBudgetable,
       isMotion: account.isMotion,
-      isCost: account.isCost
-    }
+      isCost: account.isCost,
+    },
   });
+
+  useEffect(() => {
+    if (open) {
+      accountEditForm.reset({
+        id: account.id,
+        code: account.code,
+        description: account.description,
+        coin: account.coin,
+        active: account.active,
+        isBudgetable: account.isBudgetable,
+        isMotion: account.isMotion,
+        isCost: account.isCost,
+      });
+    }
+  }, [open, account, accountEditForm]);
+
   //console.log(accountCreateForm.formState.errors);
   const token = localStorage.getItem("token");
 
@@ -50,7 +82,8 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
   const editAccountMutation = useMutation({
     mutationFn: async (data: AccountEditForm) => {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${data.id}`, data ,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account?accountId=${data.id}`,
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -60,14 +93,15 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
       );
       return response.data;
     },
-    onError: (error: AxiosError) => {toast.error(error.message)},
+    onError: (error: AxiosError) => {
+      toast.error(error.message);
+    },
     onSuccess: () => {
       setOpen(false);
       toast.success("Account edited successfully");
       queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
-
 
   function onSubmit(values: AccountEditForm) {
     console.log(values);
@@ -76,13 +110,16 @@ export default function AccountEditButton({ children, account }: PropsWithChildr
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>{children}</Button>
+        <Button title="Editar Registro" variant="outline" size="icon">
+          <Pencil className="size-4"/>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Editar Cuenta</DialogTitle>
           <DialogDescription>
-            Haz cambios a la cuenta aqui. Dale click a guardar cuando estes listo.
+            Haz cambios a la cuenta aqui. Dale click a guardar cuando estes
+            listo.
           </DialogDescription>
         </DialogHeader>
         {/* Aqui vendria el componente form */}
