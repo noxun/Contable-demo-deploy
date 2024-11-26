@@ -122,6 +122,8 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
           <span>
             {account.code}: {account.description}{" "}
             {account.isMotion && <Badge>Movimiento</Badge>}
+            {account.isBudgetable && <Badge>Presupuestable</Badge>}
+            {account.isCost && <Badge>Costo</Badge>}
           </span>
         </div>
       </div>
