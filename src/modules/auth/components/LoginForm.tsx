@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -36,7 +36,6 @@ export type Login = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const setLoginData = useUserStore((state) => state.setLoginData);
   const router = useRouter();
-  const pathname = usePathname();
 
   const loginMutation = useMutation({
     mutationFn: login,
@@ -73,7 +72,8 @@ export default function LoginForm() {
     },
   });
 
-  console.log(pathname);
+  
+
 
   return (
     <Form {...loginForm}>
@@ -112,7 +112,7 @@ export default function LoginForm() {
           )}
         />
         <Button
-          disabled={loginMutation.isPending && !(pathname !== "/auth/login")}
+          disabled={loginMutation.isPending}
           type="submit"
         >
           Ingresar
