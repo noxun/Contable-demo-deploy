@@ -394,6 +394,16 @@ export async function fetchAllBanks() {
   return response.data as Bank[];
 }
 
+export async function deleteBankExtract(bankExtractId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.delete("/api/Bank");//TODO:url
+  return response.data;
+}
+
 export async function registerUser(data: RegisterForm) {
   let token;
   if (typeof window !== "undefined") {
