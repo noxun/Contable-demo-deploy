@@ -41,7 +41,7 @@ export default function ImportBankExcerptRegisterPaymentForm({
   function onSubmit(values: ImportBankExcerpt) {
     console.log(values);
     const importBankExcerptFormData = new FormData();
-    importBankExcerptFormData.append("BankId", values.BankDetailId);
+    importBankExcerptFormData.append("BankDetailId", values.BankDetailId);
     importBankExcerptFormData.append("File", values.File!);
 
     importBankExcerptMutation.mutate(importBankExcerptFormData);
