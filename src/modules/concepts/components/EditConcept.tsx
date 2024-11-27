@@ -30,7 +30,7 @@ export default function EditConcept({ id }: { id: string }) {
     enabled: isTokenReady
   });
 
-  if (isLoading || isPending === true) {
+  if (isLoading || isPending) {
     return <div>Cargando</div>;
   }
 

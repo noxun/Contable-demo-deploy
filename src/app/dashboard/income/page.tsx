@@ -12,7 +12,7 @@ export default function IncomesPage() {
           <Button>Nuevo Ingreso</Button>
         </Link>
       </div>
-      <ListVouchers voucherType={VoucherType.INCOME} voucherTypeRoute={VoucherTypeRoute.INCOME}/>
+      {/* <ListVouchers voucherType={VoucherType.INCOME} voucherTypeRoute={VoucherTypeRoute.INCOME}/> */}
     </section>
   );
 };

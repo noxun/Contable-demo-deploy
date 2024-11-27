@@ -1,6 +1,6 @@
 "use service";
 import axios, { isAxiosError } from "axios";
-import { IIncomeItem } from "../interface/income";
+
 const token = localStorage.getItem("token");
 export const incomeApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL + "/api/Voucher",

@@ -1,19 +1,6 @@
-"use client";
-import Select, {
-  ControlProps,
-  CSSObjectWithLabel,
-  GroupBase,
-  StylesConfig,
-} from "react-select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+import Select, {ControlProps, CSSObjectWithLabel, GroupBase, StylesConfig,} from "react-select";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
+import {Input} from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -22,34 +9,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 
-import {
-  ChangeEvent,
-  CSSProperties,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
-import { VoucherItem, VoucherType } from "../types/sharedTypes";
-import { Account } from "@/modules/account/types/account";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {ChangeEvent, Dispatch, SetStateAction,} from "react";
+import {VoucherItem, VoucherType} from "../types/sharedTypes";
+import {Account} from "@/modules/account/types/account";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "sonner";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import {toast} from "sonner";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Button} from "@/components/ui/button";
+import {Pencil, Plus, Trash2} from "lucide-react";
 import useToken from "../hooks/useToken";
+import CustomSelect from "@/components/custom/select";
 
 type FormEditVoucherItemsProps = {
   type: VoucherType;
@@ -87,16 +61,15 @@ export default function FormEditVoucherItems({
       voucherItemId: number;
       type: VoucherType;
     }) => {
-      const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      return await axios.delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
-      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
@@ -190,17 +163,16 @@ export default function FormEditVoucherItems({
       data: NewVoucherItem;
       type: VoucherType;
     }) => {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
-        [data],
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      return await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
+          [data],
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
       );
-      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
@@ -220,61 +192,6 @@ export default function FormEditVoucherItems({
     addVoucherItemMutation.mutate({ data: values, type });
     //setIncomeItems((previousItems) => [...previousItems, values]);
   }
-
-  const customStyles: StylesConfig<any, false> = {
-    control: (
-      base: CSSObjectWithLabel,
-      props: ControlProps<any, false, GroupBase<any>>
-    ) => ({
-      ...base,
-      backgroundColor: props.isFocused ? "#1F2937" : "#FFFFFF", // dark:bg-neutral-700 or bg-white
-      borderColor: props.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:border-neutral-400 or border-neutral-300
-      "&:hover": {
-        borderColor: props.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:hover:border-neutral-400 or hover:border-neutral-300
-      },
-    }),
-    // control: (base, state) => ({
-    //     ...base,
-    //     backgroundColor: state.isFocused ? "#1F2937" : "#FFFFFF", // dark:bg-neutral-700 or bg-white
-    //     borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:border-neutral-400 or border-neutral-300
-    //     "&:hover": {
-    //       borderColor: state.isFocused ? "#D1D5DB" : "#9CA3AF", // dark:hover:border-neutral-400 or hover:border-neutral-300
-    //     },
-    //   }),
-    menu: (base) => ({
-      ...base,
-      backgroundColor: "#1F2937", // dark:bg-neutral-700
-      borderColor: "#9CA3AF", // dark:border-neutral-600
-      zIndex: 9999, // Ensure it appears above other elements
-    }),
-    option: (base, state) => ({
-      ...base,
-      color: state.isFocused ? "#E5E7EB" : "#4B5563", // dark:text-neutral-200 or text-neutral-600
-      backgroundColor: state.isFocused ? "#374151" : "#F3F4F6", // dark:bg-neutral-800 or bg-neutral-100
-      "&:hover": {
-        backgroundColor: "#374151", // dark:hover:bg-neutral-800
-      },
-    }),
-    menuList: (base) => ({
-      ...base,
-      padding: 0,
-    }),
-    multiValue: (base) => ({
-      ...base,
-      backgroundColor: "#9CA3AF", // dark:bg-neutral-600
-    }),
-    multiValueLabel: (base) => ({
-      ...base,
-      color: "#F3F4F6", // dark:text-neutral-100
-    }),
-    multiValueRemove: (base) => ({
-      ...base,
-      backgroundColor: "#6B7280", // dark:bg-neutral-700
-      "&:hover": {
-        backgroundColor: "#4B5563", // dark:hover:bg-neutral-800
-      },
-    }),
-  };
 
   return (
     <div>
@@ -307,20 +224,8 @@ export default function FormEditVoucherItems({
                       <FormItem className="w-72">
                         <FormLabel>Cuenta</FormLabel>
                         <FormControl>
-                          <Select
-                            maxMenuHeight={200}
-                            className="my-react-select-container"
-                            classNamePrefix="my-react-select"
-                            menuPosition="absolute"
-                            //menuPortalTarget={document.body}
+                          <CustomSelect
                             menuPlacement="top"
-                            styles={{
-                              menuList: (base) => ({
-                                ...base,
-                                height: 100,
-                                minHeight: 100, // your desired height
-                              }),
-                            }}
                             isSearchable={true}
                             options={accountOptions}
                             value={accountOptions.find(
@@ -404,14 +309,8 @@ export default function FormEditVoucherItems({
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
               <TableCell>
-                <Select
-                  maxMenuHeight={200}
-                  className="my-react-select-container"
-                  classNamePrefix="my-react-select"
-                  menuPosition="absolute"
+                <CustomSelect
                   menuPlacement="top"
-                  menuPortalTarget={document.body}
-                  styles={customStyles}
                   isSearchable={true}
                   options={accountOptions}
                   value={accountOptions.find(

@@ -2,14 +2,13 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
@@ -45,7 +44,6 @@ const registerSchema = z.object({
 export type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function Register() {
-
   const { data: allRoles } = useQuery({
     queryKey: ["allRoles"],
     queryFn: fetchAllRoles,
@@ -59,7 +57,7 @@ export default function Register() {
     mutationFn: registerUser,
     onError: (error: AxiosError) => {
       console.log(error);
-      toast.error("Hubo un error al registar el usuario");
+      toast.error(error?.response?.data as string ?? "Hubo un error al registrar el usuario");
     },
     onSuccess: () => {
       toast.success("Usuario registrado correctamente");
@@ -72,7 +70,6 @@ export default function Register() {
     console.log(values);
     registerUserMutation.mutate(values);
   }
-
 
   const registerForm = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -124,7 +121,7 @@ export default function Register() {
     fields.some((field) => field.rolId === rolId);
 
   const renderRoleCheckbox = (role: RoleMenu) => (
-    <div key={role.id} className="mb-2">
+    <div key={role.id}>
       <Checkbox
         id={`role-${role.id}`}
         checked={isRoleChecked(role.id)}
@@ -133,149 +130,133 @@ export default function Register() {
         }
       />
       <label htmlFor={`role-${role.id}`} className="ml-2">
-        {role.name}
+        {role.main ? role.name : role.title}
       </label>
     </div>
   );
   return (
-    <div className=" ">
-      <div className=" ">
-        <FormProvider {...registerForm}>
-          <div className="mx-5 mt-5 flex flex-col p-2 ">
-            <h1 className="mb-4 font-semibold ">REGISTRAR USUARIO</h1>
-            <Form {...registerForm}>
-              <form onSubmit={registerForm.handleSubmit(onSubmit)}>
-                <div className="flex gap-2 ">
-                  <FormField
-                    control={registerForm.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nombre de Usuario</FormLabel>
-                        <FormControl className="px-5">
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Contraseña</FormLabel>
-                        <FormControl className="px-5">
-                          <Input
-                            type="password"
-                            placeholder=""
-                            {...field}
-                          ></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+    <>
+      <h1 className="font-bold text-2xl">REGISTRAR USUARIO</h1>
+      <Form {...registerForm}>
+        <form
+          className="grid grid-cols-3 gap-4"
+          onSubmit={registerForm.handleSubmit(onSubmit)}
+        >
+          <FormField
+            control={registerForm.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre de Usuario</FormLabel>
+                <FormControl className="px-5">
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contraseña</FormLabel>
+                <FormControl className="px-5">
+                  <Input type="password" placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                <div className="flex justify-normal  gap-2 ">
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl className="px-5">
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="ci"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>CI</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+          <FormField
+            control={registerForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl className="px-5">
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="ci"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CI</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                <div className="flex justify-normal  gap-5 ">
-                  <FormField
-                    control={registerForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nombre</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="fatherLastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Apellido Paterno</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="motherLastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Apellido Materno</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field}></Input>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+          <FormField
+            control={registerForm.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="fatherLastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Apellido Paterno</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="motherLastName"
+            render={({ field }) => (
+              <FormItem className="col-span-3">
+                <FormLabel>Apellido Materno</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field}></Input>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                <div className="mt-5">
-                  <h2 className="text-lg font-semibold mb-2">Roles</h2>
-                  {allRoles?.map((mainRole) => (
-                    <div key={mainRole.id}>
-                      {renderRoleCheckbox(mainRole)}
-                      {expandedRoles.includes(mainRole.id) &&
-                        mainRole.rolsList && (
-                          <div className="ml-4 mt-1">
-                            {mainRole.rolsList.map(renderRoleCheckbox)}
-                          </div>
-                        )}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 flex space-y-4">
-                  <Button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 font-bold py-5 px-8 rounded shadow"
-                  >
-                    Registrar
-                  </Button>
-                </div>
-              </form>
-            </Form>
+          <div className="flex col-span-3 gap-4">
+            <h2 className="font-semibold ">Roles</h2>
+            {allRoles?.map((mainRole) => (
+              <div key={mainRole.id} className="">
+                {renderRoleCheckbox(mainRole)}
+                {expandedRoles.includes(mainRole.id) && mainRole.rolsList && (
+                  <div className="ml-4 mt-1">
+                    {mainRole.rolsList.map(renderRoleCheckbox)}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        </FormProvider>
-      </div>
-    </div>
+          <Button
+            type="submit"
+            className="col-start-3 col-end-4"
+          >
+            Registrar
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

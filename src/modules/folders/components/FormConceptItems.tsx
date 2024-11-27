@@ -1,5 +1,4 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { IResponseConceptFolder } from "../interface/folders";
 import {
   Table,
   TableBody,

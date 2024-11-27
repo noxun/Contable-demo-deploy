@@ -3,6 +3,9 @@
     "banks",
     "data",
     "users",
+    "accounts",
+    "vouchers",
+    "auth",
     "invoice-registry"
   ]
 }

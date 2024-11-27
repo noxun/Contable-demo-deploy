@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import Spinner from "@/components/ui/spinner";
 import useMotionAccounts from "@/modules/shared/hooks/useMotionAccounts";
-import { ModelSeatItem, PostModelSeat } from "@/lib/types";
+import { ModelSeatItem } from "@/lib/types";
 import FormNewModelSeatItems from "./FormNewModelSeatItems";
 import { postModelSeat } from "@/lib/data";
 

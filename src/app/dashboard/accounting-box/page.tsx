@@ -8,6 +8,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { columns } from "@/modules/accounting-box/components/columns";
 import NewAccountingBoxDialog from "@/modules/accounting-box/components/NewAccountingBoxDialog";
 import useAccountingBox from "@/modules/shared/hooks/useAccountingBox";
+import CustomSelect from "@/components/custom/select";
 
 const AccountingBoxPage = () => {
   const [accountingBoxId, setAccountingBoxId] = useState<number | null>(null);
@@ -42,7 +43,7 @@ const AccountingBoxPage = () => {
       {isPendingAccountingBoxList ? (
         <div>Cargando cajas...</div>
       ) : (
-        <Select
+        <CustomSelect
           options={accountingBoxOptions}
           onChange={(selectedOption) =>
             setAccountingBoxId(selectedOption?.value || null)

@@ -3,6 +3,13 @@ import ListVouchers from "@/modules/shared/components/ListVouchers";
 import { VoucherType, VoucherTypeRoute } from "@/modules/shared/types/sharedTypes";
 import Link from "next/link";
 
+import dynamic from "next/dynamic";
+
+const DynamicListVouchers = dynamic(()=> import("@/modules/shared/components/ListVouchers"), {
+  loading: () => <div>Cargando...</div>,
+  ssr: false
+})
+
 export default function DiariesPage() {
   return (
     <section className="px-6">
@@ -12,7 +19,7 @@ export default function DiariesPage() {
           <Button>Nuevo Diario</Button>
         </Link>
       </div>
-      <ListVouchers voucherType={VoucherType.DIARY} voucherTypeRoute={VoucherTypeRoute.DIARY}/>
+      <DynamicListVouchers voucherType={VoucherType.DIARY} voucherTypeRoute={VoucherTypeRoute.DIARY}/>
     </section>
   );
 };

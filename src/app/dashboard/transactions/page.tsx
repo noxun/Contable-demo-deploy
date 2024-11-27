@@ -28,7 +28,7 @@ const voucherOptions: VoucherInfo[] = [
 
 export default function TransactionsPage() {
   const [selectedOption, setSelectedOption] = useState<null | VoucherInfo>(
-    null
+    voucherOptions[0]
   );
 
   const handleSelectChange = (value: string) => {

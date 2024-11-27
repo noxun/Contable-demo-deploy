@@ -2,7 +2,6 @@
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import { LogOut, User, ChevronDown, ChevronRight } from "lucide-react";
-import { MENU_OPTIONS } from "../constants/menu-options";
 import { usePathname, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";

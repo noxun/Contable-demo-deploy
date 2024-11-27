@@ -1,5 +1,20 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,13 +23,18 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { PropsWithChildren, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { PlusCircle } from "lucide-react";
 
-export default function AccountCreateButton({ children, fatherId }: PropsWithChildren & {fatherId: number}) {
+export default function AccountCreateButton({
+  fatherId,
+}: {
+  fatherId: number;
+}) {
   const accountCreateFormSchema = z.object({
-    companyId: z.number().default(1),//default de momento para probar
+    companyId: z.number().default(1), //default de momento para probar
     fatherId: z.number(),
     description: z.string().min(5),
     coin: z.string(),
@@ -34,12 +54,11 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
       description: "",
       coin: "",
       active: true,
-      fatherId: fatherId
-    }
+      fatherId: fatherId,
+    },
   });
 
   //console.log(accountCreateForm.formState.errors);
-
 
   const token = localStorage.getItem("token");
 
@@ -48,7 +67,8 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
   const createAccountMutation = useMutation({
     mutationFn: async (data: AccountCreateForm) => {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account`, data ,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account`,
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -59,8 +79,8 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
       return response.data;
     },
     onError: (error) => {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     },
     onSuccess: () => {
       setOpen(false);
@@ -69,7 +89,6 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
     },
   });
 
-
   function onSubmit(values: AccountCreateForm) {
     console.log(values);
     createAccountMutation.mutate(values);
@@ -77,14 +96,14 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>{children}</Button>
+        <Button title="Nuevo Registro" variant="outline" size="icon">
+          <PlusCircle className="size-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Crear Cuenta</DialogTitle>
-          <DialogDescription>
-            Crea una nueva cuenta
-          </DialogDescription>
+          <DialogDescription>Crea una nueva cuenta</DialogDescription>
         </DialogHeader>
         <div>
           <Form {...accountCreateForm}>
@@ -113,7 +132,7 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
                     <FormLabel>Moneda</FormLabel>
                     <FormControl>
                       <RadioGroup
-                        className="flex"
+                        className="flex items-center"
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
@@ -189,9 +208,6 @@ export default function AccountCreateButton({ children, fatherId }: PropsWithChi
             </form>
           </Form>
         </div>
-        {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

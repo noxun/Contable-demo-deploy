@@ -109,7 +109,7 @@ export default function FormEditVoucher({
       queryClient.invalidateQueries({
         queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type],
       });
-      toast.success("Income Edited Succesfully");
+      toast.success("Income Edited Successfully");
     },
     onError: (error) => {
       console.log(error);

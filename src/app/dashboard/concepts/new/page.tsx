@@ -21,6 +21,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Concept } from "@/modules/concepts/types/concept";
 import { useRouter } from "next/navigation";
+import CustomSelect from "@/components/custom/select";
 
 const newConceptFormSchema = z.object({
   acronym: z.string(),
@@ -196,20 +197,8 @@ export default function NewConceptPage() {
               <FormItem>
                 <FormLabel>Cuenta</FormLabel>
                 <FormControl>
-                  <Select
-                    maxMenuHeight={200}
-                    className="my-react-select-container"
-                    classNamePrefix="my-react-select"
-                    menuPosition="absolute"
+                  <CustomSelect
                     menuPlacement="top"
-                    // styles={{
-                    //   menuList: (base) => ({
-                    //     ...base,
-                    //     height: 50,
-                    //     minHeight: 50, // your desired height
-                    //   }),
-                    // }}
-                    isSearchable={true}
                     options={accountOptions}
                     value={accountOptions.find(
                       (option) => option.value === field.value?.toString()

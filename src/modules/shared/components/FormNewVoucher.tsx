@@ -54,6 +54,7 @@ import {
   fetchBranchList,
   fetchModelSeatsItems,
 } from "@/lib/data";
+import CustomSelect from "@/components/custom/select";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -262,6 +263,7 @@ export default function FormNewVoucher({
 
   if (
     branchListQuery.isPending ||
+    branchListQuery.data === undefined ||
     banksQuery.isLoading ||
     banksQuery.isPending ||
     banksQuery.data === undefined ||
@@ -281,9 +283,9 @@ export default function FormNewVoucher({
         <form onSubmit={voucherForm.handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label className="mb-2 block text-sm font-medium">
-              Selecciona un Model Seat
+              Selecciona un Asiento Modelo
             </label>
-            <MySelect
+            <CustomSelect
               options={modelSeats.map((seat) => ({
                 label: seat.description,
                 value: seat.id,
@@ -291,7 +293,7 @@ export default function FormNewVoucher({
               value={selectedModelSeat}
               onChange={handleModelSeatChange}
               isLoading={isLoadingModelSeats}
-              placeholder="Selecciona un Model Seat"
+              placeholder="Selecciona un Asiento Modelo"
             />
           </div>
           <div className="flex gap-2 mb-2">

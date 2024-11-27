@@ -77,7 +77,7 @@ export function columns(
                     Editar
                   </Link>
                 </DropdownMenuItem>
-                {/* seria interesante probar tambien con asChild */}
+                {/* sería interesante probar también con asChild */}
                 <DropdownMenuItem
                   onSelect={(e) => {
                     e.preventDefault();
@@ -98,7 +98,7 @@ export function columns(
               <AlertDialogHeader>
                 <AlertDialogTitle>Esta absolutamente seguro?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Esta accion no puede revertirse. Esto borrara permanentemente
+                  Esta acción no puede revertirse. Esto borrara permanentemente
                   el voucher con id: {voucher.id}
                 </AlertDialogDescription>
               </AlertDialogHeader>

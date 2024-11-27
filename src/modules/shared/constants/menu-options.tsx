@@ -1,7 +1,5 @@
 import {
   FileCheck2,
-  FileInput,
-  FileOutput,
   ListTree,
   User,
   Landmark,

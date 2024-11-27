@@ -4,7 +4,6 @@ import {
   AccountRelation,
   Bank,
   BankExcerpt,
-  BankExcerptData,
   Branch,
   BranchToList,
   CostCenter,
@@ -24,7 +23,6 @@ import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
-import axios from "axios";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/users/new/page";
 
@@ -214,14 +212,6 @@ export async function importBankExcerptFromExcel(data: FormData) {
   return response.data;
 }
 
-// interface AccountingBox {
-//   // Define aquí los campos específicos de AccountingBox
-//   // Por ejemplo:
-//   // id: number;
-//   // name: string;
-//   [key: string]: any; // Permite cualquier propiedad adicional
-// }
-
 export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   let token;
   if (typeof window !== "undefined") {
@@ -347,6 +337,20 @@ export async function fetchAllAccounts() {
   return response.data as Account[];
 }
 
+export async function fetchAccountsByType(type: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Account/All", {
+    params: {
+      typeCompanyId: type,
+    },
+  });
+  return response.data as Account[];
+}
+
 export async function fetchTrazoInternCodes() {
   let token;
   if (typeof window !== "undefined") {
@@ -357,7 +361,7 @@ export async function fetchTrazoInternCodes() {
   return response.data as TrazoInternCode[];
 }
 
-export async function fetchAccountingBoxItemsById(accountingBoxId: number){
+export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -365,8 +369,8 @@ export async function fetchAccountingBoxItemsById(accountingBoxId: number){
   setAuthToken(token);
   const response = await api.get("/api/AccountingBox/items", {
     params: {
-      AccountingBoxId: accountingBoxId
-    }
+      AccountingBoxId: accountingBoxId,
+    },
   });
   return response.data as AccountingBoxItems[];
 }
@@ -391,15 +395,34 @@ export async function fetchAllBanks() {
   return response.data as Bank[];
 }
 
-export async function registerUser(data: RegisterForm){
+export async function registerUser(data: RegisterForm) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post("/Auth/register", data)
+  const response = await api.post("/Auth/register", data);
   return response.data;
 }
+
+export async function fetchBankExtractAccountDetails(
+  BankExtractId: number,
+  AccountId: number
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Bank/seatContable", {
+    params: {
+      BankExtractId,
+      AccountId,
+    },
+  });
+  return response.data;
+}
+
 
 export async function fetchInvoiceRegistryList() {
   let token;

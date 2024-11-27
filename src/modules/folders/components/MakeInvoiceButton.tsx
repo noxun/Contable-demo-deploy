@@ -15,7 +15,7 @@ import { IFactura } from "../interface/invoice";
 import { handleCreateInvoices } from "../actions/action-invoice";
 import { invoiceDispatchDocument } from "../actions/action";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Loader2, Loader2Icon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   data: IResponseConceptFolder[];

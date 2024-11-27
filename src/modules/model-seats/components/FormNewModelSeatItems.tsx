@@ -1,5 +1,4 @@
-"use client";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import { Plus, Trash2 } from "lucide-react";
@@ -81,7 +80,9 @@ export default function FormNewModelSeatItems({
             <TableRow key={index}>
               <TableCell className="h-fit w-72">
                 <Select
-                  menuPortalTarget={document.body}
+                  className="my-react-select-container"
+                  classNamePrefix="my-react-select"
+                  // menuPortalTarget={document.body}
                   minMenuHeight={10}
                   maxMenuHeight={300}
                   menuPlacement="top"

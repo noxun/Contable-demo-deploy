@@ -12,7 +12,7 @@ export default function ExpensesPage() {
           <Button>Nuevo Egreso</Button>
         </Link>
       </div>
-      <ListVouchers voucherType={VoucherType.EXPENSE} voucherTypeRoute={VoucherTypeRoute.EXPENSE}/>
+      {/* <ListVouchers voucherType={VoucherType.EXPENSE} voucherTypeRoute={VoucherTypeRoute.EXPENSE}/> */}
     </section>
   );
 };

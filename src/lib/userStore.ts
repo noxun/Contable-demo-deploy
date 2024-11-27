@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { LoginResponse } from "./types";
-import { persist } from "zustand/middleware";
 
 type UserStore = {
   loginData: LoginResponse | null;

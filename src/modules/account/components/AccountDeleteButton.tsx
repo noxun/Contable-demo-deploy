@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { PropsWithChildren } from "react";
 import {
   AlertDialog,
@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 type AccountDeleteButtonProps = {
   message: string;
@@ -22,10 +23,9 @@ type AccountDeleteButtonProps = {
 };
 
 export default function AccountDeleteButton({
-  children,
   message,
   accountId,
-}: PropsWithChildren & AccountDeleteButtonProps) {
+}: AccountDeleteButtonProps) {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const deleteAccountMutation = useMutation({
@@ -54,7 +54,9 @@ export default function AccountDeleteButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button>{children}</Button>
+        <Button title="Eliminar Registro" variant="outline" size="icon" >
+          <Trash2 className="size-4"/>
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
