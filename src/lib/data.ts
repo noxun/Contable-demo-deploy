@@ -25,6 +25,7 @@ import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/users/new/page";
+import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -423,13 +424,22 @@ export async function fetchBankExtractAccountDetails(
   return response.data;
 }
 
-
 export async function fetchInvoiceRegistryList() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/");//TODO:ADD CORRECT ENDPOINT
+  const response = await api.get("/api/Invoice"); //TODO:ADD CORRECT ENDPOINT
   return response.data as InvoiceRegistry[];
+}
+
+export async function postInvoiceRegistry(data: NewInvoiceForm) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/api/Invoice", data);
+  return response.data;
 }
