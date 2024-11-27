@@ -37,8 +37,8 @@ const AccountingBoxPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Caja</h1>
-      <NewAccountingBoxDialog />
+      <h1 className="text-2xl font-bold mb-2">Caja</h1>
+      <NewAccountingBoxDialog/>
 
       {isPendingAccountingBoxList ? (
         <div>Cargando cajas...</div>

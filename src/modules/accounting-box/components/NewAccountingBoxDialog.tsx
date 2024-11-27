@@ -13,7 +13,7 @@ export default function NewAccountingBoxDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Crear</Button>
+        <Button className="my-2">Crear</Button>
       </DialogTrigger>
       <DialogContent className="min-w-[90%] h-auto">
         <DialogHeader>

@@ -108,8 +108,9 @@ export default function NewAccountingBoxForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-4 gap-4"
+        className=" flex flex-col"
       >
+        <div className="w-full grid grid-cols-4 gap-4">
         {isPendingAccountingBoxType ? (
           <div>Cargando...</div>
         ) : (
@@ -127,6 +128,37 @@ export default function NewAccountingBoxForm() {
                   }
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E",
+                      borderColor: "#838383", 
+                      boxShadow: "none", 
+                      ":hover": {
+                        borderColor: "#4E4E4E", 
+                      },
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E", 
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused
+                        ? "#DEEBFF" 
+                        : "#FFFFFF", 
+                      color: "#4E4E4E", 
+                      ":active": {
+                        backgroundColor: "#718096", 
+                      },
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#4E4E4E", 
+                    }),
                   }}
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
@@ -153,6 +185,37 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E",
+                      borderColor: "#838383", 
+                      boxShadow: "none", 
+                      ":hover": {
+                        borderColor: "#4E4E4E", 
+                      },
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E", 
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused
+                        ? "#DEEBFF" 
+                        : "#FFFFFF", 
+                      color: "#4E4E4E", 
+                      ":active": {
+                        backgroundColor: "#718096", 
+                      },
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#4E4E4E", 
+                    }),
+                  }}
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
                 <FormMessage />
@@ -176,6 +239,37 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E",
+                      borderColor: "#838383", 
+                      boxShadow: "none", 
+                      ":hover": {
+                        borderColor: "#4E4E4E", 
+                      },
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E", 
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused
+                        ? "#DEEBFF" 
+                        : "#FFFFFF", 
+                      color: "#4E4E4E", 
+                      ":active": {
+                        backgroundColor: "#718096", 
+                      },
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#4E4E4E", 
+                    }),
+                  }}
                 />
                 <FormDescription>Centro de costos</FormDescription>
                 <FormMessage />
@@ -198,6 +292,37 @@ export default function NewAccountingBoxForm() {
                   getOptionValue={(trazoInternCodes) => trazoInternCodes.value}
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
+                  }}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E",
+                      borderColor: "#838383", 
+                      boxShadow: "none", 
+                      ":hover": {
+                        borderColor: "#4E4E4E", 
+                      },
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#FFFFFF", 
+                      color: "#4E4E4E", 
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused
+                        ? "#DEEBFF" 
+                        : "#FFFFFF", 
+                      color: "#4E4E4E", 
+                      ":active": {
+                        backgroundColor: "#718096", 
+                      },
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#4E4E4E", 
+                    }),
                   }}
                 />
                 <FormDescription>Centro de costos</FormDescription>
@@ -255,7 +380,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Recibo</FormLabel>
               <FormControl>
-                <Input placeholder="recibo" {...field} />
+                <Input placeholder="Recibo" {...field} />
               </FormControl>
               <FormDescription>El recibo</FormDescription>
               <FormMessage />
@@ -283,7 +408,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Detalle</FormLabel>
               <FormControl>
-                <Input placeholder="detalle" {...field} />
+                <Input placeholder="Detalle" {...field} />
               </FormControl>
               <FormDescription>El detalle</FormDescription>
               <FormMessage />
@@ -297,7 +422,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Proveedor</FormLabel>
               <FormControl>
-                <Input placeholder="proveedor" {...field} />
+                <Input placeholder="Proveedor" {...field} />
               </FormControl>
               <FormDescription>El Proveedor</FormDescription>
               <FormMessage />
@@ -325,7 +450,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Egreso</FormLabel>
               <FormControl>
-                <Input placeholder="egreso" {...field} />
+                <Input placeholder="Egreso" {...field} />
               </FormControl>
               <FormDescription>El egreso</FormDescription>
               <FormMessage />
@@ -339,7 +464,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Saldo</FormLabel>
               <FormControl>
-                <Input placeholder="saldo" {...field} />
+                <Input placeholder="Saldo" {...field} />
               </FormControl>
               <FormDescription>El saldo</FormDescription>
               <FormMessage />
@@ -371,7 +496,11 @@ export default function NewAccountingBoxForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Guardar</Button>
+        </div>
+        <div className="flex justify-end">
+          <Button className="mt-5" type="submit">Guardar</Button>
+
+        </div>
       </form>
     </Form>
   );
