@@ -6,6 +6,7 @@ import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
 import DialogAccountDetails from "./DialogAccountDetails";
 import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
+import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 
 export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
 
@@ -64,6 +65,9 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
             <DialogAccountDetails
               bankExtractId={bankExtract.id}
               accountId={bankExtract.accountId}
+            />
+            <DialogNewExcerptRegisterPayment
+              bankExtractId={bankExtract.id}
             />
             <DeleteBankExcerptButton
               bankExtractId={bankExtract.id}
