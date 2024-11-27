@@ -161,6 +161,17 @@ export default function BiggerBookPage() {
       ),
     },
   ];
+  const columnsBook = [
+    { header: "id", accesorKey: "number"},
+    { header: "FECHA", accesorKey: "date"},
+    { header: "N° DOC", accesorKey: "number"},
+    { header: "RAZÓN SOCIAL", accesorKey: "string"},
+    { header: "DETALLE", accesorKey: "string"},
+    { header: "REFERENCIA", accesorKey: "string"},
+    { header: "DEBE Bs", accesorKey: "number"},
+    { header: "HABER Bs", accesorKey: "number"},
+    { header: "ACCIONES", accesorKey: ""},
+  ]
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -209,6 +220,9 @@ export default function BiggerBookPage() {
           </div>
         </div>
         <Button onClick={handleClick} disabled={isLoading}>
+          {isLoading ? "Generando Reporte..." : "ver transacciones"}
+        </Button>
+        <Button onClick={handleClick} disabled={isLoading}>
           {isLoading ? "Generando Reporte..." : "Generar Reporte"}
         </Button>
       </div>
@@ -241,6 +255,9 @@ export default function BiggerBookPage() {
         </DialogContent>
       </Dialog>
       <DataTable columns={columns} data={generatedFiles} />
+
+      <DataTable columns={columnsBook} data={generatedFiles} />
+      
       <DocViewer
         activeDocument={activeDocument}
         onDocumentChange={handleDocumentChange}
