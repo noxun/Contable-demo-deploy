@@ -226,15 +226,15 @@ export type Bank = {
 export type InvoiceRegistry = {
   id: number;
   nitProvider: number | string;
-  providerName: string;
+  businessName: string;
   authorizationCode: number | string;
   invoiceNumber: string | number;
-  duiDimNumber: number;
-  duiDimInvoiceDate: string;
-  purchaseTotalCost: number;
-  discount: number
+  DUINumber: number;
+  invoiceDate: string;
+  totalAmount: number;
+  discountOrBonus: number
   giftCardAmount: number;
-  baseTaxCredit: number;
+  creditBase: number;
   taxCredit: number;
   purchaseType: string;
   controlCode: string | number;
