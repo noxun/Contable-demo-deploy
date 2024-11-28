@@ -19,6 +19,8 @@ export type VoucherItem = {
       assetBs: number,
       assetSus: number,
       gloss: string,
+      code: string,
+      description: string,
       accountId?: number | string
       voucherId?: number | string
 }
