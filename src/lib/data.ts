@@ -475,3 +475,15 @@ export async function postInvoiceRegistry(data: NewInvoiceForm) {
   const response = await api.post("/api/Invoice", data);
   return response.data;
 }
+
+export async function getMassPurchaseFormInExcel(){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/", {
+    responseType: "text"
+  });
+  return response.data as string;
+}
