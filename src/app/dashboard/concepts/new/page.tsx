@@ -114,10 +114,16 @@ export default function NewConceptPage() {
   return (
     <main>
       <Form {...newConceptForm}>
+        <h2 className="text-xl font-bold mb-5 text-center">
+          Formulario para crear una nuevo concepto
+        </h2>
         <form
           onSubmit={newConceptForm.handleSubmit(onSubmit)}
           className="space-y-8"
         >
+          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="w-full">
+          
           <FormField
             control={newConceptForm.control}
             name="acronym"
@@ -125,7 +131,7 @@ export default function NewConceptPage() {
               <FormItem>
                 <FormLabel>Acronimo</FormLabel>
                 <FormControl>
-                  <Input placeholder="acronimo" {...field} />
+                  <Input placeholder="Acronimo" {...field} />
                 </FormControl>
                 <FormDescription>Acronimo del concepto</FormDescription>
                 <FormMessage />
@@ -139,7 +145,7 @@ export default function NewConceptPage() {
               <FormItem>
                 <FormLabel>Descripcion</FormLabel>
                 <FormControl>
-                  <Input placeholder="descripcion" {...field} />
+                  <Input placeholder="Descripcion" {...field} />
                 </FormControl>
                 <FormDescription>Descripcion del concepto</FormDescription>
                 <FormMessage />
@@ -153,13 +159,15 @@ export default function NewConceptPage() {
               <FormItem>
                 <FormLabel>Tipo de Gasto</FormLabel>
                 <FormControl>
-                  <Input placeholder="tipo de gasto" {...field} />
+                  <Input placeholder="Tipo de gasto" {...field} />
                 </FormControl>
                 <FormDescription>El tipo de gasto del concepto</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          </div>
+          <div className="w-full">
           <FormField
             control={newConceptForm.control}
             name="typeOfTax"
@@ -167,7 +175,7 @@ export default function NewConceptPage() {
               <FormItem>
                 <FormLabel>Tipo de Impuesto</FormLabel>
                 <FormControl>
-                  <Input placeholder="tipo de gasto" {...field} />
+                  <Input placeholder="Tipo de impuesto" {...field} />
                 </FormControl>
                 <FormDescription>
                   El tipo de impuesto del concepto
@@ -213,7 +221,11 @@ export default function NewConceptPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Guardar</Button>
+          </div>
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit">Guardar</Button>
+          </div>
         </form>
       </Form>
     </main>

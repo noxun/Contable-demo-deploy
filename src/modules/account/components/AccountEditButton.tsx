@@ -150,21 +150,21 @@ export default function AccountEditButton({ account }: { account: Account }) {
                     <FormLabel>Moneda</FormLabel>
                     <FormControl>
                       <RadioGroup
-                        className="flex"
+                        className="flex gap-5"
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormItem>
+                        <FormItem className="flex items-center  gap-1">
                           <FormControl>
                             <RadioGroupItem value="bolivianos" />
                           </FormControl>
-                          <FormLabel>Bolivianos</FormLabel>
+                          <FormLabel className="h-5">Bolivianos</FormLabel>
                         </FormItem>
-                        <FormItem>
+                        <FormItem className="flex items-center  gap-1">
                           <FormControl>
                             <RadioGroupItem value="dolares" />
                           </FormControl>
-                          <FormLabel>Dolares</FormLabel>
+                          <FormLabel className="h-5">Dolares</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -175,19 +175,19 @@ export default function AccountEditButton({ account }: { account: Account }) {
                   </FormItem>
                 )}
               />
-              <div className="flex">
+              <div className="flex gap-5 mb-5">
                 <FormField
                   control={accountEditForm.control}
                   name="isMotion"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Movimientos</FormLabel>
+                    <FormItem className="flex items-center  gap-1">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                        />
+                          />
                       </FormControl>
+                      <FormLabel className="h-5">Movimientos</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -195,14 +195,14 @@ export default function AccountEditButton({ account }: { account: Account }) {
                   control={accountEditForm.control}
                   name="isBudgetable"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Presupuestable</FormLabel>
+                    <FormItem className="flex items-center  gap-1">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                        />
+                          />
                       </FormControl>
+                      <FormLabel className="h-5">Presupuestable</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -210,14 +210,14 @@ export default function AccountEditButton({ account }: { account: Account }) {
                   control={accountEditForm.control}
                   name="isCost"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Costos</FormLabel>
+                    <FormItem className="flex items-center  gap-1">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                        />
+                          />
                       </FormControl>
+                      <FormLabel className="h-5">Costos</FormLabel>
                     </FormItem>
                   )}
                 />

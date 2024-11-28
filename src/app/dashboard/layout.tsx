@@ -13,7 +13,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
   useInitializeUserStore();
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] ">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]  ">
       <div className="hidden border-r bg-muted/40 md:block border-gray-700">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 justify-between lg:h-[60px] lg:px-6 border-gray-500">
@@ -41,7 +41,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col">
+            <SheetContent side="left" className="flex flex-col overflow-y-auto">
               <SideMenuMobile />
             </SheetContent>
           </Sheet>

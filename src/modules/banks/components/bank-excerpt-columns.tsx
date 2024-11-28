@@ -5,8 +5,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
 import DialogAccountDetails from "./DialogAccountDetails";
+import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
+import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 
 export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
+
+  //bankId para invalidar las queries
+
   return [
     {
       accessorKey: "date",
@@ -60,6 +65,13 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
             <DialogAccountDetails
               bankExtractId={bankExtract.id}
               accountId={bankExtract.accountId}
+            />
+            <DialogNewExcerptRegisterPayment
+              bankExtractId={bankExtract.id}
+            />
+            <DeleteBankExcerptButton
+              bankExtractId={bankExtract.id}
+              bankId={bankId}
             />
           </div>
         );

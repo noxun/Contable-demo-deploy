@@ -114,10 +114,15 @@ export default function NewEntityPage() {
   return (
     <main>
       <Form {...newEntityForm}>
+        <h2 className="text-xl font-bold mb-5 text-center">
+          Formulario para crear nueva Entidad
+        </h2>
         <form
           onSubmit={newEntityForm.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-4"
+          className=""
         >
+          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="w-full">
           <FormField
             control={newEntityForm.control}
             name="name"
@@ -164,6 +169,8 @@ export default function NewEntityPage() {
               </FormItem>
             )}
           />
+          </div>
+          <div className="w-full">
           <FormField
             control={newEntityForm.control}
             name="acronym"
@@ -206,6 +213,8 @@ export default function NewEntityPage() {
               </FormItem>
             )}
           />
+          </div>
+          </div>
           <FormField
             control={newEntityForm.control}
             name="accountId"
@@ -229,7 +238,9 @@ export default function NewEntityPage() {
               </FormItem>
             )}
           />
-          <Button className="col-span-2" type="submit">Guardar</Button>
+          <div className="flex justify-end mt-5">
+            <Button className="col-span-2" type="submit">Guardar</Button>
+          </div>
         </form>
       </Form>
     </main>

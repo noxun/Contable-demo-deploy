@@ -49,7 +49,7 @@ export default function LoginForm() {
         if (!data.ufvRegister) {
           toast.warning("Registro de UFVs requerido");
         }
-        router.push("/dashboard/transactions");
+        router.push("/dashboard");
       }
     },
     onError: (error: AxiosError) => {

@@ -132,21 +132,21 @@ export default function AccountCreateButton({
                     <FormLabel>Moneda</FormLabel>
                     <FormControl>
                       <RadioGroup
-                        className="flex items-center"
+                        className="flex items-center gap-5"
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormItem>
-                          <FormControl>
+                        <FormItem className="flex items-center  gap-1">
+                          <FormControl className="">
                             <RadioGroupItem value="bolivianos" />
                           </FormControl>
-                          <FormLabel>Bolivianos</FormLabel>
+                          <FormLabel className="h-5">Bolivianos</FormLabel>
                         </FormItem>
-                        <FormItem>
-                          <FormControl>
+                        <FormItem className="flex flex-row items-center gap-1">
+                          <FormControl className="">
                             <RadioGroupItem value="dolares" />
                           </FormControl>
-                          <FormLabel>Dolares</FormLabel>
+                          <FormLabel className="h-5">Dolares</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -157,19 +157,19 @@ export default function AccountCreateButton({
                   </FormItem>
                 )}
               />
-              <div className="flex">
+              <div className="flex gap-5 mb-5">
                 <FormField
                   control={accountCreateForm.control}
                   name="isMotion"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Movimientos</FormLabel>
-                      <FormControl>
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl className="">
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormLabel className="h-5">Movimientos</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -177,14 +177,14 @@ export default function AccountCreateButton({
                   control={accountCreateForm.control}
                   name="isBudgetable"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Presupuestable</FormLabel>
+                    <FormItem className="flex gap-1 items-center">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormLabel className="h-5">Presupuestable</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -192,14 +192,14 @@ export default function AccountCreateButton({
                   control={accountCreateForm.control}
                   name="isCost"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Costos</FormLabel>
+                    <FormItem className="flex gap-1 items-center">
                       <FormControl>
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      <FormLabel className="h-5">Costos</FormLabel>
                     </FormItem>
                   )}
                 />

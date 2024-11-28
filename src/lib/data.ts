@@ -86,6 +86,16 @@ export async function fetchVouchers(
   };
 }
 
+export async function editVoucher(data: Voucher){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Voucher`, data);
+  return response.data
+}
+
 export async function fetchAllMotionAccountsWithRelations() {
   let token;
   if (typeof window !== "undefined") {
@@ -394,6 +404,28 @@ export async function fetchAllBanks() {
   setAuthToken(token);
   const response = await api.get("/api/Bank");
   return response.data as Bank[];
+}
+
+export async function deleteBankExtract(bankExtractId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.delete(`/api/Bank/delete/${bankExtractId}`);
+  return response.data;
+}
+
+export async function registerPayment(data: FormData) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/Bank/RegisterPaymet`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
 }
 
 export async function registerUser(data: RegisterForm) {

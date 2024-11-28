@@ -73,7 +73,11 @@ export default function HeritageEvaluationPage() {
 
   return (
     <div className="p-6">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} >
+        <h2 className="text-xl font-bold mb-5 text-center">
+          Evolución del patrimonio
+        </h2>
+        <div className="grid grid-cols-1  sm:grid-cols-4 gap-4 mb-5" >
         <div>
           <label htmlFor="gestionInit" className="block text-sm font-medium">
             Gestión Inicial
@@ -86,7 +90,7 @@ export default function HeritageEvaluationPage() {
             required
           />
         </div>
-        <div>
+        <div className="flex gap-2 items-center">
           <label htmlFor="inSus" className="block text-sm font-medium">
             En Sus
           </label>
@@ -117,9 +121,13 @@ export default function HeritageEvaluationPage() {
             required
           />
         </div>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Cargando..." : "Generar Reporte"}
-        </Button>
+        </div>
+        <div className="flex justify-center ">
+
+          <Button className="w-full" type="submit" disabled={isLoading}>
+            {isLoading ? "Cargando..." : "Generar Reporte"}
+          </Button>
+        </div>
       </form>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

@@ -41,6 +41,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createAccountingBoxItems } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import CustomSelect from "@/components/custom/select";
 
 const newAccountingBoxFormSchema = z
   .object({
@@ -105,11 +106,12 @@ export default function NewAccountingBoxForm() {
   }
 
   return (
-    <Form {...form}>
+    <Form {...form} >
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-4 gap-4"
+        className=" flex flex-col "
       >
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {isPendingAccountingBoxType ? (
           <div>Cargando...</div>
         ) : (
@@ -119,7 +121,7 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Caja</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={accountingBoxType}
                   getOptionLabel={(accountingBoxType) => accountingBoxType.name}
                   getOptionValue={(accountingBoxType) =>
@@ -128,6 +130,7 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
                 <FormMessage />
@@ -144,7 +147,7 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Cuenta</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={accounts}
                   getOptionLabel={(accounts) =>
                     `${accounts.code} - ${accounts.description}`
@@ -153,6 +156,7 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
                 <FormMessage />
@@ -169,13 +173,14 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gestor</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={costCenter}
                   getOptionLabel={(costCenter) => costCenter.name}
                   getOptionValue={(costCenter) => costCenter.id.toString()}
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  
                 />
                 <FormDescription>Centro de costos</FormDescription>
                 <FormMessage />
@@ -192,13 +197,14 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Hoja de ruta</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={trazoInternCodes}
                   getOptionLabel={(trazoInternCodes) => trazoInternCodes.value}
                   getOptionValue={(trazoInternCodes) => trazoInternCodes.value}
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
+                  
                 />
                 <FormDescription>Centro de costos</FormDescription>
                 <FormMessage />
@@ -255,7 +261,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Recibo</FormLabel>
               <FormControl>
-                <Input placeholder="recibo" {...field} />
+                <Input placeholder="Recibo" {...field} />
               </FormControl>
               <FormDescription>El recibo</FormDescription>
               <FormMessage />
@@ -283,7 +289,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Detalle</FormLabel>
               <FormControl>
-                <Input placeholder="detalle" {...field} />
+                <Input placeholder="Detalle" {...field} />
               </FormControl>
               <FormDescription>El detalle</FormDescription>
               <FormMessage />
@@ -297,7 +303,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Proveedor</FormLabel>
               <FormControl>
-                <Input placeholder="proveedor" {...field} />
+                <Input placeholder="Proveedor" {...field} />
               </FormControl>
               <FormDescription>El Proveedor</FormDescription>
               <FormMessage />
@@ -325,7 +331,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Egreso</FormLabel>
               <FormControl>
-                <Input placeholder="egreso" {...field} />
+                <Input placeholder="Egreso" {...field} />
               </FormControl>
               <FormDescription>El egreso</FormDescription>
               <FormMessage />
@@ -339,7 +345,7 @@ export default function NewAccountingBoxForm() {
             <FormItem>
               <FormLabel>Saldo</FormLabel>
               <FormControl>
-                <Input placeholder="saldo" {...field} />
+                <Input placeholder="Saldo" {...field} />
               </FormControl>
               <FormDescription>El saldo</FormDescription>
               <FormMessage />
@@ -371,7 +377,11 @@ export default function NewAccountingBoxForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Guardar</Button>
+        </div>
+        <div className="flex justify-end">
+          <Button className="mt-5" type="submit">Guardar</Button>
+
+        </div>
       </form>
     </Form>
   );

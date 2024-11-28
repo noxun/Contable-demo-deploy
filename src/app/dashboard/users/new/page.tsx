@@ -136,7 +136,7 @@ export default function Register() {
   );
   return (
     <>
-      <h1 className="font-bold text-2xl">REGISTRAR USUARIO</h1>
+      <h1 className="font-bold text-center text-2xl">REGISTRAR USUARIO</h1>
       <Form {...registerForm}>
         <form
           className="grid grid-cols-3 gap-4"
