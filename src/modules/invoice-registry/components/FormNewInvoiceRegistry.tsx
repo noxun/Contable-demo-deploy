@@ -52,9 +52,9 @@ export default function InvoiceRegistryForm() {
   });
 
   function onSubmit(values: NewInvoiceForm) {
-    console.log(values);
-    toast(JSON.stringify(values));
-    // newInvoiceRegistryMutation.mutate(values);
+    // console.log(values);
+    // toast(JSON.stringify(values));
+    newInvoiceRegistryMutation.mutate(values);
   }
 
   const newInvoiceRegistryMutation = useMutation({
