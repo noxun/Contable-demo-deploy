@@ -68,7 +68,9 @@ export default function FormNewBranch() {
 
   return (
     <Form {...branchForm}>
-      <form onSubmit={branchForm.handleSubmit(onSubmit)}>
+      <form onSubmit={branchForm.handleSubmit(onSubmit)} >
+        <div className="flex flex-col gap-5 sm:flex-row">
+        <div className="w-full">
         <FormField
           control={branchForm.control}
           name="nameSucutsal"
@@ -117,6 +119,8 @@ export default function FormNewBranch() {
             </FormItem>
           )}
         />
+        </div>
+        <div className="w-full">
         <FormField
           control={branchForm.control}
           name="email"
@@ -171,10 +175,14 @@ export default function FormNewBranch() {
             </FormItem>
           )}
         />
-        <Button className="mt-5" type="submit" disabled={newBranchMutation.isPending}>
-          <span className="mr-2">Guardar Registro</span>
-          <Save size={20} />
-        </Button>
+        </div>
+        </div>
+        <div className="flex justify-end">
+          <Button className="mt-5" type="submit" disabled={newBranchMutation.isPending}>
+            <span className="mr-2">Guardar Registro</span>
+            <Save size={20} />
+          </Button>
+        </div>
       </form>
     </Form>
   );

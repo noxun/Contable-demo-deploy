@@ -108,7 +108,7 @@ function RegisterBank() {
       <div className=" ">
         <FormProvider {...registerForm}>
           <div className="mx-5 mt-5 flex flex-col p-2 ">
-            <h1 className="mb-4 font-semibold ">REGISTRAR BANCO</h1>
+            <h1 className="mb-4 text-xl font-semibold ">REGISTRAR BANCO</h1>
             <Form {...registerForm}>
               <form onSubmit={registerForm.handleSubmit(onSubmit)}>
                 <div className="flex gap-2 ">

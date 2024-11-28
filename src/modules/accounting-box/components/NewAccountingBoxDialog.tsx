@@ -16,13 +16,13 @@ export default function NewAccountingBoxDialog() {
         <Button className="my-2">Crear</Button>
       </DialogTrigger>
       <DialogContent className="min-w-[90%] h-auto">
-        <DialogHeader>
-          <DialogTitle>Crear Nueva Caja</DialogTitle>
-          <DialogDescription>
+        <DialogHeader >
+          <DialogTitle className="text-center text-xl">Crear Nueva Caja</DialogTitle>
+          <DialogDescription className="text-center">
             Este formulario permite crear una nueva caja
           </DialogDescription>
         </DialogHeader>
-        <NewAccountingBoxForm/>
+        <NewAccountingBoxForm />
       </DialogContent>
     </Dialog>
   );

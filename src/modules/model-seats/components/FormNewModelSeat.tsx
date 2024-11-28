@@ -102,6 +102,8 @@ export default function FormNewModelSeat() {
     <div>
       <Form {...modelSeatForm}>
         <form onSubmit={modelSeatForm.handleSubmit(onSubmit)}>
+          <div className="flex flex-col sm:flex-row gap-5 mb-5">
+          <div className="w-full">
           <FormField
             control={modelSeatForm.control}
             name="description"
@@ -118,6 +120,9 @@ export default function FormNewModelSeat() {
               </FormItem>
             )}
           />
+          </div>
+          <div className="w-full">
+            
           <FormField
             control={modelSeatForm.control}
             name="typeTransaction"
@@ -143,6 +148,8 @@ export default function FormNewModelSeat() {
               </FormItem>
             )}
           />
+          </div>
+          </div>
           <FormNewModelSeatItems
             modelSeatItems={modelSeatItems}
             setModelSeatItems={setModelSeatItems}

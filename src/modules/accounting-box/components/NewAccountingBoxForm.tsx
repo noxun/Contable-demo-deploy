@@ -41,6 +41,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createAccountingBoxItems } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import CustomSelect from "@/components/custom/select";
 
 const newAccountingBoxFormSchema = z
   .object({
@@ -105,12 +106,12 @@ export default function NewAccountingBoxForm() {
   }
 
   return (
-    <Form {...form}>
+    <Form {...form} >
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className=" flex flex-col"
+        className=" flex flex-col "
       >
-        <div className="w-full grid grid-cols-4 gap-4">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {isPendingAccountingBoxType ? (
           <div>Cargando...</div>
         ) : (
@@ -120,7 +121,7 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Caja</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={accountingBoxType}
                   getOptionLabel={(accountingBoxType) => accountingBoxType.name}
                   getOptionValue={(accountingBoxType) =>
@@ -129,37 +130,7 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E",
-                      borderColor: "#838383", 
-                      boxShadow: "none", 
-                      ":hover": {
-                        borderColor: "#4E4E4E", 
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E", 
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused
-                        ? "#DEEBFF" 
-                        : "#FFFFFF", 
-                      color: "#4E4E4E", 
-                      ":active": {
-                        backgroundColor: "#718096", 
-                      },
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#4E4E4E", 
-                    }),
-                  }}
+                  
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
                 <FormMessage />
@@ -176,7 +147,7 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Cuenta</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={accounts}
                   getOptionLabel={(accounts) =>
                     `${accounts.code} - ${accounts.description}`
@@ -185,37 +156,7 @@ export default function NewAccountingBoxForm() {
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E",
-                      borderColor: "#838383", 
-                      boxShadow: "none", 
-                      ":hover": {
-                        borderColor: "#4E4E4E", 
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E", 
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused
-                        ? "#DEEBFF" 
-                        : "#FFFFFF", 
-                      color: "#4E4E4E", 
-                      ":active": {
-                        backgroundColor: "#718096", 
-                      },
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#4E4E4E", 
-                    }),
-                  }}
+                  
                 />
                 <FormDescription>Tipo de la caja</FormDescription>
                 <FormMessage />
@@ -232,44 +173,14 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gestor</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={costCenter}
                   getOptionLabel={(costCenter) => costCenter.name}
                   getOptionValue={(costCenter) => costCenter.id.toString()}
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E",
-                      borderColor: "#838383", 
-                      boxShadow: "none", 
-                      ":hover": {
-                        borderColor: "#4E4E4E", 
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E", 
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused
-                        ? "#DEEBFF" 
-                        : "#FFFFFF", 
-                      color: "#4E4E4E", 
-                      ":active": {
-                        backgroundColor: "#718096", 
-                      },
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#4E4E4E", 
-                    }),
-                  }}
+                  
                 />
                 <FormDescription>Centro de costos</FormDescription>
                 <FormMessage />
@@ -286,44 +197,14 @@ export default function NewAccountingBoxForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Hoja de ruta</FormLabel>
-                <ReactSelect
+                <CustomSelect
                   options={trazoInternCodes}
                   getOptionLabel={(trazoInternCodes) => trazoInternCodes.value}
                   getOptionValue={(trazoInternCodes) => trazoInternCodes.value}
                   onChange={(value) => {
                     field.onChange(value?.id.toString());
                   }}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E",
-                      borderColor: "#838383", 
-                      boxShadow: "none", 
-                      ":hover": {
-                        borderColor: "#4E4E4E", 
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#FFFFFF", 
-                      color: "#4E4E4E", 
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused
-                        ? "#DEEBFF" 
-                        : "#FFFFFF", 
-                      color: "#4E4E4E", 
-                      ":active": {
-                        backgroundColor: "#718096", 
-                      },
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#4E4E4E", 
-                    }),
-                  }}
+                  
                 />
                 <FormDescription>Centro de costos</FormDescription>
                 <FormMessage />

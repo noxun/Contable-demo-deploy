@@ -114,10 +114,16 @@ export default function NewConceptPage() {
   return (
     <main>
       <Form {...newConceptForm}>
+        <h2 className="text-xl font-bold mb-5 text-center">
+          Formulario para crear una nuevo concepto
+        </h2>
         <form
           onSubmit={newConceptForm.handleSubmit(onSubmit)}
           className="space-y-8"
         >
+          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="w-full">
+          
           <FormField
             control={newConceptForm.control}
             name="acronym"
@@ -160,6 +166,8 @@ export default function NewConceptPage() {
               </FormItem>
             )}
           />
+          </div>
+          <div className="w-full">
           <FormField
             control={newConceptForm.control}
             name="typeOfTax"
@@ -213,7 +221,11 @@ export default function NewConceptPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Guardar</Button>
+          </div>
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit">Guardar</Button>
+          </div>
         </form>
       </Form>
     </main>

@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function ConceptsPage() {
   return (
     <main>
-      <Button asChild>
+      <Button asChild className="mb-5">
         <Link href="/dashboard/concepts/new">Nuevo Concepto</Link>
       </Button>
       <ListConcepts/>
