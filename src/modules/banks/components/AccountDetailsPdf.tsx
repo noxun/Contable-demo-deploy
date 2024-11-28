@@ -33,7 +33,6 @@ type AccountDetailsPdfProps = {
 const tw = createTw({});
 
 export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
-
   // const totalDebitBs = data.items?.reduce(
   //   (sum: number, item) => sum + item.debitBs,
   //   0
@@ -57,7 +56,10 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
         {/* Fila logo */}
         <View style={tw("w-[207px]")}>
           <View style={tw("flex items-center")}>
-            <Image source="/images/tradecruz_logo.png" style={{height:57,width:207}} />
+            <Image
+              source="/images/tradecruz_logo.png"
+              style={{ height: 57, width: 207 }}
+            />
             <Text>NIT 3754820020</Text>
           </View>
         </View>
@@ -70,7 +72,7 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
         {/* Fila fecha */}
         <View style={tw("flex flex-row justify-between")}>
           <Text>Santa Cruz, {"Fecha Actual"}</Text>
-          <Text>T/C: 6.96</Text>
+          <Text>T/C: {data.exchangeRate}</Text>
         </View>
         {/* Header Tabla */}
         <View style={tw("w-full flex flex-row border")}>
@@ -88,19 +90,35 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
         </View>
         {/* Footer tabla */}
         <View style={tw("w-full flex flex-row")}>
-          <View style={tw("flex flex-row")}>
-            <Text>DESCRIPCION:</Text>
-            <Text>TOTAL Bs.</Text>
-            <Text>1,3675.78</Text>
-            <Text>1,3675.78</Text>
-          </View>
-          <Text></Text>
+          <Text style={tw("w-[20%]")}>DESCRIPCION:</Text>
+          <Text style={tw("flex-1 text-right")}>TOTAL Bs.</Text>
+          <Text style={tw("w-[10%]")}>1,3675.78</Text>
+          <Text style={tw("w-[10%]")}>1,3675.78</Text>
+        </View>
+        {/* DESCRIPCION */}
+        <View style={tw("w-full flex border-b")}>
+          <Text>20231108 F-1568 VTA. SERV. A SADAC</Text>
           <Text>AUDIFONOS SRL</Text>
         </View>
-        <View>
-          <View></View>
-          <View></View>
-          <View></View>
+        <View style={tw("w-full flex flex-row gap-8")}>
+          <View style={tw("h-20 flex-1 flex")}>
+            <Text>Elaborado:</Text>
+            <View style={tw("border h-full rounded-lg")}>
+              {/* Aqui podria venir un text mas si se necesita */}
+            </View>
+          </View>
+          <View style={tw("h-20 flex-1 flex")}>
+            <Text>Revisado:</Text>
+            <View style={tw("border h-full rounded-lg")}>
+              {/* Aqui podria venir un text mas si se necesita */}
+            </View>
+          </View>
+          <View style={tw("h-20 flex-1 flex")}>
+            <Text>Aprobado:</Text>
+            <View style={tw("border h-full rounded-lg")}>
+              {/* Aqui podria venir un text mas si se necesita */}
+            </View>
+          </View>
         </View>
       </Page>
     </Document>
