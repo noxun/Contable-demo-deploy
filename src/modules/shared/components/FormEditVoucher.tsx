@@ -41,7 +41,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
-import useToken from "../hooks/useToken";
+import { editVoucher } from "@/lib/data";
+import useAccounts from "../hooks/useAccounts";
+import useBanks from "../hooks/useBanks";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -55,55 +57,14 @@ export default function FormEditVoucher({
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
   );
-  const {token, isTokenReady} = useToken();
 
-  console.log(voucher)
+  const banksQuery = useBanks()
 
-  const banksQuery = useQuery({
-    queryKey: ["banks"],
-    queryFn: async (): Promise<{ data: IBank[] }> =>
-      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Bank`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    enabled: isTokenReady,
-    staleTime: 1000 * 30 * 10,
-  });
-
-  const accountsQuery = useQuery({
-    queryKey: ["accounts"],
-    queryFn: async (): Promise<{ data: Account[] }> =>
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/Filter?isMotion=true`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ),
-    enabled: isTokenReady,
-    staleTime: 1000 * 30 * 10,
-  });
-
+  const accountsQuery = useAccounts()
   const queryClient = useQueryClient();
 
   const editVoucherMutation = useMutation({
-    mutationFn: async (data: Voucher) => {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    },
+    mutationFn: editVoucher,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
@@ -165,9 +126,9 @@ export default function FormEditVoucher({
 
   if (
     banksQuery.isLoading ||
-    banksQuery.data === undefined ||
+    !banksQuery.data ||
     accountsQuery.isLoading ||
-    accountsQuery.data === undefined
+    !accountsQuery.data
   ) {
     return <Spinner/>;
   }
@@ -287,7 +248,7 @@ export default function FormEditVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {banksQuery.data.data.map((bank) => (
+                      {banksQuery.data.map((bank) => (
                         <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                           {bank.sigla} - {bank.name}
                         </SelectItem>
@@ -323,7 +284,7 @@ export default function FormEditVoucher({
       <FormEditVoucherItems
         type={type}
         voucherId={voucher!.id!}
-        accountData={accountsQuery.data.data}
+        accountData={accountsQuery.data}
         voucherItems={voucherItems}
         setVoucherItems={setVoucherItems}
       />
