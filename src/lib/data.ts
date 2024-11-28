@@ -84,6 +84,16 @@ export async function fetchVouchers(
   };
 }
 
+export async function editVoucher(data: Voucher){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Voucher`, data);
+  return response.data
+}
+
 export async function fetchAllMotionAccountsWithRelations() {
   let token;
   if (typeof window !== "undefined") {
