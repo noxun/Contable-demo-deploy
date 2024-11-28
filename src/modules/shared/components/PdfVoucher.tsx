@@ -14,7 +14,8 @@ import axios from "axios";
 import { createTw } from "react-pdf-tailwind";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Voucher, VoucherType } from "../types/sharedTypes";
+import { Voucher, VoucherType, VoucherItem } from "../types/sharedTypes";
+import { format } from "date-fns";
 
 const tw = createTw({
   theme: {
@@ -63,24 +64,67 @@ export default function PdfVoucher({
     return <div>Loading...</div>;
   }
 
+  
+
   const { items } = getSingleVoucherQuery.data!;
 
+  
+
+  
+
+
+  console.log("mi fila data ",getSingleVoucherQuery.data)
+  console.log("mi fila ",items)
+  console.log("mi type ",type)
+  // console.log("mi respuesta ",getNumberLiteral.data)
+
+  return (
+    <PdfVoucherRender getSingleVoucherQuery={getSingleVoucherQuery} items={items} />
+  );
+}
+
+
+
+const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
+
+  const token = localStorage.getItem("token");
+
   const totalDebitBs = items?.reduce(
-    (sum: number, item) => sum + item.debitBs,
+    (sum: number, item: VoucherItem) => sum + item.debitBs,
     0
   );
   const totalDebitSus = items?.reduce(
-    (sum: number, item) => sum + item.debitSus,
+    (sum: number, item: VoucherItem) => sum + item.debitSus,
     0
   );
   const totalAssetBs = items?.reduce(
-    (sum: number, item) => sum + item.assetBs,
+    (sum: number, item: VoucherItem) => sum + item.assetBs,
     0
   );
   const totalAssetSus = items?.reduce(
-    (sum: number, item) => sum + item.assetSus,
+    (sum: number, item: VoucherItem) => sum + item.assetSus,
     0
   );
+
+  const getNumberLiteral = useQuery({
+    queryKey: ["NumberToLiteral", totalDebitBs],
+    queryFn: async function (): Promise<string> {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/NumberToLiteral/${totalDebitBs}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    },
+  });
+
+  console.log("mi  numero num ", totalDebitBs)
+  console.log("mi  numero ", getNumberLiteral.data)
 
   return (
     <Dialog>
@@ -92,138 +136,162 @@ export default function PdfVoucher({
               {/* <Page wrap={true} size="A4" style={tw("p-4 flex gap-8")}> */}
               <View
                 style={tw(
-                  "border-4 border-black m-0 p-4 grid grid-rows-[auto_auto_auto_1fr_auto] h-full"
+                  "m-0 p-4 grid grid-rows-[auto_auto_auto_1fr_auto] h-full"
                 )}
               >
-                <View style={tw("flex justify-center items-start")}>
-                  <View style={tw("flex flex-col items-center justify-center")}>
+                <View style={tw("absolute top-[65px]")}>
                     <Image
-                      src="/images/noxun.jpg"
-                      style={tw("p-1 w-15 h-20")}
+                      src="/images/logo-jetstar.png"
+                      style={tw("p-1 w-[100px]")}
                     />
-                    <Text>NOXUN</Text>
-                    <Text>Gestion {new Date().getFullYear()}</Text>
+                  </View>
+                <View style={tw("")}>
+                    <View style={tw("flex flex-row justify-between")}>
+                        <Text>EMPRESA JETSTAR CARGO LOGISTICS S.R.L.</Text>
+                        <Text>Página:1</Text>
+                    </View>
+                    <Text>LA PAZ - BOLIVIA</Text>
+                </View>
+
+                <View style={tw("mt-10")}>
+                  <Text style={{...tw("text-center text-xl font-bold"), fontFamily: 'Helvetica-Bold'}}>COMPROBANTE DE EGRESO</Text>
+                </View>
+
+                <View style={tw("mt-5 flex flex-row")}>
+                  <View style={tw("w-[70%]")}>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Nro. Doc.:</Text>
+                      <Text>{getSingleVoucherQuery.data?.num}</Text>
+                    </View>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Razon Social:</Text>
+                      <Text>{getSingleVoucherQuery.data?.checkNum}</Text>
+                    </View>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Glosa:</Text>
+                      <Text>{getSingleVoucherQuery.data?.gloss}</Text>
+                    </View>
+                  </View>
+                  <View style={tw("w-[30%]")}>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>Fecha:</Text>
+                      <Text>{format(getSingleVoucherQuery?.data?.voucherDate!,"dd/MM/yyyy")}</Text>
+                      </View>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>T.C.:</Text>
+                      <Text>{getSingleVoucherQuery.data?.exchangeRate}</Text>
+                    </View>
+                    <View style={tw("flex flex-row")}>
+                      <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>Cheque N°:</Text>
+                      <Text>{getSingleVoucherQuery.data?.checkNum}</Text>
+                    </View>
                   </View>
                 </View>
-                <View
-                  style={tw("flex flex-col items-center justify-center mt-8")}
-                >
-                  <Text style={tw("text-2xl mt-0 ")}>
-                    COMPROBANTE DE EGRESO N (Número Acá)
-                  </Text>
-                  <Text style={tw("text-xl")}>(Expresado en Bs)</Text>
-                </View>
-                <View>
-                  <Text><>Fecha: {getSingleVoucherQuery?.data?.voucherDate}</></Text>
-                  <Text>Pagado a: {getSingleVoucherQuery?.data?.gloss}</Text>
-                </View>
-                <View style={tw("mt-4 flex-1")}>
-                  <Text style={tw("font-bold mb-2")}>Items contables:</Text>
+
+                <View style={tw("mt-4")}>
                   <View
-                    style={tw("flex flex-col h-full border border-gray-500")}
+                    style={tw("flex flex-col border border-gray-500")}
                   >
                     <View
-                      style={tw(
-                        "flex flex-row border-b border-gray-500 bg-gray-200"
-                      )}
+                      style={{...tw("flex flex-row border-b text-sm border-gray-500 bg-gray-200"), fontFamily: 'Helvetica-Bold'}}
                     >
                       <Text
                         style={tw(
-                          "w-1/12 p-2 border-r border-gray-500 text-center"
+                          "w-[15%] p-1 border-r border-gray-500 text-center"
                         )}
                       >
-                        ID
+                        CUENTA
                       </Text>
                       <Text
                         style={tw(
-                          "w-3/12 p-2 border-r border-gray-500 text-center"
+                          "w-[35%] p-1 border-r border-gray-500"
                         )}
                       >
-                        Glosa
+                        NOMBRE DE CUENTA
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[12%] p-1 border-r border-gray-500 text-center"
                         )}
                       >
-                        Debe Bs
+                        DEBE Bs.
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[13%] p-1 border-r border-gray-500 text-center"
                         )}
                       >
-                        Haber Bs
+                        HABER Bs.
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[12%] p-1 border-r border-gray-500 text-center"
                         )}
                       >
-                        Debe Sus
+                        DEBE $us
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[13%] p-1 border-r border-gray-500 text-center"
                         )}
                       >
-                        Haber Sus
+                        HABER $us
                       </Text>
-                      <Text style={tw("w-2/12 p-2 text-center")}>
+                      {/* <Text style={tw("w-2/12 p-2 text-center")}>
                         ID CUENTA
-                      </Text>
+                      </Text> */}
                     </View>
-                    <View style={tw("flex flex-col flex-1")}>
-                      {items?.map((item) => (
+                    <View style={tw("flex flex-col")}>
+                      {items?.map((item: VoucherItem) => (
                         <View
                           key={item.id}
-                          style={tw("flex flex-row  border-gray-500")}
+                          style={tw("flex flex-row text-sm  border-gray-500")}
                         >
                           <Text
                             style={tw(
-                              "w-1/12 p-2 border-r border-gray-500 text-center"
+                              "w-[15%] p-1 border-r border-gray-500 text-center"
                             )}
                           >
-                            {item.id}
+                            {item.code}
                           </Text>
                           <Text
                             style={tw(
-                              "w-3/12 p-2 border-r border-gray-500 text-center"
+                              "w-[35%] p-1 border-r border-gray-500 text-center"
                             )}
                           >
-                            {item.gloss}
+                            {item.description}
                           </Text>
                           <Text
                             style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
+                              "w-[12%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.debitBs}
+                            {item.debitBs?.toFixed(2)}
                           </Text>
                           <Text
                             style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
+                              "w-[13%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.assetBs}
+                            {item.assetBs?.toFixed(2)}
                           </Text>
                           <Text
                             style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
+                              "w-[12%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
                             {item.debitSus.toFixed(2)}
                           </Text>
                           <Text
                             style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
+                              "w-[13%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
                             {item.assetSus.toFixed(2)}
                           </Text>
-                          <Text style={tw("w-2/12 p-2 text-center")}>
+                          {/* <Text style={tw("w-2/12 p-2 text-center")}>
                             {item.accountId}
-                          </Text>
+                          </Text> */}
                         </View>
                       ))}
                     </View>
@@ -234,74 +302,91 @@ export default function PdfVoucher({
                     >
                       <Text
                         style={tw(
-                          "w-4/12 p-2 border-r border-gray-500 text-center"
+                          "w-[50%] p-1 border-r border-gray-500 text-right"
                         )}
                       >
-                        Total
+                        Total:
                       </Text>
-                      {/* <Text style={tw("w-1/12 p-2 border-r border-gray-500")}></Text> */}
+                      {/* <Text style={tw("w-1/12 p-1 border-r border-gray-500")}></Text> */}
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[12%] p-1 border-r border-gray-500 text-right"
                         )}
                       >
-                        {totalDebitBs}
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        {totalAssetBs}
+                        {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(totalDebitBs?.toFixed(2))}
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[13%] p-1 border-r border-gray-500 text-right"
                         )}
                       >
-                        {totalDebitSus?.toFixed(2)}
+                        {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(totalAssetBs?.toFixed(2))}
                       </Text>
                       <Text
                         style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
+                          "w-[12%] p-1 border-r border-gray-500 text-right"
                         )}
                       >
-                        {totalAssetSus?.toFixed(2)}
+                        {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(totalDebitSus?.toFixed(2))}
                       </Text>
-                      <Text style={tw("w-2/12 p-2")}></Text>
+                      <Text
+                        style={tw(
+                          "w-[13%] p-1 border-r border-gray-500 text-right"
+                        )}
+                      >
+                        {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(totalAssetSus?.toFixed(2))}
+                      </Text>
+                      {/* <Text style={tw("w-2/12 p-2")}></Text> */}
                     </View>
                   </View>
                 </View>
-                <View style={tw("flex flex-row justify-between mt-4")}>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 mr-2"
-                    )}
-                  >
-                    <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>ELABORADO POR</Text>
+                <View style={tw("border-l border-r border-b")}>
+                  <View style={tw("w-full p-2 border-b")}>
+                    <Text>{getNumberLiteral.data}</Text>
                   </View>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 mr-2"
-                    )}
-                  >
+                  <View style={tw("flex flex-row ")}>
                     <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>REVISADO POR</Text>
-                  </View>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 "
-                    )}
-                  >
+                      style={tw(
+                        "text-center border-r border-gray-500  h-32 w-[25%] flex flex-col justify-end px-4 pb-2"
+                      )}
+                    >
+                      <Text></Text>
+                    </View>
                     <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>APROBADO POR</Text>
+                      style={tw(
+                        "text-center border-r border-gray-500  h-32 w-[25%] flex flex-col justify-end px-4 pb-2"
+                      )}
+                    >
+                      <Text>CONTADOR</Text>
+                    </View>
+                    <View
+                      style={tw(
+                        "text-center border-r border-gray-500  h-32 w-[25%] flex flex-col justify-end px-4 pb-2"
+                      )}
+                    >
+                      <Text>GERENTE</Text>
+                    </View>
+                    <View
+                      style={tw(
+                        "border-gray-500  h-32 w-[25%] flex flex-col justify-end px-2 pb-2"
+                      )}
+                    >
+                      <Text>Firma:........................</Text>
+                      <Text>Nombre:.....................</Text>
+                      <Text>C.I.:.............................</Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -310,5 +395,5 @@ export default function PdfVoucher({
         </PDFViewer>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
