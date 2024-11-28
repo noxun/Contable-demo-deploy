@@ -5,11 +5,11 @@ import useInvoiceRegistry from "@/modules/shared/hooks/useInvoiceRegistry";
 import { columns } from "./columns";
 
 export default function ListInvoiceRegistry() {
-  const { data: invoiceRegistries, isPending, isError } = useInvoiceRegistry();
+  const { data: invoiceRegistries, isLoading, isError } = useInvoiceRegistry();
 
   return (
     <>
-      {isPending  ? <div>Bla</div> : (
+      {isLoading  ? <div>Cargando...</div> : (
         <DataTable data={invoiceRegistries ?? []} columns={columns} />
       )}
     </>
