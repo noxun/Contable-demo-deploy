@@ -30,6 +30,8 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import EditVoucher from "@/modules/shared/components/EditVoucher";
+import { VoucherType } from "@/modules/shared/types/sharedTypes";
 
 export default function BiggerBookPage() {
   // --- Estados del formulario ---
@@ -80,6 +82,11 @@ export default function BiggerBookPage() {
   // --- Estados para el visor ---
   const [viewerKey, setViewerKey] = useState(0);
   const [activeDocument, setActiveDocument] = useState(docs[0]);
+
+// Dialog par editar
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [editData, setEditData] = useState<{ id: string; type: VoucherType } | null>(null);
+
 
   const handleDocumentChange = (document: any) => {
     setActiveDocument(document);
@@ -277,8 +284,9 @@ export default function BiggerBookPage() {
   };
 
   // Función para Editar
-  const handleEdit = (id: number, type: number) => {
-    console.log("Editar ID:", id, "Editar tipo:", type);
+  const handleEdit = (id: string, type: VoucherType) => {
+    setEditData({ id, type });
+    setDialogOpen(true);
   };
 
   const columns = [
@@ -523,6 +531,11 @@ export default function BiggerBookPage() {
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"
       />
+      <Dialog  open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-5xl">
+          {editData && <EditVoucher id={editData.id} type={editData.type} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -67,7 +67,7 @@ export default function PdfVoucher({
   const { items } = getSingleVoucherQuery.data!;
 
   const totalDebitBs = items?.reduce(
-    (sum: number, item) => sum + item.debitBs,
+    (sum: number, item) => sum + item.debitBs!,
     0
   );
   const totalDebitSus = items?.reduce(
@@ -75,7 +75,7 @@ export default function PdfVoucher({
     0
   );
   const totalAssetBs = items?.reduce(
-    (sum: number, item) => sum + item.assetBs,
+    (sum: number, item) => sum + item.assetBs!,
     0
   );
   const totalAssetSus = items?.reduce(
