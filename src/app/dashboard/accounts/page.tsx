@@ -8,7 +8,7 @@ export default function AccountsPage() {
   return (
     <>
       <Button asChild>
-        <Link download href="/files/plan_cuentas_tradecruz.xlsx">
+        <Link prefetch={false} download href="/files/plan_cuentas_tradecruz.xlsx">
           Descargar Plantilla
         </Link>
       </Button>
