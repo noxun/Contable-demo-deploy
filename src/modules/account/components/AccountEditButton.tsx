@@ -29,7 +29,13 @@ import { z } from "zod";
 import { Account } from "../types/account";
 import { Pencil } from "lucide-react";
 
-export default function AccountEditButton({ account }: { account: Account }) {
+export default function AccountEditButton({
+  account,
+  disabled,
+}: {
+  account: Account;
+  disabled?: boolean;
+}) {
   const accountEditFormSchema = z.object({
     id: z.number(),
     code: z.string(),
@@ -110,8 +116,13 @@ export default function AccountEditButton({ account }: { account: Account }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button title="Editar Registro" variant="outline" size="icon">
-          <Pencil className="size-4"/>
+        <Button
+          title="Editar Registro"
+          disabled={disabled}
+          variant="outline"
+          size="icon"
+        >
+          <Pencil className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
@@ -185,7 +196,7 @@ export default function AccountEditButton({ account }: { account: Account }) {
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          />
+                        />
                       </FormControl>
                       <FormLabel className="h-5">Movimientos</FormLabel>
                     </FormItem>
@@ -200,7 +211,7 @@ export default function AccountEditButton({ account }: { account: Account }) {
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          />
+                        />
                       </FormControl>
                       <FormLabel className="h-5">Presupuestable</FormLabel>
                     </FormItem>
@@ -215,7 +226,7 @@ export default function AccountEditButton({ account }: { account: Account }) {
                         <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          />
+                        />
                       </FormControl>
                       <FormLabel className="h-5">Costos</FormLabel>
                     </FormItem>
