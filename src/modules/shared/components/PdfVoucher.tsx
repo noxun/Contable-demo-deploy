@@ -79,13 +79,13 @@ export default function PdfVoucher({
   // console.log("mi respuesta ",getNumberLiteral.data)
 
   return (
-    <PdfVoucherRender getSingleVoucherQuery={getSingleVoucherQuery} items={items} />
+    <PdfVoucherRender getSingleVoucherQuery={getSingleVoucherQuery} items={items} type={type} />
   );
 }
 
 
 
-const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
+const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
 
   const token = localStorage.getItem("token");
 
@@ -154,7 +154,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                 </View>
 
                 <View style={tw("mt-10")}>
-                  <Text style={{...tw("text-center text-xl font-bold"), fontFamily: 'Helvetica-Bold'}}>COMPROBANTE DE EGRESO</Text>
+                  <Text style={{...tw("text-center text-xl font-bold"), fontFamily: 'Helvetica-Bold'}}>COMPROBANTE DE {type==="0"? "TRASPASO": type==="1"?"EGRESO":"INGRESO"}</Text>
                 </View>
 
                 <View style={tw("mt-5 flex flex-row")}>
@@ -193,7 +193,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                     style={tw("flex flex-col border border-gray-500")}
                   >
                     <View
-                      style={{...tw("flex flex-row border-b text-sm border-gray-500 bg-gray-200"), fontFamily: 'Helvetica-Bold'}}
+                      style={{...tw("flex flex-row border-b text-xs border-gray-500 bg-gray-200"), fontFamily: 'Helvetica-Bold'}}
                     >
                       <Text
                         style={tw(
@@ -245,7 +245,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                       {items?.map((item: VoucherItem) => (
                         <View
                           key={item.id}
-                          style={tw("flex flex-row text-sm  border-gray-500")}
+                          style={tw("flex flex-row text-xs  border-gray-500")}
                         >
                           <Text
                             style={tw(
@@ -266,28 +266,40 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                               "w-[12%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.debitBs?.toFixed(2)}
+                            {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(item.debitBs)}
                           </Text>
                           <Text
                             style={tw(
                               "w-[13%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.assetBs?.toFixed(2)}
+                            {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(item.assetBs)}
                           </Text>
                           <Text
                             style={tw(
                               "w-[12%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.debitSus.toFixed(2)}
+                            {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(item.debitSus)}
                           </Text>
                           <Text
                             style={tw(
                               "w-[13%] p-1 border-r border-gray-500 text-right"
                             )}
                           >
-                            {item.assetSus.toFixed(2)}
+                            {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(item.assetSus)}
                           </Text>
                           {/* <Text style={tw("w-2/12 p-2 text-center")}>
                             {item.accountId}
@@ -297,7 +309,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                     </View>
                     <View
                       style={tw(
-                        "flex flex-row border-t border-gray-500 bg-gray-200"
+                        "flex flex-row border-t text-sm border-gray-500 bg-gray-200"
                       )}
                     >
                       <Text
@@ -353,8 +365,8 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                   </View>
                 </View>
                 <View style={tw("border-l border-r border-b")}>
-                  <View style={tw("w-full p-2 border-b")}>
-                    <Text>{getNumberLiteral.data}</Text>
+                  <View style={tw("w-full text-sm p-2 border-b")}>
+                    <Text>Son: {getNumberLiteral.data}</Text>
                   </View>
                   <View style={tw("flex flex-row ")}>
                     <View
@@ -383,9 +395,16 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items}: any) => {
                         "border-gray-500  h-32 w-[25%] flex flex-col justify-end px-2 pb-2"
                       )}
                     >
-                      <Text>Firma:........................</Text>
-                      <Text>Nombre:.....................</Text>
-                      <Text>C.I.:.............................</Text>
+                      {
+                        type==="1"
+                        ? (<>
+                            <Text>Firma:........................</Text>
+                            <Text>Nombre:.....................</Text>
+                            <Text>C.I.:.............................</Text>
+                        </>)
+                        : ""
+                      }
+                      
                     </View>
                   </View>
                 </View>
