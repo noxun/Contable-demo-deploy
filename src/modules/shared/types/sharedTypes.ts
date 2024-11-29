@@ -14,9 +14,9 @@ export type Voucher = {
 
 export type VoucherItem = {
       id?: number,
-      debitBs: number,
+      debitBs: number | null,
       debitSus: number,
-      assetBs: number,
+      assetBs: number | null,
       assetSus: number,
       gloss: string,
       accountId?: number | string
