@@ -4,10 +4,12 @@ import { Minus, Plus } from "lucide-react";
 import { Virtuoso } from "react-virtuoso";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, ChangeEvent } from "react";
 import AccountCreateButton from "./AccountCreateButton";
 import AccountEditButton from "./AccountEditButton";
 import AccountDeleteButton from "./AccountDeleteButton";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from 'use-debounce';
 
 interface FlattenedAccount extends Account {
   depth: number;
@@ -30,13 +32,18 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     ];
   });
 
-export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
-  const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
+  
+  export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
+    const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
 
-  const flattenedAccounts = useMemo(
-    () => flattenAccounts(accounts ?? []),
-    [accounts]
-  );
+    const flattenedAccounts = useMemo(
+      () => flattenAccounts(accounts ?? []),
+      [accounts]
+    );
+    
+  
 
   const toggleExpand = useCallback((code: string) => {
     setExpandedCodes((prev) => {
@@ -76,6 +83,11 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
     [flattenedAccounts, isVisible]
   );
 
+  const filteredAccounts = visibleAccounts.filter((item) => {
+    const codeAndDesc= `${item.code}-${item.description}`;
+    return codeAndDesc.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+  })
+
   const renderAccount = useCallback(
     (_: number, account: FlattenedAccount) => (
       <div
@@ -102,6 +114,7 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
           <div className="flex">
             <AccountCreateButton fatherId={account.id} />
             <AccountEditButton
+              disabled={account.isMotion}
               account={{
                 id: account.id,
                 code: account.code,
@@ -131,11 +144,17 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
     [expandedCodes, toggleExpand]
   );
 
+  function handleSearch(event:ChangeEvent<HTMLInputElement>){
+    setSearchQuery(event.target.value)
+  }
+
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      <Input type="search" onChange={handleSearch} placeholder="Buscar Cuenta" value={searchQuery}/>
       <Virtuoso
         style={{ height: 400 }}
-        data={visibleAccounts}
+        // data={visibleAccounts}
+        data={filteredAccounts}
         itemContent={renderAccount}
       />
     </div>
