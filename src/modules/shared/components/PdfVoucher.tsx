@@ -15,6 +15,7 @@ import { createTw } from "react-pdf-tailwind";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
+import { format } from "date-fns";
 
 const tw = createTw({
   theme: {
@@ -114,7 +115,7 @@ export default function PdfVoucher({
                   <Text style={tw("text-xl")}>(Expresado en Bs)</Text>
                 </View>
                 <View>
-                  <Text><>Fecha: {getSingleVoucherQuery?.data?.voucherDate}</></Text>
+                  <Text>Fecha: {format(getSingleVoucherQuery?.data?.voucherDate!, "dd/mm/yyyy")}</Text>
                   <Text>Pagado a: {getSingleVoucherQuery?.data?.gloss}</Text>
                 </View>
                 <View style={tw("mt-4 flex-1")}>
