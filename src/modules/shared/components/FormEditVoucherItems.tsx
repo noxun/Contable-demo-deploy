@@ -331,14 +331,14 @@ export default function FormEditVoucherItems({
                 <Input
                   name="debitBs"
                   onChange={(e) => onChange(e, index)}
-                  value={item.debitBs}
+                  value={item?.debitBs ?? ""}
                 />
               </TableCell>
               <TableCell>
                 <Input
                   name="assetBs"
                   onChange={(e) => onChange(e, index)}
-                  value={item.assetBs}
+                  value={item?.assetBs ?? ""}
                 />
               </TableCell>
               <TableCell>
