@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { ModelSeat } from "@/lib/types";
 import EditModelSeatButton from "./EditModelSeatButton";
+import DeleteModelSeatDialog from "./DeleteModelSeatDialog";
 
 export const columns: ColumnDef<ModelSeat>[] = [
   {
@@ -11,8 +12,8 @@ export const columns: ColumnDef<ModelSeat>[] = [
     header: "Descripciom",
   },
   {
-    accessorKey:"typeTransaction",
-    header: "Tipo de transaccion"
+    accessorKey: "typeTransaction",
+    header: "Tipo de transaccion",
   },
   {
     accessorKey: "createdAt",
@@ -29,8 +30,8 @@ export const columns: ColumnDef<ModelSeat>[] = [
       const modelSeat = row.original;
       return (
         <div className="flex justify-center gap-4 items-center">
-          <EditModelSeatButton modelSeat={modelSeat}/>
-          {/* <DeleteModelSeatDialog/> */}
+          <EditModelSeatButton modelSeat={modelSeat} />
+          <DeleteModelSeatDialog modelSeatId={modelSeat.id} />
         </div>
       );
     },

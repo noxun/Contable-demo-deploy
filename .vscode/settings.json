@@ -6,6 +6,8 @@
     "accounts",
     "vouchers",
     "auth",
-    "invoice-registry"
+    "invoice-registry",
+    "components",
+    "model-seats"
   ]
 }

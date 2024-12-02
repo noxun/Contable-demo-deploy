@@ -75,9 +75,9 @@ export default function FormNewVoucher({
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
-      debitBs: 0,
+      debitBs: null,
       debitSus: 0,
-      assetBs: 0,
+      assetBs: null,
       assetSus: 0,
       gloss: "",
       accountId: "",
@@ -178,9 +178,9 @@ export default function FormNewVoucher({
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
       debitBs: Number(item.debitBs),
-      debitSus: Number(item.debitBs / values.exchangeRate),
+      debitSus: Number(item?.debitBs ?? 0 / values.exchangeRate),
       assetBs: Number(item.assetBs),
-      assetSus: Number(item.assetBs / values.exchangeRate),
+      assetSus: Number(item?.assetBs ?? 0 / values.exchangeRate),
       gloss: item.gloss,
     }));
     let newValues = {
@@ -251,11 +251,11 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
-      return total + currentItem.debitBs;
+      return total + (currentItem?.debitBs ?? 0);
     }, 0);
 
     let assetTotal = voucherItems.reduce((total, currentItem) => {
-      return total + currentItem.assetBs;
+      return total + (currentItem?.assetBs ?? 0);
     }, 0);
 
     setButtonEnabled(debitTotal === assetTotal);

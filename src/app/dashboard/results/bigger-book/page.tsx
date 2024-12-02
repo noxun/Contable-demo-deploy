@@ -23,19 +23,23 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-
 } from "@/components/ui/dialog";
 import DocViewer, {
   PDFRenderer,
   MSDocRenderer,
-
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import EditVoucher from "@/modules/shared/components/EditVoucher";
+import { VoucherType } from "@/modules/shared/types/sharedTypes";
 
 export default function BiggerBookPage() {
   // --- Estados del formulario ---
   const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2024, 0, 20),
+    to: addDays(new Date(2024, 0, 20), 20),
+  });
+  const [dateReport, setDateReport] = useState<DateRange | undefined>({
     from: new Date(2024, 0, 20),
     to: addDays(new Date(2024, 0, 20), 20),
   });
@@ -45,7 +49,7 @@ export default function BiggerBookPage() {
   const [excelLink, setExcelLink] = useState<string | null>(null);
   const [pdfLink, setPdfLink] = useState<string | null>(null);
 
-  // --- Estados de carga o visualizacion ---
+  // --- Estados de carga o visualización ---
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
@@ -54,17 +58,35 @@ export default function BiggerBookPage() {
   const [generatedFiles, setGeneratedFiles] = useState<
     { type: string; date: string; link: string }[]
   >([]);
+  const [generatedFilesReports, setGeneratedFilesReports] = useState<
+    {
+      accountId: number;
+      id: number;
+      createdAt: string;
+      type: string;
+      voucherId: number;
+      description: string;
+      gloss: string;
+      debitBs: number;
+      assetBs: number;
+      debitSus: number;
+      assetSus: number;
+    }[]
+  >([]);
 
-  /*
-    Estos estados controlan la llave y el documento activo actual del visor
-    debido a un error en la libreria, se necesita esto mas la funcion
-    handleDocumentPage para rerenderizar el visor de archivos
-    https://github.com/cyntler/react-doc-viewer/issues/161
-    Probablemente esto sea arreglado en la proxima release de la libreria
-    pero de momento este es el fix que se tiene.
-   */
+  const [accountCode, setAccountCode] = useState<string>("");
+  const [accountDescription, setAccountDescription] = useState<string>("");
+  const [currentAccountIndex, setCurrentAccountIndex] = useState<number>(0);
+  const [responseData, setResponseData] = useState<any[]>([]);
+
+  // --- Estados para el visor ---
   const [viewerKey, setViewerKey] = useState(0);
   const [activeDocument, setActiveDocument] = useState(docs[0]);
+
+// Dialog par editar
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [editData, setEditData] = useState<{ id: string; type: VoucherType } | null>(null);
+
 
   const handleDocumentChange = (document: any) => {
     setActiveDocument(document);
@@ -75,7 +97,7 @@ export default function BiggerBookPage() {
     setViewerKey((prevKey) => prevKey + 1);
   }, [docs]);
 
-  // --- Logica del componente ---
+  // --- Lógica para generar reportes ---
   const handleClick = async () => {
     if (date?.from && date?.to) {
       setIsLoading(true);
@@ -84,7 +106,6 @@ export default function BiggerBookPage() {
       setDocs([]);
       toast("Generando reporte...");
       try {
-        // Generar el reporte de Excel
         const excelResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
           {
@@ -93,12 +114,12 @@ export default function BiggerBookPage() {
               EndDate: format(date.to, "yyyy/MM/dd"),
               type: "xlsx",
               inSus: inSus,
-              businessId: 0 //cambiar esto cuando haya unidad de negocios
+              businessId: 0,
             },
             responseType: "text",
           }
         );
-        // Generar el reporte de PDF
+
         const pdfResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
           {
@@ -107,11 +128,12 @@ export default function BiggerBookPage() {
               EndDate: format(date.to, "yyyy/MM/dd"),
               type: "pdf",
               inSus: inSus,
-              businessId: 0 //cambiar esto cuando haya unidad de negocios
+              businessId: 0,
             },
             responseType: "text",
           }
         );
+
         const currentDate = new Date().toLocaleString();
         if (pdfResponse.data) {
           setPdfLink(pdfResponse.data);
@@ -148,6 +170,125 @@ export default function BiggerBookPage() {
     }
   };
 
+  // --- Lógica para mostrar las transacciones de la cuenta actual ---
+  const handleClickReport = async () => {
+    if (dateReport?.from && dateReport?.to) {
+      setIsLoading(true);
+      toast("Listando Transacciones...");
+      try {
+        const reportResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BookBiggerData`,
+          {
+            params: {
+              InitDate: format(dateReport?.from, "yyyy/MM/dd"),
+              EndDate: format(dateReport?.to, "yyyy/MM/dd"),
+              type: "json",
+              inSus: inSus,
+              businessId: 0,
+            },
+            responseType: "json", 
+          }
+        );
+
+        if (reportResponse.data && Array.isArray(reportResponse.data)) {
+          setResponseData(reportResponse.data);         
+          const firstAccount = reportResponse.data[0]; 
+          setAccountCode(firstAccount.accountCode);
+          setAccountDescription(firstAccount.accountDescription);
+
+          const vouchers = firstAccount.voucherItems.map((item: any) => ({
+            accountId: firstAccount.accountId, 
+            id: item.id,
+            createdAt: item.createdAt,
+            type: item.type,
+            voucherId: item.voucherId,
+            description: item.description,
+            gloss: item.gloss || "Sin glosa",
+            debitBs: item.debitBs || 0,
+            debitSus: item.debitSus || 0,
+            assetBs: item.assetBs || 0,
+            assetSus: item.assetSus || 0,
+          }));
+
+          setGeneratedFilesReports(vouchers); 
+          setCurrentAccountIndex(0); 
+          toast.success("Reporte generado exitosamente");
+        } else {
+          toast.error("La respuesta está mal formateada o vacía.");
+        }
+      } catch (error) {
+        console.error("Error al generar el reporte:", error);
+        toast.error("Error al generar el reporte, intente nuevamente.");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      toast.error("Por favor, selecciona un rango de fechas.");
+    }
+  };
+
+  // Botón "Siguiente" para cambiar de cuenta
+  const handleNextAccount = () => {
+    if (currentAccountIndex < responseData.length - 1) {
+      setCurrentAccountIndex(currentAccountIndex + 1);
+      const account = responseData[currentAccountIndex + 1];
+      setAccountCode(account.accountCode);
+      setAccountDescription(account.accountDescription);
+
+      // Actualizar los vouchers de la nueva cuenta
+      const accountData = responseData[currentAccountIndex + 1];
+      const vouchers = accountData.voucherItems.map((item: any) => ({
+        accountId: item.accountId,
+        id: item.id,
+        createdAt: item.createdAt,
+        type: item.type,
+        voucherId: item.voucherId,
+        description: item.description,
+        gloss: item.gloss || "Sin glosa",
+        debitBs: item.debitBs || 0,
+        debitSus: item.debitSus || 0,
+        assetBs: item.assetBs || 0,
+        assetSus: item.assetSus || 0,
+      }));
+
+      setGeneratedFilesReports(vouchers);
+    }
+  };
+
+  // Botón "Anterior" para cambiar de cuenta
+  const handlePreviousAccount = () => {
+    if (currentAccountIndex > 0) {
+      setCurrentAccountIndex(currentAccountIndex - 1);
+      const account = responseData[currentAccountIndex - 1];
+      setAccountCode(account.accountCode);
+      setAccountDescription(account.accountDescription);
+
+      // Actualizar los vouchers de la nueva cuenta
+      const accountData = responseData[currentAccountIndex - 1];
+      const vouchers = accountData.voucherItems.map((item: any) => ({
+        accountId: item.accountId,
+        id: item.id,
+        createdAt: item.createdAt,
+        type: item.type,
+        voucherId: item.voucherId,
+        description: item.description,
+        gloss: item.gloss || "Sin glosa",
+        debitBs: item.debitBs || 0,
+        assetBs: item.assetBs || 0,
+        debitSus: item.debitSus || 0,
+        assetSus: item.assetSus || 0,
+      }));
+
+      setGeneratedFilesReports(vouchers);
+    }
+  };
+
+  // Función para Editar
+  const handleEdit = (id: string, type: VoucherType) => {
+    setEditData({ id, type });
+    setDialogOpen(true);
+  };
+
   const columns = [
     { header: "Tipo", accessorKey: "type" },
     { header: "Fecha", accessorKey: "date" },
@@ -161,17 +302,55 @@ export default function BiggerBookPage() {
       ),
     },
   ];
+
   const columnsBook = [
-    { header: "id", accesorKey: "number"},
-    { header: "FECHA", accesorKey: "date"},
-    { header: "N° DOC", accesorKey: "number"},
-    { header: "RAZÓN SOCIAL", accesorKey: "string"},
-    { header: "DETALLE", accesorKey: "string"},
-    { header: "REFERENCIA", accesorKey: "string"},
-    { header: "DEBE Bs", accesorKey: "number"},
-    { header: "HABER Bs", accesorKey: "number"},
-    { header: "ACCIONES", accesorKey: ""},
-  ]
+    { header: "ID", accessorKey: "accountId" },
+    { header: "ID Vocher", accessorKey: "id" },
+    {
+      header: "Fecha",
+      accessorKey: "createdAt",
+      cell: ({ row }: any) => {
+        return format(new Date(row.original.createdAt), "yyyy-MM-dd");
+      },
+    },
+    {
+      header: "Tipo",
+      accessorKey: "type",
+      cell: ({ row }: any) => {
+        const type = row.original.type;
+        if (type === 1) return "Egreso";
+        if (type === 0) return "Traspaso";
+        if (type === 2) return "Ingreso";
+        return "Desconocido";
+      },
+    },
+    { header: "N° Doc", accessorKey: "voucherId" },
+    { header: "Descripción", accessorKey: "description" },
+    {
+      header: "Glosa",
+      accessorKey: "gloss",
+      cell: ({ row }: any) => {
+        const gloss = row.original.gloss;
+        return gloss === "" ? "sin glosa" : gloss;
+      },
+    },
+    { header: "Debe Bs", accessorKey: "debitBs" },
+    { header: "Haber Bs", accessorKey: "assetBs" },
+    { header: "Debe Sus", accessorKey: "debitSus" },
+    { header: "Haber Sus", accessorKey: "assetSus" },
+    {
+      header: "Acciones",
+      accessorKey: "",
+      cell: ({ row }: any) => (
+        <Button
+          onClick={() => handleEdit(row.original.id, row.original.type)}
+          className="bg-blue-500 text-white"
+        >
+          Editar
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -220,9 +399,6 @@ export default function BiggerBookPage() {
           </div>
         </div>
         <Button onClick={handleClick} disabled={isLoading}>
-          {isLoading ? "Generando Reporte..." : "ver transacciones"}
-        </Button>
-        <Button onClick={handleClick} disabled={isLoading}>
           {isLoading ? "Generando Reporte..." : "Generar Reporte"}
         </Button>
       </div>
@@ -256,8 +432,96 @@ export default function BiggerBookPage() {
       </Dialog>
       <DataTable columns={columns} data={generatedFiles} />
 
-      <DataTable columns={columnsBook} data={generatedFiles} />
-      
+      {/* Segunda función de fechas con botón */}
+      <div className="flex mt-7 justify-start text-[25px] font-[500]">
+        <h1>Reportes</h1>
+      </div>
+      <div className="flex items-center justify-evenly mt-6">
+        <div className="w-72 space-y-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="dateReport"
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !dateReport && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dateReport?.from ? (
+                  dateReport.to ? (
+                    <>
+                      {format(dateReport.from, "LLL dd, y", { locale: es })} -{" "}
+                      {format(dateReport.to, "LLL dd, y", { locale: es })}
+                    </>
+                  ) : (
+                    format(dateReport.from, "LLL dd, y", { locale: es })
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                locale={es}
+                defaultMonth={dateReport?.from}
+                selected={dateReport}
+                onSelect={setDateReport}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <Button onClick={handleClickReport} disabled={isLoading}>
+          {isLoading ? "Listando Transacciones..." : "Ver Transacciones"}
+        </Button>
+      </div>
+
+      {/* Mostrar el Código de Cuenta y la Descripción de la Cuenta */}
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-4 items-center mt-3">
+          <Label htmlFor="accountCode">Código de Cuenta</Label>
+          <input
+            type="text"
+            id="accountCode"
+            value={accountCode}
+            readOnly
+            className="border px-4 py-2"
+          />
+        </div>
+        <div className="flex gap-4 items-center">
+          <Label htmlFor="accountDescription">Descripción de Cuenta</Label>
+          <input
+            type="text"
+            id="accountDescription"
+            value={accountDescription}
+            readOnly
+            className="border px-4 py-2"
+          />
+        </div>
+      </div>
+      {/* Botones para navegar entre cuentas */}
+      <div className="flex justify-between mt-4">
+        <Button
+          onClick={handlePreviousAccount}
+          disabled={currentAccountIndex === 0}
+        >
+          Anterior
+        </Button>
+        <Button
+          onClick={handleNextAccount}
+          disabled={currentAccountIndex === responseData.length - 1}
+        >
+          Siguiente
+        </Button>
+      </div>
+
+      <DataTable columns={columnsBook} data={generatedFilesReports} />
+
       <DocViewer
         activeDocument={activeDocument}
         onDocumentChange={handleDocumentChange}
@@ -267,6 +531,11 @@ export default function BiggerBookPage() {
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"
       />
+      <Dialog  open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-5xl">
+          {editData && <EditVoucher id={editData.id} type={editData.type} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

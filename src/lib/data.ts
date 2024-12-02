@@ -25,6 +25,7 @@ import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/users/new/page";
+import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 
 function setAuthToken(token: string | undefined | null) {
@@ -147,8 +148,20 @@ export async function fetchAllModelSeats() {
   return response.data as ModelSeat[];
 }
 
-export async function deleteModelSeat() {
-  return; //WIP
+export async function deleteModelSeat(modelSeatId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.delete('api/ModelSeat', {
+    params: {
+      modelSeatId
+    }
+  })
+  return response.data
+
 }
 
 export async function fetchAllMotionAccounts() {
@@ -187,6 +200,16 @@ export async function fetchModelSeatsItems(modelSeatId: string) {
     },
   });
   return response.data as ModelSeatDetailResponse;
+}
+
+export async function putModelSeat(data: EditModelSeat){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put("/api/ModelSeat", data)
+  return response.data;
 }
 
 export async function fetchTypeCompanies() {

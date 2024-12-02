@@ -16,7 +16,7 @@ import { NumericFormat } from "react-number-format";
 import { Input } from "@/components/ui/input";
 import { Account } from "@/modules/account/types/account";
 import { VoucherItem } from "../types/sharedTypes";
-import CustomSelect from "@/components/custom/select";
+import NoMenuSelect from "@/components/custom/no-menu-select";
 
 type FormNewVoucherItemsProps = {
   voucherItems: VoucherItem[];
@@ -69,11 +69,11 @@ export default function FormNewVoucherItems({
   }
 
   const totalDebitValue = voucherItems.reduce((total, num) => {
-    return total + num.debitBs;
+    return total + (num?.debitBs ?? 0);
   }, 0);
 
   const totalAssetValue = voucherItems.reduce((total, num) => {
-    return total + num.assetBs;
+    return total + (num?.assetBs ?? 0);
   }, 0);
 
   //console.log(voucherItems);
@@ -99,9 +99,9 @@ export default function FormNewVoucherItems({
             setVoucherItems((a) => [
               ...a,
               {
-                debitBs: 0,
+                debitBs: null,
                 debitSus: 0,
-                assetBs: 0,
+                assetBs: null,
                 assetSus: 0,
                 gloss: "",
                 accountId: "",
@@ -128,7 +128,7 @@ export default function FormNewVoucherItems({
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
               <TableCell className="h-fit w-72">
-                <CustomSelect
+                <NoMenuSelect
                   menuPlacement="top"
                   placeholder="Selecciona una Cuenta.."
                   isSearchable={true}
@@ -160,7 +160,7 @@ export default function FormNewVoucherItems({
                   customInput={Input}
                   thousandSeparator
                   decimalScale={2}
-                  defaultValue={0}
+                  // defaultValue={0}
                 />
               </TableCell>
               <TableCell>
@@ -179,7 +179,7 @@ export default function FormNewVoucherItems({
                   customInput={Input}
                   thousandSeparator
                   decimalScale={2}
-                  defaultValue={0}
+                  // defaultValue={0}
                 />
               </TableCell>
               <TableCell>
