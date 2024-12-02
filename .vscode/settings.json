@@ -5,6 +5,8 @@
     "users",
     "accounts",
     "vouchers",
-    "auth"
+    "auth",
+    "components",
+    "model-seats"
   ]
 }
