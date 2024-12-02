@@ -1,5 +1,7 @@
 import { InvoiceRegistry } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
+import InvoiceRegistryDeleteButton from "./InvoiceRegistryDeleteButton";
+import EditInvoiceRegistryButton from "./EditInvoiceRegistryButton";
 
 export const columns: ColumnDef<InvoiceRegistry>[] = [
   {
@@ -27,7 +29,7 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Fecha de Factura",
     cell: ({ row }) => {
       const date = new Date(row.getValue("invoiceDate"));
-      return date.toLocaleDateString('es-ES');
+      return date.toLocaleDateString("es-ES");
     },
   },
   {
@@ -35,9 +37,9 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Monto Total",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("totalAmount"));
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "USD",
       }).format(amount);
     },
   },
@@ -46,9 +48,9 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Descuento/Bonificación",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("discountOrBonus"));
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "USD",
       }).format(amount);
     },
   },
@@ -57,9 +59,9 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Monto Tarjeta Regalo",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("giftCardAmount"));
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "USD",
       }).format(amount);
     },
   },
@@ -68,9 +70,9 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Base de Crédito",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("creditBase"));
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "USD",
       }).format(amount);
     },
   },
@@ -79,9 +81,9 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Crédito Fiscal",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("taxCredit"));
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
+      return new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "USD",
       }).format(amount);
     },
   },
@@ -98,7 +100,19 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
     header: "Estado de Consolidación",
     cell: ({ row }) => {
       const status = row.getValue("consolidationStatus");
-      return status === 'pending' ? 'Pendiente' : 'Consolidado';
+      return status === "pending" ? "Pendiente" : "Consolidado";
+    },
+  },
+  {
+    header: "Acciones",
+    cell: ({ row }) => {
+      const invoiceRegistry = row.original;
+      return (
+        <div className="flex">
+          <InvoiceRegistryDeleteButton invoiceRegistryId={invoiceRegistry.id} />
+          <EditInvoiceRegistryButton invoiceRegistryId={invoiceRegistry.id} />
+        </div>
+      );
     },
   },
 ];
