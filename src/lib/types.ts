@@ -79,6 +79,13 @@ export type ModelSeatItem = {
   percentage: number;
 };
 
+export type ModelSeatItemFromDetail = {
+  accountId: number
+  debit: boolean
+  asset: boolean
+  percentage: number
+}
+
 export type PostModelSeat = {
   description: string;
   accounts: ModelSeatItem[];
@@ -87,7 +94,8 @@ export type PostModelSeat = {
 export type ModelSeatDetailResponse = {
   id: number;
   description: string;
-  accounts: ModelSeatItem[];
+  typeTransaction: "ingresos" | "egresos" | "diarios";
+  accounts: ModelSeatItemFromDetail[];
 };
 
 export type TypeCompany = {
