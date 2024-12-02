@@ -21,10 +21,11 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { postInvoiceRegistry } from "@/lib/data";
+import { useRouter } from "next/navigation";
 
 const newInvoiceFormSchema = z.object({
   nitProvider: z.coerce.number(),
@@ -46,6 +47,9 @@ const newInvoiceFormSchema = z.object({
 export type NewInvoiceForm = z.infer<typeof newInvoiceFormSchema>;
 
 export default function InvoiceRegistryForm() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const invoiceRegistryForm = useForm<NewInvoiceForm>({
     resolver: zodResolver(newInvoiceFormSchema),
     defaultValues: {},
@@ -65,11 +69,13 @@ export default function InvoiceRegistryForm() {
     },
     onSuccess: () => {
       toast.success("Registro creado correctamente");
+      queryClient.invalidateQueries({ queryKey: ["invoiceRegistry"] });
+      router.push("/dashboard/invoice-registry");
     },
   });
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl">
       <CardHeader>
         <CardTitle>Registro de Factura</CardTitle>
       </CardHeader>
