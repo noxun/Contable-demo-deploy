@@ -90,7 +90,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
   const token = localStorage.getItem("token");
 
   const totalDebitBs = items?.reduce(
-    (sum: number, item: VoucherItem) => sum + item.debitBs,
+    (sum: number, item: VoucherItem) => sum + (item.debitBs ?? 0),
     0
   );
   const totalDebitSus = items?.reduce(
@@ -98,7 +98,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
     0
   );
   const totalAssetBs = items?.reduce(
-    (sum: number, item: VoucherItem) => sum + item.assetBs,
+    (sum: number, item: VoucherItem) => sum + (item.assetBs ?? 0),
     0
   );
   const totalAssetSus = items?.reduce(
@@ -269,7 +269,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
                             {new Intl.NumberFormat("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        }).format(item.debitBs)}
+                        }).format(item.debitBs ?? 0)}
                           </Text>
                           <Text
                             style={tw(
@@ -279,7 +279,7 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
                             {new Intl.NumberFormat("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
-                        }).format(item.assetBs)}
+                        }).format(item.assetBs ?? 0)}
                           </Text>
                           <Text
                             style={tw(
