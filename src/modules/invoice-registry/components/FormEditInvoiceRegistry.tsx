@@ -48,7 +48,7 @@ const editInvoiceFormSchema = z.object({
 
 export type EditInvoiceForm = z.infer<typeof editInvoiceFormSchema>;
 
-export default function InvoiceRegistryForm({
+export default function FormEditInvoiceRegistry({
   invoiceRegistry,
 }: {
   invoiceRegistry: InvoiceRegistry;
