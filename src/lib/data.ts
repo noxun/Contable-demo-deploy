@@ -487,3 +487,33 @@ export async function getMassPurchaseFormInExcel(){
   });
   return response.data as string;
 }
+
+export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.delete(`/api/Invoice/${InvoiceRegistryId}`)
+  return response.data;
+}
+
+export async function fetchSingleInvoiceRegistryById(InvoiceRegistryId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Invoice/${InvoiceRegistryId}`)
+  return response.data as InvoiceRegistry;
+}
+
+export async function editInvoiceRegistryById(data: InvoiceRegistry) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Invoice/${data.id}`, data)
+  return response.data;
+}
