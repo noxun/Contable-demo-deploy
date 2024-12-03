@@ -83,11 +83,11 @@ export default function FormNewVoucherItems({
     setVoucherItems([...updateVoucherItems]);
   }
 
-  const accountOptions = accountData.map((item) => ({
+  const accountOptions = accountData?.map((item) => ({
     value: item.id.toString(),
     label: item.description,
     //...item
-  }));
+  })) ?? [];
 
   return (
     <div>
