@@ -174,7 +174,7 @@ export default function FormEditModelSeat({
                       <FormLabel>Cuenta</FormLabel>
                       <FormControl>
                         <CustomSelect
-                          value={accountsList?.find(
+                          value={(accountsList ?? []).find(
                             (account) => account.id === fieldTop.accountId
                           ) ?? []}
                           onChange={(option) => {
