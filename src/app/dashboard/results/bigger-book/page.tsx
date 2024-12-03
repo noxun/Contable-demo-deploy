@@ -343,7 +343,7 @@ export default function BiggerBookPage() {
       accessorKey: "",
       cell: ({ row }: any) => (
         <Button
-          onClick={() => handleEdit(row.original.id, row.original.type)}
+          onClick={() => handleEdit(row.original.voucherId, row.original.type)}
           className="bg-blue-500 text-white"
         >
           Editar
