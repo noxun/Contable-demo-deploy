@@ -16,6 +16,8 @@ type RegisterSeatProps = {
   bankId: string | number;
   hasBeenRegisteredToAccount: boolean;
   extractAccountId: number;
+  selectedAccount: number | null;
+  onSelectChange: (bankExtractId: number, accountId: number | null) => void;
 };
 
 export default function RegisterSeat({
@@ -23,12 +25,14 @@ export default function RegisterSeat({
   bankId,
   hasBeenRegisteredToAccount,
   extractAccountId,
+  selectedAccount: selectedAccountId,
+  onSelectChange,
 }: RegisterSeatProps) {
-  const [selectedAccount, setSelectedAccount] =
-    useState<null | SingleValue<Account>>(null);
   const queryClient = useQueryClient();
   const { data: accounts, isPending } = useAccounts();
+
   console.log(accounts);
+
   const registerSeatMutation = useMutation({
     mutationFn: registerExtractToSeat,
     onError: (error: AxiosError) => {
@@ -42,14 +46,20 @@ export default function RegisterSeat({
   });
 
   function handleRegister() {
-    if (selectedAccount) {
+    if (selectedAccountId) {
       const values = {
         bankExtractId,
-        accountId: selectedAccount.id,
+        accountId: selectedAccountId,
       };
       registerSeatMutation.mutate(values);
     }
   }
+
+  const selectedAccountOption =
+    accounts?.find((account) => account.id === selectedAccountId) ??
+    (extractAccountId !== 0
+      ? accounts?.find((account) => account.id === extractAccountId)
+      : null) ;
 
   if (isPending || accounts === undefined) {
     return <Spinner />;
@@ -61,14 +71,9 @@ export default function RegisterSeat({
         <CustomSelect
           isDisabled={hasBeenRegisteredToAccount}
           onChange={(option) => {
-            setSelectedAccount(option);
+            onSelectChange(bankExtractId, option ? option.id : null);
           }}
-          value={
-            selectedAccount ??
-            (extractAccountId !== 0 && Array.isArray(accounts)
-              ? accounts.find((item) => item.id === extractAccountId)
-              : null)
-          }
+          value={selectedAccountOption}
           options={accounts}
           getOptionValue={(account) => account.id.toString()}
           getOptionLabel={(account) => `${account.code}-${account.description}`}

@@ -230,3 +230,7 @@ export type Bank = {
   accountId: number,
   code: string | null,
 }
+
+export type BankSelectionState = {
+  [key: number]: number | null;  // bankExtractId -> accountId
+};

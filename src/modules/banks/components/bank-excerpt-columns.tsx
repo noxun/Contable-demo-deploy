@@ -1,6 +1,6 @@
 "use client";
 
-import { BankExcerpt } from "@/lib/types";
+import { BankExcerpt, BankSelectionState } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
@@ -9,8 +9,11 @@ import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
 import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 import DialogAccountDetailsDollar from "./DialogAccountDetailsDollar";
 
-export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
-
+export function columns(
+  bankId: string | number,
+  selectedAccounts: BankSelectionState,
+  onSelectChange: (bankExtractId: number, accountId: number | null) => void
+): ColumnDef<BankExcerpt>[] {
   //bankId para invalidar las queries
 
   return [
@@ -44,6 +47,8 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
             bankId={bankId}
             hasBeenRegisteredToAccount={bankExtract.accountId !== 0}
             extractAccountId={bankExtract.accountId}
+            selectedAccount={selectedAccounts[bankExtract.id]}
+            onSelectChange={onSelectChange}
           />
         );
       },
@@ -71,9 +76,7 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
               bankExtractId={bankExtract.id}
               accountId={bankExtract.accountId}
             />
-            <DialogNewExcerptRegisterPayment
-              bankExtractId={bankExtract.id}
-            />
+            <DialogNewExcerptRegisterPayment bankExtractId={bankExtract.id} />
             <DeleteBankExcerptButton
               bankExtractId={bankExtract.id}
               bankId={bankId}
