@@ -46,7 +46,7 @@ export default function BiggerBookPage() {
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
 
   // --- Estados de los links ---
-  const [excelLink, setExcelLink] = useState<string | null>(null);
+  // const [excelLink, setExcelLink] = useState<string | null>(null);
   const [pdfLink, setPdfLink] = useState<string | null>(null);
 
   // --- Estados de carga o visualización ---
@@ -101,24 +101,24 @@ export default function BiggerBookPage() {
   const handleClick = async () => {
     if (date?.from && date?.to) {
       setIsLoading(true);
-      setExcelLink(null);
+      // setExcelLink(null);
       setPdfLink(null);
       setDocs([]);
       toast("Generando reporte...");
       try {
-        const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-          {
-            params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
-              type: "xlsx",
-              inSus: inSus,
-              businessId: 0,
-            },
-            responseType: "text",
-          }
-        );
+        // const excelResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
+        //   {
+        //     params: {
+        //       InitDate: format(date.from, "yyyy/MM/dd"),
+        //       EndDate: format(date.to, "yyyy/MM/dd"),
+        //       type: "xlsx",
+        //       inSus: inSus,
+        //       businessId: 0,
+        //     },
+        //     responseType: "text",
+        //   }
+        // );
 
         const pdfResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
@@ -147,18 +147,18 @@ export default function BiggerBookPage() {
             },
           ]);
         }
-        if (excelResponse.data) {
-          setExcelLink(excelResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "Excel",
-              date: currentDate,
-              link: excelResponse.data,
-            },
-          ]);
-        }
+        // if (excelResponse.data) {
+        //   setExcelLink(excelResponse.data);
+        //   setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
+        //   setGeneratedFiles((prevFiles) => [
+        //     ...prevFiles,
+        //     {
+        //       type: "Excel",
+        //       date: currentDate,
+        //       link: excelResponse.data,
+        //     },
+        //   ]);
+        // }
         setShowDialog(true);
         toast.success("Reporte generado exitosamente");
       } catch (error) {
@@ -417,11 +417,11 @@ export default function BiggerBookPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex space-x-4">
-            {excelLink && (
+            {/* {excelLink && (
               <Button onClick={() => window.open(excelLink ?? "", "_self")}>
                 <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
               </Button>
-            )}
+            )} */}
             {pdfLink && (
               <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
