@@ -126,11 +126,13 @@ export default function FormEditVoucherItems({
     deleteVoucherItemMutation.mutate({ voucherItemId, type });
   }
 
-  const accountOptions = accountData.map((item) => ({
+  //ESTO SE MUERE 
+  //FIXME:
+  const accountOptions = accountData?.map((item) => ({
     value: item.id.toString(),
     label: `${item.code} - ${item.description}`,
     //...item
-  }));
+  })) ?? [];
 
   //const formatOptionLabel = ({ label }) => <div>{label}</div>;
   //const getOptionValue = (option) => option.value;
