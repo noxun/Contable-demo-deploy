@@ -7,6 +7,7 @@ import RegisterTrazoButton from "./RegisterTrazoButton";
 import DialogAccountDetails from "./DialogAccountDetails";
 import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
 import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
+import DialogAccountDetailsDollar from "./DialogAccountDetailsDollar";
 
 export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
 
@@ -63,6 +64,10 @@ export function columns(bankId: string | number): ColumnDef<BankExcerpt>[] {
               }
             />
             <DialogAccountDetails
+              bankExtractId={bankExtract.id}
+              accountId={bankExtract.accountId}
+            />
+            <DialogAccountDetailsDollar
               bankExtractId={bankExtract.id}
               accountId={bankExtract.accountId}
             />
