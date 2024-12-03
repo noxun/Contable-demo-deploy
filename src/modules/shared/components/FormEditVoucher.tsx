@@ -115,12 +115,14 @@ export default function FormEditVoucher({
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
-      voucherDate: format(voucher.voucherDate!, 'MM/dd/yyyy'),
+      voucherDate: voucher.voucherDate 
+      ? format(new Date(voucher.voucherDate), 'MM/dd/yyyy') 
+      : '',
       exchangeRate: voucher.exchangeRate,
       coin: voucher.coin,
       checkNum: voucher.checkNum,
       gloss: voucher.gloss,
-      bankId: voucher!.bankId!.toString(),
+      bankId: voucher.bankId ? voucher.bankId.toString() : '',
     },
   });
 
