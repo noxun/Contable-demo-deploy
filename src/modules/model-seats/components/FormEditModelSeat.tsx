@@ -176,7 +176,7 @@ export default function FormEditModelSeat({
                         <CustomSelect
                           value={accountsList?.find(
                             (account) => account.id === fieldTop.accountId
-                          )}
+                          ) ?? []}
                           onChange={(option) => {
                             field.onChange(option?.id);
                           }}
