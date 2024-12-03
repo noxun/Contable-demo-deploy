@@ -16,6 +16,7 @@ import { createTw } from "react-pdf-tailwind";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const tw = createTw({
   theme: {
@@ -43,7 +44,7 @@ export default function PdfVoucher({
 }) {
   const token = localStorage.getItem("token");
 
-  const getSingleVoucherQuery = useQuery({
+  const {data, isLoading} = useQuery({
     queryKey: ["Vouchers", id, type],
     queryFn: async function (): Promise<Voucher> {
       const response = await axios.get(
@@ -60,28 +61,28 @@ export default function PdfVoucher({
     },
   });
 
-  if (getSingleVoucherQuery.isLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  const { items } = getSingleVoucherQuery.data!;
+  const { items } = data!;
 
   const totalDebitBs = items?.reduce(
     (sum: number, item) => sum + item.debitBs!,
     0
-  );
+  ) ?? 0;
   const totalDebitSus = items?.reduce(
     (sum: number, item) => sum + item.debitSus,
     0
-  );
+  ) ?? 0;
   const totalAssetBs = items?.reduce(
     (sum: number, item) => sum + item.assetBs!,
     0
-  );
+  ) ?? 0;
   const totalAssetSus = items?.reduce(
     (sum: number, item) => sum + item.assetSus,
     0
-  );
+  ) ?? 0;
 
   return (
     <Dialog>
@@ -89,220 +90,118 @@ export default function PdfVoucher({
       <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
         <PDFViewer showToolbar={true} className="h-full w-full">
           <Document>
-            <Page size="A4" style={tw("p-4 flex flex-col h-full text-base")}>
-              {/* <Page wrap={true} size="A4" style={tw("p-4 flex gap-8")}> */}
-              <View
-                style={tw(
-                  "border-4 border-black m-0 p-4 grid grid-rows-[auto_auto_auto_1fr_auto] h-full"
-                )}
-              >
-                <View style={tw("flex justify-center items-start")}>
-                  <View style={tw("flex flex-col items-center justify-center")}>
-                    <Image
-                      src="/images/noxun.jpg"
-                      style={tw("p-1 w-15 h-20")}
-                    />
-                    <Text>NOXUN</Text>
-                    <Text>Gestion {new Date().getFullYear()}</Text>
-                  </View>
+            <Page size="LETTER" style={tw("p-4 flex w-full text-sm")}>
+              {/* Fila logo */}
+              <View style={tw("w-[207px]")}>
+                <View style={tw("flex items-center")}>
+                  <Image
+                    source="/images/tradecruz_logo.png"
+                    style={{ height: 57, width: 207 }}
+                  />
+                  <Text>NIT 3754820020</Text>
                 </View>
-                <View
-                  style={tw("flex flex-col items-center justify-center mt-8")}
-                >
-                  <Text style={tw("text-2xl mt-0 ")}>
-                    COMPROBANTE DE EGRESO N (Número Acá)
+              </View>
+              {/* Fila Titulo */}
+              {/* 0 -> traspaso 1-> egreso -> ingreso */}
+              <View style={tw("w-full flex items-center")}>
+                <Text>
+                  COMPROBANTE DE{" "}
+                  {data?.type === 0
+                    ? "TRASPASO"
+                    : data?.type === 1
+                    ? "EGRESO"
+                    : "INGRESO"}
+                </Text>
+                <Text>N° {data?.num ?? "num"}</Text>
+                <Text>Expresado en bolivianos</Text>
+              </View>
+              {/* Fila fecha */}
+              <View style={tw("flex flex-row justify-between")}>
+                <Text>
+                  Santa Cruz,{" "}
+                  {format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}
+                </Text>
+                <Text>T/C: {data?.exchangeRate ?? "rate"}</Text>
+              </View>
+              {/* Header Tabla */}
+              <View style={tw("w-full flex flex-row border")}>
+                <Text style={tw("w-[20%] text-center border-r py-4")}>
+                  CÓDIGO
+                </Text>
+                <Text style={tw("flex-1 text-center border-r py-4")}>
+                  CUENTAS
+                </Text>
+                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                  DEBE Bs.
+                </Text>
+                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                  HABER Bs.
+                </Text>
+                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                  DEBE $us.
+                </Text>
+                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                  HABER $us.
+                </Text>
+              </View>
+              {/* Body tabla */}
+              {data?.items?.map((item) => (
+                <View key={item.id} style={tw("w-full flex flex-row border")}>
+                  <Text style={tw("w-[20%] border-r")}>{item?.code ?? "code"}</Text>
+                  <Text style={tw("border-r flex-1")}>{item?.description ?? "desc"}</Text>
+                  <Text style={tw("w-[10%] border-r text-right")}>
+                    {item.debitBs}
                   </Text>
-                  <Text style={tw("text-xl")}>(Expresado en Bs)</Text>
+                  <Text style={tw("w-[10%] border-r text-right")}>
+                    {item.assetBs}
+                  </Text>
+                  <Text style={tw("w-[10%] border-r text-right")}>
+                    {item.debitSus.toFixed(2)}
+                  </Text>
+                  <Text style={tw("w-[10%] border-r text-right")}>
+                    {item.assetSus.toFixed(2)}
+                  </Text>
                 </View>
-                <View>
-                  <Text>Fecha: {format(getSingleVoucherQuery?.data?.voucherDate!, "dd/mm/yyyy")}</Text>
-                  <Text>Pagado a: {getSingleVoucherQuery?.data?.gloss}</Text>
-                </View>
-                <View style={tw("mt-4 flex-1")}>
-                  <Text style={tw("font-bold mb-2")}>Items contables:</Text>
-                  <View
-                    style={tw("flex flex-col h-full border border-gray-500")}
-                  >
-                    <View
-                      style={tw(
-                        "flex flex-row border-b border-gray-500 bg-gray-200"
-                      )}
-                    >
-                      <Text
-                        style={tw(
-                          "w-1/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        ID
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-3/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Glosa
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Debe Bs
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Haber Bs
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Debe Sus
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Haber Sus
-                      </Text>
-                      <Text style={tw("w-2/12 p-2 text-center")}>
-                        ID CUENTA
-                      </Text>
-                    </View>
-                    <View style={tw("flex flex-col flex-1")}>
-                      {items?.map((item) => (
-                        <View
-                          key={item.id}
-                          style={tw("flex flex-row  border-gray-500")}
-                        >
-                          <Text
-                            style={tw(
-                              "w-1/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.id}
-                          </Text>
-                          <Text
-                            style={tw(
-                              "w-3/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.gloss}
-                          </Text>
-                          <Text
-                            style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.debitBs}
-                          </Text>
-                          <Text
-                            style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.assetBs}
-                          </Text>
-                          <Text
-                            style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.debitSus.toFixed(2)}
-                          </Text>
-                          <Text
-                            style={tw(
-                              "w-2/12 p-2 border-r border-gray-500 text-center"
-                            )}
-                          >
-                            {item.assetSus.toFixed(2)}
-                          </Text>
-                          <Text style={tw("w-2/12 p-2 text-center")}>
-                            {item.accountId}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                    <View
-                      style={tw(
-                        "flex flex-row border-t border-gray-500 bg-gray-200"
-                      )}
-                    >
-                      <Text
-                        style={tw(
-                          "w-4/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        Total
-                      </Text>
-                      {/* <Text style={tw("w-1/12 p-2 border-r border-gray-500")}></Text> */}
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        {totalDebitBs}
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        {totalAssetBs}
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        {totalDebitSus?.toFixed(2)}
-                      </Text>
-                      <Text
-                        style={tw(
-                          "w-2/12 p-2 border-r border-gray-500 text-center"
-                        )}
-                      >
-                        {totalAssetSus?.toFixed(2)}
-                      </Text>
-                      <Text style={tw("w-2/12 p-2")}></Text>
-                    </View>
+              ))}
+              {/* Espacio restante abajo de la tabla, abajo de los items */}
+              <View style={tw("w-full flex flex-row border flex-1")}>
+                <Text style={tw("w-[20%] border-r")}></Text>
+                <Text style={tw("border-r flex-1")}></Text>
+                <Text style={tw("w-[10%] border-r text-right")}></Text>
+                <Text style={tw("w-[10%] border-r text-right")}></Text>
+                <Text style={tw("w-[10%] border-r text-right")}></Text>
+                <Text style={tw("w-[10%] border-r text-right")}></Text>
+              </View>
+              {/* Footer tabla */}
+              <View style={tw("w-full flex flex-row")}>
+                <Text style={tw("w-[20%]")}>DESCRIPCIÓN:</Text>
+                <Text style={tw("flex-1 text-right")}>TOTALES</Text>
+                <Text style={tw("w-[10%]")}>{totalDebitBs}</Text>
+                <Text style={tw("w-[10%]")}>{totalAssetBs}</Text>
+                <Text style={tw("w-[10%]")}>{totalDebitSus.toFixed(2)}</Text>
+                <Text style={tw("w-[10%]")}>{totalAssetSus.toFixed(2)}</Text>
+              </View>
+              {/* DESCRIPCIÓN */}
+              <View style={tw("w-full flex border-b")}>
+                <Text>{data?.gloss ?? "DESCRIPCIÓN"}</Text>
+              </View>
+              <View style={tw("w-full flex flex-row gap-8")}>
+                <View style={tw("h-20 flex-1 flex")}>
+                  <Text>Elaborado:</Text>
+                  <View style={tw("border h-full rounded-lg")}>
+                    {/* Aqui podria venir un text mas si se necesita */}
                   </View>
                 </View>
-                <View style={tw("flex flex-row justify-between mt-4")}>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 mr-2"
-                    )}
-                  >
-                    <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>ELABORADO POR</Text>
+                <View style={tw("h-20 flex-1 flex")}>
+                  <Text>Revisado:</Text>
+                  <View style={tw("border h-full rounded-lg")}>
+                    {/* Aqui podria venir un text mas si se necesita */}
                   </View>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 mr-2"
-                    )}
-                  >
-                    <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>REVISADO POR</Text>
-                  </View>
-                  <View
-                    style={tw(
-                      "text-center border border-gray-500 rounded-md h-32 w-60 flex flex-col justify-end px-4 pb-2 "
-                    )}
-                  >
-                    <View
-                      style={tw("border-b border-gray-500 mb-2 w-full")}
-                    ></View>
-                    <Text>APROBADO POR</Text>
+                </View>
+                <View style={tw("h-20 flex-1 flex")}>
+                  <Text>Aprobado:</Text>
+                  <View style={tw("border h-full rounded-lg")}>
+                    {/* Aqui podria venir un text mas si se necesita */}
                   </View>
                 </View>
               </View>
