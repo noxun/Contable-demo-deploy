@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { createTw } from "react-pdf-tailwind";
 
 type AccountPDFData = {
@@ -12,6 +14,7 @@ type AccountPDFData = {
   canceledTo: any;
   gloss: string;
   bankId: number;
+  type: number;
   items: Array<{
     id: number;
     debitBs: number;
@@ -20,9 +23,12 @@ type AccountPDFData = {
     assetSus: number;
     gloss: string;
     accountId: number;
-    CodeAccount: number;
-    DescriptionAccount: string;
+    code: number;
+    description: string;
     typeOfExpense: any;
+    createdAt: string;
+    voucherId: number;
+    type: number;
   }>;
 };
 
@@ -33,23 +39,17 @@ type AccountDetailsPdfProps = {
 const tw = createTw({});
 
 //with dollars
-export default function AccountDetailsDollarsPdf({ data }: AccountDetailsPdfProps) {
-  // const totalDebitBs = data.items?.reduce(
-  //   (sum: number, item) => sum + item.debitBs,
-  //   0
-  // );
-  // const totalDebitSus = data.items?.reduce(
-  //   (sum: number, item) => sum + item.debitSus,
-  //   0
-  // );
-  // const totalAssetBs = data.items?.reduce(
-  //   (sum: number, item) => sum + item.assetBs,
-  //   0
-  // );
-  // const totalAssetSus = data.items?.reduce(
-  //   (sum: number, item) => sum + item.assetSus,
-  //   0
-  // );
+export default function AccountDetailsDollarsPdf({
+  data,
+}: AccountDetailsPdfProps) {
+  const totalDebitBs =
+    data?.items?.reduce((sum: number, item) => sum + item.debitBs, 0) ?? 0;
+  const totalDebitSus =
+    data?.items?.reduce((sum: number, item) => sum + item.debitSus, 0) ?? 0;
+  const totalAssetBs =
+    data?.items?.reduce((sum: number, item) => sum + item.assetBs, 0) ?? 0;
+  const totalAssetSus =
+    data?.items?.reduce((sum: number, item) => sum + item.assetSus, 0) ?? 0;
 
   return (
     <Document>
@@ -65,14 +65,22 @@ export default function AccountDetailsDollarsPdf({ data }: AccountDetailsPdfProp
           </View>
         </View>
         {/* Fila Titulo */}
+        {/* 0 -> traspaso 1-> egreso -> ingreso */}
         <View style={tw("w-full flex items-center")}>
-          <Text>COMPROBANTE DE {"INGRESO"}</Text>
-          <Text>N° 000120-2023-01</Text>
+          <Text>
+            COMPROBANTE DE {" "}
+            {data.type === 0
+              ? "TRASPASO"
+              : data.type === 1
+              ? "EGRESO"
+              : "INGRESO"}
+          </Text>
+          <Text>N° {data.num ?? "num"}</Text>
           <Text>Expresado en bolivianos</Text>
         </View>
         {/* Fila fecha */}
         <View style={tw("flex flex-row justify-between")}>
-          <Text>Santa Cruz, {"Fecha Actual"}</Text>
+          <Text>Santa Cruz, {format(new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
           <Text>T/C: {data.exchangeRate}</Text>
         </View>
         {/* Header Tabla */}
@@ -82,30 +90,50 @@ export default function AccountDetailsDollarsPdf({ data }: AccountDetailsPdfProp
           <Text style={tw("w-[10%] text-center border-r py-4")}>DEBE Bs.</Text>
           <Text style={tw("w-[10%] text-center border-r py-4")}>HABER Bs.</Text>
           <Text style={tw("w-[10%] text-center border-r py-4")}>DEBE $us.</Text>
-          <Text style={tw("w-[10%] text-center border-r py-4")}>HABER $us.</Text>
+          <Text style={tw("w-[10%] text-center border-r py-4")}>
+            HABER $us.
+          </Text>
         </View>
         {/* Body tabla */}
+        {data.items.map((item) => (
+          <View key={item.id} style={tw("w-full flex flex-row border")}>
+            <Text style={tw("w-[20%] border-r")}>{item.code}</Text>
+            <Text style={tw("border-r flex-1")}>{item.description}</Text>
+            <Text style={tw("w-[10%] border-r text-right")}>
+              {item.debitBs}
+            </Text>
+            <Text style={tw("w-[10%] border-r text-right")}>
+              {item.assetBs}
+            </Text>
+            <Text style={tw("w-[10%] border-r text-right")}>
+              {item.debitSus.toFixed(2)}
+            </Text>
+            <Text style={tw("w-[10%] border-r text-right")}>
+              {item.assetSus.toFixed(2)}
+            </Text>
+          </View>
+        ))}
+        {/* Espacio restante abajo de la tabla, abajo de los items */}
         <View style={tw("w-full flex flex-row border flex-1")}>
-          <Text style={tw("w-[20%] border-r")}>11020101</Text>
-          <Text style={tw("border-r flex-1")}>CLIENTE POR COBRAR</Text>
-          <Text style={tw("w-[10%] border-r text-right")}>1,326.00</Text>
-          <Text style={tw("w-[10%] border-r text-right")}>-</Text>
-          <Text style={tw("w-[10%] border-r text-right")}>190.52</Text>
-          <Text style={tw("w-[10%] border-r text-right")}>-</Text>
+          <Text style={tw("w-[20%] border-r")}></Text>
+          <Text style={tw("border-r flex-1")}></Text>
+          <Text style={tw("w-[10%] border-r text-right")}></Text>
+          <Text style={tw("w-[10%] border-r text-right")}></Text>
+          <Text style={tw("w-[10%] border-r text-right")}></Text>
+          <Text style={tw("w-[10%] border-r text-right")}></Text>
         </View>
         {/* Footer tabla */}
         <View style={tw("w-full flex flex-row")}>
           <Text style={tw("w-[20%]")}>DESCRIPCION:</Text>
-          <Text style={tw("flex-1 text-right")}>TOTAL Bs.</Text>
-          <Text style={tw("w-[10%]")}>1,3675.78</Text>
-          <Text style={tw("w-[10%]")}>1,3675.78</Text>
-          <Text style={tw("w-[10%]")}>196.24</Text>
-          <Text style={tw("w-[10%]")}>196.24</Text>
+          <Text style={tw("flex-1 text-right")}>TOTALES</Text>
+          <Text style={tw("w-[10%]")}>{totalDebitBs}</Text>
+          <Text style={tw("w-[10%]")}>{totalAssetBs}</Text>
+          <Text style={tw("w-[10%]")}>{totalDebitSus.toFixed(2)}</Text>
+          <Text style={tw("w-[10%]")}>{totalAssetSus.toFixed(2)}</Text>
         </View>
         {/* DESCRIPCION */}
         <View style={tw("w-full flex border-b")}>
-          <Text>20231108 F-1568 VTA. SERV. A SADAC</Text>
-          <Text>AUDIFONOS SRL</Text>
+          <Text>{data.gloss ?? 'DESCRIPCION'}</Text>
         </View>
         <View style={tw("w-full flex flex-row gap-8")}>
           <View style={tw("h-20 flex-1 flex")}>

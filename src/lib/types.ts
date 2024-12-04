@@ -248,3 +248,7 @@ export type InvoiceRegistry = {
   controlCode: string | number;
   consolidationStatus: string;
 }
+
+export type BankSelectionState = {
+  [key: number]: number | null;  // bankExtractId -> accountId
+};

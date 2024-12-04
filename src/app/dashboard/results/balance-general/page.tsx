@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText } from "lucide-react";
+import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -42,8 +42,8 @@ export default function BalanceGeneralPage() {
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
 
   // --- Estados de los links ---
-  //const [excelLink, setExcelLink] = useState<string | null>(null);
-  const [pdfLink, setPdfLink] = useState<string | null>(null);
+  const [excelLink, setExcelLink] = useState<string | null>(null);
+  // const [pdfLink, setPdfLink] = useState<string | null>(null);
 
   // --- Estados de carga o visualizacion ---
   const [isLoading, setIsLoading] = useState(false);
@@ -79,65 +79,65 @@ export default function BalanceGeneralPage() {
   const handleClick = async () => {
     if (date?.from && date?.to) {
       setIsLoading(true);
-      //setExcelLink(null);
-      setPdfLink(null);
+      setExcelLink(null);
+      // setPdfLink(null);
       setDocs([]);
       toast("Generando reporte...");
       try {
         // Generar el reporte de Excel
-        // const excelResponse = await axios.get(
-        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/StamentIncome`,
-        //   {
-        //     params: {
-        //       InitDate: format(date.from, "yyyy/MM/dd"),
-        //       EndDate: format(date.to, "yyyy/MM/dd"),
-        //       type: "xlsx",
-        //       inSus: inSus,
-        //       businessId: 0 //cambiar esto cuando haya unidad de negocios
-        //     },
-        //     responseType: "text",
-        //   }
-        // );
-        // Generar el reporte de PDF
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceGeneral`,
+        const excelResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/Xlxs/balanceGeneral`,
           {
             params: {
               InitDate: format(date.from, "yyyy/MM/dd"),
               EndDate: format(date.to, "yyyy/MM/dd"),
-              //type: "pdf",
+              type: "xlsx",
               inSus: inSus,
-              //Level: 5, //Averiguar que es level
-              //businessId: 0 //cambiar esto cuando haya unidad de negocios
+              businessId: 0 //cambiar esto cuando haya unidad de negocios
             },
             responseType: "text",
           }
         );
+        // Generar el reporte de PDF
+        // const pdfResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BalanceGeneral`,
+        //   {
+        //     params: {
+        //       InitDate: format(date.from, "yyyy/MM/dd"),
+        //       EndDate: format(date.to, "yyyy/MM/dd"),
+        //       //type: "pdf",
+        //       inSus: inSus,
+        //       //Level: 5, //Averiguar que es level
+        //       //businessId: 0 //cambiar esto cuando haya unidad de negocios
+        //     },
+        //     responseType: "text",
+        //   }
+        // );
         const currentDate = new Date().toLocaleString();
-        if (pdfResponse.data) {
-          setPdfLink(pdfResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "PDF",
-              date: currentDate,
-              link: pdfResponse.data,
-            },
-          ]);
-        }
-        // if (excelResponse.data) {
-        //   setExcelLink(excelResponse.data);
-        //   setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
+        // if (pdfResponse.data) {
+        //   setPdfLink(pdfResponse.data);
+        //   setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
         //   setGeneratedFiles((prevFiles) => [
         //     ...prevFiles,
         //     {
-        //       type: "Excel",
+        //       type: "PDF",
         //       date: currentDate,
-        //       link: excelResponse.data,
+        //       link: pdfResponse.data,
         //     },
         //   ]);
         // }
+        if (excelResponse.data) {
+          setExcelLink(excelResponse.data);
+          setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
+          setGeneratedFiles((prevFiles) => [
+            ...prevFiles,
+            {
+              type: "Excel",
+              date: currentDate,
+              link: excelResponse.data,
+            },
+          ]);
+        }
         setShowDialog(true);
         toast.success("Reporte generado exitosamente");
       } catch (error) {
@@ -228,16 +228,16 @@ export default function BalanceGeneralPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex space-x-4">
-            {/* {excelLink && (
+            {excelLink && (
               <Button onClick={() => window.open(excelLink ?? "", "_self")}>
                 <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
               </Button>
-            )} */}
-            {pdfLink && (
+            )}
+            {/* {pdfLink && (
               <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
               </Button>
-            )}
+            )} */}
           </div>
         </DialogContent>
       </Dialog>

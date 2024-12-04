@@ -16,6 +16,7 @@ import { createTw } from "react-pdf-tailwind";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Voucher, VoucherType, VoucherItem } from "../types/sharedTypes";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const tw = createTw({
   theme: {
@@ -43,7 +44,7 @@ export default function PdfVoucher({
 }) {
   const token = localStorage.getItem("token");
 
-  const getSingleVoucherQuery = useQuery({
+  const {data, isLoading} = useQuery({
     queryKey: ["Vouchers", id, type],
     queryFn: async function (): Promise<Voucher> {
       const response = await axios.get(
@@ -60,7 +61,7 @@ export default function PdfVoucher({
     },
   });
 
-  if (getSingleVoucherQuery.isLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -92,15 +93,15 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
   const totalDebitBs = items?.reduce(
     (sum: number, item: VoucherItem) => sum + (item.debitBs ?? 0),
     0
-  );
+  ) ?? 0;
   const totalDebitSus = items?.reduce(
     (sum: number, item: VoucherItem) => sum + item.debitSus,
     0
-  );
+  ) ?? 0;
   const totalAssetBs = items?.reduce(
     (sum: number, item: VoucherItem) => sum + (item.assetBs ?? 0),
     0
-  );
+  ) ?? 0;
   const totalAssetSus = items?.reduce(
     (sum: number, item: VoucherItem) => sum + item.assetSus,
     0

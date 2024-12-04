@@ -46,12 +46,18 @@ export default function BiggerBookPage() {
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
 
   // --- Estados de los links ---
-  const [excelLink, setExcelLink] = useState<string | null>(null);
+  // const [excelLink, setExcelLink] = useState<string | null>(null);
   const [pdfLink, setPdfLink] = useState<string | null>(null);
 
   // --- Estados de carga o visualización ---
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+
+  // estado para busqueda
+  const [searchDescription, setSearchDescription] = useState<string>("");
+
+  // estado para paginación
+  const [totalRecords, setTotalRecords] = useState<number>(0);
 
   // --- Estados de los documentos para la tabla y el visor ---
   const [docs, setDocs] = useState<{ uri: string }[]>([]);
@@ -71,6 +77,8 @@ export default function BiggerBookPage() {
       assetBs: number;
       debitSus: number;
       assetSus: number;
+      totalAsset: number;
+      totalDebit: number;
     }[]
   >([]);
 
@@ -83,10 +91,12 @@ export default function BiggerBookPage() {
   const [viewerKey, setViewerKey] = useState(0);
   const [activeDocument, setActiveDocument] = useState(docs[0]);
 
-// Dialog par editar
+  // Dialog par editar
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<{ id: string; type: VoucherType } | null>(null);
-
+  const [editData, setEditData] = useState<{
+    id: string;
+    type: VoucherType;
+  } | null>(null);
 
   const handleDocumentChange = (document: any) => {
     setActiveDocument(document);
@@ -101,24 +111,24 @@ export default function BiggerBookPage() {
   const handleClick = async () => {
     if (date?.from && date?.to) {
       setIsLoading(true);
-      setExcelLink(null);
+      // setExcelLink(null);
       setPdfLink(null);
       setDocs([]);
       toast("Generando reporte...");
       try {
-        const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-          {
-            params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
-              type: "xlsx",
-              inSus: inSus,
-              businessId: 0,
-            },
-            responseType: "text",
-          }
-        );
+        // const excelResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
+        //   {
+        //     params: {
+        //       InitDate: format(date.from, "yyyy/MM/dd"),
+        //       EndDate: format(date.to, "yyyy/MM/dd"),
+        //       type: "xlsx",
+        //       inSus: inSus,
+        //       businessId: 0,
+        //     },
+        //     responseType: "text",
+        //   }
+        // );
 
         const pdfResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
@@ -147,18 +157,18 @@ export default function BiggerBookPage() {
             },
           ]);
         }
-        if (excelResponse.data) {
-          setExcelLink(excelResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "Excel",
-              date: currentDate,
-              link: excelResponse.data,
-            },
-          ]);
-        }
+        // if (excelResponse.data) {
+        //   setExcelLink(excelResponse.data);
+        //   setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
+        //   setGeneratedFiles((prevFiles) => [
+        //     ...prevFiles,
+        //     {
+        //       type: "Excel",
+        //       date: currentDate,
+        //       link: excelResponse.data,
+        //     },
+        //   ]);
+        // }
         setShowDialog(true);
         toast.success("Reporte generado exitosamente");
       } catch (error) {
@@ -186,18 +196,20 @@ export default function BiggerBookPage() {
               inSus: inSus,
               businessId: 0,
             },
-            responseType: "json", 
+            responseType: "json",
           }
         );
 
         if (reportResponse.data && Array.isArray(reportResponse.data)) {
-          setResponseData(reportResponse.data);         
-          const firstAccount = reportResponse.data[0]; 
+          setResponseData(reportResponse.data);
+          setTotalRecords(reportResponse.data.length);
+
+          const firstAccount = reportResponse.data[0];
           setAccountCode(firstAccount.accountCode);
           setAccountDescription(firstAccount.accountDescription);
 
           const vouchers = firstAccount.voucherItems.map((item: any) => ({
-            accountId: firstAccount.accountId, 
+            accountId: item.accountId,
             id: item.id,
             createdAt: item.createdAt,
             type: item.type,
@@ -208,16 +220,20 @@ export default function BiggerBookPage() {
             debitSus: item.debitSus || 0,
             assetBs: item.assetBs || 0,
             assetSus: item.assetSus || 0,
+            totalDebit: item.totalDebit || 0,
+            totalAsset: item.totalAsset || 0,
           }));
 
-          setGeneratedFilesReports(vouchers); 
-          setCurrentAccountIndex(0); 
+          setGeneratedFilesReports(vouchers);
+          setCurrentAccountIndex(0);
           toast.success("Reporte generado exitosamente");
         } else {
+          setTotalRecords(0);
           toast.error("La respuesta está mal formateada o vacía.");
         }
       } catch (error) {
         console.error("Error al generar el reporte:", error);
+        setTotalRecords(0);
         toast.error("Error al generar el reporte, intente nuevamente.");
       } finally {
         setIsLoading(false);
@@ -249,6 +265,8 @@ export default function BiggerBookPage() {
         debitSus: item.debitSus || 0,
         assetBs: item.assetBs || 0,
         assetSus: item.assetSus || 0,
+        totalDebit: item.totalDebit || 0,
+        totalAsset: item.totalAsset || 0,
       }));
 
       setGeneratedFilesReports(vouchers);
@@ -277,9 +295,59 @@ export default function BiggerBookPage() {
         assetBs: item.assetBs || 0,
         debitSus: item.debitSus || 0,
         assetSus: item.assetSus || 0,
+        totalDebit: item.totalDebit || 0,
+        totalAsset: item.totalAsset || 0,
       }));
 
       setGeneratedFilesReports(vouchers);
+    }
+  };
+
+  //función para buscar
+  const handleSearch = () => {
+    if (searchDescription.trim() === "") {
+      toast.error("Por favor ingrese una descripción para buscar");
+      return;
+    }
+
+    const foundIndex = responseData.findIndex((account) =>
+      account.accountDescription
+        .toLowerCase()
+        .includes(searchDescription.toLowerCase())
+    );
+
+    if (foundIndex !== -1) {
+      const foundAccount = responseData[foundIndex];
+      setAccountCode(foundAccount.accountCode);
+      setAccountDescription(foundAccount.accountDescription);
+
+      const vouchers = foundAccount.voucherItems.map((item: any) => {
+        return {
+          accountId: item.accountId,
+          id: item.id,
+          createdAt: item.createdAt,
+          type: item.type,
+          voucherId: item.voucherId,
+          description: item.description,
+          gloss: item.gloss || "Sin glosa",
+          debitBs: item.debitBs || 0,
+          debitSus: item.debitSus || 0,
+          assetBs: item.assetBs || 0,
+          assetSus: item.assetSus || 0,
+          totalDebit: item.totalDebit || 0,
+          totalAsset: item.totalAsset || 0,
+        };
+      });
+
+      setGeneratedFilesReports(vouchers);
+      setCurrentAccountIndex(foundIndex); // Establecer el índice encontrado
+      setTotalRecords(responseData.length);
+      toast.success(
+        `Cuenta encontrada (${foundIndex + 1} de ${responseData.length})`
+      );
+    } else {
+      setTotalRecords(0);
+      toast.error("No se encontró ninguna cuenta con esa descripción");
     }
   };
 
@@ -343,7 +411,7 @@ export default function BiggerBookPage() {
       accessorKey: "",
       cell: ({ row }: any) => (
         <Button
-          onClick={() => handleEdit(row.original.id, row.original.type)}
+          onClick={() => handleEdit(row.original.voucherId, row.original.type)}
           className="bg-blue-500 text-white"
         >
           Editar
@@ -417,11 +485,11 @@ export default function BiggerBookPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex space-x-4">
-            {excelLink && (
+            {/* {excelLink && (
               <Button onClick={() => window.open(excelLink ?? "", "_self")}>
                 <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
               </Button>
-            )}
+            )} */}
             {pdfLink && (
               <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
@@ -503,15 +571,38 @@ export default function BiggerBookPage() {
             className="border px-4 py-2"
           />
         </div>
+        <div className="flex gap-4 items-center">
+          <Label htmlFor="searchDescription">
+            Búsqueda por Descripción de Cuenta
+          </Label>
+          <input
+            type="text"
+            id="searchDescription"
+            value={searchDescription}
+            onChange={(e) => setSearchDescription(e.target.value)}
+            className="border px-4 py-2"
+            placeholder="Ingrese descripción para buscar"
+          />
+          <Button onClick={handleSearch} className="bg-blue-500 text-white">
+            Buscar
+          </Button>
+        </div>
       </div>
       {/* Botones para navegar entre cuentas */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
         <Button
           onClick={handlePreviousAccount}
           disabled={currentAccountIndex === 0}
         >
           Anterior
         </Button>
+
+        <span className="text-sm font-medium">
+          {totalRecords > 0
+            ? `${currentAccountIndex + 1} de ${totalRecords}`
+            : "0 de 0"}
+        </span>
+
         <Button
           onClick={handleNextAccount}
           disabled={currentAccountIndex === responseData.length - 1}
@@ -521,6 +612,25 @@ export default function BiggerBookPage() {
       </div>
 
       <DataTable columns={columnsBook} data={generatedFilesReports} />
+      {/* totales por cuenta */}
+      {responseData.length > 0 && (
+        <div className="flex justify-evenly mt-4">
+          <div className="font-medium flex flex-row gap-4">
+            <div className="flex flex-row gap-4">
+              Total Debe Bs:{" "}
+              <div className="flex justify-center border-2 border-black px-3">
+                {responseData[currentAccountIndex]?.totalDebit || 0}
+              </div>
+            </div>
+            <div className="flex flex-row gap-4">
+              Total Haber Bs:{" "}
+              <div className="flex justify-center border-2 border-black px-3">
+                {responseData[currentAccountIndex]?.totalAsset || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <DocViewer
         activeDocument={activeDocument}
@@ -531,8 +641,9 @@ export default function BiggerBookPage() {
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"
       />
-      <Dialog  open={isDialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-5xl">
+          <h2 className="text-lg font-bold">Formulario para editar Egreso</h2>
           {editData && <EditVoucher id={editData.id} type={editData.type} />}
         </DialogContent>
       </Dialog>

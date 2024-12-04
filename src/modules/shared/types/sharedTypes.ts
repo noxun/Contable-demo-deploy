@@ -1,29 +1,32 @@
 export type Voucher = {
   id?: number;
-  type?: number;// por alguna razon type solo aparece cuando haces PUT, despues es un query string
+  type?: number; // por alguna razon type solo aparece cuando haces PUT, despues es un query string
   num?: number;
   exchangeRate: number;
   voucherDate?: string | Date;
-  coin: "USD" | "BOB";//this should be an enum
+  coin: "USD" | "BOB"; //this should be an enum
   checkNum?: string | undefined;
   canceledTo?: string | Date;
-  gloss: string
-  bankId: number | string
-  items?: VoucherItem[]
-}
+  gloss: string;
+  bankId: number | string;
+  items?: VoucherItem[];
+};
 
 export type VoucherItem = {
-      id?: number,
-      debitBs: number | null,
-      debitSus: number,
-      assetBs: number | null,
-      assetSus: number,
-      gloss: string,
-      code?: string,
-      description?: string,
-      accountId?: number | string
-      voucherId?: number | string
-}
+  id?: number;
+  debitBs: number | null;
+  debitSus: number;
+  assetBs: number | null;
+  assetSus: number;
+  gloss: string;
+  accountId?: number | string;
+  code?: string;
+  description?: string;
+  typeOfExpense?: any;
+  createdAt?: "string";
+  voucherId?: number | string;
+  type?: number;
+};
 
 export enum VoucherType {
   DIARY = "0",

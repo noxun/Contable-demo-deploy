@@ -1,27 +1,48 @@
-import Select, {ControlProps, CSSObjectWithLabel, GroupBase, StylesConfig,} from "react-select";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
-import {Input} from "@/components/ui/input";
+import Select, {
+  ControlProps,
+  CSSObjectWithLabel,
+  GroupBase,
+  StylesConfig,
+} from "react-select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-import {ChangeEvent, Dispatch, SetStateAction,} from "react";
-import {VoucherItem, VoucherType} from "../types/sharedTypes";
-import {Account} from "@/modules/account/types/account";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { Voucher, VoucherItem, VoucherType } from "../types/sharedTypes";
+import { Account } from "@/modules/account/types/account";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import {toast} from "sonner";
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Button} from "@/components/ui/button";
-import {Pencil, Plus, Trash2} from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import useToken from "../hooks/useToken";
 import CustomSelect from "@/components/custom/select";
 
@@ -31,6 +52,7 @@ type FormEditVoucherItemsProps = {
   voucherItems: VoucherItem[];
   setVoucherItems: Dispatch<SetStateAction<VoucherItem[]>>;
   accountData: Account[];
+  voucher: Voucher;
 };
 
 export default function FormEditVoucherItems({
@@ -39,6 +61,7 @@ export default function FormEditVoucherItems({
   voucherItems,
   setVoucherItems,
   accountData,
+  voucher
 }: FormEditVoucherItemsProps) {
   const { token } = useToken();
 
@@ -62,13 +85,13 @@ export default function FormEditVoucherItems({
       type: VoucherType;
     }) => {
       return await axios.delete(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?id=${voucherItemId}&type=${type}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     },
     onSuccess: () => {
@@ -126,9 +149,11 @@ export default function FormEditVoucherItems({
     deleteVoucherItemMutation.mutate({ voucherItemId, type });
   }
 
-  const accountOptions = accountData.map((item) => ({
+  //ESTO SE MUERE
+  //FIXME:
+  const accountOptions = (accountData ?? []).map((item) => ({
     value: item.id.toString(),
-    label: `${item.code} - ${item.description}`,
+    label: item.description,
     //...item
   }));
 
@@ -164,14 +189,14 @@ export default function FormEditVoucherItems({
       type: VoucherType;
     }) => {
       return await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}`,
-          [data],
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Voucher/Item?type=${type}&voucherId=${data.voucherId}&Date=${voucher.voucherDate}`,
+        [data],
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     },
     onSuccess: () => {
@@ -197,21 +222,21 @@ export default function FormEditVoucherItems({
     <div>
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-medium">Asiento contable</h2>
-        <Dialog>
+        <Dialog >
           <DialogTrigger asChild>
             <Button>
               <span className="mr-2">Adicionar Item</span>
               <Plus size={18} />
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px] flex flex-col">
+          <DialogContent className="sm:max-w-[800px] flex flex-col ">
             <DialogHeader>
               <DialogTitle>Adicionar item</DialogTitle>
               <DialogDescription>
                 Agrega un nuevo item al voucher actual
               </DialogDescription>
             </DialogHeader>
-            <div>
+            <div className="">
               <Form {...addVoucherItemForm}>
                 <form
                   onSubmit={addVoucherItemForm.handleSubmit(onSubmit)}
@@ -288,7 +313,12 @@ export default function FormEditVoucherItems({
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Guardar</Button>
+                  <DialogClose asChild>
+                    {/* <Button type="button" variant="secondary">
+                      Close
+                    </Button> */}
+                    <Button type="submit">Guardar</Button>
+                  </DialogClose>
                 </form>
               </Form>
             </div>

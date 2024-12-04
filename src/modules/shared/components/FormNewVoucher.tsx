@@ -286,7 +286,7 @@ export default function FormNewVoucher({
               Selecciona un Asiento Modelo
             </label>
             <CustomSelect
-              options={modelSeats.map((seat) => ({
+              options={(modelSeats ?? []).map((seat) => ({
                 label: seat.description,
                 value: seat.id,
               }))}
@@ -408,7 +408,10 @@ export default function FormNewVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {banksQuery.data.data.map((bank) => (
+                      {(Array.isArray(banksQuery.data.data)
+                        ? banksQuery.data.data
+                        : []
+                      ).map((bank) => (
                         <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                           {bank.sigla} - {bank.name}
                         </SelectItem>
@@ -419,7 +422,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="branch"
               render={({ field }) => (
@@ -471,7 +474,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             {/* <FormField
               control={voucherForm.control}
               name="branch"
