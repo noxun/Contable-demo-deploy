@@ -138,7 +138,7 @@ export default function FormEditVoucher({
   }
 
   return (
-    <div>
+    <div className="max-h-[80vh] overflow-y-auto px-2">
       <Form {...voucherForm}>
         <form onSubmit={voucherForm.handleSubmit(onSubmit)}>
           <div className="flex gap-2 mb-2">
@@ -294,6 +294,7 @@ export default function FormEditVoucher({
         accountData={accountsQuery.data}
         voucherItems={voucherItems}
         setVoucherItems={setVoucherItems}
+        voucher={voucher}
       />
     </div>
   );

@@ -643,6 +643,7 @@ export default function BiggerBookPage() {
       />
       <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-5xl">
+          <h2 className="text-lg font-bold">Formulario para editar Egreso</h2>
           {editData && <EditVoucher id={editData.id} type={editData.type} />}
         </DialogContent>
       </Dialog>
