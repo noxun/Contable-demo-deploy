@@ -56,6 +56,9 @@ export default function BiggerBookPage() {
   // estado para busqueda
   const [searchDescription, setSearchDescription] = useState<string>("");
 
+  // estado para paginación
+  const [totalRecords, setTotalRecords] = useState<number>(0);
+
   // --- Estados de los documentos para la tabla y el visor ---
   const [docs, setDocs] = useState<{ uri: string }[]>([]);
   const [generatedFiles, setGeneratedFiles] = useState<
@@ -197,11 +200,12 @@ export default function BiggerBookPage() {
 
         if (reportResponse.data && Array.isArray(reportResponse.data)) {
           setResponseData(reportResponse.data);
+          setTotalRecords(reportResponse.data.length);
+
           const firstAccount = reportResponse.data[0];
           setAccountCode(firstAccount.accountCode);
           setAccountDescription(firstAccount.accountDescription);
 
-          // Mapeo corregido para mantener consistencia con handleSearch
           const vouchers = firstAccount.voucherItems.map((item: any) => ({
             accountId: item.accountId,
             id: item.id,
@@ -220,10 +224,12 @@ export default function BiggerBookPage() {
           setCurrentAccountIndex(0);
           toast.success("Reporte generado exitosamente");
         } else {
+          setTotalRecords(0);
           toast.error("La respuesta está mal formateada o vacía.");
         }
       } catch (error) {
         console.error("Error al generar el reporte:", error);
+        setTotalRecords(0);
         toast.error("Error al generar el reporte, intente nuevamente.");
       } finally {
         setIsLoading(false);
@@ -289,19 +295,21 @@ export default function BiggerBookPage() {
     }
   };
 
+  //función para buscar 
   const handleSearch = () => {
     if (searchDescription.trim() === "") {
       toast.error("Por favor ingrese una descripción para buscar");
       return;
     }
-
-    const foundAccount = responseData.find((account) =>
+    
+    const foundIndex = responseData.findIndex((account) =>
       account.accountDescription
         .toLowerCase()
         .includes(searchDescription.toLowerCase())
     );
 
-    if (foundAccount) {
+    if (foundIndex !== -1) {
+      const foundAccount = responseData[foundIndex];
       setAccountCode(foundAccount.accountCode);
       setAccountDescription(foundAccount.accountDescription);
 
@@ -322,12 +330,13 @@ export default function BiggerBookPage() {
       });
 
       setGeneratedFilesReports(vouchers);
-      const foundIndex = responseData.findIndex(
-        (account) => account.accountId === foundAccount.accountId
+      setCurrentAccountIndex(foundIndex); // Establecer el índice encontrado
+      setTotalRecords(responseData.length);
+      toast.success(
+        `Cuenta encontrada (${foundIndex + 1} de ${responseData.length})`
       );
-      setCurrentAccountIndex(foundIndex);
-      toast.success("Cuenta encontrada");
     } else {
+      setTotalRecords(0);
       toast.error("No se encontró ninguna cuenta con esa descripción");
     }
   };
@@ -570,13 +579,20 @@ export default function BiggerBookPage() {
         </div>
       </div>
       {/* Botones para navegar entre cuentas */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
         <Button
           onClick={handlePreviousAccount}
           disabled={currentAccountIndex === 0}
         >
           Anterior
         </Button>
+
+        <span className="text-sm font-medium">
+          {totalRecords > 0
+            ? `${currentAccountIndex + 1} de ${totalRecords}`
+            : "0 de 0"}
+        </span>
+
         <Button
           onClick={handleNextAccount}
           disabled={currentAccountIndex === responseData.length - 1}
