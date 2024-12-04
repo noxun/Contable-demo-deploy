@@ -138,7 +138,7 @@ export default function FormNewModelSeat() {
                   <SelectContent>
                     <SelectItem value="ingresos">Ingresos</SelectItem>
                     <SelectItem value="egresos">Egresos</SelectItem>
-                    <SelectItem value="diarios">Diarios</SelectItem>
+                    <SelectItem value="traspasos">Traspasos</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormDescription>
