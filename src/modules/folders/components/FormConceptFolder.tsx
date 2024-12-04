@@ -32,19 +32,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBank } from "@/modules/banks/interface/banks";
 import axios from "axios";
 import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  VoucherItem,
-
-} from "@/modules/shared/types/sharedTypes";
+import { VoucherItem } from "@/modules/shared/types/sharedTypes";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useToken from "@/modules/shared/hooks/useToken";
@@ -350,7 +343,10 @@ export const FormConceptFolder = (props: Props) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {banksQuery.data.data.map((bank) => (
+                        {(Array.isArray(banksQuery.data.data)
+                          ? banksQuery.data.data
+                          : []
+                        ).map((bank) => (
                           <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                             {bank.sigla} - {bank.name}
                           </SelectItem>

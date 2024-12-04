@@ -58,9 +58,9 @@ export default function FormEditVoucher({
     voucher?.items ?? []
   );
 
-  const banksQuery = useBanks()
+  const banksQuery = useBanks();
 
-  const accountsQuery = useAccounts()
+  const accountsQuery = useAccounts();
   const queryClient = useQueryClient();
 
   const editVoucherMutation = useMutation({
@@ -104,9 +104,11 @@ export default function FormEditVoucher({
     exchangeRate: z.coerce.number(),
     coin: z.enum(["USD", "BOB"]),
     checkNum: z.string().optional(),
-    canceledTo: z.string({
-      required_error: "Fecha requerida.",
-    }).optional(),
+    canceledTo: z
+      .string({
+        required_error: "Fecha requerida.",
+      })
+      .optional(),
     gloss: z.string(),
     bankId: z.coerce.string().min(1),
     items: z.array(voucherItemSchema).optional(),
@@ -115,14 +117,14 @@ export default function FormEditVoucher({
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
-      voucherDate: voucher.voucherDate 
-      ? format(new Date(voucher.voucherDate), 'MM/dd/yyyy') 
-      : '',
+      voucherDate: voucher.voucherDate
+        ? format(new Date(voucher.voucherDate), "MM/dd/yyyy")
+        : "",
       exchangeRate: voucher.exchangeRate,
       coin: voucher.coin,
       checkNum: voucher.checkNum,
       gloss: voucher.gloss,
-      bankId: voucher.bankId ? voucher.bankId.toString() : '',
+      bankId: voucher.bankId ? voucher.bankId.toString() : "",
     },
   });
 
@@ -132,7 +134,7 @@ export default function FormEditVoucher({
     accountsQuery.isLoading ||
     !accountsQuery.data
   ) {
-    return <Spinner/>;
+    return <Spinner />;
   }
 
   return (
@@ -250,7 +252,10 @@ export default function FormEditVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(banksQuery.data ?? []).map((bank) => (
+                      {(Array.isArray(banksQuery.data)
+                        ? banksQuery.data
+                        : []
+                      ).map((bank) => (
                         <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                           {bank.sigla} - {bank.name}
                         </SelectItem>

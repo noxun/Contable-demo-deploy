@@ -408,7 +408,10 @@ export default function FormNewVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(banksQuery.data.data ?? []).map((bank) => (
+                      {(Array.isArray(banksQuery.data.data)
+                        ? banksQuery.data.data
+                        : []
+                      ).map((bank) => (
                         <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                           {bank.sigla} - {bank.name}
                         </SelectItem>
