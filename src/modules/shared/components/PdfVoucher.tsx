@@ -67,26 +67,26 @@ export default function PdfVoucher({
 
   
 
-  const { items } = getSingleVoucherQuery.data!;
+  const { items } = data!;
 
   
 
   
 
 
-  console.log("mi fila data ",getSingleVoucherQuery.data)
+  console.log("mi fila data ",data)
   console.log("mi fila ",items)
   console.log("mi type ",type)
   // console.log("mi respuesta ",getNumberLiteral.data)
 
   return (
-    <PdfVoucherRender getSingleVoucherQuery={getSingleVoucherQuery} items={items} type={type} />
+    <PdfVoucherRender data={data} items={items} type={type} />
   );
 }
 
 
 
-const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
+const PdfVoucherRender = ({data, items, type}: any) => {
 
   const token = localStorage.getItem("token");
 
@@ -162,29 +162,29 @@ const PdfVoucherRender = ({getSingleVoucherQuery, items, type}: any) => {
                   <View style={tw("w-[70%]")}>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Nro. Doc.:</Text>
-                      <Text>{getSingleVoucherQuery.data?.num}</Text>
+                      <Text>{data?.num}</Text>
                     </View>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Razon Social:</Text>
-                      <Text>{getSingleVoucherQuery.data?.checkNum}</Text>
+                      <Text>{data?.checkNum}</Text>
                     </View>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[90px]"), fontFamily: 'Helvetica-Bold'}}>Glosa:</Text>
-                      <Text>{getSingleVoucherQuery.data?.gloss}</Text>
+                      <Text>{data?.gloss}</Text>
                     </View>
                   </View>
                   <View style={tw("w-[30%]")}>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>Fecha:</Text>
-                      <Text>{format(getSingleVoucherQuery?.data?.voucherDate!,"dd/MM/yyyy")}</Text>
+                      <Text>{format(data?.voucherDate!,"dd/MM/yyyy")}</Text>
                       </View>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>T.C.:</Text>
-                      <Text>{getSingleVoucherQuery.data?.exchangeRate}</Text>
+                      <Text>{data?.exchangeRate}</Text>
                     </View>
                     <View style={tw("flex flex-row")}>
                       <Text style={{...tw("w-[70px]"), fontFamily: 'Helvetica-Bold'}}>Cheque N°:</Text>
-                      <Text>{getSingleVoucherQuery.data?.checkNum}</Text>
+                      <Text>{data?.checkNum}</Text>
                     </View>
                   </View>
                 </View>
