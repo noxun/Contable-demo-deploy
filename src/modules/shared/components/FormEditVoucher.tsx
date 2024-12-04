@@ -250,7 +250,7 @@ export default function FormEditVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {banksQuery.data.map((bank) => (
+                      {(banksQuery.data ?? []).map((bank) => (
                         <SelectItem key={`${bank.id}`} value={`${bank.id}`}>
                           {bank.sigla} - {bank.name}
                         </SelectItem>
