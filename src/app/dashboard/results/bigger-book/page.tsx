@@ -77,6 +77,8 @@ export default function BiggerBookPage() {
       assetBs: number;
       debitSus: number;
       assetSus: number;
+      totalAsset: number;
+      totalDebit: number;
     }[]
   >([]);
 
@@ -218,6 +220,8 @@ export default function BiggerBookPage() {
             debitSus: item.debitSus || 0,
             assetBs: item.assetBs || 0,
             assetSus: item.assetSus || 0,
+            totalDebit: item.totalDebit || 0,
+            totalAsset: item.totalAsset || 0,
           }));
 
           setGeneratedFilesReports(vouchers);
@@ -261,6 +265,8 @@ export default function BiggerBookPage() {
         debitSus: item.debitSus || 0,
         assetBs: item.assetBs || 0,
         assetSus: item.assetSus || 0,
+        totalDebit: item.totalDebit || 0,
+        totalAsset: item.totalAsset || 0,
       }));
 
       setGeneratedFilesReports(vouchers);
@@ -289,19 +295,21 @@ export default function BiggerBookPage() {
         assetBs: item.assetBs || 0,
         debitSus: item.debitSus || 0,
         assetSus: item.assetSus || 0,
+        totalDebit: item.totalDebit || 0,
+        totalAsset: item.totalAsset || 0,
       }));
 
       setGeneratedFilesReports(vouchers);
     }
   };
 
-  //función para buscar 
+  //función para buscar
   const handleSearch = () => {
     if (searchDescription.trim() === "") {
       toast.error("Por favor ingrese una descripción para buscar");
       return;
     }
-    
+
     const foundIndex = responseData.findIndex((account) =>
       account.accountDescription
         .toLowerCase()
@@ -326,6 +334,8 @@ export default function BiggerBookPage() {
           debitSus: item.debitSus || 0,
           assetBs: item.assetBs || 0,
           assetSus: item.assetSus || 0,
+          totalDebit: item.totalDebit || 0,
+          totalAsset: item.totalAsset || 0,
         };
       });
 
@@ -602,6 +612,25 @@ export default function BiggerBookPage() {
       </div>
 
       <DataTable columns={columnsBook} data={generatedFilesReports} />
+      {/* totales por cuenta */}
+      {responseData.length > 0 && (
+        <div className="flex justify-evenly mt-4">
+          <div className="font-medium flex flex-row gap-4">
+            <div className="flex flex-row gap-4">
+              Total Debe Bs:{" "}
+              <div className="flex justify-center border-2 border-black px-3">
+                {responseData[currentAccountIndex]?.totalDebit || 0}
+              </div>
+            </div>
+            <div className="flex flex-row gap-4">
+              Total Haber Bs:{" "}
+              <div className="flex justify-center border-2 border-black px-3">
+                {responseData[currentAccountIndex]?.totalAsset || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <DocViewer
         activeDocument={activeDocument}
