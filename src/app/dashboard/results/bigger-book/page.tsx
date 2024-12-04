@@ -53,6 +53,9 @@ export default function BiggerBookPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
+  // estado para busqueda
+  const [searchDescription, setSearchDescription] = useState<string>("");
+
   // --- Estados de los documentos para la tabla y el visor ---
   const [docs, setDocs] = useState<{ uri: string }[]>([]);
   const [generatedFiles, setGeneratedFiles] = useState<
@@ -83,10 +86,12 @@ export default function BiggerBookPage() {
   const [viewerKey, setViewerKey] = useState(0);
   const [activeDocument, setActiveDocument] = useState(docs[0]);
 
-// Dialog par editar
+  // Dialog par editar
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<{ id: string; type: VoucherType } | null>(null);
-
+  const [editData, setEditData] = useState<{
+    id: string;
+    type: VoucherType;
+  } | null>(null);
 
   const handleDocumentChange = (document: any) => {
     setActiveDocument(document);
@@ -186,18 +191,19 @@ export default function BiggerBookPage() {
               inSus: inSus,
               businessId: 0,
             },
-            responseType: "json", 
+            responseType: "json",
           }
         );
 
         if (reportResponse.data && Array.isArray(reportResponse.data)) {
-          setResponseData(reportResponse.data);         
-          const firstAccount = reportResponse.data[0]; 
+          setResponseData(reportResponse.data);
+          const firstAccount = reportResponse.data[0];
           setAccountCode(firstAccount.accountCode);
           setAccountDescription(firstAccount.accountDescription);
 
+          // Mapeo corregido para mantener consistencia con handleSearch
           const vouchers = firstAccount.voucherItems.map((item: any) => ({
-            accountId: firstAccount.accountId, 
+            accountId: item.accountId,
             id: item.id,
             createdAt: item.createdAt,
             type: item.type,
@@ -210,8 +216,8 @@ export default function BiggerBookPage() {
             assetSus: item.assetSus || 0,
           }));
 
-          setGeneratedFilesReports(vouchers); 
-          setCurrentAccountIndex(0); 
+          setGeneratedFilesReports(vouchers);
+          setCurrentAccountIndex(0);
           toast.success("Reporte generado exitosamente");
         } else {
           toast.error("La respuesta está mal formateada o vacía.");
@@ -280,6 +286,49 @@ export default function BiggerBookPage() {
       }));
 
       setGeneratedFilesReports(vouchers);
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchDescription.trim() === "") {
+      toast.error("Por favor ingrese una descripción para buscar");
+      return;
+    }
+
+    const foundAccount = responseData.find((account) =>
+      account.accountDescription
+        .toLowerCase()
+        .includes(searchDescription.toLowerCase())
+    );
+
+    if (foundAccount) {
+      setAccountCode(foundAccount.accountCode);
+      setAccountDescription(foundAccount.accountDescription);
+
+      const vouchers = foundAccount.voucherItems.map((item: any) => {
+        return {
+          accountId: item.accountId,
+          id: item.id,
+          createdAt: item.createdAt,
+          type: item.type,
+          voucherId: item.voucherId,
+          description: item.description,
+          gloss: item.gloss || "Sin glosa",
+          debitBs: item.debitBs || 0,
+          debitSus: item.debitSus || 0,
+          assetBs: item.assetBs || 0,
+          assetSus: item.assetSus || 0,
+        };
+      });
+
+      setGeneratedFilesReports(vouchers);
+      const foundIndex = responseData.findIndex(
+        (account) => account.accountId === foundAccount.accountId
+      );
+      setCurrentAccountIndex(foundIndex);
+      toast.success("Cuenta encontrada");
+    } else {
+      toast.error("No se encontró ninguna cuenta con esa descripción");
     }
   };
 
@@ -503,6 +552,22 @@ export default function BiggerBookPage() {
             className="border px-4 py-2"
           />
         </div>
+        <div className="flex gap-4 items-center">
+          <Label htmlFor="searchDescription">
+            Búsqueda por Descripción de Cuenta
+          </Label>
+          <input
+            type="text"
+            id="searchDescription"
+            value={searchDescription}
+            onChange={(e) => setSearchDescription(e.target.value)}
+            className="border px-4 py-2"
+            placeholder="Ingrese descripción para buscar"
+          />
+          <Button onClick={handleSearch} className="bg-blue-500 text-white">
+            Buscar
+          </Button>
+        </div>
       </div>
       {/* Botones para navegar entre cuentas */}
       <div className="flex justify-between mt-4">
@@ -531,7 +596,7 @@ export default function BiggerBookPage() {
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"
       />
-      <Dialog  open={isDialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-5xl">
           {editData && <EditVoucher id={editData.id} type={editData.type} />}
         </DialogContent>
