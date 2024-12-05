@@ -42,6 +42,7 @@ const newInvoiceFormSchema = z.object({
   purchaseType: z.string().optional(),
   controlCode: z.coerce.number(),
   consolidationStatus: z.string().optional(),
+  invoiceRegistryType: z.enum(["0", "1"]), // provisionalmente
 });
 
 export type NewInvoiceForm = z.infer<typeof newInvoiceFormSchema>;
@@ -75,7 +76,7 @@ export default function InvoiceRegistryForm() {
   });
 
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Registro de Factura</CardTitle>
       </CardHeader>
@@ -97,6 +98,36 @@ export default function InvoiceRegistryForm() {
                     </FormControl>
                     <FormDescription>
                       Número de identificación tributaria
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={invoiceRegistryForm.control}
+                name="invoiceRegistryType"
+                render={({ field }) => (
+                  <FormItem className="md: col-span-2">
+                    <FormLabel>Tipo de registro</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un tipo de registro" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0">Compra</SelectItem>
+                          <SelectItem value="1">Venta</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormDescription>
+                      Si el registro es de compras o de ventas
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -293,7 +324,10 @@ export default function InvoiceRegistryForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tipo de Compra</FormLabel>
-                    <Select>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccione el tipo" />
@@ -332,7 +366,10 @@ export default function InvoiceRegistryForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Estado de Consolidación</FormLabel>
-                    <Select>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccione el estado" />
