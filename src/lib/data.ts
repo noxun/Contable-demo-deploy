@@ -540,3 +540,13 @@ export async function editInvoiceRegistryById(data: InvoiceRegistry) {
   const response = await api.put(`/api/Invoice/${data.id}`, data)
   return response.data;
 }
+
+export async function importInvoiceRegistryExcel(data:FormData) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post('/exelInvoice', data);
+  return response.data;
+}
