@@ -8,6 +8,11 @@
     "auth",
     "components",
     "model-seats",
-    "archive"
+    "archive",
+    "shared-types",
+    "hooks",
+    "folders",
+    "config",
+    "accounting-box"
   ]
 }
