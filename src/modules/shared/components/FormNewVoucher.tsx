@@ -212,7 +212,7 @@ export default function FormNewVoucher({
     id: z.number().optional(),
     num: z.number().optional(),
     sucursalId: z.string().optional(),
-    costCenterId: z.coerce.number().optional(),
+    costCenterId: z.coerce.number().nullable().optional(),
     voucherDate: z
       .string({
         required_error: "Fecha requerida.",
@@ -240,6 +240,8 @@ export default function FormNewVoucher({
       checkNum: "",
       gloss: "",
       bankId: null,
+      costCenterId: null,
+      sucursalId: "1",// empresa supongo
     },
   });
 
@@ -435,7 +437,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             /> */}
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="sucursalId"
               render={({ field }) => (
@@ -467,8 +469,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
+            /> */}
+            {/* <FormField
               control={voucherForm.control}
               name="costCenterId"
               render={({ field }) => (
@@ -499,7 +501,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             {/* <FormField
               control={voucherForm.control}
               name="branch"
