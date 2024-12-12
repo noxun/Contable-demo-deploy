@@ -6,9 +6,11 @@ import {
   BankExcerpt,
   Branch,
   BranchToList,
+  ConfigValues,
   CostCenter,
   ModelSeat,
   ModelSeatDetailResponse,
+  NewConfigValues,
   PostModelSeat,
   Role,
   RoleMenu,
@@ -44,7 +46,7 @@ export async function fetchUfvValues(): Promise<Ufv> {
   return response.data;
 }
 
-export async function postUfvValues(data: UfvRegister) {
+export async function postUfvValues(data: UfvRegister | NewConfigValues) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -52,6 +54,16 @@ export async function postUfvValues(data: UfvRegister) {
   setAuthToken(token);
   const response = await api.post(`/api/Ufv/registerUfvDollar`, data);
   return response.data;
+}
+
+export async function fetchConfigValues(){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Ufv/getConfigValues")
+  return response.data as ConfigValues
 }
 
 export async function fetchVouchers(
