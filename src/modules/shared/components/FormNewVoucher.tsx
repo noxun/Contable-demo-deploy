@@ -222,7 +222,7 @@ export default function FormNewVoucher({
       .or(z.date())
       .optional(),
     gloss: z.string(),
-    // bankId: z.coerce.string().min(1),
+    bankId: z.coerce.string().nullable(),
     items: z.array(voucherItemSchema).optional(),
   });
 
@@ -234,7 +234,7 @@ export default function FormNewVoucher({
       coin: "BOB",
       checkNum: "",
       gloss: "",
-      // bankId: "",
+      bankId: null,
     },
   });
 
