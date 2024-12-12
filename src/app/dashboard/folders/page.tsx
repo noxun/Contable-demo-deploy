@@ -1,5 +1,4 @@
-import React from "react";
-import { ListFolders } from "@/modules/folders/components/ListFolders";
+import ListFolders from "@/modules/folders/components/ListFolders";
 
 export default function FoldersPage() {
   return (
