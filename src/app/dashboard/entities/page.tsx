@@ -5,9 +5,9 @@ import Link from "next/link";
 export default function EntitiesPage() {
   return (
     <main>
-      <Button asChild className="mb-5">
+      {/* <Button asChild className="mb-5">
         <Link href="/dashboard/entities/new">Nueva Entidad</Link>
-      </Button>
+      </Button> */}
       <ListEntities/>
     </main>
   )
