@@ -129,3 +129,10 @@
 .overflow-y-auto::-webkit-scrollbar-track {
   background-color: transparent; /* Color del fondo del área de desplazamiento */
 }
+#react-doc-viewer #msdoc-renderer {
+  height: 100% !important;
+}
+
+#react-doc-viewer #proxy-renderer {
+  height: 100% !important;
+}

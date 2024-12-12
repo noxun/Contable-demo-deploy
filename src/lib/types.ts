@@ -73,7 +73,7 @@ export type ModelSeat = {
 };
 
 export type ModelSeatItem = {
-  accountId: number | string;
+  accountId: number;
   debit: boolean;
   asset: boolean;
   percentage: number;
@@ -88,6 +88,7 @@ export type ModelSeatItemFromDetail = {
 
 export type PostModelSeat = {
   description: string;
+  typeTransaction: string;
   accounts: ModelSeatItem[];
 };
 
@@ -252,3 +253,38 @@ export type InvoiceRegistry = {
 export type BankSelectionState = {
   [key: number]: number | null;  // bankExtractId -> accountId
 };
+
+export type ConfigValues = {
+  id: number;
+  ufvValue: number;
+  dollarValue: number;
+  stateMain: boolean;
+  ivaValue: number;
+  itValue: number;
+  iceValue: number;
+  iehdValue: number;
+  itfValue: number;
+  tributosAduaneros: number;
+  ufvDate: string;
+}
+
+export type NewConfigValues = Omit<ConfigValues, "id">
+
+export type AccountingBoxBalance = {
+  id: number
+  name: string
+  descripcion: string
+  balance: number
+  account: any
+  accountId: number
+  diaryVouchers: any
+  egressVouchers: any
+  incomeVouchers: any
+  accountingBoxItems: any
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}

@@ -95,7 +95,7 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
           <Text style={tw("w-[10%] text-center border-r py-4")}>HABER</Text>
         </View>
         {/* Body tabla */}
-        {data.items.map((item) => (
+        {(Array.isArray(data.items) ? data.items : []).map((item) => (
           <View key={item.id} style={tw("w-full flex flex-row border")}>
             <Text style={tw("w-[20%] border-r")}>{item.code}</Text>
             <Text style={tw("border-r flex-1")}>{item.description}</Text>

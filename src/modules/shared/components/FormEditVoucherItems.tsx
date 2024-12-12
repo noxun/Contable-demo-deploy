@@ -151,7 +151,7 @@ export default function FormEditVoucherItems({
 
   //ESTO SE MUERE
   //FIXME:
-  const accountOptions = (accountData ?? []).map((item) => ({
+  const accountOptions = (Array.isArray(accountData) ? accountData : []).map((item) => ({
     value: item.id.toString(),
     label: item.description,
     //...item

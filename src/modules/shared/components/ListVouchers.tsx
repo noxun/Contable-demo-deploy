@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -32,6 +32,10 @@ export default function ListVouchers({
     queryFn: () => fetchVouchers(voucherType, page, pageSize),
     placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    setPage(1)
+  }, [voucherType]);
 
   if (isLoading || isPending) return <div>Cargando...</div>;
 

@@ -372,8 +372,8 @@ export default function BiggerBookPage() {
   ];
 
   const columnsBook = [
-    { header: "ID", accessorKey: "accountId" },
-    { header: "ID Vocher", accessorKey: "id" },
+    // { header: "ID", accessorKey: "accountId" }, tal vez se necesite mas adelante
+    // { header: "ID Vocher", accessorKey: "id" },
     {
       header: "Fecha",
       accessorKey: "createdAt",

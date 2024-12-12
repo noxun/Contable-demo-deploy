@@ -9,6 +9,13 @@
     "invoice-registry",
     "components",
     "model-seats",
-    "archive"
+    "archive",
+    "shared-types",
+    "hooks",
+    "folders",
+    "config",
+    "accounting-box",
+    "reports",
+    "conventional-commits"
   ]
 }

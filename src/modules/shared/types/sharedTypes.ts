@@ -8,7 +8,7 @@ export type Voucher = {
   checkNum?: string | undefined;
   canceledTo?: string | Date;
   gloss: string;
-  bankId: number | string;
+  bankId?: number | string | null;
   items?: VoucherItem[];
 };
 
@@ -26,6 +26,8 @@ export type VoucherItem = {
   createdAt?: "string";
   voucherId?: number | string;
   type?: number;
+  canDebit?: boolean //para el uso de inputs en los asientos modelo
+  canAsset?: boolean
 };
 
 export enum VoucherType {
