@@ -144,7 +144,7 @@ export default function FormNewVoucherItems({
               </TableCell>
               <TableCell>
                 <NumericFormat
-                  disabled={!item.canDebit}
+                  disabled={(item.canDebit ? !item.canDebit: false)}
                   name="debitBs"
                   value={item.debitBs}
                   onValueChange={(values) => {
@@ -164,7 +164,7 @@ export default function FormNewVoucherItems({
               </TableCell>
               <TableCell>
                 <NumericFormat
-                  disabled={!item.canAsset}
+                  disabled={(item.canAsset ? !item.canAsset: false)}
                   name="assetBs"
                   value={item.assetBs}
                   onValueChange={(values) => {
