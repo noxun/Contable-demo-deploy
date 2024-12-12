@@ -1,8 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  SingleValue,
-} from "react-select";
+import { SingleValue } from "react-select";
 import { Plus, Trash2 } from "lucide-react";
 import {
   Table,
@@ -146,6 +144,7 @@ export default function FormNewVoucherItems({
               </TableCell>
               <TableCell>
                 <NumericFormat
+                  disabled={!item.canDebit}
                   name="debitBs"
                   value={item.debitBs}
                   onValueChange={(values) => {
@@ -165,6 +164,7 @@ export default function FormNewVoucherItems({
               </TableCell>
               <TableCell>
                 <NumericFormat
+                  disabled={!item.canAsset}
                   name="assetBs"
                   value={item.assetBs}
                   onValueChange={(values) => {

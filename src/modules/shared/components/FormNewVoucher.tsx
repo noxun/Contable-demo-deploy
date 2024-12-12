@@ -222,7 +222,7 @@ export default function FormNewVoucher({
       .or(z.date())
       .optional(),
     gloss: z.string(),
-    bankId: z.coerce.string().min(1),
+    // bankId: z.coerce.string().min(1),
     items: z.array(voucherItemSchema).optional(),
   });
 
@@ -234,7 +234,7 @@ export default function FormNewVoucher({
       coin: "BOB",
       checkNum: "",
       gloss: "",
-      bankId: "",
+      // bankId: "",
     },
   });
 
@@ -244,6 +244,10 @@ export default function FormNewVoucher({
     const updatedVoucherItems = modelSeatDetails.accounts.map((item) => ({
       ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
       accountId: item.accountId,
+      canDebit: item.debit,
+      canAsset: item.asset,
+      debitBs: null,
+      assetBs: null,
     }));
 
     setVoucherItems(updatedVoucherItems);
@@ -286,10 +290,12 @@ export default function FormNewVoucher({
               Selecciona un Asiento Modelo
             </label>
             <CustomSelect
-              options={(modelSeats ?? []).map((seat) => ({
-                label: seat.description,
-                value: seat.id,
-              }))}
+              options={(Array.isArray(modelSeats) ? modelSeats : []).map(
+                (seat) => ({
+                  label: seat.description,
+                  value: seat.id,
+                })
+              )}
               value={selectedModelSeat}
               onChange={handleModelSeatChange}
               isLoading={isLoadingModelSeats}
@@ -392,7 +398,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="bankId"
               render={({ field }) => (
@@ -421,8 +427,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            {/* <FormField
+            /> */}
+            <FormField
               control={voucherForm.control}
               name="branch"
               render={({ field }) => (
@@ -438,8 +444,14 @@ export default function FormNewVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {branchListQuery.data?.map((branch) => (
-                        <SelectItem key={branch.id} value={branch.id.toString()}>
+                      {(Array.isArray(branchListQuery.data)
+                        ? branchListQuery.data
+                        : []
+                      ).map((branch) => (
+                        <SelectItem
+                          key={branch.id}
+                          value={branch.id.toString()}
+                        >
                           {branch.nameSucutsal}
                         </SelectItem>
                       ))}
@@ -474,7 +486,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
             {/* <FormField
               control={voucherForm.control}
               name="branch"
