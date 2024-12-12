@@ -1,5 +1,6 @@
 import {
   AccountingBox,
+  AccountingBoxBalance,
   AccountingBoxItems,
   AccountRelation,
   Bank,
@@ -427,6 +428,16 @@ export async function createAccountingBoxItems(data: NewAccountingBox) {
   setAuthToken(token);
   const response = await api.post("/api/AccountingBox/createItems", data);
   return response.data;
+}
+
+export async function getAccountingBoxBalance(accountingBoxId:number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/AccountingBox/balance/${accountingBoxId}`);
+  return response.data as AccountingBoxBalance;
 }
 
 export async function fetchAllBanks() {

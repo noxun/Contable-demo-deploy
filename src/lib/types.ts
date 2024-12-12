@@ -251,3 +251,22 @@ export type ConfigValues = {
 }
 
 export type NewConfigValues = Omit<ConfigValues, "id">
+
+export type AccountingBoxBalance = {
+  id: number
+  name: string
+  descripcion: string
+  balance: number
+  account: any
+  accountId: number
+  diaryVouchers: any
+  egressVouchers: any
+  incomeVouchers: any
+  accountingBoxItems: any
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}
