@@ -9,6 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import NewAccountingBoxForm from "./NewAccountingBoxForm";
 
+// type NewAccountingBoxDialogProps = {
+//   accountingBoxId: number
+// }
+
+
 export default function NewAccountingBoxDialog() {
   return (
     <Dialog>
@@ -17,12 +22,12 @@ export default function NewAccountingBoxDialog() {
       </DialogTrigger>
       <DialogContent className="min-w-[90%] h-auto">
         <DialogHeader >
-          <DialogTitle className="text-center text-xl">Crear Nueva Caja</DialogTitle>
+          <DialogTitle className="text-center text-xl">Crear Nuevo Item de Caja</DialogTitle>
           <DialogDescription className="text-center">
             Este formulario permite crear una nueva caja
           </DialogDescription>
         </DialogHeader>
-        <NewAccountingBoxForm />
+        <NewAccountingBoxForm/>
       </DialogContent>
     </Dialog>
   );

@@ -43,39 +43,45 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import CustomSelect from "@/components/custom/select";
 import useModelSeats from "@/modules/shared/hooks/useModelSeats";
+import { useState } from "react";
+import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
+import { Label } from "@/components/ui/label";
 
-const newAccountingBoxFormSchema = z
-  .object({
-    mes: z.string().optional(),
-    fecha: z.date().transform((value) => formatISO(value)),
-    accountingBoxId: z.string(),
-    accountId: z.string(),
-    costCenterId: z.string(),
-    reciboInterno: z.string(),
-    tipoComprobante: z.enum(["RECIBO", "FACTURA", "SIN COMPROBANTE"]), //tipo comprobante
-    //voucherProviderNumber: z.string(),
-    comprobanteProveedor: z.string(),
-    hojaDeRuta: z.string(),
-    cliente: z.string(),
-    detalle: z.string(),
-    ingreso: z.coerce.number(),
-    egreso: z.coerce.number(),
-    saldo: z.coerce.number(),
-  })
-  .refine((data) => {
-    const parsedDate = parseISO(data.fecha);
-    const mesAbreviado = format(parsedDate, "LL", { locale: es }).toUpperCase();
-    const anio = format(parsedDate, "yy");
-    data.mes = `${mesAbreviado}${anio}`;
-    return true;
-  });
+const newAccountingBoxFormSchema = z.object({
+  fecha: z.date().transform((value) => formatISO(value)),
+  accountingBoxId: z.string(),
+  accountId: z.coerce.number(),
+  modelSeatId: z.coerce.number(),
+  costCenterId: z.string(),
+  referencia: z.string(),
+  hojaDeRuta: z.string(),
+  nombre: z.string(),
+  detalle: z.string(),
+  valorPagado: z.coerce.number(),
+});
+// .refine((data) => {
+//   const parsedDate = parseISO(data.fecha);
+//   const mesAbreviado = format(parsedDate, "LL", { locale: es }).toUpperCase();
+//   const anio = format(parsedDate, "yy");
+//   data.mes = `${mesAbreviado}${anio}`;
+//   return true;
+// });
 
 export type NewAccountingBox = z.infer<typeof newAccountingBoxFormSchema>;
 
+type NewAccountingBoxFormProps = {
+  accountingBoxId: number;
+};
+
 export default function NewAccountingBoxForm() {
+  const [accountingBoxId, setAccountingBoxId] = useState<
+    number | null | undefined
+  >(null);
+
   const form = useForm<NewAccountingBox>({
     resolver: zodResolver(newAccountingBoxFormSchema),
     defaultValues: {
+      accountId: 0,
       detalle: "",
     },
   });
@@ -88,6 +94,7 @@ export default function NewAccountingBoxForm() {
     useTrazoInternCodes();
 
   // console.log(form.formState.errors);
+  console.log(accountingBoxId);
 
   const newAccountingBoxMutation = useMutation({
     mutationFn: createAccountingBoxItems,
@@ -105,6 +112,12 @@ export default function NewAccountingBoxForm() {
     console.log(values);
     newAccountingBoxMutation.mutate(values);
   }
+
+  const {
+    data: balance,
+    isLoading,
+    isError,
+  } = useAccountingBoxBalance(accountingBoxId);
 
   return (
     <Form {...form}>
@@ -128,6 +141,7 @@ export default function NewAccountingBoxForm() {
                       accountingBoxType.id.toString()
                     }
                     onChange={(value) => {
+                      setAccountingBoxId(value?.id);
                       field.onChange(value?.id.toString());
                     }}
                   />
@@ -142,7 +156,7 @@ export default function NewAccountingBoxForm() {
           ) : (
             <FormField
               control={form.control}
-              name="accountId"
+              name="modelSeatId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Asientos Modelo</FormLabel>
@@ -204,7 +218,7 @@ export default function NewAccountingBoxForm() {
                       field.onChange(value?.id.toString());
                     }}
                   />
-                  <FormDescription>Centro de costos</FormDescription>
+                  <FormDescription>Hoja de ruta del trazo</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -254,7 +268,7 @@ export default function NewAccountingBoxForm() {
           />
           <FormField
             control={form.control}
-            name="reciboInterno"
+            name="referencia"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Referencia</FormLabel>
@@ -268,7 +282,7 @@ export default function NewAccountingBoxForm() {
           />
           <FormField
             control={form.control}
-            name="cliente"
+            name="nombre"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
@@ -296,12 +310,20 @@ export default function NewAccountingBoxForm() {
           />
           <FormField
             control={form.control}
-            name="comprobanteProveedor"
+            name="valorPagado"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Valor Pagado</FormLabel>
                 <FormControl>
-                  <Input placeholder="valor" {...field} />
+                  <Input
+                    disabled={
+                      form.getValues("valorPagado") > (balance?.balance ?? 0) ||
+                      balance?.balance === 0 ||
+                      accountingBoxId === null
+                    }
+                    placeholder="valor"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>Valor Pagado</FormDescription>
                 <FormMessage />
@@ -336,20 +358,10 @@ export default function NewAccountingBoxForm() {
             </FormItem>
           )}
         /> */}
-          <FormField
-            control={form.control}
-            name="saldo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Saldo Inicial</FormLabel>
-                <FormControl>
-                  <Input placeholder="Saldo" {...field} />
-                </FormControl>
-                <FormDescription>El saldo antes del pago</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <Label> Saldo Inicial: </Label>
+            {balance ? balance.balance : "Cargando saldo actual"}
+          </div>
           {/* <FormField
           control={form.control}
           name="tipoComprobante"
