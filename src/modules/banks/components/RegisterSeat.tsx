@@ -2,14 +2,18 @@
 import { Button } from "@/components/ui/button";
 import Spinner from "@/components/ui/spinner";
 import { registerExtractToSeat } from "@/lib/data";
-import { Account } from "@/modules/account/types/account";
 import useAccounts from "@/modules/shared/hooks/useAccounts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useState } from "react";
-import { SingleValue } from "react-select";
 import CustomSelect from "@/components/custom/select";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type RegisterSeatProps = {
   bankExtractId: number;
@@ -59,7 +63,7 @@ export default function RegisterSeat({
     accounts?.find((account) => account.id === selectedAccountId) ??
     (extractAccountId !== 0
       ? accounts?.find((account) => account.id === extractAccountId)
-      : null) ;
+      : null);
 
   if (isPending || accounts === undefined) {
     return <Spinner />;
@@ -68,16 +72,32 @@ export default function RegisterSeat({
   return (
     <div className="flex items-center justify-between gap-2">
       {accounts !== undefined ? (
-        <CustomSelect
-          isDisabled={hasBeenRegisteredToAccount}
-          onChange={(option) => {
-            onSelectChange(bankExtractId, option ? option.id : null);
-          }}
-          value={selectedAccountOption}
-          options={accounts}
-          getOptionValue={(account) => account.id.toString()}
-          getOptionLabel={(account) => `${account.code}-${account.description}`}
-        />
+        <>
+          <CustomSelect
+            isDisabled={hasBeenRegisteredToAccount}
+            onChange={(option) => {
+              onSelectChange(bankExtractId, option ? option.id : null);
+            }}
+            value={selectedAccountOption}
+            options={accounts}
+            getOptionValue={(account) => account.id.toString()}
+            getOptionLabel={(account) =>
+              `${account.code}-${account.description}`
+            }
+          />
+          <Select 
+            disabled={hasBeenRegisteredToAccount}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Tipo de registro" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Traspaso</SelectItem>
+              <SelectItem value="1">Egreso</SelectItem>
+              <SelectItem value="2">Ingreso</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       ) : (
         <Spinner />
       )}
