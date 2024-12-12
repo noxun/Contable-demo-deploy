@@ -13,6 +13,8 @@
     "hooks",
     "folders",
     "config",
-    "accounting-box"
+    "accounting-box",
+    "reports",
+    "conventional-commits"
   ]
 }
