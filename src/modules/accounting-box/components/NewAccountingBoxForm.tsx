@@ -42,6 +42,7 @@ import { createAccountingBoxItems } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import CustomSelect from "@/components/custom/select";
+import useModelSeats from "@/modules/shared/hooks/useModelSeats";
 
 const newAccountingBoxFormSchema = z
   .object({
@@ -79,7 +80,7 @@ export default function NewAccountingBoxForm() {
     },
   });
 
-  const { data: accounts, isPending: isPendingAccounts } = useAccounts();
+  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeats();
   const { data: costCenter, isPending: isPendingCostCenter } = useCostCenter();
   const { data: accountingBoxType, isPending: isPendingAccountingBoxType } =
     useAccountingBox();
@@ -91,14 +92,14 @@ export default function NewAccountingBoxForm() {
   const newAccountingBoxMutation = useMutation({
     mutationFn: createAccountingBoxItems,
     onError: (error: AxiosError) => {
-      console.log(error)
+      console.log(error);
       toast.error("Error al insertar");
     },
     onSuccess: () => {
-      toast.success("Registrado!")
+      toast.success("Registrado!");
       //invalidate aquie
-    }
-  })
+    },
+  });
 
   function onSubmit(values: NewAccountingBox) {
     console.log(values);
@@ -106,211 +107,208 @@ export default function NewAccountingBoxForm() {
   }
 
   return (
-    <Form {...form} >
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className=" flex flex-col "
-      >
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className=" flex flex-col ">
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-        {isPendingAccountingBoxType ? (
-          <div>Cargando...</div>
-        ) : (
-          <FormField
-            control={form.control}
-            name="accountingBoxId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de Caja</FormLabel>
-                <CustomSelect
-                  options={accountingBoxType}
-                  getOptionLabel={(accountingBoxType) => accountingBoxType.name}
-                  getOptionValue={(accountingBoxType) =>
-                    accountingBoxType.id.toString()
-                  }
-                  onChange={(value) => {
-                    field.onChange(value?.id.toString());
-                  }}
-                  
-                />
-                <FormDescription>Tipo de la caja</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        {isPendingAccounts ? (
-          <div>Cargando...</div>
-        ) : (
-          <FormField
-            control={form.control}
-            name="accountId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cuenta</FormLabel>
-                <CustomSelect
-                  options={accounts}
-                  getOptionLabel={(accounts) =>
-                    `${accounts.code} - ${accounts.description}`
-                  }
-                  getOptionValue={(accounts) => accounts.id.toString()}
-                  onChange={(value) => {
-                    field.onChange(value?.id.toString());
-                  }}
-                  
-                />
-                <FormDescription>Tipo de la caja</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        {isPendingCostCenter ? (
-          <div>Cargando...</div>
-        ) : (
-          <FormField
-            control={form.control}
-            name="costCenterId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gestor</FormLabel>
-                <CustomSelect
-                  options={costCenter}
-                  getOptionLabel={(costCenter) => costCenter.name}
-                  getOptionValue={(costCenter) => costCenter.id.toString()}
-                  onChange={(value) => {
-                    field.onChange(value?.id.toString());
-                  }}
-                  
-                />
-                <FormDescription>Centro de costos</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        {isPendingTrazoInternCodes ? (
-          <div>Cargando...</div>
-        ) : (
-          <FormField
-            control={form.control}
-            name="hojaDeRuta"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hoja de ruta</FormLabel>
-                <CustomSelect
-                  options={trazoInternCodes}
-                  getOptionLabel={(trazoInternCodes) => trazoInternCodes.value}
-                  getOptionValue={(trazoInternCodes) => trazoInternCodes.value}
-                  onChange={(value) => {
-                    field.onChange(value?.id.toString());
-                  }}
-                  
-                />
-                <FormDescription>Centro de costos</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        <FormField
-          control={form.control}
-          name="fecha"
-          render={({ field }) => (
-            <FormItem className="">
-              <FormLabel>Fecha</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", { locale: es })
-                      ) : (
-                        <span>Fecha</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(field.value)}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
+          {isPendingAccountingBoxType ? (
+            <div>Cargando...</div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="accountingBoxId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de Caja</FormLabel>
+                  <CustomSelect
+                    options={accountingBoxType}
+                    getOptionLabel={(accountingBoxType) =>
+                      accountingBoxType.name
                     }
-                    initialFocus
+                    getOptionValue={(accountingBoxType) =>
+                      accountingBoxType.id.toString()
+                    }
+                    onChange={(value) => {
+                      field.onChange(value?.id.toString());
+                    }}
                   />
-                </PopoverContent>
-              </Popover>
-              <FormDescription>Fecha de la caja</FormDescription>
-              <FormMessage />
-            </FormItem>
+                  <FormDescription>Tipo de la caja</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="reciboInterno"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Recibo</FormLabel>
-              <FormControl>
-                <Input placeholder="Recibo" {...field} />
-              </FormControl>
-              <FormDescription>El recibo</FormDescription>
-              <FormMessage />
-            </FormItem>
+          {isPendingModelSeats ? (
+            <div>Cargando...</div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="accountId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Asientos Modelo</FormLabel>
+                  <CustomSelect
+                    options={modelSeats}
+                    getOptionLabel={(modelSeat) => modelSeat.description}
+                    getOptionValue={(modelSeat) => modelSeat.id.toString()}
+                    onChange={(value) => {
+                      field.onChange(value?.id.toString());
+                    }}
+                  />
+                  <FormDescription>Tipo de la caja</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="cliente"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cliente</FormLabel>
-              <FormControl>
-                <Input placeholder="Cliente" {...field} />
-              </FormControl>
-              <FormDescription>El Cliente</FormDescription>
-              <FormMessage />
-            </FormItem>
+          {isPendingCostCenter ? (
+            <div>Cargando...</div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="costCenterId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gestor</FormLabel>
+                  <CustomSelect
+                    options={costCenter}
+                    getOptionLabel={(costCenter) => costCenter.name}
+                    getOptionValue={(costCenter) => costCenter.id.toString()}
+                    onChange={(value) => {
+                      field.onChange(value?.id.toString());
+                    }}
+                  />
+                  <FormDescription>Gestor del centro de costos</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="detalle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Detalle</FormLabel>
-              <FormControl>
-                <Input placeholder="Detalle" {...field} />
-              </FormControl>
-              <FormDescription>El detalle</FormDescription>
-              <FormMessage />
-            </FormItem>
+          {isPendingTrazoInternCodes ? (
+            <div>Cargando...</div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="hojaDeRuta"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hoja de ruta</FormLabel>
+                  <CustomSelect
+                    options={trazoInternCodes}
+                    getOptionLabel={(trazoInternCodes) =>
+                      trazoInternCodes.value
+                    }
+                    getOptionValue={(trazoInternCodes) =>
+                      trazoInternCodes.value
+                    }
+                    onChange={(value) => {
+                      field.onChange(value?.id.toString());
+                    }}
+                  />
+                  <FormDescription>Centro de costos</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="comprobanteProveedor"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Proveedor</FormLabel>
-              <FormControl>
-                <Input placeholder="Proveedor" {...field} />
-              </FormControl>
-              <FormDescription>El Proveedor</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
+          <FormField
+            control={form.control}
+            name="fecha"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel>Fecha</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: es })
+                        ) : (
+                          <span>Fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={new Date(field.value)}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>Fecha de la caja</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="reciboInterno"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Referencia</FormLabel>
+                <FormControl>
+                  <Input placeholder="Referencia" {...field} />
+                </FormControl>
+                <FormDescription>Nro de documento de respaldo</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cliente"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input placeholder="Cliente" {...field} />
+                </FormControl>
+                <FormDescription>A quien se paga</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="detalle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Detalle</FormLabel>
+                <FormControl>
+                  <Input placeholder="Detalle" {...field} />
+                </FormControl>
+                <FormDescription>Glosa de referencia</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="comprobanteProveedor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Valor Pagado</FormLabel>
+                <FormControl>
+                  <Input placeholder="valor" {...field} />
+                </FormControl>
+                <FormDescription>Valor Pagado</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
           control={form.control}
           name="ingreso"
           render={({ field }) => (
@@ -337,22 +335,22 @@ export default function NewAccountingBoxForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
-          control={form.control}
-          name="saldo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Saldo</FormLabel>
-              <FormControl>
-                <Input placeholder="Saldo" {...field} />
-              </FormControl>
-              <FormDescription>El saldo</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
+        /> */}
+          <FormField
+            control={form.control}
+            name="saldo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Saldo Inicial</FormLabel>
+                <FormControl>
+                  <Input placeholder="Saldo" {...field} />
+                </FormControl>
+                <FormDescription>El saldo antes del pago</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
           control={form.control}
           name="tipoComprobante"
           render={({ field }) => (
@@ -376,11 +374,12 @@ export default function NewAccountingBoxForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         </div>
         <div className="flex justify-end">
-          <Button className="mt-5" type="submit">Guardar</Button>
-
+          <Button className="mt-5" type="submit">
+            Guardar
+          </Button>
         </div>
       </form>
     </Form>
