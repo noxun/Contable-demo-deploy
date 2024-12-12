@@ -55,6 +55,7 @@ import {
   fetchModelSeatsItems,
 } from "@/lib/data";
 import CustomSelect from "@/components/custom/select";
+import useCostCenter from "../hooks/useCostCenter";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -82,6 +83,8 @@ export default function FormNewVoucher({
       gloss: "",
       accountId: "",
       voucherId: "",
+      canDebit: true,
+      canAsset: true
     },
   ]);
 
@@ -127,6 +130,8 @@ export default function FormNewVoucher({
     queryKey: ["branchList"],
     queryFn: fetchBranchList,
   });
+
+  const { data: costCenter, isLoading: isLoadingCostCenter } = useCostCenter();
 
   const newVoucherMutation = useMutation({
     mutationFn: async ({
@@ -206,7 +211,8 @@ export default function FormNewVoucher({
   const voucherFormSchema = z.object({
     id: z.number().optional(),
     num: z.number().optional(),
-    branch: z.string().optional(),
+    sucursalId: z.string().optional(),
+    costCenterId: z.coerce.number().optional(),
     voucherDate: z
       .string({
         required_error: "Fecha requerida.",
@@ -230,7 +236,6 @@ export default function FormNewVoucher({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: {
       exchangeRate: 6.97,
-      branch: "",
       coin: "BOB",
       checkNum: "",
       gloss: "",
@@ -276,6 +281,8 @@ export default function FormNewVoucher({
     accountsQuery.data === undefined ||
     modelSeats === undefined ||
     isLoadingModelSeats ||
+    costCenter === undefined ||
+    isLoadingCostCenter ||
     isPendingModelSeats
   ) {
     return <Spinner />;
@@ -430,7 +437,7 @@ export default function FormNewVoucher({
             /> */}
             <FormField
               control={voucherForm.control}
-              name="branch"
+              name="sucursalId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sucursal</FormLabel>
@@ -463,13 +470,13 @@ export default function FormNewVoucher({
             />
             <FormField
               control={voucherForm.control}
-              name="branch"
+              name="costCenterId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Centro de costos</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -477,10 +484,16 @@ export default function FormNewVoucher({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Diego">Diego</SelectItem>
-                      <SelectItem value="Daniel">Daniel</SelectItem>
-                      <SelectItem value="Carmen">Carmen</SelectItem>
-                      <SelectItem value="Monroy">Monroy</SelectItem>
+                      {(Array.isArray(costCenter) ? costCenter : []).map(
+                        (costCenter) => (
+                          <SelectItem
+                            key={costCenter.id}
+                            value={costCenter.id.toString()}
+                          >
+                            {costCenter.name}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
