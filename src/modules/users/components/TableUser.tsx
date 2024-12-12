@@ -1,7 +1,25 @@
 "use client";
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import EditUser from "./EditUser";
@@ -11,7 +29,7 @@ import { IUserResponse } from "../interface/users";
 export const TableUser = (props: { data: IUserResponse[] }) => {
   const { data } = props;
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState <IUserResponse|null> (null);
+  const [selectedUser, setSelectedUser] = useState<IUserResponse | null>(null);
 
   const openEditUser = (user: IUserResponse) => {
     setSelectedUser(user);
@@ -26,7 +44,21 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
   const columns: ColumnDef<IUserResponse>[] = [
     {
       accessorKey: "name",
-      header: "Nombre",
+      header: "Nombre Completo",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div>{`${user.name} ${user.fatherLastName} ${user.motherLastName}`}</div>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Correo",
+    },
+    {
+      accessorKey: "username",
+      header: "Nombre de usuario",
     },
     {
       accessorKey: "status",
@@ -47,7 +79,9 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => openEditUser(user)}>Editar</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openEditUser(user)}>
+                Editar
+              </DropdownMenuItem>
               <DropdownMenuItem>Eliminar</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -72,7 +106,10 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -81,7 +118,10 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -99,9 +139,12 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
         </TableBody>
       </Table>
       {selectedUser && (
-        <EditUser isOpen={isEditUserOpen} onClose={closeEditUser} user={selectedUser} />
+        <EditUser
+          isOpen={isEditUserOpen}
+          onClose={closeEditUser}
+          user={selectedUser}
+        />
       )}
     </div>
   );
 };
-
