@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import NewAccountingBoxForm from "./NewAccountingBoxForm";
+import { useState } from "react";
 
 // type NewAccountingBoxDialogProps = {
 //   accountingBoxId: number
@@ -15,8 +16,10 @@ import NewAccountingBoxForm from "./NewAccountingBoxForm";
 
 
 export default function NewAccountingBoxDialog() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="my-2">Crear</Button>
       </DialogTrigger>
@@ -27,7 +30,7 @@ export default function NewAccountingBoxDialog() {
             Este formulario permite crear una nueva caja
           </DialogDescription>
         </DialogHeader>
-        <NewAccountingBoxForm/>
+        <NewAccountingBoxForm setOpen={setOpen}/>
       </DialogContent>
     </Dialog>
   );

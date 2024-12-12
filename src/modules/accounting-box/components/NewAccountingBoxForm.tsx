@@ -37,13 +37,13 @@ import useAccountingBox from "@/modules/shared/hooks/useAccountingBox";
 import ReactSelect from "react-select";
 import useTrazoInternCodes from "@/modules/shared/hooks/useTrazoInternCodes";
 import { es } from "date-fns/locale";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAccountingBoxItems } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import CustomSelect from "@/components/custom/select";
 import useModelSeats from "@/modules/shared/hooks/useModelSeats";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { Label } from "@/components/ui/label";
 
@@ -52,7 +52,7 @@ const newAccountingBoxFormSchema = z.object({
   accountingBoxId: z.string(),
   accountId: z.coerce.number(),
   modelSeatId: z.coerce.number(),
-  costCenterId: z.string(),
+  costCenterId: z.coerce.number(),
   referencia: z.string(),
   hojaDeRuta: z.string(),
   nombre: z.string(),
@@ -70,13 +70,18 @@ const newAccountingBoxFormSchema = z.object({
 export type NewAccountingBox = z.infer<typeof newAccountingBoxFormSchema>;
 
 type NewAccountingBoxFormProps = {
-  accountingBoxId: number;
+  // accountingBoxId: number;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function NewAccountingBoxForm() {
+export default function NewAccountingBoxForm({
+  setOpen,
+}: NewAccountingBoxFormProps) {
   const [accountingBoxId, setAccountingBoxId] = useState<
     number | null | undefined
   >(null);
+
+  const queryClient = useQueryClient();
 
   const form = useForm<NewAccountingBox>({
     resolver: zodResolver(newAccountingBoxFormSchema),
@@ -105,6 +110,10 @@ export default function NewAccountingBoxForm() {
     onSuccess: () => {
       toast.success("Registrado!");
       //invalidate aquie
+      queryClient.invalidateQueries({
+        queryKey: ["accountingBox", accountingBoxId],
+      });
+      setOpen(false); //cierra el modal
     },
   });
 
