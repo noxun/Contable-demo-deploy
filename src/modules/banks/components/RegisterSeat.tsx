@@ -60,7 +60,7 @@ export default function RegisterSeat({
   }
 
   const selectedAccountOption =
-    accounts?.find((account) => account.id === selectedAccountId) ??
+    (Array.isArray(accounts)? accounts : []).find((account) => account.id === selectedAccountId) ??
     (extractAccountId !== 0
       ? accounts?.find((account) => account.id === extractAccountId)
       : null);
