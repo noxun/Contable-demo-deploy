@@ -10,6 +10,8 @@ import {
   ConfigValues,
   CostCenter,
   InvoiceRegistry,
+  InvoiceRegistryResponseByType,
+  InvoiceRegistryType,
   ModelSeat,
   ModelSeatDetailResponse,
   NewConfigValues,
@@ -59,14 +61,14 @@ export async function postUfvValues(data: UfvRegister | NewConfigValues) {
   return response.data;
 }
 
-export async function fetchConfigValues(){
+export async function fetchConfigValues() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/api/Ufv/getConfigValues")
-  return response.data as ConfigValues
+  const response = await api.get("/api/Ufv/getConfigValues");
+  return response.data as ConfigValues;
 }
 
 export async function fetchVouchers(
@@ -100,14 +102,14 @@ export async function fetchVouchers(
   };
 }
 
-export async function editVoucher(data: Voucher){
+export async function editVoucher(data: Voucher) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
   const response = await api.put(`/api/Voucher`, data);
-  return response.data
+  return response.data;
 }
 
 export async function fetchAllMotionAccountsWithRelations() {
@@ -168,13 +170,12 @@ export async function deleteModelSeat(modelSeatId: number) {
   }
   setAuthToken(token);
 
-  const response = await api.delete('api/ModelSeat', {
+  const response = await api.delete("api/ModelSeat", {
     params: {
-      modelSeatId
-    }
-  })
-  return response.data
-
+      modelSeatId,
+    },
+  });
+  return response.data;
 }
 
 export async function fetchAllMotionAccounts() {
@@ -215,13 +216,13 @@ export async function fetchModelSeatsItems(modelSeatId: string) {
   return response.data as ModelSeatDetailResponse;
 }
 
-export async function putModelSeat(data: EditModelSeat){
+export async function putModelSeat(data: EditModelSeat) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.put("/api/ModelSeat", data)
+  const response = await api.put("/api/ModelSeat", data);
   return response.data;
 }
 
@@ -432,13 +433,15 @@ export async function createAccountingBoxItems(data: NewAccountingBox) {
   return response.data;
 }
 
-export async function getAccountingBoxBalance(accountingBoxId:number) {
+export async function getAccountingBoxBalance(accountingBoxId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/AccountingBox/balance/${accountingBoxId}`);
+  const response = await api.get(
+    `/api/AccountingBox/balance/${accountingBoxId}`
+  );
   return response.data as AccountingBoxBalance;
 }
 
@@ -518,18 +521,21 @@ export async function postInvoiceRegistry(data: NewInvoiceForm) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post("/api/Invoice", data);
+  const response = await api.post(
+    `/api/Invoice/${data.invoiceRegistryType}`,
+    data
+  );
   return response.data;
 }
 
-export async function getMassPurchaseFormInExcel(){
+export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/", {
-    responseType: "text"
+  const response = await api.get(`/GenerateInvoice/${type}`, {
+    responseType: "text",
   });
   return response.data as string;
 }
@@ -540,17 +546,19 @@ export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.delete(`/api/Invoice/${InvoiceRegistryId}`)
+  const response = await api.delete(`/api/Invoice/${InvoiceRegistryId}`);
   return response.data;
 }
 
-export async function fetchSingleInvoiceRegistryById(InvoiceRegistryId: number) {
+export async function fetchSingleInvoiceRegistryById(
+  InvoiceRegistryId: number
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/Invoice/${InvoiceRegistryId}`)
+  const response = await api.get(`/api/Invoice/${InvoiceRegistryId}`);
   return response.data as InvoiceRegistry;
 }
 
@@ -560,16 +568,31 @@ export async function editInvoiceRegistryById(data: InvoiceRegistry) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.put(`/api/Invoice/${data.id}`, data)
+  const response = await api.put(`/api/Invoice/${data.id}`, data);
   return response.data;
 }
 
-export async function importInvoiceRegistryExcel(data:FormData) {
+export async function importInvoiceRegistryExcel(data: FormData) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post('/exelInvoice', data);
+
+  const numType = data.get("InvoiceRegistryType");
+
+  data.delete("InvoiceRegistryType");
+
+  const response = await api.post(`/exelInvoice/${numType}`, data);
   return response.data;
+}
+
+export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/CompraVentaType/${type}`);
+  return response.data as InvoiceRegistryResponseByType[];
 }
