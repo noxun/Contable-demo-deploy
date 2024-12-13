@@ -14,7 +14,7 @@ export default function EditInvoiceRegistryPage({
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["invoiceRegistry", id],
+    queryKey: ["invoiceRegistry","edit", id],
     queryFn: () => fetchSingleInvoiceRegistryById(parseInt(id)),
   });
 
