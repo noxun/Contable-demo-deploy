@@ -45,6 +45,9 @@ const newInvoiceFormSchema = z.object({
   invoiceRegistryType: z.enum(["0", "1"]), // provisionalmente
 });
 
+const compras = 0;
+const ventas = 1;
+
 export type NewInvoiceForm = z.infer<typeof newInvoiceFormSchema>;
 
 export default function InvoiceRegistryForm() {
@@ -70,8 +73,16 @@ export default function InvoiceRegistryForm() {
     },
     onSuccess: () => {
       toast.success("Registro creado correctamente");
-      queryClient.invalidateQueries({ queryKey: ["invoiceRegistry"] });
-      router.push("/dashboard/invoice-registry");
+      if (
+        parseInt(invoiceRegistryForm.getValues("invoiceRegistryType")) ===
+        compras
+      ) {
+        router.push("/dashboard/invoice-registry/purchases");
+        queryClient.invalidateQueries({ queryKey: ["invoiceRegistry", 0] });
+      } else {
+        router.push("/dashboard/invoice-registry/sells");
+        queryClient.invalidateQueries({ queryKey: ["invoiceRegistry", 1] });
+      }
     },
   });
 

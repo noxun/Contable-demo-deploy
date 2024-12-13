@@ -54,6 +54,8 @@ export default function FormEditInvoiceRegistry({
   invoiceRegistry: InvoiceRegistry;
 }) {
 
+  console.log(invoiceRegistry)
+
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -92,8 +94,15 @@ export default function FormEditInvoiceRegistry({
     },
     onSuccess: () => {
       toast.success("Registro editado correctamente");
-      queryClient.invalidateQueries({queryKey:["invoiceRegistry"]})
-      router.push("/dashboard/invoice-registry")
+
+      if(invoiceEditForm.getValues("purchaseType") === "Compras"){
+        queryClient.invalidateQueries({queryKey:["invoiceRegistry", 0]})
+        router.push("/dashboard/invoice-registry/purchases")
+      }else{
+        queryClient.invalidateQueries({queryKey:["invoiceRegistry", 1]})
+        router.push("/dashboard/invoice-registry/sells")
+      }
+
     },
   });
 
