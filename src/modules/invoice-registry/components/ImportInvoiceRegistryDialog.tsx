@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ImportInvoiceRegistryForm from "./ImportInvoiceRegistryForm";
+import Link from "next/link";
 
 export default function ImportInvoiceRegistryDialog() {
   return (
@@ -17,12 +18,21 @@ export default function ImportInvoiceRegistryDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Importar cuentas al sistema</DialogTitle>
+          <DialogTitle>Importar facturas al sistema</DialogTitle>
           <DialogDescription>
-            Este formulario le permite importar cuentas al sistema 
+            Este formulario le permite importar facturas al sistema
           </DialogDescription>
         </DialogHeader>
-        {/* <ImportInvoiceRegistryForm /> */}
+        <Button asChild>
+          <Link
+            href="/files/plantilla_compras_ventas.xlsx"
+            prefetch={false}
+            download
+          >
+            Descargar Plantilla
+          </Link>
+        </Button>
+        <ImportInvoiceRegistryForm />
       </DialogContent>
     </Dialog>
   );

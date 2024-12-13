@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { importInvoiceRegistryExcel } from "@/lib/data";
 import { toast } from "sonner";
 import {
@@ -32,15 +32,13 @@ const importInvoiceRegistryFormSchema = z.object({
 
 type ImportInvoiceRegistry = z.infer<typeof importInvoiceRegistryFormSchema>;
 
-export default function ImportInvoiceRegistryForm({
-  invoiceRegistryId,
-}: {
-  invoiceRegistryId: string | number;
-}) {
+export default function ImportInvoiceRegistryForm() {
+
+  const queryClient = useQueryClient();
+
   const importInvoiceRegistryForm = useForm<ImportInvoiceRegistry>({
     resolver: zodResolver(importInvoiceRegistryFormSchema),
     defaultValues: {
-      InvoiceRegistryType: invoiceRegistryId.toString(),
       File: null,
     },
   });
@@ -62,6 +60,13 @@ export default function ImportInvoiceRegistryForm({
     mutationFn: importInvoiceRegistryExcel,
     onSuccess: () => {
       toast.success("Archivo enviado correctamente");
+      //cerrar modal tambien
+      //el proceso podria tomar un rato asi que tal vez un settimeout
+      if(importInvoiceRegistryForm.getValues("InvoiceRegistryType") === "0"){
+        queryClient.invalidateQueries({queryKey:["invoiceRegistry", 0]})
+      }else{
+        queryClient.invalidateQueries({queryKey:["invoiceRegistry", 1]})
+      }
     },
     onError: () => {
       toast.error("Hubo un error al enviar el archivo");
@@ -80,7 +85,6 @@ export default function ImportInvoiceRegistryForm({
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>

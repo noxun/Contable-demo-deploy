@@ -1,11 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { getMassPurchaseFormInExcel } from "@/lib/data";
+import { InvoiceRegistryType } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "sonner";
 
-export default function DownloadMassPurchaseFormButton() {
+export default function DownloadMassTransactionFormButton({
+  type,
+}: {
+  type: InvoiceRegistryType;
+}) {
   const downloadFileMutation = useMutation({
     mutationFn: getMassPurchaseFormInExcel,
     onSuccess: (data) => {
@@ -25,14 +30,14 @@ export default function DownloadMassPurchaseFormButton() {
   });
 
   function handleClick() {
-    downloadFileMutation.mutate();
+    downloadFileMutation.mutate(type);
   }
 
   return (
     <Button onClick={handleClick} disabled={downloadFileMutation.isPending}>
       {downloadFileMutation.isPending
         ? "Descargando..."
-        : "Descargar Compras Masivas SIAT"}
+        : "Descargar Transacciones Masivas SIAT"}
     </Button>
   );
 }

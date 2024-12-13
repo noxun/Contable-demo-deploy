@@ -1,15 +1,27 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
-import useInvoiceRegistry from "@/modules/shared/hooks/useInvoiceRegistry";
 import { columns } from "./columns";
+import { InvoiceRegistryType } from "@/lib/types";
+import useInvoiceRegistryByType from "@/modules/shared/hooks/useInvoiceRegistryByType";
 
-export default function ListInvoiceRegistry() {
-  const { data: invoiceRegistries, isLoading, isError } = useInvoiceRegistry();
+export default function ListInvoiceRegistry({
+  type,
+}: {
+  type: InvoiceRegistryType;
+}) {
+
+  const {
+    data: invoiceRegistries,
+    isLoading,
+    isError,
+  } = useInvoiceRegistryByType(type);
 
   return (
     <>
-      {isLoading  ? <div>Cargando...</div> : (
+      {isLoading ? (
+        <div>Cargando...</div>
+      ) : (
         <DataTable data={invoiceRegistries ?? []} columns={columns} />
       )}
     </>
