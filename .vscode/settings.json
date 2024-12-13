@@ -16,6 +16,8 @@
     "config",
     "accounting-box",
     "reports",
-    "conventional-commits"
+    "conventional-commits",
+    "files",
+    "types"
   ]
 }
