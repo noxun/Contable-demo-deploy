@@ -1,12 +1,12 @@
-import { InvoiceRegistry } from "@/lib/types";
+import { InvoiceRegistry, InvoiceRegistryResponseByType, InvoiceRegistryType } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import InvoiceRegistryDeleteButton from "./InvoiceRegistryDeleteButton";
 import EditInvoiceRegistryButton from "./EditInvoiceRegistryButton";
 
-export const columns: ColumnDef<InvoiceRegistry>[] = [
+export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
   {
     accessorKey: "nitProvider",
-    header: "NIT del Proveedor",
+    header: "NIT",
   },
   {
     accessorKey: "businessName",
@@ -14,15 +14,15 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
   },
   {
     accessorKey: "authorizationCode",
-    header: "Código de Autorización",
+    header: "Cod. Autorización",
   },
   {
     accessorKey: "invoiceNumber",
-    header: "Número de Factura",
+    header: "Num Factura",
   },
   {
     accessorKey: "DUINumber",
-    header: "Número de DUI",
+    header: "Num DUI",
   },
   {
     accessorKey: "invoiceDate",
@@ -56,7 +56,7 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
   },
   {
     accessorKey: "giftCardAmount",
-    header: "Monto Tarjeta Regalo",
+    header: "Monto Gift Card",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("giftCardAmount"));
       return new Intl.NumberFormat("es-ES", {
@@ -93,7 +93,7 @@ export const columns: ColumnDef<InvoiceRegistry>[] = [
   },
   {
     accessorKey: "controlCode",
-    header: "Código de Control",
+    header: "Código Control",
   },
   {
     accessorKey: "consolidationStatus",
