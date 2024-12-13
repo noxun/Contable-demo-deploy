@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import EditVoucher from "@/modules/shared/components/EditVoucher";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 import { useQuery } from "@tanstack/react-query";
+import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButton";
 
 // Types
 type VoucherItem = {
@@ -346,6 +347,8 @@ const AccountSection = () => {
 
       {currentAccount && (
         <>
+          <DownloadSingleAccountReportButton data={currentAccount} />
+
           <AccountInfo
             accountCode={currentAccount.accountCode}
             accountDescription={currentAccount.accountDescription}

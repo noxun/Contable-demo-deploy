@@ -540,6 +540,18 @@ export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
   return response.data as string;
 }
 
+export async function getSingleAccountReport(data: any) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/report/printbook`, data, {
+    responseType: "text",
+  });
+  return response.data as string;
+}
+
 export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
   let token;
   if (typeof window !== "undefined") {
