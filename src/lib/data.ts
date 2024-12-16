@@ -351,6 +351,7 @@ export async function fetchBranchList() {
 }
 
 export async function registerExtractToSeat(data: {
+  type: string;
   bankExtractId: number;
   accountId: number; //accountId de contra cuenta
 }) {

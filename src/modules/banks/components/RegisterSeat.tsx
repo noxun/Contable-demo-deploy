@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 
 type RegisterSeatProps = {
   bankExtractId: number;
@@ -34,6 +35,7 @@ export default function RegisterSeat({
 }: RegisterSeatProps) {
   const queryClient = useQueryClient();
   const { data: accounts, isPending } = useAccounts();
+  const [type, setType] = useState<string>("0");
 
   console.log(accounts);
 
@@ -54,6 +56,7 @@ export default function RegisterSeat({
       const values = {
         bankExtractId,
         accountId: selectedAccountId,
+        type,
       };
       registerSeatMutation.mutate(values);
     }
@@ -86,6 +89,10 @@ export default function RegisterSeat({
             }
           />
           <Select 
+            value={type}
+            onValueChange={(value)=>{
+              setType(value)
+            }}
             disabled={hasBeenRegisteredToAccount}
           >
             <SelectTrigger className="w-[180px]">
