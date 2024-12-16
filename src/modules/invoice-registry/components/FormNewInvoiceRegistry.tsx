@@ -86,6 +86,9 @@ export default function InvoiceRegistryForm() {
     },
   });
 
+  const iva = invoiceRegistryForm.watch("taxCredit");
+  const type = invoiceRegistryForm.watch("invoiceRegistryType")
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -315,14 +318,13 @@ export default function InvoiceRegistryForm() {
                 name="taxCredit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Crédito Fiscal</FormLabel>
+                    <FormLabel>
+                      { parseInt(type) === compras
+                        ? "Crédito Fiscal"
+                        : "Débito Fiscal"}
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                      />
+                      <Input type="number" defaultValue="0.13" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -334,7 +336,7 @@ export default function InvoiceRegistryForm() {
                 name="purchaseType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipo de Compra</FormLabel>
+                    <FormLabel>Tipo de Compra/Venta</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
