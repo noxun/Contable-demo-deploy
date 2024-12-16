@@ -56,6 +56,7 @@ import {
 } from "@/lib/data";
 import CustomSelect from "@/components/custom/select";
 import useCostCenter from "../hooks/useCostCenter";
+import useMotionAccounts from "../hooks/useMotionAccounts";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -110,21 +111,7 @@ export default function FormNewVoucher({
     queryFn: fetchAllModelSeats,
   });
 
-  const accountsQuery = useQuery({
-    queryKey: ["accounts"],
-    queryFn: async (): Promise<{ data: Account[] }> =>
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Account/Filter?isMotion=true`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ),
-    enabled: isTokenReady,
-    staleTime: 1000 * 60 * 10,
-  });
+  const accountsQuery = useMotionAccounts();
 
   const branchListQuery = useQuery({
     queryKey: ["branchList"],
@@ -162,7 +149,8 @@ export default function FormNewVoucher({
     onSuccess: () => {
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
-      router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
+      //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
+      router.push('/dashboard/transactions')
     },
     onError: (error) => {
       console.log(error);
@@ -553,7 +541,7 @@ export default function FormNewVoucher({
           </div>
           <br />
           <FormNewVoucherItems
-            accountData={accountsQuery.data.data}
+            accountData={accountsQuery.data}
             voucherItems={voucherItems}
             setVoucherItems={setVoucherItems}
             applyGlossToAll={applyGlossToAll}
