@@ -193,23 +193,9 @@ export default function ConfigForm() {
         />
         <FormField
           control={configForm.control}
-          name="ufvValue"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>UFVs</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={configForm.control}
           name="tributosAduaneros"
           render={({ field }) => (
-            <FormItem className="col-span-4">
+            <FormItem className="">
               <FormLabel>Tributos Aduaneros</FormLabel>
               <FormControl>
                 <Input {...field} />
