@@ -48,7 +48,8 @@ const modelSeatItemSchema = z.object({
 
 const modelSeatFormSchema = z.object({
   description: z.string(),
-  typeTransaction: z.enum(["ingresos", "egresos", "diarios"]),
+  typeTransaction: z.enum(["ingresos", "egresos", "diarios"]).optional(),
+  type: z.coerce.number(),
   accounts: z.array(modelSeatItemSchema).min(1),
 });
 
@@ -86,7 +87,7 @@ export default function FormNewModelSeat() {
     resolver: zodResolver(modelSeatFormSchema),
     defaultValues: {
       description: "",
-      typeTransaction: "ingresos",
+      type: 0
     },
   });
 
@@ -136,13 +137,13 @@ export default function FormNewModelSeat() {
             <div className="w-full">
               <FormField
                 control={modelSeatForm.control}
-                name="typeTransaction"
+                name="type"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tipo de Transacción</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value.toString()}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -150,9 +151,9 @@ export default function FormNewModelSeat() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="ingresos">Ingresos</SelectItem>
-                        <SelectItem value="egresos">Egresos</SelectItem>
-                        <SelectItem value="traspasos">Traspasos</SelectItem>
+                        <SelectItem value="0">Traspasos</SelectItem>
+                        <SelectItem value="1">Egresos</SelectItem>
+                        <SelectItem value="2">Ingresos</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>

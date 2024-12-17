@@ -42,7 +42,8 @@ const accountSchema = z.object({
 const editModelSeatSchema = z.object({
   modelSeatId: z.number(),
   description: z.string().min(1, "Se requiere un descripcion "),
-  typeTransaction: z.enum(["ingresos", "egresos", "diarios"]),
+  type: z.coerce.number(),
+  // typeTransaction: ,
   accounts: z.array(accountSchema).min(1, "Se requiere al menos una cuenta"),
 });
 
@@ -65,7 +66,7 @@ export default function FormEditModelSeat({
       toast.error("Hubo un error al modificar el asiento modelo");
     },
     onSuccess: () => {
-      toast.error("Asiento Modelo editado correctamente");
+      toast.success("Asiento Modelo editado correctamente");
       queryClient.invalidateQueries({queryKey:["AllModelSeats"]});
       router.push("/dashboard/model-seats");
     }
@@ -77,10 +78,12 @@ export default function FormEditModelSeat({
     defaultValues: {
       modelSeatId: modelSeat.id,
       description: modelSeat.description,
-      typeTransaction: modelSeat.typeTransaction,
+      type: modelSeat.type,
       accounts: modelSeat.accounts,
     },
   });
+
+  console.log(editModelSeatForm.formState.errors)
 
   const { fields, append, remove } = useFieldArray({
     control: editModelSeatForm.control,
@@ -124,19 +127,20 @@ export default function FormEditModelSeat({
 
         <FormField
           control={editModelSeatForm.control}
-          name="typeTransaction"
+          name="type"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Transaction Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder="Seleccione un tipo" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="ingresos">Ingresos</SelectItem>
-                  <SelectItem value="egresos">Egresos</SelectItem>
+                  <SelectItem value="0">Traspasos</SelectItem>
+                  <SelectItem value="1">Egresos</SelectItem>
+                  <SelectItem value="2">Ingresos</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
