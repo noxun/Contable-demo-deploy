@@ -9,11 +9,23 @@ import DeleteModelSeatDialog from "./DeleteModelSeatDialog";
 export const columns: ColumnDef<ModelSeat>[] = [
   {
     accessorKey: "description",
-    header: "Descripciom",
+    header: "Descripción",
   },
   {
-    accessorKey: "typeTransaction",
-    header: "Tipo de transaccion",
+    accessorKey: "type",
+    header: "Tipo de transacción",
+    cell: ({ row }) => {
+      const modelSeat = row.original;
+      return (
+        <div>
+          {modelSeat.type === 0
+            ? "Traspaso"
+            : modelSeat.type === 1
+            ? "Egreso"
+            : "Ingreso"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
