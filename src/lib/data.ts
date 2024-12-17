@@ -528,7 +528,7 @@ export async function postInvoiceRegistry(data: NewInvoiceForm) {
   }
   setAuthToken(token);
   const response = await api.post(
-    `/api/Invoice/${data.invoiceRegistryType}`,
+    `/api/Invoice/`,
     data
   );
   return response.data;

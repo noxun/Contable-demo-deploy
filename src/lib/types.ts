@@ -313,8 +313,9 @@ export type InvoiceRegistryResponseByType = {
   discountOrBonus: number
   giftCardAmount: number
   creditBase: number
-  taxCredit: number
-  purchaseType: string
+  iva: number;
+  it: number;
+  type: string
   controlCode: number
   consolidationStatus: string
   createdAt: string

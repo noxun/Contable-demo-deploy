@@ -38,11 +38,10 @@ const newInvoiceFormSchema = z.object({
   discountOrBonus: z.coerce.number(),
   giftCardAmount: z.coerce.number(),
   creditBase: z.coerce.number(),
-  taxCredit: z.coerce.number(),
   purchaseType: z.string().optional(),
-  controlCode: z.coerce.number(),
+  controlCode: z.string(),
   consolidationStatus: z.string().optional(),
-  invoiceRegistryType: z.enum(["0", "1"]), // provisionalmente
+  type: z.enum(["0", "1"]), // provisionalmente
 });
 
 const compras = 0;
@@ -74,7 +73,7 @@ export default function InvoiceRegistryForm() {
     onSuccess: () => {
       toast.success("Registro creado correctamente");
       if (
-        parseInt(invoiceRegistryForm.getValues("invoiceRegistryType")) ===
+        parseInt(invoiceRegistryForm.getValues("type")) ===
         compras
       ) {
         router.push("/dashboard/invoice-registry/purchases");
@@ -85,9 +84,6 @@ export default function InvoiceRegistryForm() {
       }
     },
   });
-
-  const iva = invoiceRegistryForm.watch("taxCredit");
-  const type = invoiceRegistryForm.watch("invoiceRegistryType")
 
   return (
     <Card className="w-full">
@@ -120,7 +116,7 @@ export default function InvoiceRegistryForm() {
 
               <FormField
                 control={invoiceRegistryForm.control}
-                name="invoiceRegistryType"
+                name="type"
                 render={({ field }) => (
                   <FormItem className="md: col-span-2">
                     <FormLabel>Tipo de registro</FormLabel>
@@ -313,7 +309,7 @@ export default function InvoiceRegistryForm() {
               />
 
               {/* Tax Credit */}
-              <FormField
+              {/* <FormField
                 control={invoiceRegistryForm.control}
                 name="taxCredit"
                 render={({ field }) => (
@@ -328,7 +324,7 @@ export default function InvoiceRegistryForm() {
                     </FormControl>
                   </FormItem>
                 )}
-              />
+              /> */}
 
               {/* Purchase Type */}
               <FormField

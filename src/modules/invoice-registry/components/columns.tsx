@@ -1,4 +1,8 @@
-import { InvoiceRegistry, InvoiceRegistryResponseByType, InvoiceRegistryType } from "@/lib/types";
+import {
+  InvoiceRegistry,
+  InvoiceRegistryResponseByType,
+  InvoiceRegistryType,
+} from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import InvoiceRegistryDeleteButton from "./InvoiceRegistryDeleteButton";
 import EditInvoiceRegistryButton from "./EditInvoiceRegistryButton";
@@ -21,7 +25,7 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
     header: "Num Factura",
   },
   {
-    accessorKey: "DUINumber",
+    accessorKey: "duiNumber",
     header: "Num DUI",
   },
   {
@@ -41,6 +45,21 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
         style: "currency",
         currency: "USD",
       }).format(amount);
+    },
+  },
+  { accessorKey: "iva", header: "IVA" },
+  {
+    accessorKey: "it",
+    header: "IT",
+    cell: ({ row }) => {
+      const invoiceRegistry = row.original;
+      return (
+        <div>
+          {invoiceRegistry.type === "Compras"
+            ? "No aplica"
+            : invoiceRegistry.it}
+        </div>
+      );
     },
   },
   {
@@ -88,8 +107,8 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
     },
   },
   {
-    accessorKey: "purchaseType",
-    header: "Tipo de Compra",
+    accessorKey: "type",
+    header: "Tipo",
   },
   {
     accessorKey: "controlCode",
