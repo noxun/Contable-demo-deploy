@@ -153,13 +153,18 @@ export async function deleteConciliation(data: LinkAccountForm) {
   return response.data;
 }
 
-export async function fetchAllModelSeats() {
+export async function fetchAllModelSeats(type: number | null = null) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/ModelSeat`);
+
+  const response = await api.get(`/api/ModelSeat`, {
+    params: {
+      Type: type,
+    },
+  });
   return response.data as ModelSeat[];
 }
 
