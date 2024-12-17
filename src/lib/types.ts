@@ -67,6 +67,7 @@ export type ModelSeat = {
   id: number;
   description: string;
   typeTransaction: string;
+  type: number;
   accountModelSeats: any;
   createdAt: string;
   updatedAt: string;
@@ -88,12 +89,14 @@ export type ModelSeatItemFromDetail = {
 
 export type PostModelSeat = {
   description: string;
-  typeTransaction: string;
+  type: number;
+  typeTransaction?: string;
   accounts: ModelSeatItem[];
 };
 
 export type ModelSeatDetailResponse = {
   id: number;
+  type: number;
   description: string;
   typeTransaction: "ingresos" | "egresos" | "diarios";
   accounts: ModelSeatItemFromDetail[];
