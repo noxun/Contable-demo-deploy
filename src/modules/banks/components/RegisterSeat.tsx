@@ -19,6 +19,7 @@ import { useState } from "react";
 type RegisterSeatProps = {
   bankExtractId: number;
   bankId: string | number;
+  registeredType: number;//egreso, traspaso, ingreso
   hasBeenRegisteredToAccount: boolean;
   extractAccountId: number;
   selectedAccount: number | null;
@@ -26,6 +27,7 @@ type RegisterSeatProps = {
 };
 
 export default function RegisterSeat({
+  registeredType,
   bankExtractId,
   bankId,
   hasBeenRegisteredToAccount,
@@ -89,7 +91,7 @@ export default function RegisterSeat({
             }
           />
           <Select 
-            value={type}
+            defaultValue={registeredType.toString()}
             onValueChange={(value)=>{
               setType(value)
             }}

@@ -126,6 +126,8 @@ export type BankExcerpt = {
   accountId: number;
   trazoRegister: boolean;
   accountingEntry: boolean;
+  accountDetail: string;
+  type: number;
 };
 
 export type BankExcerptData = {

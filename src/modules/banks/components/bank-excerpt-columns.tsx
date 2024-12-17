@@ -43,6 +43,7 @@ export function columns(
         const bankExtract = row.original;
         return (
           <RegisterSeat
+            registeredType={bankExtract.type}
             bankExtractId={bankExtract.id}
             bankId={bankId}
             hasBeenRegisteredToAccount={bankExtract.accountId !== 0}
