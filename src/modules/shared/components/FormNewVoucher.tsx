@@ -57,6 +57,8 @@ import {
 import CustomSelect from "@/components/custom/select";
 import useCostCenter from "../hooks/useCostCenter";
 import useMotionAccounts from "../hooks/useMotionAccounts";
+import useModelSeatsByType from "../hooks/useModelSeatsByType";
+import useModelSeats from "../hooks/useModelSeats";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -72,6 +74,7 @@ export default function FormNewVoucher({
   const { token, isTokenReady } = useToken();
 
   const [selectedModelSeat, setSelectedModelSeat] = useState(null);
+  const [selectedModelSeatType, setSelectedModelSeatType] = useState<number | undefined>();
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -85,7 +88,7 @@ export default function FormNewVoucher({
       accountId: "",
       voucherId: "",
       canDebit: true,
-      canAsset: true
+      canAsset: true,
     },
   ]);
 
@@ -106,10 +109,7 @@ export default function FormNewVoucher({
     data: modelSeats,
     isLoading: isLoadingModelSeats,
     isPending: isPendingModelSeats,
-  } = useQuery({
-    queryKey: ["AllModelSeats"],
-    queryFn: fetchAllModelSeats,
-  });
+  } = useModelSeatsByType(selectedModelSeatType);
 
   const accountsQuery = useMotionAccounts();
 
@@ -150,7 +150,7 @@ export default function FormNewVoucher({
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
-      router.push('/dashboard/transactions')
+      router.push("/dashboard/transactions");
     },
     onError: (error) => {
       console.log(error);
@@ -267,11 +267,8 @@ export default function FormNewVoucher({
     accountsQuery.isPending ||
     accountsQuery.isLoading ||
     accountsQuery.data === undefined ||
-    modelSeats === undefined ||
-    isLoadingModelSeats ||
     costCenter === undefined ||
-    isLoadingCostCenter ||
-    isPendingModelSeats
+    isLoadingCostCenter 
   ) {
     return <Spinner />;
   }
@@ -284,18 +281,36 @@ export default function FormNewVoucher({
             <label className="mb-2 block text-sm font-medium">
               Selecciona un Asiento Modelo
             </label>
-            <CustomSelect
-              options={(Array.isArray(modelSeats) ? modelSeats : []).map(
-                (seat) => ({
-                  label: seat.description,
-                  value: seat.id,
-                })
-              )}
-              value={selectedModelSeat}
-              onChange={handleModelSeatChange}
-              isLoading={isLoadingModelSeats}
-              placeholder="Selecciona un Asiento Modelo"
-            />
+            <div className="flex gap-2">
+              <CustomSelect
+                options={(Array.isArray(modelSeats) ? modelSeats : []).map(
+                  (seat) => ({
+                    label: seat.description,
+                    value: seat.id,
+                  })
+                )}
+                value={selectedModelSeat}
+                onChange={handleModelSeatChange}
+                isLoading={isLoadingModelSeats}
+                isDisabled={selectedModelSeatType === undefined}
+                placeholder="Selecciona un Asiento Modelo"
+              />
+              <Select
+                value={selectedModelSeatType !== undefined ? selectedModelSeatType.toString(): undefined}
+                onValueChange={(value) => {
+                  setSelectedModelSeatType(parseInt(value));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Traspaso</SelectItem>
+                  <SelectItem value="1">Egreso</SelectItem>
+                  <SelectItem value="2">Ingreso</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex gap-2 mb-2">
             <FormField
