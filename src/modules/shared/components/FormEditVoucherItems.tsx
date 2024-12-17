@@ -53,6 +53,7 @@ type FormEditVoucherItemsProps = {
   setVoucherItems: Dispatch<SetStateAction<VoucherItem[]>>;
   accountData: Account[];
   voucher: Voucher;
+  accountDate?: string; //para invalidar la query
 };
 
 export default function FormEditVoucherItems({
@@ -61,7 +62,8 @@ export default function FormEditVoucherItems({
   voucherItems,
   setVoucherItems,
   accountData,
-  voucher
+  voucher,
+  accountDate
 }: FormEditVoucherItemsProps) {
   const { token } = useToken();
 
@@ -131,6 +133,10 @@ export default function FormEditVoucherItems({
     },
 
     onSuccess: () => {
+      if(accountDate){
+        console.log("llego aca?")
+        queryClient.invalidateQueries({ queryKey: ["bookBiggerData", accountDate] });
+      }
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
         queryKey: ["Vouchers", voucherId?.toString(), type],

@@ -9,6 +9,9 @@ import {
   BranchToList,
   ConfigValues,
   CostCenter,
+  InvoiceRegistry,
+  InvoiceRegistryResponseByType,
+  InvoiceRegistryType,
   ModelSeat,
   ModelSeatDetailResponse,
   NewConfigValues,
@@ -28,6 +31,7 @@ import { Account } from "@/modules/account/types/account";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
+import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -57,14 +61,14 @@ export async function postUfvValues(data: UfvRegister | NewConfigValues) {
   return response.data;
 }
 
-export async function fetchConfigValues(){
+export async function fetchConfigValues() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/api/Ufv/getConfigValues")
-  return response.data as ConfigValues
+  const response = await api.get("/api/Ufv/getConfigValues");
+  return response.data as ConfigValues;
 }
 
 export async function fetchVouchers(
@@ -98,14 +102,14 @@ export async function fetchVouchers(
   };
 }
 
-export async function editVoucher(data: Voucher){
+export async function editVoucher(data: Voucher) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
   const response = await api.put(`/api/Voucher`, data);
-  return response.data
+  return response.data;
 }
 
 export async function fetchAllMotionAccountsWithRelations() {
@@ -166,13 +170,12 @@ export async function deleteModelSeat(modelSeatId: number) {
   }
   setAuthToken(token);
 
-  const response = await api.delete('api/ModelSeat', {
+  const response = await api.delete("api/ModelSeat", {
     params: {
-      modelSeatId
-    }
-  })
-  return response.data
-
+      modelSeatId,
+    },
+  });
+  return response.data;
 }
 
 export async function fetchAllMotionAccounts() {
@@ -213,13 +216,13 @@ export async function fetchModelSeatsItems(modelSeatId: string) {
   return response.data as ModelSeatDetailResponse;
 }
 
-export async function putModelSeat(data: EditModelSeat){
+export async function putModelSeat(data: EditModelSeat) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.put("/api/ModelSeat", data)
+  const response = await api.put("/api/ModelSeat", data);
   return response.data;
 }
 
@@ -348,6 +351,7 @@ export async function fetchBranchList() {
 }
 
 export async function registerExtractToSeat(data: {
+  type: string;
   bankExtractId: number;
   accountId: number; //accountId de contra cuenta
 }) {
@@ -430,13 +434,15 @@ export async function createAccountingBoxItems(data: NewAccountingBox) {
   return response.data;
 }
 
-export async function getAccountingBoxBalance(accountingBoxId:number) {
+export async function getAccountingBoxBalance(accountingBoxId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/AccountingBox/balance/${accountingBoxId}`);
+  const response = await api.get(
+    `/api/AccountingBox/balance/${accountingBoxId}`
+  );
   return response.data as AccountingBoxBalance;
 }
 
@@ -498,4 +504,108 @@ export async function fetchBankExtractAccountDetails(
     },
   });
   return response.data;
+}
+
+export async function fetchInvoiceRegistryList() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Invoice"); //TODO:ADD CORRECT ENDPOINT
+  return response.data as InvoiceRegistry[];
+}
+
+export async function postInvoiceRegistry(data: NewInvoiceForm) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(
+    `/api/Invoice/${data.invoiceRegistryType}`,
+    data
+  );
+  return response.data;
+}
+
+export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/GenerateInvoice/${type}`, {
+    responseType: "text",
+  });
+  return response.data as string;
+}
+
+export async function getSingleAccountReport(data: any) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/report/printbook`, data, {
+    responseType: "text",
+  });
+  return response.data as string;
+}
+
+export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.delete(`/api/Invoice/${InvoiceRegistryId}`);
+  return response.data;
+}
+
+export async function fetchSingleInvoiceRegistryById(
+  InvoiceRegistryId: number
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Invoice/${InvoiceRegistryId}`);
+  return response.data as InvoiceRegistry;
+}
+
+export async function editInvoiceRegistryById(data: InvoiceRegistry) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Invoice/${data.id}`, data);
+  return response.data;
+}
+
+export async function importInvoiceRegistryExcel(data: FormData) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const numType = data.get("InvoiceRegistryType");
+
+  data.delete("InvoiceRegistryType");
+
+  const response = await api.post(`/exelInvoice/${numType}`, data);
+  return response.data;
+}
+
+export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/CompraVentaType/${type}`);
+  return response.data as InvoiceRegistryResponseByType[];
 }

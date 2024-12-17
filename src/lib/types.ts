@@ -232,6 +232,24 @@ export type Bank = {
   code: string | null,
 }
 
+export type InvoiceRegistry = {
+  id: number;
+  nitProvider: number | string;
+  businessName: string;
+  authorizationCode: number | string;
+  invoiceNumber: string | number;
+  DUINumber: number;
+  invoiceDate: string;
+  totalAmount: number;
+  discountOrBonus: number
+  giftCardAmount: number;
+  creditBase: number;
+  taxCredit: number;
+  purchaseType: string;
+  controlCode: string | number;
+  consolidationStatus: string;
+}
+
 export type BankSelectionState = {
   [key: number]: number | null;  // bankExtractId -> accountId
 };
@@ -263,6 +281,37 @@ export type AccountingBoxBalance = {
   egressVouchers: any
   incomeVouchers: any
   accountingBoxItems: any
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  createdById: any
+  updatedById: any
+  deletedById: any
+}
+
+/**
+ * Representa diferentes tipos de facturas:
+ * - 0: Compras
+ * - 1: Ventas
+ */
+export type InvoiceRegistryType = 0 | 1;
+
+export type InvoiceRegistryResponseByType = {
+  id: number
+  nitProvider: number
+  businessName: string
+  authorizationCode: string
+  invoiceNumber: number
+  duiNumber: number
+  invoiceDate: string
+  totalAmount: number
+  discountOrBonus: number
+  giftCardAmount: number
+  creditBase: number
+  taxCredit: number
+  purchaseType: string
+  controlCode: number
+  consolidationStatus: string
   createdAt: string
   updatedAt: string
   deletedAt: string

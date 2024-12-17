@@ -44,15 +44,18 @@ import Spinner from "@/components/ui/spinner";
 import { editVoucher } from "@/lib/data";
 import useAccounts from "../hooks/useAccounts";
 import useBanks from "../hooks/useBanks";
+import { DateRange } from "react-day-picker";
 
 type FormEditVoucherProps = {
   type: VoucherType;
   voucher: Voucher;
+  accountDate?: string; //para invalidar la query de bigger book
 };
 
 export default function FormEditVoucher({
   type,
   voucher,
+  accountDate,
 }: FormEditVoucherProps) {
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
@@ -66,11 +69,15 @@ export default function FormEditVoucher({
   const editVoucherMutation = useMutation({
     mutationFn: editVoucher,
     onSuccess: () => {
+      if (accountDate) {
+        console.log("invalidado")
+        queryClient.invalidateQueries({ queryKey: ["bookBiggerData", accountDate] });
+      }
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
-        queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type],
+        queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type.toString()],
       });
-      toast.success("Income Edited Successfully");
+      toast.success("Voucher Edited Successfully");
     },
     onError: (error) => {
       console.log(error);
@@ -289,6 +296,7 @@ export default function FormEditVoucher({
       </Form>
       <br />
       <FormEditVoucherItems
+        accountDate={accountDate}
         type={type}
         voucherId={voucher!.id!}
         accountData={accountsQuery.data}

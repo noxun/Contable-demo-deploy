@@ -6,6 +6,7 @@
     "accounts",
     "vouchers",
     "auth",
+    "invoice-registry",
     "components",
     "model-seats",
     "archive",
@@ -15,6 +16,8 @@
     "config",
     "accounting-box",
     "reports",
-    "conventional-commits"
+    "conventional-commits",
+    "files",
+    "types"
   ]
 }
