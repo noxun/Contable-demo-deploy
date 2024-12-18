@@ -32,6 +32,7 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function ClashFlowPage() {
   // --- Estados del formulario ---
@@ -40,6 +41,11 @@ export default function ClashFlowPage() {
     to: addDays(new Date(2024, 0, 20), 20),
   });
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
+
+  const [currentDay, setCurrentDay] = useState<boolean | "indeterminate">(
+    false
+  );
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   // --- Estados de los links ---
   const [excelLink, setExcelLink] = useState<string | null>(null);
@@ -76,8 +82,24 @@ export default function ClashFlowPage() {
   }, [docs]);
 
   // --- Logica del componente ---
-  const handleClick = async () => {
-    if (date?.from && date?.to) {
+  const handleClick = async () => {    let initDate: Date | null = null;
+    let endDate: Date | null = null;
+
+    if (currentDay) {
+      const today = new Date();
+      initDate = today;
+      endDate = today;
+    } else if (selectedMonth) {
+      const [year, month] = selectedMonth.split("-").map(Number);
+      initDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 0);
+    } else if (date?.from && date?.to) {
+      initDate = date.from;
+      endDate = date.to;
+    }
+
+
+    if (initDate && endDate) {	
       setIsLoading(true);
       setExcelLink(null);
       setPdfLink(null);
@@ -89,8 +111,8 @@ export default function ClashFlowPage() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/ClashFlow`,
           {
             params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
+              InitDate: format(initDate, "yyyy/MM/dd"),
+              EndDate: format(endDate, "yyyy/MM/dd"),
               type: "xlsx",
               inSus: inSus,
             },
@@ -102,8 +124,8 @@ export default function ClashFlowPage() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/ClashFlow`,
           {
             params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
+              InitDate: format(initDate, "yyyy/MM/dd"),
+              EndDate: format(endDate, "yyyy/MM/dd"),
               type: "pdf",
               inSus: inSus,
             },
@@ -163,44 +185,74 @@ export default function ClashFlowPage() {
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-evenly">
-        <div className="w-72 space-y-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                      {format(date.to, "LLL dd, y", { locale: es })}
-                    </>
+        <div className="space-y-2">
+          {/* Rango de fechas */}
+          <div className="flex items-center gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  disabled={currentDay as boolean || !!selectedMonth }
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y", { locale: es })} -{" "}
+                        {format(date.to, "LLL dd, y", { locale: es })}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y", { locale: es })
+                    )
                   ) : (
-                    format(date.from, "LLL dd, y", { locale: es })
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                locale={es}
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  locale={es}
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            {/* Solo mes */}
+            <Label>
+              Seleccionar Mes
+              <Input
+                type="month"
+                value={selectedMonth || ""}
+                onChange={(e) => {
+                  setSelectedMonth(e.target.value);
+                  setCurrentDay(false);
+                  setDate(undefined);
+                }}
+                disabled={currentDay as boolean}
               />
-            </PopoverContent>
-          </Popover>
+            </Label>
+            {/* Dia Actual */}
+            <Label>
+              Dia Actual
+              <Checkbox
+                checked={currentDay}
+                onCheckedChange={(checked) => {
+                  setCurrentDay(checked);
+                  setSelectedMonth(null);
+                  setDate(undefined);
+                }}
+              />
+            </Label>
+          </div>
           <div className="flex items-center space-x-2">
             <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
             <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
@@ -230,11 +282,11 @@ export default function ClashFlowPage() {
                 <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
               </Button>
             )}
-            {pdfLink && (
+            {/* {pdfLink && (
               <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
               </Button>
-            )}
+            )} */}
           </div>
         </DialogContent>
       </Dialog>
@@ -243,7 +295,7 @@ export default function ClashFlowPage() {
         activeDocument={activeDocument}
         onDocumentChange={handleDocumentChange}
         key={viewerKey}
-        style={{ height: 1000 }}
+        style={{ height: "100%" }}
         documents={docs}
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"

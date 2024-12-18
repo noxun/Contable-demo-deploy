@@ -32,6 +32,7 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -40,6 +41,11 @@ export default function DiaryBookPage() {
     to: addDays(new Date(2024, 0, 20), 20),
   });
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
+
+  const [currentDay, setCurrentDay] = useState<boolean | "indeterminate">(
+    false
+  );
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   // --- Estados de los links ---
   // const [excelLink, setExcelLink] = useState<string | null>(null);
@@ -77,7 +83,25 @@ export default function DiaryBookPage() {
 
   // --- Logica del componente ---
   const handleClick = async () => {
-    if (date?.from && date?.to) {
+
+    let initDate: Date | null = null;
+    let endDate: Date | null = null;
+
+    if (currentDay) {
+      const today = new Date();
+      initDate = today;
+      endDate = today;
+    } else if (selectedMonth) {
+      const [year, month] = selectedMonth.split("-").map(Number);
+      initDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 0);
+    } else if (date?.from && date?.to) {
+      initDate = date.from;
+      endDate = date.to;
+    }
+
+
+    if (initDate && endDate) {
       setIsLoading(true);
       // setExcelLink(null);
       setPdfLink(null);
@@ -102,8 +126,8 @@ export default function DiaryBookPage() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/DiaryBook`,
           {
             params: {
-              InitDate: format(date.from, "yyyy/MM/dd"),
-              EndDate: format(date.to, "yyyy/MM/dd"),
+              InitDate: format(initDate, "yyyy/MM/dd"),
+              EndDate: format(endDate, "yyyy/MM/dd"),
               type: "pdf",
               inSus: inSus,
             },
@@ -162,11 +186,14 @@ export default function DiaryBookPage() {
 
   return (
     <div className="flex flex-col gap-6 h-full">
-      <div className="flex items-center justify-evenly">
-        <div className="w-72 space-y-2">
+    <div className="flex items-center justify-evenly">
+      <div className="space-y-2">
+        {/* Rango de fechas */}
+        <div className="flex items-center gap-4">
           <Popover>
             <PopoverTrigger asChild>
               <Button
+                disabled={currentDay as boolean || !!selectedMonth }
                 id="date"
                 variant={"outline"}
                 className={cn(
@@ -201,53 +228,80 @@ export default function DiaryBookPage() {
               />
             </PopoverContent>
           </Popover>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-          </div>
+          {/* Solo mes */}
+          <Label>
+            Seleccionar Mes
+            <Input
+              type="month"
+              value={selectedMonth || ""}
+              onChange={(e) => {
+                setSelectedMonth(e.target.value);
+                setCurrentDay(false);
+                setDate(undefined);
+              }}
+              disabled={currentDay as boolean}
+            />
+          </Label>
+          {/* Dia Actual */}
+          <Label>
+            Dia Actual
+            <Checkbox
+              checked={currentDay}
+              onCheckedChange={(checked) => {
+                setCurrentDay(checked);
+                setSelectedMonth(null);
+                setDate(undefined);
+              }}
+            />
+          </Label>
         </div>
-        <Button onClick={handleClick} disabled={isLoading}>
-          {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
+          <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+        </div>
       </div>
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        {/* Comentado pero podria ser util si se requiere en algun momento */}
-        {/* <DialogTrigger asChild>
-          <Button variant="outline" className="hidden">
-            Mostrar Links
-          </Button>
-        </DialogTrigger> */}
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Archivos Generados</DialogTitle>
-            <DialogDescription>
-              Puedes descargar los reportes generados a continuación:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex space-x-4">
-            {/* {excelLink && (
-              <Button onClick={() => window.open(excelLink ?? "", "_self")}>
-                <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
-              </Button>
-            )} */}
-            {pdfLink && (
-              <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
-                <FileText className="mr-2 h-4 w-4" /> Descargar PDF
-              </Button>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-      <DataTable columns={columns} data={generatedFiles} />
-      <DocViewer
-        activeDocument={activeDocument}
-        onDocumentChange={handleDocumentChange}
-        key={viewerKey}
-        style={{ height: 1000 }}
-        documents={docs}
-        pluginRenderers={[PDFRenderer, MSDocRenderer]}
-        language="es"
-      />
+      <Button onClick={handleClick} disabled={isLoading}>
+        {isLoading ? "Generando Reporte..." : "Generar Reporte"}
+      </Button>
     </div>
+    <Dialog open={showDialog} onOpenChange={setShowDialog}>
+      {/* Comentado pero podria ser util si se requiere en algun momento */}
+      {/* <DialogTrigger asChild>
+        <Button variant="outline" className="hidden">
+          Mostrar Links
+        </Button>
+      </DialogTrigger> */}
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Archivos Generados</DialogTitle>
+          <DialogDescription>
+            Puedes descargar los reportes generados a continuación:
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex space-x-4">
+          {/* {excelLink && (
+            <Button onClick={() => window.open(excelLink ?? "", "_self")}>
+              <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
+            </Button>
+          )} */}
+          {pdfLink && (
+            <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
+              <FileText className="mr-2 h-4 w-4" /> Descargar PDF
+            </Button>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+    <DataTable columns={columns} data={generatedFiles} />
+    <DocViewer
+      activeDocument={activeDocument}
+      onDocumentChange={handleDocumentChange}
+      key={viewerKey}
+      style={{ height: "100%" }}
+      documents={docs}
+      pluginRenderers={[PDFRenderer, MSDocRenderer]}
+      language="es"
+    />
+  </div>
   );
 }
