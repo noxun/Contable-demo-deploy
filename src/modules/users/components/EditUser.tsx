@@ -1,142 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { IUserResponse } from "../interface/users";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
-import { fetchAllRoles, fetchUserRoles } from '@/lib/data';
-import useUserStore from '@/lib/userStore';
-import useToken from '@/modules/shared/hooks/useToken';
-import { cn } from '@/lib/utils';
+import React, { useEffect, useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Form } from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import { useRolesData } from '@user/hooks/useRolesData'
+import { useUpdateUser } from '@user/hooks/useUpdateMutation'
+import { FormValues, IUserResponse, Role } from "@user/types/users.d"
 
-interface FormValues {
-  name: string;
-  username: string;
-  email: string;
-  fatherLastName: string;
-  motherLastName: string;
-  ci: string;
-  status: string;
-  roles: number[];
-}
 
-interface Role {
-  id: number;
-  name: string;
-  main: boolean;
-  nameRef: number;
-  rolsList?: Role[];
-}
 
 interface EditUserProps {
-  isOpen: boolean;
-  onClose: () => void;
-  user: IUserResponse;
+  onCloseDialog: () => void
+  userToEdit: IUserResponse
+  token: string
 }
 
-const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
-  const { token } = useToken();
-  const { control, register, handleSubmit, reset, setValue, watch } = useForm<FormValues>({
+export const EditUser = ({ onCloseDialog, userToEdit, token }: EditUserProps) => {
+
+  const [expandedRoles, setExpandedRoles] = useState<number[]>([])
+  const form = useForm<FormValues>({
     defaultValues: {
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      fatherLastName: user.fatherLastName,
-      motherLastName: user.motherLastName,
-      ci: user.ci,
-      status: user.status,
+      name: userToEdit.name,
+      username: userToEdit.username,
+      email: userToEdit.email,
+      fatherLastName: userToEdit.fatherLastName,
+      motherLastName: userToEdit.motherLastName,
+      ci: userToEdit.ci,
+      status: userToEdit.status,
       roles: [],
     },
-  });
-
-  const [expandedRoles, setExpandedRoles] = useState<number[]>([]);
-
-  const getLoginData = useUserStore(state => state.getLoginData);
-  const loginData = getLoginData();
-  const userId = loginData?.user.id;
-
-  const { data: userRoles, isPending: isPendingUserRoles } = useQuery({
-    queryKey: ["userRoles", userId],
-    queryFn: () => fetchUserRoles(userId!),
-    enabled: !!userId,
-  });
-
-  const { data: allRoles } = useQuery({
-    queryKey: ["allRoles"],
-    queryFn: fetchAllRoles,
-  });
-
-  const selectedRoles = watch('roles');
+  })
+  const { control, register, handleSubmit, setValue, watch } = form
+  const { userRoles, allRoles } = useRolesData(userToEdit.id)
+  const { mutate: updateUser } = useUpdateUser(token as string, userToEdit.id, onCloseDialog)
 
   useEffect(() => {
-    if (userRoles) {
-      const userRoleIds = userRoles.map(role => role.id);
-      setValue('roles', userRoleIds);
-      setExpandedRoles(userRoles.filter(role => role.main).map(role => role.id));
+    if (userRoles && userRoles.length > 0) {
+      const userRoleIds = userRoles.map(role => role.id)
+      setValue('roles', userRoleIds)
+      setExpandedRoles(userRoles.filter(role => role.main).map(role => role.id))
     }
-  }, [userRoles, setValue]);
+  }, [userRoles, setValue])
 
-  const queryClient = useQueryClient();
-  const updateUserMutation = useMutation({
-    mutationFn: async (data: FormValues) => {
-      const formattedRols = data.roles.map(roleId => ({ rolId: roleId }));
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/`, 
-        { id: user.id, ...data, rols: formattedRols },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    },
-    onError: (error: any) => {
-      toast.error(error.message);
-    },
-    onSuccess: () => {
-      toast.success("Usuario Editado");
-      queryClient.invalidateQueries({ queryKey: ["User"] });
-      queryClient.invalidateQueries({ queryKey: ["userRoles", userId] });
-      onClose();
-    },
-  });
   const onSubmit: SubmitHandler<FormValues> = (values) => {
-    updateUserMutation.mutate(values);
-  };
+    updateUser(values)
+  }
 
   const handleRoleChange = (checked: boolean, role: Role) => {
-    const currentRoles = watch('roles');
-    let updatedRoles: number[];
+    const currentRoles = watch('roles')
+    let updatedRoles: number[]
 
     if (checked) {
-      updatedRoles = [...currentRoles, role.id];
+      updatedRoles = [...currentRoles, role.id]
       if (role.main) {
-        setExpandedRoles(prev => [...prev, role.id]);
+        setExpandedRoles((prev) => [...prev, role.id])
       }
     } else {
-      updatedRoles = currentRoles.filter(id => id !== role.id);
+      updatedRoles = currentRoles.filter((id) => id !== role.id)
+
       if (role.main) {
-        setExpandedRoles(prev => prev.filter(id => id !== role.id));
-        // Remove all subroles when main role is unchecked
-        role.rolsList?.forEach(subRole => {
-          updatedRoles = updatedRoles.filter(id => id !== subRole.id);
-        });
+        setExpandedRoles((prev) => prev.filter((id) => id !== role.id))
+
+        if (role.rolsList) {
+          role.rolsList.forEach((subRole) => {
+            updatedRoles = updatedRoles.filter((id) => id !== subRole.id)
+          })
+        }
       }
     }
-
-    setValue('roles', updatedRoles);
-  };
+    setValue('roles', updatedRoles)
+  }
 
   const renderRoleCheckbox = (role: Role) => (
-    <div key={role.id} 
-      // className={role.main ? "mb-2" : "ml-4 mb-1"}
+    <div key={role.id}
       className={cn("flex-1", {
         "mb-2": role.main,
         "ml-4 mb-1": !role.main
@@ -155,7 +95,7 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
           )}
         />
         <Label htmlFor={`role-${role.id}`} className="ml-2">
-          {role.name}
+          {role.main ? role.name : role.title}
         </Label>
       </div>
       {role.main && expandedRoles.includes(role.id) && role.rolsList && (
@@ -164,41 +104,39 @@ const EditUser = ({ isOpen, onClose, user }: EditUserProps) => {
         </div>
       )}
     </div>
-  );
+  )
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={!!userToEdit} onOpenChange={onCloseDialog}>
       <DialogContent className="min-w-[80%]">
         <DialogHeader>
           <DialogTitle>Editar Usuario</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col">
-            {/* Existing form fields */}
-            <div className="">
-              <Label htmlFor="username" className="text-right">
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col">
+              <Label htmlFor="username" className="text-left flex flex-col gap-3">
                 Usuario
+                <Input
+                  id="username"
+                  {...register("username")}
+                  className="col-span-3"
+                />
               </Label>
-              <Input
-                id="username"
-                {...register("username")}
-                className="col-span-3"
-              />
-            </div>
-            <div className="flex-1">
-              <Label>Roles</Label>
-              <div className="flex border">
-                {allRoles?.map(renderRoleCheckbox)}
+
+              <div className="flex-1">
+                <Label className='block py-3'>Roles</Label>
+                <div className="flex border mb-2">
+                  {allRoles?.map(renderRoleCheckbox)}
+                </div>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Guardar Cambios</Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button type="submit">Guardar Cambios</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
-  );
-};
-
-export default EditUser;
+  )
+}
