@@ -96,17 +96,6 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
     },
   },
   {
-    accessorKey: "taxCredit",
-    header: "Crédito Fiscal",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("taxCredit"));
-      return new Intl.NumberFormat("es-ES", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-    },
-  },
-  {
     accessorKey: "type",
     header: "Tipo",
   },
