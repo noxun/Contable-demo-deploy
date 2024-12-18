@@ -16,7 +16,7 @@ export default function ListModelSeats() {
     isPending,
   } = useQuery({
     queryKey: ["AllModelSeats"],
-    queryFn: fetchAllModelSeats,
+    queryFn: () => fetchAllModelSeats(),
   });
 
   if (modelSeats === undefined || isLoading || isPending)
