@@ -18,6 +18,7 @@
     "reports",
     "conventional-commits",
     "files",
-    "types"
+    "types",
+    "app"
   ]
 }
