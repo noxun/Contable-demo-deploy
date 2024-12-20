@@ -210,7 +210,7 @@ const ReportSection = () => {
           </DialogHeader>
           <div className="flex space-x-4">
             {pdfLink && (
-              <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
+              <Button onClick={() => window.open(pdfLink ?? "", "_blank")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
               </Button>
             )}
