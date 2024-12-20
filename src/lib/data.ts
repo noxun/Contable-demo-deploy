@@ -5,6 +5,7 @@ import {
   AccountRelation,
   Bank,
   BankExcerpt,
+  BankExtractPaymentFile,
   Branch,
   BranchToList,
   ConfigValues,
@@ -481,6 +482,16 @@ export async function registerPayment(data: FormData) {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
+}
+
+export async function fetchBankExtractFiles(bankExtractId: number){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Bank/GetFilesBankExtract/${bankExtractId}`)
+  return response.data as BankExtractPaymentFile[]
 }
 
 export async function registerUser(data: RegisterForm) {

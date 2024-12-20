@@ -14,13 +14,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
-import { importBankExcerptFromExcel, registerPayment } from "@/lib/data";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { registerPayment } from "@/lib/data";
 import { toast } from "sonner";
 
 const importBankExcerptFormSchema = z.object({
   BankDetailId: z.string(),
   File: z.instanceof(File).nullable(),
+  Number: z.coerce.number(),
+  Status: z.string(),
+  Providor: z.string(),
 });
 
 type ImportBankExcerpt = z.infer<typeof importBankExcerptFormSchema>;
@@ -38,6 +41,8 @@ export default function ImportBankExcerptRegisterPaymentForm({
     },
   });
 
+  const queryClient = useQueryClient();
+
   function onSubmit(values: ImportBankExcerpt) {
     console.log(values);
     const importBankExcerptFormData = new FormData();
@@ -50,13 +55,16 @@ export default function ImportBankExcerptRegisterPaymentForm({
 
   const importBankExcerptMutation = useMutation({
     mutationFn: registerPayment,
-    onSuccess: () =>{
-      toast.success("Archivo enviado correctamente")
+    onSuccess: () => {
+      toast.success("Archivo enviado correctamente");
+      queryClient.invalidateQueries({
+        queryKey: ["bankExtractPaymentFiles", bankExtractId],
+      });
     },
     onError: () => {
-      toast.error("Hubo un error al enviar el archivo")
-    }
-  })
+      toast.error("Hubo un error al enviar el archivo");
+    },
+  });
 
   return (
     <Form {...importBankExcerptForm}>
@@ -76,14 +84,56 @@ export default function ImportBankExcerptRegisterPaymentForm({
                   }
                 />
               </FormControl>
-              <FormDescription>
-                Archivo en formato .xlsx
-              </FormDescription>
+              <FormDescription>Archivo en formato .xlsx</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button disabled={importBankExcerptMutation.isPending} type="submit">Guardar</Button>
+        <FormField
+          control={importBankExcerptForm.control}
+          name="Number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Numero</FormLabel>
+              <FormControl>
+                <Input placeholder="Numero" {...field} />
+              </FormControl>
+              <FormDescription>Numero del documento</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={importBankExcerptForm.control}
+          name="Status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estado</FormLabel>
+              <FormControl>
+                <Input placeholder="Estado" {...field} />
+              </FormControl>
+              <FormDescription>Estado del documento</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={importBankExcerptForm.control}
+          name="Providor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Proveedor</FormLabel>
+              <FormControl>
+                <Input placeholder="Proveedor" {...field} />
+              </FormControl>
+              <FormDescription>Proveedor</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={importBankExcerptMutation.isPending} type="submit">
+          Guardar
+        </Button>
       </form>
     </Form>
   );

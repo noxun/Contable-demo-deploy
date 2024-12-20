@@ -325,3 +325,10 @@ export type InvoiceRegistryResponseByType = {
   updatedById: any
   deletedById: any
 }
+
+export type BankExtractPaymentFile = {
+  urlFile: string;
+  number: number;
+  status: string;
+  providor: string;
+}

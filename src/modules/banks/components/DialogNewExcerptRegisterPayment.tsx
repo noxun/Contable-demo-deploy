@@ -10,6 +10,7 @@ import {
 import { Coins, File } from "lucide-react";
 import ImportBankExcerptForm from "./ImportBankExcerptForm";
 import ImportBankExcerptRegisterPaymentForm from "./ImportBankExcerptRegisterPaymentForm";
+import ListRegisteredPayments from "./ListRegisteredPayments";
 
 export default function DialogNewExcerptRegisterPayment({
   bankExtractId,
@@ -27,9 +28,10 @@ export default function DialogNewExcerptRegisterPayment({
         <DialogHeader>
           <DialogTitle>Registro de Pago</DialogTitle>
           <DialogDescription>
-            Sube el registro de pagos
+            Sube el registro de pagos 
           </DialogDescription>
         </DialogHeader>
+        <ListRegisteredPayments bankExtractId={bankExtractId as number}/>
         <ImportBankExcerptRegisterPaymentForm bankExtractId={bankExtractId}/>
       </DialogContent>
     </Dialog>
