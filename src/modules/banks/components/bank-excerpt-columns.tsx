@@ -8,6 +8,7 @@ import DialogAccountDetails from "./DialogAccountDetails";
 import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
 import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 import DialogAccountDetailsDollar from "./DialogAccountDetailsDollar";
+import DialogFormNewVoucher from "./DialogFormNewVoucher";
 
 export function columns(
   bankId: string | number,
@@ -60,6 +61,7 @@ export function columns(
         const bankExtract = row.original;
         return (
           <div className="flex items-center gap-2">
+            <DialogFormNewVoucher/>
             <RegisterTrazoButton
               bankId={bankId}
               bankExtractId={bankExtract.id}
