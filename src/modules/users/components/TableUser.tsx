@@ -1,10 +1,11 @@
 "use client";
+
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -12,44 +13,36 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
-import EditUser from "./EditUser";
-import { useState } from "react";
-import { IUserResponse } from "../interface/users";
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react"
+import useToken from "@/modules/shared/hooks/useToken"
+import { IUserResponse } from "@user/types/users.d"
+import { EditUser } from "@user/components/EditUser"
+import { DeleteUser } from "@user/components/DeleteUser"
+import { useDialogState } from "@user/hooks/useDialogState"
 
 export const TableUser = (props: { data: IUserResponse[] }) => {
-  const { data } = props;
-  const [isEditUserOpen, setIsEditUserOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUserResponse | null>(null);
-
-  const openEditUser = (user: IUserResponse) => {
-    setSelectedUser(user);
-    setIsEditUserOpen(true);
-  };
-
-  const closeEditUser = () => {
-    setIsEditUserOpen(false);
-    setSelectedUser(null);
-  };
+  const { data } = props
+  const { dialogData, openDialog, closeDialog } = useDialogState<IUserResponse>()
+  const { token } = useToken()
 
   const columns: ColumnDef<IUserResponse>[] = [
     {
       accessorKey: "name",
       header: "Nombre Completo",
       cell: ({ row }) => {
-        const user = row.original;
+        const user = row.original
         return (
           <div>{`${user.name} ${user.fatherLastName} ${user.motherLastName}`}</div>
-        );
+        )
       },
     },
     {
@@ -68,7 +61,7 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const user = row.original;
+        const user = row.original
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -79,22 +72,24 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => openEditUser(user)}>
+              <DropdownMenuItem onClick={() => openDialog('edit', user)}>
                 Editar
               </DropdownMenuItem>
-              <DropdownMenuItem>Eliminar</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openDialog('delete', user)}>
+                Eliminar
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  });
+  })
 
   return (
     <div className="rounded-md border">
@@ -107,9 +102,9 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </TableHead>
               ))}
             </TableRow>
@@ -138,13 +133,15 @@ export const TableUser = (props: { data: IUserResponse[] }) => {
           )}
         </TableBody>
       </Table>
-      {selectedUser && (
-        <EditUser
-          isOpen={isEditUserOpen}
-          onClose={closeEditUser}
-          user={selectedUser}
-        />
-      )}
+      {
+        dialogData.user && token && (
+          (dialogData.type === 'edit') ? (
+            <EditUser onCloseDialog={closeDialog} userToEdit={dialogData.user} token={token} />
+          ) : dialogData.type === 'delete' ? (
+            <DeleteUser userToDelete={dialogData.user} token={token} onCloseDialog={closeDialog} />
+          ) : null
+        )
+      }
     </div>
-  );
-};
+  )
+}
