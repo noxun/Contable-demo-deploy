@@ -47,7 +47,7 @@ export function columns(
             registeredType={bankExtract.type}
             bankExtractId={bankExtract.id}
             bankId={bankId}
-            hasBeenRegisteredToAccount={bankExtract.accountId !== 0}
+            hasBeenRegisteredToAccount={bankExtract.accountId !== 0 || bankExtract.accountingEntry}
             extractAccountId={bankExtract.accountId}
             selectedAccount={selectedAccounts[bankExtract.id]}
             onSelectChange={onSelectChange}
@@ -61,7 +61,7 @@ export function columns(
         const bankExtract = row.original;
         return (
           <div className="flex items-center gap-2">
-            <DialogFormNewVoucher/>
+            <DialogFormNewVoucher bankId={bankId as string} bankExtractId={bankExtract.id}/>
             <RegisterTrazoButton
               bankId={bankId}
               bankExtractId={bankExtract.id}

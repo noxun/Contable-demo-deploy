@@ -10,7 +10,14 @@ import {
 import { useState } from "react";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 import { Label } from "@/components/ui/label";
-export default function FormNewVoucherWithTypeSelect() {
+
+type FormNewVoucherWithTypeSelectProps = {
+  bankId?: string;
+  bankExtractId?: number ;
+};
+
+
+export default function FormNewVoucherWithTypeSelect({bankId,bankExtractId}: FormNewVoucherWithTypeSelectProps) {
   const [selectedType, setSelectedType] = useState("0");
   return (
     <>
@@ -32,7 +39,7 @@ export default function FormNewVoucherWithTypeSelect() {
           </SelectContent>
         </Select>
       </div>
-      <FormNewVoucher type={selectedType as VoucherType} />
+      <FormNewVoucher type={selectedType as VoucherType} bankId={bankId} bankExtractId={bankExtractId} />
     </>
   );
 }

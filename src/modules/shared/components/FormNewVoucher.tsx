@@ -10,7 +10,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { IBank } from "@/modules/banks/interface/banks";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Account } from "@/modules/account/types/account";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -50,6 +50,7 @@ import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import useToken from "../hooks/useToken";
 import {
+  changeBankExtractStatus,
   fetchAllModelSeats,
   fetchBranchList,
   fetchModelSeatsItems,
@@ -63,10 +64,14 @@ import useModelSeats from "../hooks/useModelSeats";
 type FormNewVoucherProps = {
   type: VoucherType;
   routeType?: VoucherTypeRoute;
+  bankId?: string;
+  bankExtractId?: number;
 };
 
 export default function FormNewVoucher({
   type,
+  bankId,
+  bankExtractId,
   routeType,
 }: FormNewVoucherProps) {
   const router = useRouter();
@@ -106,6 +111,21 @@ export default function FormNewVoucher({
     enabled: isTokenReady,
     staleTime: 1000 * 60 * 10,
   });
+
+  const changeBankExtractStatusMutation = useMutation({
+    mutationFn: changeBankExtractStatus,
+    onSuccess: () => {
+      toast.success("Registrado correctamente")
+      if(bankId){
+        queryClient.invalidateQueries({queryKey: ["bankExcerpt", bankId],})
+      }
+    },
+    onError: (error: AxiosError) => {
+      toast.error("Error al registrar")
+      console.log(error)
+    }
+  })
+
 
   const {
     data: modelSeats,
@@ -153,6 +173,11 @@ export default function FormNewVoucher({
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
       // router.push("/dashboard/transactions/new");
+
+      if(bankId && bankExtractId){
+        changeBankExtractStatusMutation.mutate(bankExtractId);
+      }
+
       setVoucherItems([]);
       voucherForm.reset();
     },
@@ -231,7 +256,7 @@ export default function FormNewVoucher({
       coin: "BOB",
       checkNum: "",
       gloss: "",
-      bankId: null,
+      bankId: bankId ?? null,
     },
   });
 

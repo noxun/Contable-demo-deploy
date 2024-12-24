@@ -494,6 +494,16 @@ export async function fetchBankExtractFiles(bankExtractId: number){
   return response.data as BankExtractPaymentFile[]
 }
 
+export async function changeBankExtractStatus(bankExtractId: number){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/Bank/ChangeStatus/${bankExtractId}`)
+  return response.data as boolean
+}
+
 export async function registerUser(data: RegisterForm) {
   let token;
   if (typeof window !== "undefined") {

@@ -11,7 +11,15 @@ import {
 import FormNewVoucherWithTypeSelect from "@/modules/shared/components/FormNewVoucherWithTypeSelect";
 import { ReceiptText } from "lucide-react";
 
-export default function DialogFormNewVoucher() {
+type DialogFormNewVoucherProps = {
+  bankId: string;
+  bankExtractId: number;
+};
+
+export default function DialogFormNewVoucher({
+  bankId,
+  bankExtractId,
+}: DialogFormNewVoucherProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -22,11 +30,9 @@ export default function DialogFormNewVoucher() {
       <DialogContent className="min-w-[80%] h-[80%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nueva Transaccion</DialogTitle>
-          <DialogDescription>
-            Modal para nueva transacción
-          </DialogDescription>
+          <DialogDescription>Modal para nueva transacción</DialogDescription>
         </DialogHeader>
-        <FormNewVoucherWithTypeSelect/>
+        <FormNewVoucherWithTypeSelect bankId={bankId} bankExtractId={bankExtractId} />
       </DialogContent>
     </Dialog>
   );
