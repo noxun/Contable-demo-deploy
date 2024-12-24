@@ -19,6 +19,7 @@
     "conventional-commits",
     "files",
     "types",
-    "app"
+    "app",
+    "transactions"
   ]
 }
