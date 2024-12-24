@@ -33,142 +33,25 @@ import DocViewer, {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { PDFViewer } from "@react-pdf/renderer";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2024, 0, 20), 20),
-  });
-  const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
-
-  const [currentDay, setCurrentDay] = useState<boolean | "indeterminate">(
-    false
-  );
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
-
-  // --- Estados de los links ---
-  // const [excelLink, setExcelLink] = useState<string | null>(null);
-  const [pdfLink, setPdfLink] = useState<string | null>(null);
-
-  // --- Estados de carga o visualizacion ---
-  const [isLoading, setIsLoading] = useState(false);
+  // fecha
+  const initialDateRange: DateRange = {
+    from: new Date(Date.now()),
+  }
+  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
+  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
+  const [inSus, setInSus] = useState(false);
 
-  // --- Estados de los documentos para la tabla y el visor ---
-  const [docs, setDocs] = useState<{ uri: string }[]>([]);
-  const [generatedFiles, setGeneratedFiles] = useState<
-    { type: string; date: string; link: string }[]
-  >([]);
-
-  /*
-    Estos estados controlan la llave y el documento activo actual del visor
-    debido a un error en la libreria, se necesita esto mas la funcion
-    handleDocumentPage para rerenderizar el visor de archivos
-    https://github.com/cyntler/react-doc-viewer/issues/161
-    Probablemente esto sea arreglado en la proxima release de la libreria
-    pero de momento este es el fix que se tiene.
-   */
-  const [viewerKey, setViewerKey] = useState(0);
-  const [activeDocument, setActiveDocument] = useState(docs[0]);
-
-  const handleDocumentChange = (document: any) => {
-    setActiveDocument(document);
-    setViewerKey((prevKey) => prevKey + 1);
-  };
-
-  useEffect(() => {
-    setViewerKey((prevKey) => prevKey + 1);
-  }, [docs]);
-
-  // --- Logica del componente ---
-  const handleClick = async () => {
-
-    let initDate: Date | null = null;
-    let endDate: Date | null = null;
-
-    if (currentDay) {
-      const today = new Date();
-      initDate = today;
-      endDate = today;
-    } else if (selectedMonth) {
-      const [year, month] = selectedMonth.split("-").map(Number);
-      initDate = new Date(year, month - 1, 1);
-      endDate = new Date(year, month, 0);
-    } else if (date?.from && date?.to) {
-      initDate = date.from;
-      endDate = date.to;
-    }
+  const handleChangeIsSus = () => setInSus(!inSus)
 
 
-    if (initDate && endDate) {
-      setIsLoading(true);
-      // setExcelLink(null);
-      setPdfLink(null);
-      setDocs([]);
-      toast("Generando reporte...");
-      try {
-        // Generar el reporte de Excel
-        // const excelResponse = await axios.get(
-        //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/DiaryBook`,
-        //   {
-        //     params: {
-        //       InitDate: format(date.from, "yyyy/MM/dd"),
-        //       EndDate: format(date.to, "yyyy/MM/dd"),
-        //       type: "xlsx",
-        //       inSus: inSus,
-        //     },
-        //     responseType: "text",
-        //   }
-        // );
-        // Generar el reporte de PDF
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/DiaryBook`,
-          {
-            params: {
-              InitDate: format(initDate, "yyyy/MM/dd"),
-              EndDate: format(endDate, "yyyy/MM/dd"),
-              type: "pdf",
-              inSus: inSus,
-            },
-            responseType: "text",
-          }
-        );
-        const currentDate = new Date().toLocaleString();
-        if (pdfResponse.data) {
-          setPdfLink(pdfResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "PDF",
-              date: currentDate,
-              link: pdfResponse.data,
-            },
-          ]);
-        }
-        // if (excelResponse.data) {
-        //   // setExcelLink(excelResponse.data);
-        //   setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
-        //   setGeneratedFiles((prevFiles) => [
-        //     ...prevFiles,
-        //     {
-        //       type: "Excel",
-        //       date: currentDate,
-        //       link: excelResponse.data,
-        //     },
-        //   ]);
-        // }
-        setShowDialog(true);
-        toast.success("Reporte generado exitosamente");
-      } catch (error) {
-        console.error("Error al generar los reportes", error);
-        toast.error("Error al generar el reporte, intente nuevamente");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
 
   const columns = [
     { header: "Tipo", accessorKey: "type" },
@@ -184,124 +67,47 @@ export default function DiaryBookPage() {
     },
   ];
 
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    if (startDate && endDate) {
+      setDateRange({
+        from: startDate,
+        to: endDate
+      })
+      console.log("Fechas seleccionadas:", dateRange);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-6 h-full">
-    <div className="flex items-center justify-evenly">
-      <div className="space-y-2">
-        {/* Rango de fechas */}
-        <div className="flex items-center gap-4">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                disabled={currentDay as boolean || !!selectedMonth }
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                      {format(date.to, "LLL dd, y", { locale: es })}
-                    </>
-                  ) : (
-                    format(date.from, "LLL dd, y", { locale: es })
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                locale={es}
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-          {/* Solo mes */}
-          <Label>
-            Seleccionar Mes
-            <Input
-              type="month"
-              value={selectedMonth || ""}
-              onChange={(e) => {
-                setSelectedMonth(e.target.value);
-                setCurrentDay(false);
-                setDate(undefined);
-              }}
-              disabled={currentDay as boolean}
-            />
-          </Label>
-          {/* Dia Actual */}
-          <Label>
-            Dia Actual
-            <Checkbox
-              checked={currentDay}
-              onCheckedChange={(checked) => {
-                setCurrentDay(checked);
-                setSelectedMonth(null);
-                setDate(undefined);
-              }}
-            />
-          </Label>
+    <>
+      <div className="flex items-center justify-evenly">
+        {/* seccion del selector de fecha y de cambio */}
+        <div className="space-y-2">
+          <DateSelector onDateChange={handleDateChange} />
+          <div className="flex items-center space-x-2">
+            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-          <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-        </div>
+        {/* seccion para generar el reporte y descargar */}
+        <ReportGeneratorFile
+          dateRange={dateRange!}  // Asegúrate de que `dateRange` no sea `undefined` aquí
+          inSus={inSus}
+          reportNamePath="diarybook" // Ruta del reporte en el backend
+          setGeneratedFiles={setGeneratedFiles}
+          setShowDialog={setShowDialog}
+          setFile={setPdfFile} // Pasas la función para guardar el PDF generado
+        />
       </div>
-      <Button onClick={handleClick} disabled={isLoading}>
-        {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-      </Button>
-    </div>
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      {/* Comentado pero podria ser util si se requiere en algun momento */}
-      {/* <DialogTrigger asChild>
-        <Button variant="outline" className="hidden">
-          Mostrar Links
-        </Button>
-      </DialogTrigger> */}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Archivos Generados</DialogTitle>
-          <DialogDescription>
-            Puedes descargar los reportes generados a continuación:
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex space-x-4">
-          {/* {excelLink && (
-            <Button onClick={() => window.open(excelLink ?? "", "_self")}>
-              <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
-            </Button>
-          )} */}
-          {pdfLink && (
-            <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
-              <FileText className="mr-2 h-4 w-4" /> Descargar PDF
-            </Button>
-          )}
+
+      <DataTable columns={columns} data={generatedFiles} />
+      {pdfFile && (
+        <div style={{ height: "500px" }}>
+          <PDFViewer style={{ width: "100%", height: "100%" }}>
+            {pdfFile}
+          </PDFViewer>
         </div>
-      </DialogContent>
-    </Dialog>
-    <DataTable columns={columns} data={generatedFiles} />
-    <DocViewer
-      activeDocument={activeDocument}
-      onDocumentChange={handleDocumentChange}
-      key={viewerKey}
-      style={{ height: "100%" }}
-      documents={docs}
-      pluginRenderers={[PDFRenderer, MSDocRenderer]}
-      language="es"
-    />
-  </div>
+      )}
+
+    </>
   );
 }
