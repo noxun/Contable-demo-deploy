@@ -33,6 +33,7 @@ import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccount
 import { RegisterForm } from "@/app/dashboard/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
+import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -110,6 +111,24 @@ export async function editVoucher(data: Voucher) {
   }
   setAuthToken(token);
   const response = await api.put(`/api/Voucher`, data);
+  return response.data;
+}
+
+export async function deleteVoucher({
+  voucherId,
+  voucherType,
+}: VoucherDeleteVariables) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.delete("/api/Voucher", {
+    params: {
+      id: voucherId,
+      type: voucherType,
+    },
+  });
   return response.data;
 }
 
@@ -484,24 +503,26 @@ export async function registerPayment(data: FormData) {
   return response.data;
 }
 
-export async function fetchBankExtractFiles(bankExtractId: number){
+export async function fetchBankExtractFiles(bankExtractId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/Bank/GetFilesBankExtract/${bankExtractId}`)
-  return response.data as BankExtractPaymentFile[]
+  const response = await api.get(
+    `/api/Bank/GetFilesBankExtract/${bankExtractId}`
+  );
+  return response.data as BankExtractPaymentFile[];
 }
 
-export async function changeBankExtractStatus(bankExtractId: number){
+export async function changeBankExtractStatus(bankExtractId: number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post(`/api/Bank/ChangeStatus/${bankExtractId}`)
-  return response.data as boolean
+  const response = await api.post(`/api/Bank/ChangeStatus/${bankExtractId}`);
+  return response.data as boolean;
 }
 
 export async function registerUser(data: RegisterForm) {
@@ -548,10 +569,7 @@ export async function postInvoiceRegistry(data: NewInvoiceForm) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post(
-    `/api/Invoice/`,
-    data
-  );
+  const response = await api.post(`/api/Invoice/`, data);
   return response.data;
 }
 

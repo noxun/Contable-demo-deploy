@@ -17,6 +17,8 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+import { ReceiptText } from "lucide-react";
 
 const tw = createTw({
   theme: {
@@ -86,7 +88,8 @@ export default function PdfVoucher({
 
   return (
     <Dialog>
-      <DialogTrigger>Ver Reporte</DialogTrigger>
+      {/* <DialogTrigger asChild><Button size="icon" variant="outline"><ReceiptText className="size-4"/></Button></DialogTrigger> */}
+      <DialogTrigger> Ver Comprobante</DialogTrigger>
       <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
         <PDFViewer showToolbar={true} className="h-full w-full">
           <Document>

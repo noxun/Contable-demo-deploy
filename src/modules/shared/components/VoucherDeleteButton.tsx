@@ -1,7 +1,7 @@
 "use client";
 import { PropsWithChildren } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { VoucherType } from "../types/sharedTypes";
@@ -36,7 +36,10 @@ export default function VoucherDeleteButton({
       toast.success("Voucher borrado exitosamente");
       queryClient.invalidateQueries({ queryKey: ["VoucherIncome"] });
     },
-    onError: () => {},
+    onError: (error: AxiosError) => {
+      toast.error("Error al borrar el Voucher")
+      console.log(error);
+    },
   });
 
   return (

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Voucher, VoucherType, VoucherTypeRoute } from "../types/sharedTypes";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ import Link from "next/link";
 import VoucherDeleteButton from "./VoucherDeleteButton";
 import PdfVoucher from "./PdfVoucher";
 import { format } from "date-fns";
+import DeleteVoucherDialog from "./DeleteVoucherDialog";
 
 export function columns(
   voucherType: VoucherType,
@@ -38,9 +39,9 @@ export function columns(
     {
       accessorKey: "voucherDate",
       header: "Fecha",
-      cell: ({row}) => {
+      cell: ({ row }) => {
         return format(row.getValue("voucherDate"), "yyyy-MM-dd");
-      }
+      },
     },
     {
       accessorKey: "bankId",
@@ -56,11 +57,21 @@ export function columns(
     },
     {
       id: "actions",
+      header: "Acciones",
       enableHiding: false,
       cell: ({ row }) => {
         const voucher = row.original;
         return (
-          <AlertDialog>
+          <div className="flex items-center justify-between">
+            <DeleteVoucherDialog
+              voucherId={voucher.id!}
+              voucherType={voucher.type?.toString() as VoucherType}
+            />
+            <Button asChild variant="outline" size="icon">
+              <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}>
+                <Pencil className="size-4" />
+              </Link>
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -70,51 +81,17 @@ export function columns(
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}
-                  >
-                    Editar
-                  </Link>
-                </DropdownMenuItem>
                 {/* sería interesante probar también con asChild */}
                 <DropdownMenuItem
                   onSelect={(e) => {
                     e.preventDefault();
                   }}
                 >
-                  {/* <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/pdf`}>Reporte</Link> */}
-                  <PdfVoucher id={voucher.id!} type={voucherType}/>
+                  <PdfVoucher id={voucher.id!} type={voucherType} />
                 </DropdownMenuItem>
-                <AlertDialogTrigger asChild>
-                  <DropdownMenuItem>
-                    <span>Eliminar</span>
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Esta absolutamente seguro?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta acción no puede revertirse. Esto borrara permanentemente
-                  el voucher con id: {voucher.id}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <VoucherDeleteButton
-                    voucherType={voucherType}
-                    id={voucher!.id!}
-                  >
-                    Eliminar
-                  </VoucherDeleteButton>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          </div>
         );
       },
     },
