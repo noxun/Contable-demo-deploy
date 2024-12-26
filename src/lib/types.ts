@@ -332,3 +332,8 @@ export type BankExtractPaymentFile = {
   status: string;
   providor: string;
 }
+
+export type TrazoCompany = {
+  razonSocial: string;
+  id: number;
+}

@@ -20,6 +20,7 @@ import {
   Role,
   RoleMenu,
   SiatMotionAccount,
+  TrazoCompany,
   TrazoInternCode,
   TypeCompany,
   Ufv,
@@ -433,6 +434,26 @@ export async function fetchTrazoInternCodes() {
   setAuthToken(token);
   const response = await api.get("/api/Trazo/interncode");
   return response.data as TrazoInternCode[];
+}
+
+export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/api/Trazo/interncodes/companies/${companyId}`);
+  return response.data as TrazoInternCode[];
+}
+
+export async function fetchTrazoCompanies() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get("/api/Trazo/companies");
+  return response.data as TrazoCompany[];
 }
 
 export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
