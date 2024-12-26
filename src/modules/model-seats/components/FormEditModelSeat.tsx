@@ -6,6 +6,17 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Plus } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import NoMenuSelect from "@/components/custom/no-menu-select";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -62,16 +73,15 @@ export default function FormEditModelSeat({
   const editModelSeatMutation = useMutation({
     mutationFn: putModelSeat,
     onError: (error: AxiosError) => {
-      console.log(error)
+      console.log(error);
       toast.error("Hubo un error al modificar el asiento modelo");
     },
     onSuccess: () => {
       toast.success("Asiento Modelo editado correctamente");
-      queryClient.invalidateQueries({queryKey:["AllModelSeats"]});
+      queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
       router.push("/dashboard/model-seats");
-    }
-  })
-
+    },
+  });
 
   const editModelSeatForm = useForm<EditModelSeat>({
     resolver: zodResolver(editModelSeatSchema),
@@ -83,7 +93,7 @@ export default function FormEditModelSeat({
     },
   });
 
-  console.log(editModelSeatForm.formState.errors)
+  console.log(editModelSeatForm.formState.errors);
 
   const { fields, append, remove } = useFieldArray({
     control: editModelSeatForm.control,
@@ -98,7 +108,7 @@ export default function FormEditModelSeat({
   const handleAdd = () => {
     append({
       //TODO: agregar mejor validacion a esto
-      accountId: 0,//ojo con esto eh
+      accountId: 0, //ojo con esto eh
       debit: false,
       asset: false,
       percentage: 0,
@@ -131,7 +141,10 @@ export default function FormEditModelSeat({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Transaction Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value.toString()}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccione un tipo" />
@@ -151,102 +164,129 @@ export default function FormEditModelSeat({
         {isLoading && accountsList === undefined ? (
           <div>Cargando cuentas..</div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Cuentas</h3>
-              <Button type="button" variant="outline" onClick={handleAdd}>
-                Agregar Cuenta
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-medium">Asiento Modelo</h2>
+              <Button type="button" onClick={handleAdd}>
+                <span className="mr-2">Adicionar Item</span>
+                <Plus size={18} />
               </Button>
             </div>
-
-            {fields.map((fieldTop, index) => (
-              <div key={fieldTop.id} className="p-4 border rounded-lg space-y-4">
-                <div className="flex justify-end">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-                <FormField
-                  control={editModelSeatForm.control}
-                  name={`accounts.${index}.accountId`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cuenta</FormLabel>
-                      <FormControl>
-                        <CustomSelect
-                          value={(accountsList ?? []).find(
-                            (account) => account.id === fieldTop.accountId
-                          ) ?? []}
-                          onChange={(option) => {
-                            field.onChange(option?.id);
-                          }}
-                          options={accountsList}
-                          getOptionLabel={(account) => account.description}
-                          getOptionValue={(account) => account.id.toString()}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={editModelSeatForm.control}
-                    name={`accounts.${index}.debit`}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                        <FormLabel>Es Debe</FormLabel>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={editModelSeatForm.control}
-                    name={`accounts.${index}.asset`}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                        <FormLabel>Es haber</FormLabel>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={editModelSeatForm.control}
-                  name={`accounts.${index}.percentage`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Porcentaje</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            ))}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Cuenta</TableHead>
+                  <TableHead>Es Debe</TableHead>
+                  <TableHead>Es Haber</TableHead>
+                  <TableHead>Porcentaje</TableHead>
+                  <TableHead>Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {fields.map((parentField, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="h-fit w-72">
+                      <FormField
+                        name={`accounts.${index}.accountId`}
+                        control={editModelSeatForm.control}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <NoMenuSelect
+                                placeholder="Selecciona una Cuenta.."
+                                options={accountsList}
+                                getOptionLabel={(account) =>
+                                  `${account.code} - ${account.description}`
+                                }
+                                getOptionValue={(account) =>
+                                  account.id.toString()
+                                }
+                                onChange={(option) => {
+                                  field.onChange(option?.id);
+                                }}
+                                value={(Array.isArray(accountsList)
+                                  ? accountsList
+                                  : []
+                                ).find(
+                                  (account) =>
+                                    account.id === parentField.accountId
+                                )}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormField
+                        control={editModelSeatForm.control}
+                        name={`accounts.${index}.debit`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={(checked) => {
+                                  field.onChange(checked);
+                                  editModelSeatForm.setValue(
+                                    `accounts.${index}.asset`,
+                                    !checked
+                                  );
+                                }}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormField
+                        control={editModelSeatForm.control}
+                        name={`accounts.${index}.asset`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={(checked) => {
+                                  field.onChange(checked);
+                                  editModelSeatForm.setValue(
+                                    `accounts.${index}.debit`,
+                                    !checked
+                                  );
+                                }}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <FormField
+                        name={`accounts.${index}.percentage`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        type="button"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
 
