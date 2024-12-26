@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   },
   col15: { width: "15%" },
   col20: { width: "20%" },
+  col50: { width: "50%" },
   col55: { width: "55%" },
   col60: { width: "60%" },
   col70: { width: "70%" },
@@ -124,16 +125,17 @@ export const DiaryBookTemplate = ({
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
-        <Text style={{ fontSize: 20, textAlign: "center", paddingBottom: 5 }}>
-          Libro Diario
-        </Text>
+        <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5 }}>
+          <Text style={{ fontSize: 20 }}>
+            Libro Diario
+          </Text>
+          <Text style={styles.thCell}>Expresado en {moneyType}</Text>
+        </View>
         <View style={[styles.trCell, { paddingBottom: 5, borderTopWidth: 1 }]}>
           <View style={styles.col20}>
-
             <Text style={[styles.thCell]}>Fecha</Text>
           </View>
           <View style={[styles.col60, { textAlign: "center" }]}>
-            <Text style={styles.thCell}>Expresado en {moneyType}</Text>
             <Text style={styles.thCell}>{messageDate}</Text>
           </View>
           <View style={styles.col20}>
@@ -147,8 +149,8 @@ export const DiaryBookTemplate = ({
             { borderBottomWidth: 1, borderTopWidth: 1, fontFamily: "Helvetica-Bold" },
           ]}
         >
-          <Text style={[styles.thCell, styles.col15]}>Codigo</Text>
-          <Text style={[styles.thCell, styles.col55]}>Detalle</Text>
+          <Text style={[styles.thCell, styles.col20]}>Codigo</Text>
+          <Text style={[styles.thCell, styles.col50]}>Detalle</Text>
           <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>
             Debe
           </Text>
@@ -160,10 +162,10 @@ export const DiaryBookTemplate = ({
         {records.report.map((asiento, asientoIdx) => (
           <View style={styles.table} key={asientoIdx}>
             <View style={styles.trCell}>
-              <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
+              <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 }]}>
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
-              <Text style={[styles.tdCell, styles.col55, { borderRightWidth: 1, textAlign: "center", },]}>
+              <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, textAlign: "center", },]}>
                 -------- Comprobante {asiento.typeDes} --------
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}> </Text>
@@ -172,10 +174,10 @@ export const DiaryBookTemplate = ({
 
             {asiento.voucherItems.map((record, idx) => (
               <View style={styles.entry} key={idx}>
-                <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 },]}>
-                  {record.id}
+                <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 },]}>
+                  {record.code}
                 </Text>
-                <Text style={[styles.tdCell, styles.col55, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "25" : styles.tdCell.padding}`, },]}>
+                <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
                   {record.description}
                 </Text>
                 <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
@@ -187,10 +189,10 @@ export const DiaryBookTemplate = ({
               </View>
             ))}
             <View style={styles.trEntry}>
-              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, borderRightWidth: 1 },]}>
+              <Text style={[styles.tdCell, styles.col20, { paddingBottom: 15, borderRightWidth: 1 },]}>
                 {" "}
               </Text>
-              <Text style={[styles.tdCell, styles.col55, { paddingBottom: 15, borderRightWidth: 1 },]}>
+              <Text style={[styles.tdCell, styles.col50, { paddingBottom: 15, borderRightWidth: 1 },]}>
                 {`${asiento.gloss} `}
               </Text>
               <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", borderRightWidth: 1, fontWeight: "bold", },]}>
