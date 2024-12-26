@@ -61,7 +61,7 @@ export function columns(
         const bankExtract = row.original;
         return (
           <div className="flex items-center gap-2">
-            <DialogFormNewVoucher bankId={bankId as string} bankExtractId={bankExtract.id}/>
+            <DialogFormNewVoucher bankId={bankId as string} bankExtractId={bankExtract.id} disabled={bankExtract.accountingEntry}/>
             <RegisterTrazoButton
               bankId={bankId}
               bankExtractId={bankExtract.id}
