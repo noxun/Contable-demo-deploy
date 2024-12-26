@@ -34,6 +34,8 @@ import EditVoucher from "@/modules/shared/components/EditVoucher";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 import { useQuery } from "@tanstack/react-query";
 import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButton";
+import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
+import { PDFViewer } from "@react-pdf/renderer";
 
 // Types
 type VoucherItem = {
@@ -52,7 +54,7 @@ type VoucherItem = {
   totalAsset: number;
 };
 
-type AccountData = {
+export type AccountData = {
   accountCode: string;
   accountDescription: string;
   voucherItems: VoucherItem[];
@@ -111,117 +113,127 @@ const DateSelector = ({
 };
 
 // ReportSection Component
-const ReportSection = () => {
-  const [reportDate, setReportDate] = useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2024, 0, 20), 20),
-  });
-  const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [pdfLink, setPdfLink] = useState<string | null>(null);
-  const [docs, setDocs] = useState<{ uri: string }[]>([]);
-  const [generatedFiles, setGeneratedFiles] = useState<
-    { type: string; date: string; link: string }[]
-  >([]);
+// const ReportSection = () => {
+//   const [reportDate, setReportDate] = useState<DateRange | undefined>({
+//     from: new Date(2024, 0, 20),
+//     to: addDays(new Date(2024, 0, 20), 20),
+//   });
+//   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
+//   const [pdfLink, setPdfLink] = useState<string | null>(null);
+//   const [docs, setDocs] = useState<{ uri: string }[]>([]);
+//   const [generatedFiles, setGeneratedFiles] = useState<
+//     { type: string; date: string; link: string }[]
+//   >([]);
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const handleGenerateReport = async () => {
+//     if (reportDate?.from && reportDate?.to) {
+//       setIsLoading(true);
+//       setPdfLink(null);
+//       setDocs([]);
+//       toast("Generando reporte...");
+
+//       try {
+//         const pdfResponse = await axios.get(
+//           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
+//           {
+//             params: {
+//               InitDate: format(reportDate.from, "yyyy/MM/dd"),
+//               EndDate: format(reportDate.to, "yyyy/MM/dd"),
+//               type: "pdf",
+//               inSus: inSus,
+//               businessId: 0,
+//             },
+//             responseType: "text",
+//           }
+//         );
+
+//         if (pdfResponse.data) {
+//           const currentDate = new Date().toLocaleString();
+//           setPdfLink(pdfResponse.data);
+//           setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
+//           setGeneratedFiles((prevFiles) => [
+//             ...prevFiles,
+//             {
+//               type: "PDF",
+//               date: currentDate,
+//               link: pdfResponse.data,
+//             },
+//           ]);
+//         }
+//         toast.success("Reporte generado exitosamente");
+//       } catch (error) {
+//         console.error("Error al generar los reportes", error);
+//         toast.error("Error al generar el reporte, intente nuevamente");
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     }
+//   };
+
+//   const columns = [
+//     { header: "Tipo", accessorKey: "type" },
+//     { header: "Fecha", accessorKey: "date" },
+//     {
+//       header: "Enlace",
+//       accessorKey: "link",
+//       cell: ({ row }: any) => (
+//         <a href={row.original.link} target="_blank" rel="noopener noreferrer">
+//           Descargar
+//         </a>
+//       ),
+//     },
+//   ];
+
+//   return (
+//     <div className="space-y-6">
+//       <div className="flex items-center justify-evenly">
+//         <div className="w-72 space-y-2">
+//           <DateSelector date={reportDate} onDateChange={setReportDate} />
+//           <div className="flex items-center space-x-2">
+//             <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
+//             <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+//           </div>
+//         </div>
+//         <Button onClick={handleGenerateReport} disabled={isLoading}>
+//           {isLoading ? "Generando Reporte..." : "Generar Reporte"}
+//         </Button>
+//       </div>
+
+//       <DataTable columns={columns} data={generatedFiles} />
+//     </div>
+//   );
+// };
+
+//Component for generate pdf file to biggerBook
+const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus }: { data: AccountData[], dateRange: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateReport = async () => {
-    if (reportDate?.from && reportDate?.to) {
+
+    try {
       setIsLoading(true);
-      setPdfLink(null);
-      setDocs([]);
       toast("Generando reporte...");
-
-      try {
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-          {
-            params: {
-              InitDate: format(reportDate.from, "yyyy/MM/dd"),
-              EndDate: format(reportDate.to, "yyyy/MM/dd"),
-              type: "pdf",
-              inSus: inSus,
-              businessId: 0,
-            },
-            responseType: "text",
-          }
-        );
-
-        if (pdfResponse.data) {
-          const currentDate = new Date().toLocaleString();
-          setPdfLink(pdfResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "PDF",
-              date: currentDate,
-              link: pdfResponse.data,
-            },
-          ]);
-        }
-        setShowDialog(true);
-        toast.success("Reporte generado exitosamente");
-      } catch (error) {
-        console.error("Error al generar los reportes", error);
-        toast.error("Error al generar el reporte, intente nuevamente");
-      } finally {
-        setIsLoading(false);
-      }
+      const MyDocument = (
+        <BiggerBookTemplate
+          inSus={inSus}
+          dateRange={dateRange}
+          records={data}
+        />
+      );
+      setFile(MyDocument);
+      toast.success("Reporte generado exitosamente");
+    } catch (error) {
+      toast.error("Error al generar el reporte, intente nuevamente")
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => (
-        <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-          Descargar
-        </a>
-      ),
-    },
-  ];
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-evenly">
-        <div className="w-72 space-y-2">
-          <DateSelector date={reportDate} onDateChange={setReportDate} />
-          <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-          </div>
-        </div>
-        <Button onClick={handleGenerateReport} disabled={isLoading}>
-          {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-        </Button>
-      </div>
-
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Archivos Generados</DialogTitle>
-            <DialogDescription>
-              Puedes descargar los reportes generados a continuación:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex space-x-4">
-            {pdfLink && (
-              <Button onClick={() => window.open(pdfLink ?? "", "_blank")}>
-                <FileText className="mr-2 h-4 w-4" /> Descargar PDF
-              </Button>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <DataTable columns={columns} data={generatedFiles} />
-    </div>
-  );
-};
+  return <>
+    <Button onClick={handleGenerateReport}>{isLoading ? 'Generando Reporte...' : 'Generar Reporte'}</Button>
+  </>
+}
 
 // AccountSection Component
 const AccountSection = () => {
@@ -229,9 +241,11 @@ const AccountSection = () => {
     from: new Date(2024, 0, 20),
     to: addDays(new Date(2024, 0, 20), 20),
   });
+  const [file, setFile] = useState<JSX.Element | null>(null)
   const [searchDescription, setSearchDescription] = useState<string>("");
   const [currentAccountIndex, setCurrentAccountIndex] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [inSus, setInSus] = useState(false)
   const [editData, setEditData] = useState<{
     id: string;
     type: VoucherType;
@@ -260,6 +274,10 @@ const AccountSection = () => {
   });
 
   const currentAccount = accountsData?.[currentAccountIndex];
+
+  const handleChangeIsSus = () => {
+    setInSus(!inSus)
+  }
 
   const handleSearch = () => {
     if (!searchDescription.trim()) {
@@ -335,9 +353,14 @@ const AccountSection = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-evenly mt-6">
+        <div className="flex items-center space-x-2">
+          <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+          <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+        </div>
         <div className="w-72 space-y-2">
           <DateSelector date={accountDate} onDateChange={setAccountDate} />
         </div>
+
         <Button disabled={isLoadingAccounts}>
           {isLoadingAccounts
             ? "Listando Transacciones..."
@@ -345,9 +368,25 @@ const AccountSection = () => {
         </Button>
       </div>
 
+
       {currentAccount && (
         <>
-          <DownloadSingleAccountReportButton data={currentAccount} />
+          {
+            accountDate?.from && accountDate.to && <ReportGenerateBiggerBook
+              data={accountsData}
+              dateRange={accountDate}
+              setFile={setFile}
+              inSus={inSus}
+            />
+          }
+          {/* <DownloadSingleAccountReportButton data={currentAccount} /> */}
+          {file !== null && (
+            <div style={{ height: "500px" }}>
+              <PDFViewer style={{ width: "100%", height: "100%" }}>
+                {file}
+              </PDFViewer>
+            </div>
+          )}
 
           <AccountInfo
             accountCode={currentAccount.accountCode}
@@ -398,10 +437,10 @@ const AccountSection = () => {
 // Main Component
 export default function BiggerBookPage() {
   return (
-    <div className="flex flex-col gap-6 h-full">
-      <ReportSection />
+    <div className="flex flex-col gap-2 h-full">
+      {/* <ReportSection /> */}
 
-      <div className="flex mt-7 justify-start text-[25px] font-[500]">
+      <div className="flex justify-start text-[25px] font-[500]">
         <h1>Reportes</h1>
       </div>
 
