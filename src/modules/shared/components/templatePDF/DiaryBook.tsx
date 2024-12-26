@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { format } from "date-fns";
+import { formatNumber } from "../../utils/validate";
 
 export interface ReportDiaryBook {
   report: DiaryBook[];
@@ -178,10 +179,10 @@ export const DiaryBookTemplate = ({
                   {record.description}
                 </Text>
                 <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
-                  {record[debitType]}
+                  {formatNumber(record[debitType])}
                 </Text>
                 <Text style={[styles.tdCell, styles.col15]}>
-                  {record[assetType]}
+                  {formatNumber(record[assetType])}
                 </Text>
               </View>
             ))}
@@ -193,18 +194,18 @@ export const DiaryBookTemplate = ({
                 {`${asiento.gloss} `}
               </Text>
               <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", borderRightWidth: 1, fontWeight: "bold", },]}>
-                {asiento.plusData.debe}
+                {formatNumber(asiento.plusData.debe)}
               </Text>
               <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", fontWeight: "bold", },]}>
-                {asiento.plusData.haber}
+                {formatNumber(asiento.plusData.haber)}
               </Text>
             </View>
           </View>
         ))}
         <View style={[styles.trCell, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
           <Text style={[styles.tdCell, styles.col70]}>Total</Text>
-          <Text style={[styles.tdCell, styles.col15]}>{records.total.debe}</Text>
-          <Text style={[styles.tdCell, styles.col15]}>{records.total.haber}</Text>
+          <Text style={[styles.tdCell, styles.col15]}>{formatNumber(records.total.debe)}</Text>
+          <Text style={[styles.tdCell, styles.col15]}>{formatNumber(records.total.haber)}</Text>
         </View>
       </Page>
     </Document>
