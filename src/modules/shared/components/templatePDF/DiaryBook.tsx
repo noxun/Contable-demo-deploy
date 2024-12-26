@@ -128,7 +128,7 @@ export const DiaryBookTemplate = ({
         </Text>
         <View style={[styles.trCell, { paddingBottom: 5, borderTopWidth: 1 }]}>
           <View style={styles.col20}>
-            <Text style={[styles.thCell]}>Codigo</Text>
+
             <Text style={[styles.thCell]}>Fecha</Text>
           </View>
           <View style={[styles.col60, { textAlign: "center" }]}>
@@ -160,10 +160,10 @@ export const DiaryBookTemplate = ({
           <View style={styles.table} key={asientoIdx}>
             <View style={styles.trCell}>
               <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
-                {format(Date.now(), "yyyy/MM/dd")}
+                {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
               <Text style={[styles.tdCell, styles.col55, { borderRightWidth: 1, textAlign: "center", },]}>
-                -------- Comprobante de pago Nro {asientoIdx} --------
+                -------- Comprobante {asiento.typeDes} --------
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}> </Text>
               <Text style={styles.col15}></Text>
