@@ -115,17 +115,16 @@ export default function FormNewVoucher({
   const changeBankExtractStatusMutation = useMutation({
     mutationFn: changeBankExtractStatus,
     onSuccess: () => {
-      toast.success("Registrado correctamente")
-      if(bankId){
-        queryClient.invalidateQueries({queryKey: ["bankExcerpt", bankId],})
+      toast.success("Registrado correctamente");
+      if (bankId) {
+        queryClient.invalidateQueries({ queryKey: ["bankExcerpt", bankId] });
       }
     },
     onError: (error: AxiosError) => {
-      toast.error("Error al registrar")
-      console.log(error)
-    }
-  })
-
+      toast.error("Error al registrar");
+      console.log(error);
+    },
+  });
 
   const {
     data: modelSeats,
@@ -174,7 +173,7 @@ export default function FormNewVoucher({
       //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
       // router.push("/dashboard/transactions/new");
 
-      if(bankId && bankExtractId){
+      if (bankId && bankExtractId) {
         changeBankExtractStatusMutation.mutate(bankExtractId);
       }
 
@@ -307,42 +306,50 @@ export default function FormNewVoucher({
       <Form {...voucherForm}>
         <form onSubmit={voucherForm.handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium">
-              Selecciona un Asiento Modelo
-            </label>
-            <div className="flex gap-2">
-              <CustomSelect
-                options={(Array.isArray(modelSeats) ? modelSeats : []).map(
-                  (seat) => ({
-                    label: seat.description,
-                    value: seat.id,
-                  })
-                )}
-                value={selectedModelSeat}
-                onChange={handleModelSeatChange}
-                isLoading={isLoadingModelSeats}
-                isDisabled={selectedModelSeatType === undefined}
-                placeholder="Selecciona un Asiento Modelo"
-              />
-              <Select
-                value={
-                  selectedModelSeatType !== undefined
-                    ? selectedModelSeatType.toString()
-                    : undefined
-                }
-                onValueChange={(value) => {
-                  setSelectedModelSeatType(parseInt(value));
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">Traspaso</SelectItem>
-                  <SelectItem value="1">Egreso</SelectItem>
-                  <SelectItem value="2">Ingreso</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex w-full gap-2">
+              <div className="flex-1">
+                <label className="mb-2 block text-sm font-medium">
+                  Selecciona un tipo de transacción para filtrar los asientos
+                  modelo
+                </label>
+                <Select
+                  value={
+                    selectedModelSeatType !== undefined
+                      ? selectedModelSeatType.toString()
+                      : undefined
+                  }
+                  onValueChange={(value) => {
+                    setSelectedModelSeatType(parseInt(value));
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Traspaso</SelectItem>
+                    <SelectItem value="1">Egreso</SelectItem>
+                    <SelectItem value="2">Ingreso</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1">
+                <label className="mb-2 block text-sm font-medium">
+                  Selecciona un Asiento Modelo
+                </label>
+                <CustomSelect
+                  options={(Array.isArray(modelSeats) ? modelSeats : []).map(
+                    (seat) => ({
+                      label: seat.description,
+                      value: seat.id,
+                    })
+                  )}
+                  value={selectedModelSeat}
+                  onChange={handleModelSeatChange}
+                  isLoading={isLoadingModelSeats}
+                  isDisabled={selectedModelSeatType === undefined}
+                  placeholder="Selecciona un Asiento Modelo"
+                />
+              </div>
             </div>
           </div>
           <div className="flex gap-2 mb-2">
