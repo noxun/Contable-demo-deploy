@@ -54,7 +54,7 @@ const AccountingBoxPage = () => {
       )}
 
       {isPending ? (
-        <div>Cargando datos de la caja...</div>
+        <div>Selecciona una Caja para mostrar sus datos...</div>
       ) : (
         <DataTable data={accountingBox} columns={columns} />
       )}

@@ -155,6 +155,22 @@ export default function AccountEditButton({
               />
               <FormField
                 control={accountEditForm.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Código</FormLabel>
+                    <FormControl>
+                      <Input placeholder="código" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      El código de la cuenta
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={accountEditForm.control}
                 name="coin"
                 render={({ field }) => (
                   <FormItem>

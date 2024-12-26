@@ -59,9 +59,9 @@ export default function ListVouchers({
 
   return (
     <section className="flex flex-col gap-4">
-      <Button asChild className="w-fit">
+      {/* <Button asChild className="w-fit">
         <Link href={`/dashboard/${voucherTypeRoute}/new`}>Crear Nuevo</Link>
-      </Button>
+      </Button> */}
       <VoucherTable
         voucherType={voucherType}
         voucherTypeRoute={voucherTypeRoute}

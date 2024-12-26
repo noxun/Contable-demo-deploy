@@ -114,7 +114,7 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
           <div className="flex">
             <AccountCreateButton fatherId={account.id} />
             <AccountEditButton
-              disabled={account.isMotion}
+              // disabled={account.isMotion}
               account={{
                 id: account.id,
                 code: account.code,

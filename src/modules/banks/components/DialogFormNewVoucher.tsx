@@ -14,16 +14,18 @@ import { ReceiptText } from "lucide-react";
 type DialogFormNewVoucherProps = {
   bankId: string;
   bankExtractId: number;
+  disabled?: boolean;
 };
 
 export default function DialogFormNewVoucher({
   bankId,
   bankExtractId,
+  disabled,
 }: DialogFormNewVoucherProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" disabled={disabled}>
           <ReceiptText className="size-4" />
         </Button>
       </DialogTrigger>
