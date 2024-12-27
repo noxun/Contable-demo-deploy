@@ -3,49 +3,34 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<AccountingBoxItems>[] = [
   {
-    accessorKey: "mes",
-    header: "Mes",
-  },
-  {
     accessorKey: "fecha",
     header: "Fecha",
-  },
-  {
-    accessorKey: "reciboInterno",
-    header: "Recibo Interno",
-  },
-  {
-    accessorKey: "tipoComprobante",
-    header: "Tipo Comprobante",
-  },
-  {
-    accessorKey: "comprobanteProveedor",
-    header: "Proveedor",
+    cell: ({ row }) => {
+      const accountingBox = row.original;
+      const date = new Date(accountingBox.fecha);
+      return date.toLocaleDateString();
+    }
   },
   {
     accessorKey: "hojaDeRuta",
     header: "Hoja de Ruta",
   },
   {
-    accessorKey: "cliente",
-    header: "Cliente",
+    accessorKey: "referencia",
+    header: "Referencia",
+  },
+  {
+    accessorKey: "nombre",
+    header: "Nombre",
   },
   {
     accessorKey: "detalle",
     header: "Detalle",
   },
   {
-    accessorKey: "ingreso",
-    header: "Ingreso",
-  },
-  {
-    accessorKey: "egreso",
-    header: "Egreso",
-  },
-  {
-    accessorKey: "saldo",
-    header: "Saldo",
-  },
+    accessorKey: "valorPagado",
+    header: "Valor Pagado",
+  }
   // {
   //   id: "actions",
   //   header: "Acciones",
