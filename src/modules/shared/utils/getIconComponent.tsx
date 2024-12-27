@@ -16,6 +16,7 @@ import {
   LayoutTemplate,
   MapPinHouse,
   ReceiptText,
+  UsersRound,
 } from "lucide-react";
 
 // Function to get the icon component based on the name
@@ -38,7 +39,8 @@ export const getIconComponent = (iconName: string) => {
     Link: <Link className="h-5 w-5" />,
     LayoutTemplate: <LayoutTemplate className="h-5 w-5" />,
     MapPinHouse: <MapPinHouse className="h-5 w-5" />,
-    ReceiptText: <ReceiptText className="h-5 w-5"/>
+    ReceiptText: <ReceiptText className="h-5 w-5"/>,
+    UsersRound: <UsersRound className="h-5 w-5" />,
   };
 
   return icons[iconName?.trim() as keyof typeof icons] || <User className="h-5 w-5" />; // Default to User icon if not found

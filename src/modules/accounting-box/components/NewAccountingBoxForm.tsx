@@ -46,6 +46,9 @@ import useModelSeats from "@/modules/shared/hooks/useModelSeats";
 import { Dispatch, SetStateAction, useState } from "react";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { Label } from "@/components/ui/label";
+import useTrazoInternCodesByCompanyId from "@/modules/shared/hooks/useTrazoInternCodesByCompanyId";
+import useTrazoCompanies from "@/modules/shared/hooks/useTrazoCompanies";
+import useModelSeatsByType from "@/modules/shared/hooks/useModelSeatsByType";
 
 const newAccountingBoxFormSchema = z.object({
   fecha: z.date().transform((value) => formatISO(value)),
@@ -91,12 +94,19 @@ export default function NewAccountingBoxForm({
     },
   });
 
-  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeats();
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
+
+  const { data: trazoCompanies, isLoading: isLoadingTrazoCompanies } =
+    useTrazoCompanies();
+
+  const caja = 3;
+
+  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeatsByType(caja);
   const { data: costCenter, isPending: isPendingCostCenter } = useCostCenter();
   const { data: accountingBoxType, isPending: isPendingAccountingBoxType } =
     useAccountingBox();
   const { data: trazoInternCodes, isPending: isPendingTrazoInternCodes } =
-    useTrazoInternCodes();
+    useTrazoInternCodesByCompanyId(selectedCompanyId);
 
   // console.log(form.formState.errors);
   console.log(accountingBoxId);
@@ -216,6 +226,7 @@ export default function NewAccountingBoxForm({
                 <FormItem>
                   <FormLabel>Hoja de ruta</FormLabel>
                   <CustomSelect
+                    isDisabled={isLoadingTrazoCompanies}
                     options={trazoInternCodes}
                     getOptionLabel={(trazoInternCodes) =>
                       trazoInternCodes.value
@@ -224,7 +235,7 @@ export default function NewAccountingBoxForm({
                       trazoInternCodes.value
                     }
                     onChange={(value) => {
-                      field.onChange(value?.id.toString());
+                      field.onChange(value?.value.toString());
                     }}
                   />
                   <FormDescription>Hoja de ruta del trazo</FormDescription>
@@ -289,20 +300,36 @@ export default function NewAccountingBoxForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="nombre"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre</FormLabel>
-                <FormControl>
-                  <Input placeholder="Cliente" {...field} />
-                </FormControl>
-                <FormDescription>A quien se paga</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {isLoadingTrazoCompanies ? (
+            <div>Cargando Clientes...</div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="nombre"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre/Cliente</FormLabel>
+                  <FormControl>
+                    <CustomSelect
+                      options={trazoCompanies}
+                      getOptionLabel={(trazoCompanies) =>
+                        trazoCompanies.razonSocial
+                      }
+                      getOptionValue={(trazoCompanies) =>
+                        trazoCompanies.id.toString()
+                      }
+                      onChange={(value) => {
+                        setSelectedCompanyId(value?.id as number);
+                        field.onChange(value?.razonSocial);
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>A quien se paga</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="detalle"

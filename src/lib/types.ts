@@ -209,19 +209,14 @@ export type TrazoInternCode = {
 
 export type AccountingBoxItems = {
   id: number
-  mes: string
   fecha: string
   accountId: number
-  reciboInterno: string
-  tipoComprobante: string
-  comprobanteProveedor: string
-  proveedor: any
+  modelSeatId: number
   hojaDeRuta: string
-  cliente: string
+  referencia: string
+  nombre: string
   detalle: string
-  ingreso: number
-  egreso: number
-  saldo: number
+  valorPagado: number
   accountingBox: any
   accountingBoxId: number
   costCenterId: number
@@ -331,4 +326,9 @@ export type BankExtractPaymentFile = {
   number: number;
   status: string;
   providor: string;
+}
+
+export type TrazoCompany = {
+  razonSocial: string;
+  id: number;
 }

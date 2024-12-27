@@ -10,14 +10,15 @@ const CostCenterPage = () => {
   const {
     data: costCenter,
     isPending,
+    isError,
     error,
   } = useQuery({
     queryKey: ["costCenter"],
     queryFn: fetchCostCenter,
   });
 
+  if (isError) return <div>Error: {error.message}</div>;
   if (isPending) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div>

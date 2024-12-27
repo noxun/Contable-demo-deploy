@@ -5,6 +5,6 @@ export default function useModelSeatsByType(type: number | undefined) {
   return useQuery({
     queryKey: ["AllModelSeats", type],
     queryFn: () => fetchAllModelSeats(type),
-    enabled: type !== undefined ? true : false
+    enabled: type !== undefined
   });
 }

@@ -19,6 +19,7 @@ const AccountingBoxPage = () => {
   const {
     data: accountingBox,
     isPending,
+    isError,
     error,
   } = useQuery({
     queryKey: ["accountingBox", accountingBoxId],
@@ -27,7 +28,7 @@ const AccountingBoxPage = () => {
     placeholderData: keepPreviousData
   });
 
-  if (error) return <div>Error: {error.message}</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   const accountingBoxOptions =
     accountingBoxList?.map((box) => ({

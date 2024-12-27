@@ -76,39 +76,37 @@ export default function RegisterSeat({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      {accounts !== undefined ? (
-        <>
-          <CustomSelect
-            isDisabled={hasBeenRegisteredToAccount}
-            onChange={(option) => {
-              onSelectChange(bankExtractId, option ? option.id : null);
-            }}
-            value={selectedAccountOption}
-            options={accounts}
-            getOptionValue={(account) => account.id.toString()}
-            getOptionLabel={(account) =>
-              `${account.code}-${account.description}`
-            }
-          />
-          <Select 
-            defaultValue={registeredType?.toString() ?? ""}
-            onValueChange={(value)=>{
-              setType(value)
-            }}
-            disabled={hasBeenRegisteredToAccount}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tipo de registro" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Traspaso</SelectItem>
-              <SelectItem value="1">Egreso</SelectItem>
-              <SelectItem value="2">Ingreso</SelectItem>
-            </SelectContent>
-          </Select>
-        </>
-      ) : (
-        <Spinner />
+      {(
+          <>
+            <CustomSelect
+                isDisabled={hasBeenRegisteredToAccount}
+                onChange={(option) => {
+                  onSelectChange(bankExtractId, option ? option.id : null);
+                }}
+                value={selectedAccountOption}
+                options={accounts}
+                getOptionValue={(account) => account.id.toString()}
+                getOptionLabel={(account) =>
+                    `${account.code}-${account.description}`
+                }
+            />
+            <Select
+                defaultValue={registeredType?.toString() ?? ""}
+                onValueChange={(value) => {
+                  setType(value)
+                }}
+                disabled={hasBeenRegisteredToAccount}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Tipo de registro"/>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Traspaso</SelectItem>
+                <SelectItem value="1">Egreso</SelectItem>
+                <SelectItem value="2">Ingreso</SelectItem>
+              </SelectContent>
+            </Select>
+          </>
       )}
       <Button
         disabled={hasBeenRegisteredToAccount}
