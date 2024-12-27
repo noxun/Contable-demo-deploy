@@ -20,6 +20,7 @@
     "files",
     "types",
     "app",
-    "transactions"
+    "transactions",
+    "sidebar-icons"
   ]
 }

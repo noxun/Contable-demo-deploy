@@ -1,38 +1,11 @@
 "use client";
 
-import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { es } from "date-fns/locale";
+import React, { useState, useEffect } from "react";
 import { DataTable } from "@/components/ui/data-table";
-import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 
-} from "@/components/ui/dialog";
-import DocViewer, {
-  PDFRenderer,
-  MSDocRenderer,
-
-} from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -44,7 +17,7 @@ export default function DiaryBookPage() {
     from: new Date(Date.now()),
   }
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
-  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null);
+  const [pdfFile, setPdfFile] = useState<React.JSX | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [inSus, setInSus] = useState(false);

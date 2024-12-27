@@ -62,7 +62,7 @@ export default function RegisterSeatWithInvoice({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      {accounts !== undefined ? (
+      {true ? (
         <CustomSelect
           // isDisabled={hasBeenRegisteredToAccount}
           onChange={(option) => {

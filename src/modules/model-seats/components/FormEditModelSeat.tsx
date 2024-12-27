@@ -52,7 +52,7 @@ const accountSchema = z.object({
 
 const editModelSeatSchema = z.object({
   modelSeatId: z.number(),
-  description: z.string().min(1, "Se requiere un descripcion "),
+  description: z.string().min(1, "Se requiere una descripción "),
   type: z.coerce.number(),
   // typeTransaction: ,
   accounts: z.array(accountSchema).min(1, "Se requiere al menos una cuenta"),
