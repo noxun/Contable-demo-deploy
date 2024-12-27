@@ -206,7 +206,7 @@ const DateSelector = ({
 // };
 
 //Component for generate pdf file to biggerBook
-const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus }: { data: AccountData[], dateRange: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean }) => {
+const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { data: AccountData[], dateRange: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateReport = async () => {
@@ -231,9 +231,13 @@ const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus }: { data: A
   }
 
   return <>
-    <Button onClick={handleGenerateReport}>{isLoading ? 'Generando Reporte...' : 'Generar Reporte'}</Button>
+    <Button onClick={handleGenerateReport}>
+      {isLoading ? 'Generando Reporte...' : (text ? text : "Generar Reporte")}
+    </Button>
   </>
 }
+
+//Component for see the currentPDF
 
 // AccountSection Component
 const AccountSection = () => {
@@ -246,6 +250,7 @@ const AccountSection = () => {
   const [currentAccountIndex, setCurrentAccountIndex] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [inSus, setInSus] = useState(false)
+  const [activeFile, setActiveFile] = useState<JSX.Element | null>(null)
   const [editData, setEditData] = useState<{
     id: string;
     type: VoucherType;
@@ -293,6 +298,7 @@ const AccountSection = () => {
 
     if (foundIndex !== -1) {
       setCurrentAccountIndex(foundIndex);
+      setActiveFile(null)
       toast.success(
         `Cuenta encontrada (${foundIndex + 1} de ${accountsData.length})`
       );
@@ -368,16 +374,17 @@ const AccountSection = () => {
         </Button>
       </div>
 
-
-      {currentAccount && (
+      {currentAccount && accountDate?.from && accountDate.to && (
         <>
           {
-            accountDate?.from && accountDate.to && <ReportGenerateBiggerBook
-              data={accountsData}
-              dateRange={accountDate}
-              setFile={setFile}
-              inSus={inSus}
-            />
+            accountDate?.from && accountDate.to && (
+              <ReportGenerateBiggerBook
+                data={accountsData}
+                dateRange={accountDate}
+                setFile={setFile}
+                inSus={inSus}
+              />
+            )
           }
           {/* <DownloadSingleAccountReportButton data={currentAccount} /> */}
           {file !== null && (
@@ -399,22 +406,44 @@ const AccountSection = () => {
           <AccountNavigation
             currentIndex={currentAccountIndex}
             total={accountsData?.length || 0}
-            onPrevious={() =>
+            onPrevious={() => {
+              setActiveFile(null)
               setCurrentAccountIndex((prev) => Math.max(0, prev - 1))
             }
-            onNext={() =>
+            }
+            onNext={() => {
+              setActiveFile(null)
               setCurrentAccountIndex((prev) =>
                 Math.min((accountsData?.length || 1) - 1, prev + 1)
               )
+            }
             }
           />
 
           <DataTable columns={columnsBook} data={currentAccount.voucherItems} />
 
-          <AccountTotals
-            totalDebit={currentAccount.totalDebit}
-            totalAsset={currentAccount.totalAsset}
-          />
+          <div className="flex items-center justify-between">
+            <ReportGenerateBiggerBook
+              data={[currentAccount]}
+              dateRange={accountDate}
+              setFile={setActiveFile}
+              inSus={inSus}
+              text="Ver en PDF"
+            />
+            <AccountTotals
+              totalDebit={currentAccount.totalDebit}
+              totalAsset={currentAccount.totalAsset}
+            />
+          </div>
+
+          {activeFile !== null && (
+            <div style={{ height: "500px" }}>
+              <PDFViewer style={{ width: "100%", height: "100%" }}>
+                {activeFile}
+              </PDFViewer>
+            </div>
+          )}
+
         </>
       )}
 
