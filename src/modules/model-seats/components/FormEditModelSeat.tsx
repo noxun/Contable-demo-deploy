@@ -154,6 +154,7 @@ export default function FormEditModelSeat({
                   <SelectItem value="0">Traspasos</SelectItem>
                   <SelectItem value="1">Egresos</SelectItem>
                   <SelectItem value="2">Ingresos</SelectItem>
+                  <SelectItem value="3">Caja</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
