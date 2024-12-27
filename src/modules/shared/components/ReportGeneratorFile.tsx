@@ -4,14 +4,13 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { DateRange } from "react-day-picker";
-import { Document, Page, PDFDownloadLink, Text } from "@react-pdf/renderer";
 import { DiaryBookTemplate } from "./templatePDF/DiaryBook";
 import { es } from "date-fns/locale";
 
 interface GeneratedFile {
   type: string;
   date: string;
-  link: string;
+  link: JSX.Element;
 }
 
 interface ReportGeneratorProps {
@@ -67,18 +66,12 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             />
           );
 
-          // const pdfLink = (
-          //   <PDFDownloadLink
-          //     document={MyDocument}
-          //     fileName={`Reporte_${currentDate}.pdf`}
-          //   />
-          // );
           setGeneratedFiles((prevFiles) => [
             ...prevFiles,
             {
               type: "PDF",
               date: currentDate,
-              link: response.data,
+              link: MyDocument,
             },
           ]);
           setFile(MyDocument);
