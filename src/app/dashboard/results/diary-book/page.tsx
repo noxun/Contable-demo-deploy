@@ -35,7 +35,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -59,11 +59,19 @@ export default function DiaryBookPage() {
     {
       header: "Enlace",
       accessorKey: "link",
-      cell: ({ row }: any) => (
-        <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-          Descargar
-        </a>
-      ),
+      cell: ({ row }: any) => {
+        const file = row.original.link
+        return (
+          (
+            <PDFDownloadLink
+              document={file}
+              fileName={`Reporte_${row.original.date}.pdf`}
+            >
+              Descargar
+            </PDFDownloadLink>
+          )
+        )
+      },
     },
   ];
 
@@ -73,7 +81,6 @@ export default function DiaryBookPage() {
         from: startDate,
         to: endDate
       })
-      console.log("Fechas seleccionadas:", dateRange);
     }
   };
 
