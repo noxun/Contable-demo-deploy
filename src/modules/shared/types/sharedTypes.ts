@@ -8,7 +8,7 @@ export type Voucher = {
   checkNum?: string | undefined;
   canceledTo?: string | Date;
   gloss: string;
-  bankId?: number | string | null;
+  bankId: number | string | null;
   items?: VoucherItem[];
 };
 

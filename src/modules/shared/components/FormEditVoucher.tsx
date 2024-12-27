@@ -117,7 +117,7 @@ export default function FormEditVoucher({
       })
       .optional(),
     gloss: z.string(),
-    bankId: z.coerce.string().min(1),
+    bankId: z.coerce.string().nullable(),
     items: z.array(voucherItemSchema).optional(),
   });
 
@@ -131,7 +131,7 @@ export default function FormEditVoucher({
       coin: voucher.coin,
       checkNum: voucher.checkNum,
       gloss: voucher.gloss,
-      bankId: voucher.bankId ? voucher.bankId.toString() : "",
+      bankId: voucher.bankId as string ?? null,
     },
   });
 
@@ -250,7 +250,7 @@ export default function FormEditVoucher({
                 <FormItem>
                   <FormLabel>Banco</FormLabel>
                   <Select
-                    defaultValue={field.value}
+                    defaultValue={field?.value ?? ""}
                     onValueChange={field.onChange}
                   >
                     <FormControl>
