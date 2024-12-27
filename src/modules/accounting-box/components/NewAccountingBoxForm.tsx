@@ -231,7 +231,7 @@ export default function NewAccountingBoxForm({
                       trazoInternCodes.value
                     }
                     onChange={(value) => {
-                      field.onChange(value?.id.toString());
+                      field.onChange(value?.value.toString());
                     }}
                   />
                   <FormDescription>Hoja de ruta del trazo</FormDescription>
