@@ -17,7 +17,7 @@ export default function DiaryBookPage() {
     from: new Date(Date.now()),
   }
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
-  const [pdfFile, setPdfFile] = useState<React.JSX | null>(null);
+  const [pdfFile, setPdfFile] = useState<React.JSX.Element | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [inSus, setInSus] = useState(false);
