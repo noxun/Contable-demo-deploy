@@ -48,6 +48,7 @@ import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBala
 import { Label } from "@/components/ui/label";
 import useTrazoInternCodesByCompanyId from "@/modules/shared/hooks/useTrazoInternCodesByCompanyId";
 import useTrazoCompanies from "@/modules/shared/hooks/useTrazoCompanies";
+import useModelSeatsByType from "@/modules/shared/hooks/useModelSeatsByType";
 
 const newAccountingBoxFormSchema = z.object({
   fecha: z.date().transform((value) => formatISO(value)),
@@ -97,7 +98,10 @@ export default function NewAccountingBoxForm({
 
   const { data: trazoCompanies, isLoading: isLoadingTrazoCompanies } =
     useTrazoCompanies();
-  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeats();
+
+  const caja = 3;
+
+  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeatsByType(caja);
   const { data: costCenter, isPending: isPendingCostCenter } = useCostCenter();
   const { data: accountingBoxType, isPending: isPendingAccountingBoxType } =
     useAccountingBox();
