@@ -4,7 +4,7 @@ import { Minus, Plus } from "lucide-react";
 import { Virtuoso } from "react-virtuoso";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState, useCallback, useMemo, ChangeEvent } from "react";
+import { useState, useCallback, useMemo, ChangeEvent, useEffect } from "react";
 import AccountCreateButton from "./AccountCreateButton";
 import AccountEditButton from "./AccountEditButton";
 import AccountDeleteButton from "./AccountDeleteButton";
@@ -78,15 +78,47 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     [flattenedAccounts, expandedCodes]
   );
 
-  const visibleAccounts = useMemo(
-    () => flattenedAccounts.filter(isVisible),
-    [flattenedAccounts, isVisible]
-  );
+  const filteredFlattenedAccounts = useMemo(() => {
+    if (!debouncedSearchQuery) return flattenedAccounts;
+    
+    return flattenedAccounts.filter((item) => {
+      const codeAndDesc = `${item.code}-${item.description}`;
+      return codeAndDesc.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+    });
+  }, [flattenedAccounts, debouncedSearchQuery]);
+  
+  // Effect to handle expanding parent accounts when searching
+  useEffect(() => {
+    if (debouncedSearchQuery) {
+      const parentCodesToExpand = new Set<string>();
+      
+      filteredFlattenedAccounts.forEach((account) => {
+        // Find all parent accounts that need to be expanded
+        let parentDepth = account.depth - 1;
+        let currentIndex = flattenedAccounts.indexOf(account);
+        
+        while (parentDepth >= 0) {
+          const parent = flattenedAccounts
+            .slice(0, currentIndex)
+            .reverse()
+            .find((a) => a.depth === parentDepth);
+            
+          if (parent) {
+            parentCodesToExpand.add(parent.code);
+          }
+          parentDepth--;
+        }
+      });
+      
+      setExpandedCodes((prev) => new Set([...prev, ...parentCodesToExpand]));
+    }
+  }, [debouncedSearchQuery, filteredFlattenedAccounts, flattenedAccounts]);
+  
+  // Then the visible accounts memo (without the state updates)
+  const visibleAccounts = useMemo(() => {
+    return filteredFlattenedAccounts.filter(isVisible);
+  }, [filteredFlattenedAccounts, isVisible]);
 
-  const filteredAccounts = visibleAccounts.filter((item) => {
-    const codeAndDesc= `${item.code}-${item.description}`;
-    return codeAndDesc.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-  })
 
   const renderAccount = useCallback(
     (_: number, account: FlattenedAccount) => (
@@ -148,13 +180,15 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     setSearchQuery(event.target.value)
   }
 
+  console.log(flattenedAccounts)
+
   return (
     <div className="flex flex-col gap-4">
       <Input type="search" onChange={handleSearch} placeholder="Buscar Cuenta" value={searchQuery}/>
       <Virtuoso
         style={{ height: 400, border: 1 }}
-        // data={visibleAccounts}
-        data={filteredAccounts}
+        data={visibleAccounts}
+        // data={filteredAccounts}
         itemContent={renderAccount}
       />
     </div>
