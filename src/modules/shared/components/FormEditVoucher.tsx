@@ -73,6 +73,7 @@ export default function FormEditVoucher({
         console.log("invalidado")
         queryClient.invalidateQueries({ queryKey: ["bookBiggerData", accountDate] });
       }
+      queryClient.invalidateQueries({ queryKey: ["invoiceRegistry"], exact: false });
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
         queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type.toString()],

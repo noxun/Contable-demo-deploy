@@ -313,6 +313,8 @@ export type InvoiceRegistryResponseByType = {
   type: string
   controlCode: number
   consolidationStatus: string
+  voucherId: number;
+  typeTransaction: number;
   createdAt: string
   updatedAt: string
   deletedAt: string
