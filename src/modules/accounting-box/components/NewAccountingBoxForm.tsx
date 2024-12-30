@@ -60,7 +60,14 @@ const newAccountingBoxFormSchema = z.object({
   hojaDeRuta: z.string(),
   nombre: z.string(),
   detalle: z.string(),
-  valorPagado: z.coerce.number(),
+  valorPagado: z.coerce
+    .number()
+    .min(0, "El valor pagado debe ser mayor a 0")
+    // .refine(
+    //   (value) => value <= (balance?. ?? 0),
+    //   "El valor pagado no puede ser mayor al saldo actual"
+    // ),
+    //TODO: validar que el valor pagado no sea mayor al saldo actual
 });
 // .refine((data) => {
 //   const parsedDate = parseISO(data.fecha);
@@ -94,14 +101,17 @@ export default function NewAccountingBoxForm({
     },
   });
 
-  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  );
 
   const { data: trazoCompanies, isLoading: isLoadingTrazoCompanies } =
     useTrazoCompanies();
 
   const caja = 3;
 
-  const { data: modelSeats, isPending: isPendingModelSeats } = useModelSeatsByType(caja);
+  const { data: modelSeats, isPending: isPendingModelSeats } =
+    useModelSeatsByType(caja);
   const { data: costCenter, isPending: isPendingCostCenter } = useCostCenter();
   const { data: accountingBoxType, isPending: isPendingAccountingBoxType } =
     useAccountingBox();
@@ -352,13 +362,18 @@ export default function NewAccountingBoxForm({
                 <FormLabel>Valor Pagado</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={
-                      form.getValues("valorPagado") > (balance?.balance ?? 0) ||
-                      balance?.balance === 0 ||
-                      accountingBoxId === null
-                    }
+                    disabled={accountingBoxId === null}
                     placeholder="valor"
-                    {...field}
+                    value={field.value}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      if (isNaN(value) || value > (balance?.balance ?? 0)) {
+                        field.onChange(0);
+                        toast.info("El valor pagado no puede ser mayor al saldo");
+                      } else {
+                        field.onChange(value);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormDescription>Valor Pagado</FormDescription>

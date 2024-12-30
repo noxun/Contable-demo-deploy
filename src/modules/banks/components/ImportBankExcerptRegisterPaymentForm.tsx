@@ -79,12 +79,13 @@ export default function ImportBankExcerptRegisterPaymentForm({
                 <Input
                   {...fieldProps}
                   type="file"
+                  accept=".pdf"
                   onChange={(event) =>
                     onChange(event.target.files && event.target.files[0])
                   }
                 />
               </FormControl>
-              <FormDescription>Archivo en formato .xlsx</FormDescription>
+              <FormDescription>Archivo en formato .pdf</FormDescription>
               <FormMessage />
             </FormItem>
           )}
