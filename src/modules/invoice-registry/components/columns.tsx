@@ -6,6 +6,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import InvoiceRegistryDeleteButton from "./InvoiceRegistryDeleteButton";
 import EditInvoiceRegistryButton from "./EditInvoiceRegistryButton";
+import DialogInvoiceVoucher from "./DialogInvoiceVoucher";
 
 export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
   {
@@ -117,6 +118,7 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
       const invoiceRegistry = row.original;
       return (
         <div className="flex">
+          <DialogInvoiceVoucher invoiceRegistryId={invoiceRegistry.id} />
           <InvoiceRegistryDeleteButton invoiceRegistryId={invoiceRegistry.id} />
           <EditInvoiceRegistryButton invoiceRegistryId={invoiceRegistry.id} />
         </div>
