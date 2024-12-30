@@ -36,6 +36,7 @@ import { useQuery } from "@tanstack/react-query";
 import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButton";
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
+import { DateSelector } from "@/modules/shared/components/DateSelector";
 
 // Types
 type VoucherItem = {
@@ -62,148 +63,6 @@ export type AccountData = {
   totalAsset: number;
 };
 
-// DateSelector Component
-const DateSelector = ({
-  date,
-  onDateChange,
-  label = "Pick a date",
-}: {
-  date: DateRange | undefined;
-  onDateChange: (date: DateRange | undefined) => void;
-  label?: string;
-}) => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date?.from ? (
-            date.to ? (
-              <>
-                {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                {format(date.to, "LLL dd, y", { locale: es })}
-              </>
-            ) : (
-              format(date.from, "LLL dd, y", { locale: es })
-            )
-          ) : (
-            <span>{label}</span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          initialFocus
-          mode="range"
-          locale={es}
-          defaultMonth={date?.from}
-          selected={date}
-          onSelect={onDateChange}
-          numberOfMonths={2}
-        />
-      </PopoverContent>
-    </Popover>
-  );
-};
-
-// ReportSection Component
-// const ReportSection = () => {
-//   const [reportDate, setReportDate] = useState<DateRange | undefined>({
-//     from: new Date(2024, 0, 20),
-//     to: addDays(new Date(2024, 0, 20), 20),
-//   });
-//   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
-//   const [pdfLink, setPdfLink] = useState<string | null>(null);
-//   const [docs, setDocs] = useState<{ uri: string }[]>([]);
-//   const [generatedFiles, setGeneratedFiles] = useState<
-//     { type: string; date: string; link: string }[]
-//   >([]);
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   const handleGenerateReport = async () => {
-//     if (reportDate?.from && reportDate?.to) {
-//       setIsLoading(true);
-//       setPdfLink(null);
-//       setDocs([]);
-//       toast("Generando reporte...");
-
-//       try {
-//         const pdfResponse = await axios.get(
-//           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BiggerBook`,
-//           {
-//             params: {
-//               InitDate: format(reportDate.from, "yyyy/MM/dd"),
-//               EndDate: format(reportDate.to, "yyyy/MM/dd"),
-//               type: "pdf",
-//               inSus: inSus,
-//               businessId: 0,
-//             },
-//             responseType: "text",
-//           }
-//         );
-
-//         if (pdfResponse.data) {
-//           const currentDate = new Date().toLocaleString();
-//           setPdfLink(pdfResponse.data);
-//           setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
-//           setGeneratedFiles((prevFiles) => [
-//             ...prevFiles,
-//             {
-//               type: "PDF",
-//               date: currentDate,
-//               link: pdfResponse.data,
-//             },
-//           ]);
-//         }
-//         toast.success("Reporte generado exitosamente");
-//       } catch (error) {
-//         console.error("Error al generar los reportes", error);
-//         toast.error("Error al generar el reporte, intente nuevamente");
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     }
-//   };
-
-//   const columns = [
-//     { header: "Tipo", accessorKey: "type" },
-//     { header: "Fecha", accessorKey: "date" },
-//     {
-//       header: "Enlace",
-//       accessorKey: "link",
-//       cell: ({ row }: any) => (
-//         <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-//           Descargar
-//         </a>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="flex items-center justify-evenly">
-//         <div className="w-72 space-y-2">
-//           <DateSelector date={reportDate} onDateChange={setReportDate} />
-//           <div className="flex items-center space-x-2">
-//             <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-//             <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-//           </div>
-//         </div>
-//         <Button onClick={handleGenerateReport} disabled={isLoading}>
-//           {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-//         </Button>
-//       </div>
-
-//       <DataTable columns={columns} data={generatedFiles} />
-//     </div>
-//   );
-// };
 
 //Component for generate pdf file to biggerBook
 const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { data: AccountData[], dateRange: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string }) => {
@@ -237,14 +96,13 @@ const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { d
   </>
 }
 
-//Component for see the currentPDF
 
 // AccountSection Component
 const AccountSection = () => {
-  const [accountDate, setAccountDate] = useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2024, 0, 20), 20),
-  });
+  const initialDateRange: DateRange = {
+    from: new Date(Date.now()),
+  }
+  const [accountDate, setAccountDate] = useState<DateRange>(initialDateRange);
   const [file, setFile] = useState<JSX.Element | null>(null)
   const [searchDescription, setSearchDescription] = useState<string>("");
   const [currentAccountIndex, setCurrentAccountIndex] = useState<number>(0);
@@ -355,16 +213,25 @@ const AccountSection = () => {
       ),
     },
   ];
+  //metodo para cambiar la fecha
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    if (startDate && endDate) {
+      setAccountDate({
+        from: startDate,
+        to: endDate
+      })
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-evenly mt-6">
-        <div className="flex items-center space-x-2">
-          <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-          <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-        </div>
-        <div className="w-72 space-y-2">
-          <DateSelector date={accountDate} onDateChange={setAccountDate} />
+      <div className="flex items-center justify-evenly mt-5">
+        <div className="space-y-2">
+          <DateSelector onDateChange={handleDateChange} />
+          <div className="flex items-center space-x-2">
+            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+          </div>
         </div>
 
         <Button disabled={isLoadingAccounts}>
