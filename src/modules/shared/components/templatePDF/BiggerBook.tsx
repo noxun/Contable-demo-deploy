@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   thCell: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "bold",
     padding: 3,
   },
@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
   },
   col20: {
     width: "20%"
+  },
+  col25: {
+    width: "25%"
   },
   col30: {
     width: "30%"
@@ -89,12 +92,12 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               </View>
               <View style={{ width: "100%", border: 1 }}>
                 <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
-                  <Text style={[styles.col10, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Asiento</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Fecha</Text>
-                  <Text style={[styles.col30, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Glosa</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Debe</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Haber</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>Saldo</Text>
+                  <Text style={[styles.col10, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>ASIENTO</Text>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>FECHA</Text>
+                  <Text style={[styles.col30, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>GLOSA</Text>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>DEBE</Text>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>HABER</Text>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>SALDO</Text>
                 </View>
                 {
                   record.voucherItems.map((item, index) => {
@@ -102,7 +105,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
 
                     return (
                       <View style={styles.trCell} key={item.accountId}>
-                        <Text style={[styles.col10, styles.tdCell]}>{index}</Text>
+                        <Text style={[styles.col10, styles.tdCell]}>{item.typeDes ? item.typeDes : index}</Text>
                         <Text style={[styles.col15, styles.tdCell]}>{format(item.createdAt, "dd/MM/yyyy")}</Text>
                         <Text style={[styles.col30, styles.tdCell]}>{item.gloss}</Text>
                         <Text style={[styles.col15, styles.tdCell]}>{formatNumber(item[debitType])}</Text>
@@ -120,15 +123,15 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
                 </View>
               </View>
 
-              <View style={[styles.trCell, { justifyContent: "center", alignItems: "center", gap: 30, paddingTop: 40 }]}>
-                <View style={[styles.thCell, { alignItems: "center" }]}>
-                  <Text style={{ textAlign: "center", paddingBottom: 5 }}>________________</Text>
-                  <Text style={{ textAlign: "center" }}>Contador</Text>
+              <View style={[styles.trCell, { borderBottomWidth: 1, borderLeftWidth: 1, borderRightWidth: 1 }]}>
+                <View style={styles.col25}></View>
+                <View style={[styles.thCell, styles.col25, { paddingTop: '2cm', alignItems: "center", borderLeftWidth: 1, borderRightWidth: 1 }]}>
+                  <Text style={{ textAlign: "center" }}>CONTADOR</Text>
                 </View>
-                <View style={[styles.thCell, { alignItems: "center" }]}>
-                  <Text style={{ textAlign: "center", paddingBottom: 5 }}>________________</Text>
-                  <Text style={{ textAlign: "center" }}>Gerente</Text>
+                <View style={[styles.thCell, styles.col25, { paddingTop: '2cm', alignItems: "center", borderRightWidth: 1 }]}>
+                  <Text style={{ textAlign: "center" }}>GERENTE</Text>
                 </View>
+                <View style={styles.col25}></View>
               </View>
 
             </Page>
