@@ -332,3 +332,31 @@ export type TrazoCompany = {
   razonSocial: string;
   id: number;
 }
+
+export type InvoiceVoucher = {
+  id: number
+  num: number
+  exchangeRate: number
+  voucherDate: string
+  coin: string
+  checkNum: any
+  canceledTo: any
+  gloss: string
+  bankId: any
+  type: number
+  items: Array<{
+    id: number
+    debitBs: number
+    debitSus: number
+    assetBs: number
+    assetSus: number
+    gloss: string
+    accountId: number
+    code: string
+    description: string
+    typeOfExpense: any
+    createdAt: string
+    voucherId: number
+    type: number
+  }>
+}

@@ -13,6 +13,7 @@ import {
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
   InvoiceRegistryType,
+  InvoiceVoucher,
   ModelSeat,
   ModelSeatDetailResponse,
   NewConfigValues,
@@ -673,4 +674,14 @@ export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
   setAuthToken(token);
   const response = await api.get(`/CompraVentaType/${type}`);
   return response.data as InvoiceRegistryResponseByType[];
+}
+
+export async function fetchInvoiceVoucherDetailsById(invoiceRegistryId: number){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`api/invoice/SeatContable/${invoiceRegistryId}`);
+  return response.data as InvoiceVoucher[]; 
 }
