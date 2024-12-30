@@ -119,6 +119,18 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
                   <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold" }]}>{formatNumber((record.totalDebit - record.totalAsset))}</Text>
                 </View>
               </View>
+
+              <View style={[styles.trCell, { justifyContent: "center", alignItems: "center", gap: 30, paddingTop: 40 }]}>
+                <View style={[styles.thCell, { alignItems: "center" }]}>
+                  <Text style={{ textAlign: "center", paddingBottom: 5 }}>________________</Text>
+                  <Text style={{ textAlign: "center" }}>Contador</Text>
+                </View>
+                <View style={[styles.thCell, { alignItems: "center" }]}>
+                  <Text style={{ textAlign: "center", paddingBottom: 5 }}>________________</Text>
+                  <Text style={{ textAlign: "center" }}>Gerente</Text>
+                </View>
+              </View>
+
             </Page>
           )
         })
