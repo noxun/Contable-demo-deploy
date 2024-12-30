@@ -55,7 +55,9 @@ export default function InvoiceRegistryForm() {
 
   const invoiceRegistryForm = useForm<NewInvoiceForm>({
     resolver: zodResolver(newInvoiceFormSchema),
-    defaultValues: {},
+    defaultValues: {
+      DUINumber: 0,
+    },
   });
 
   function onSubmit(values: NewInvoiceForm) {
@@ -209,6 +211,8 @@ export default function InvoiceRegistryForm() {
                       <Input
                         type="number"
                         placeholder="Ingrese el número DUI"
+                        min={0}
+                        max={1}
                         {...field}
                       />
                     </FormControl>
@@ -374,7 +378,7 @@ export default function InvoiceRegistryForm() {
                 name="consolidationStatus"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Estado de Consolidación</FormLabel>
+                    <FormLabel>Estado de Factura</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -385,10 +389,12 @@ export default function InvoiceRegistryForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="pending">Pendiente</SelectItem>
-                        <SelectItem value="consolidated">
-                          Consolidado
-                        </SelectItem>
+                        <SelectItem value="V | VALIDA">V | VALIDA</SelectItem>
+                        <SelectItem value="A | ANULADA">A | ANULADA</SelectItem>
+                        <SelectItem value="E | EXTRAVIADA">E | EXTRAVIADA</SelectItem>
+                        <SelectItem value="N | NO UTILIZADA">N | NO UTILIZADA</SelectItem>
+                        <SelectItem value="C | EMITIDA EN CONTINGENCIA ">C | EMITIDA EN CONTINGENCIA</SelectItem>
+                        <SelectItem value="L | LIBRE CONSIGNACION">L | LIBRE CONSIGNACION</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>

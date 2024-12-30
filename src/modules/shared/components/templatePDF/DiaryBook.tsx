@@ -159,7 +159,7 @@ export const DiaryBookTemplate = ({
           </Text>
         </View>
 
-        {records.report.map((asiento, asientoIdx) => (
+        {(Array.isArray(records.report) ? records.report : []).map((asiento, asientoIdx) => (
           <View style={styles.table} key={asientoIdx}>
             <View style={styles.trCell}>
               <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 }]}>
@@ -172,7 +172,7 @@ export const DiaryBookTemplate = ({
               <Text style={styles.col15}></Text>
             </View>
 
-            {asiento.voucherItems.map((record, idx) => (
+            {(Array.isArray(asiento.voucherItems) ? asiento.voucherItems : []).map((record, idx) => (
               <View style={styles.entry} key={idx}>
                 <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 },]}>
                   {record.code}
