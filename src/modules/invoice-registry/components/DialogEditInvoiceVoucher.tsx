@@ -20,8 +20,8 @@ export default function DialogEditInvoiceVoucher({
   voucherId,
   type,
 }: {
-  voucherId: string;
-  type: string;
+  voucherId: string | number;
+  type: string | number;
 }) {
   return (
     <Dialog>
@@ -37,7 +37,7 @@ export default function DialogEditInvoiceVoucher({
             Este modal muestra el comprobante de la factura
           </DialogDescription>
         </DialogHeader>
-        <EditVoucher id={voucherId} type={type as VoucherType} />
+        <EditVoucher id={voucherId as string} type={type as VoucherType} />
       </DialogContent>
     </Dialog>
   );

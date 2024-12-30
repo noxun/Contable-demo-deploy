@@ -119,7 +119,7 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
       const invoiceRegistry = row.original;
       return (
         <div className="flex">
-          <DialogEditInvoiceVoucher voucherId={invoiceRegistry.voucherId.toString()} type={invoiceRegistry.typeTransaction.toString()} />
+          <DialogEditInvoiceVoucher voucherId={invoiceRegistry.voucherId} type={invoiceRegistry.typeTransaction} />
           <DialogInvoiceVoucher invoiceRegistryId={invoiceRegistry.id} />
           <InvoiceRegistryDeleteButton invoiceRegistryId={invoiceRegistry.id} />
           <EditInvoiceRegistryButton invoiceRegistryId={invoiceRegistry.id} />
