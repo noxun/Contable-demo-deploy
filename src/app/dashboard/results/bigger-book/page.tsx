@@ -216,6 +216,7 @@ const AccountSection = () => {
   //metodo para cambiar la fecha
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
+      setFile(null)
       setAccountDate({
         from: startDate,
         to: endDate

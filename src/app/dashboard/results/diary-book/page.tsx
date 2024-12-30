@@ -50,6 +50,7 @@ export default function DiaryBookPage() {
 
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
+      setPdfFile(null)
       setDateRange({
         from: startDate,
         to: endDate
