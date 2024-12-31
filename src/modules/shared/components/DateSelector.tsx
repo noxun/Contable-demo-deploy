@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DateRange } from "react-day-picker";
+import { es } from "date-fns/locale";
 
 type DateSelectorProps = {
   onDateChange: (initDate: Date | null, endDate: Date | null) => void;
@@ -69,6 +70,7 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
+                locale={es}
                 initialFocus
                 mode="range"
                 selected={date}
