@@ -10,7 +10,6 @@ export default function EditExpensePage({
   const { id } = params;
   return (
     <div className="px-5">
-      <h2 className="text-lg font-bold">Formulario para editar Egreso {id}</h2>
       <EditVoucher id={id} type={VoucherType.EXPENSE} />
     </div>
   );

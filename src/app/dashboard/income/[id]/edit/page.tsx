@@ -9,7 +9,6 @@ export default function EditIncomePage({
   const { id } = params;
   return (
     <div className="px-5">
-      <h2 className="text-lg font-bold">Formulario para editar Ingreso {id}</h2>
       <EditVoucher id={id} type={VoucherType.INCOME} />
     </div>
   );
