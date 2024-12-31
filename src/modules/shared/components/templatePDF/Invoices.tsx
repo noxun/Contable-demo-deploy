@@ -1,3 +1,4 @@
+"use client"
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { formatNumber } from "../../utils/validate";
@@ -117,7 +118,7 @@ export const Invoices = ({ voucherItems }: { voucherItems?: any[] }) => {
     ]
   }
 
-  const record = voucherItems ? voucherItems : data
+  const record = data
 
   return (
     <Document>
