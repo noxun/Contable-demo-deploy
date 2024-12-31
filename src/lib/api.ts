@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -18,6 +19,7 @@ api.interceptors.response.use(
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         window.location.replace("/auth/login");
+        toast.warning("Sesión expirada, por favor inicie sesión nuevamente");
       }
     }
     return Promise.reject(error);
