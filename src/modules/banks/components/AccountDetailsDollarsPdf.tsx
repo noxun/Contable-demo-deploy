@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
+import { numberWithDecimals } from "@/modules/shared/utils/validate";
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -100,16 +101,16 @@ export default function AccountDetailsDollarsPdf({
             <Text style={tw("w-[20%] border-r")}>{item.code}</Text>
             <Text style={tw("border-r flex-1")}>{item.description}</Text>
             <Text style={tw("w-[10%] border-r text-right")}>
-              {item.debitBs}
+              {numberWithDecimals(item.debitBs)}
             </Text>
             <Text style={tw("w-[10%] border-r text-right")}>
-              {item.assetBs}
+              {numberWithDecimals(item.assetBs)}
             </Text>
             <Text style={tw("w-[10%] border-r text-right")}>
-              {item.debitSus.toFixed(2)}
+              {numberWithDecimals(item.debitSus)}
             </Text>
             <Text style={tw("w-[10%] border-r text-right")}>
-              {item.assetSus.toFixed(2)}
+              {numberWithDecimals(item.assetSus)}
             </Text>
           </View>
         ))}

@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { ReceiptText } from "lucide-react";
+import { numberWithDecimals } from "../utils/validate";
 
 const tw = createTw({
   theme: {
@@ -148,21 +149,22 @@ export default function PdfVoucher({
                 </Text>
               </View>
               {/* Body tabla */}
+              {/* AGREGAR GLOSAS Y TOTAL LITERAL? */}
               {data?.items?.map((item) => (
                 <View key={item.id} style={tw("w-full flex flex-row border")}>
                   <Text style={tw("w-[20%] border-r")}>{item?.code ?? "code"}</Text>
                   <Text style={tw("border-r flex-1")}>{item?.description ?? "desc"}</Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
-                    {item.debitBs}
+                    {numberWithDecimals(item.debitBs ?? 0)}
                   </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
-                    {item.assetBs}
+                    {numberWithDecimals(item.assetBs ?? 0)}
                   </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
-                    {item.debitSus.toFixed(2)}
+                    {numberWithDecimals(item.debitSus)}
                   </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
-                    {item.assetSus.toFixed(2)}
+                    {numberWithDecimals(item.assetSus)}
                   </Text>
                 </View>
               ))}
@@ -179,10 +181,10 @@ export default function PdfVoucher({
               <View style={tw("w-full flex flex-row")}>
                 <Text style={tw("w-[20%]")}>DESCRIPCIÓN:</Text>
                 <Text style={tw("flex-1 text-right")}>TOTALES</Text>
-                <Text style={tw("w-[10%]")}>{totalDebitBs}</Text>
-                <Text style={tw("w-[10%]")}>{totalAssetBs}</Text>
-                <Text style={tw("w-[10%]")}>{totalDebitSus.toFixed(2)}</Text>
-                <Text style={tw("w-[10%]")}>{totalAssetSus.toFixed(2)}</Text>
+                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalDebitBs)}</Text>
+                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalAssetBs)}</Text>
+                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalDebitSus)}</Text>
+                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalAssetSus)}</Text>
               </View>
               {/* DESCRIPCIÓN */}
               <View style={tw("w-full flex border-b")}>
