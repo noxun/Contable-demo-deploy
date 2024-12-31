@@ -443,7 +443,9 @@ export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/Trazo/interncodes/companies/${companyId}`);
+  const response = await api.get(
+    `/api/Trazo/interncodes/companies/${companyId}`
+  );
   return response.data as TrazoInternCode[];
 }
 
@@ -676,12 +678,31 @@ export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
   return response.data as InvoiceRegistryResponseByType[];
 }
 
-export async function fetchInvoiceVoucherDetailsById(invoiceRegistryId: number){
+export async function fetchInvoiceVoucherDetailsById(
+  invoiceRegistryId: number
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`api/invoice/SeatContable/${invoiceRegistryId}`);
-  return response.data as InvoiceVoucher[]; 
+  const response = await api.get(
+    `api/invoice/SeatContable/${invoiceRegistryId}`
+  );
+  return response.data as InvoiceVoucher[];
+}
+
+export async function numberToLiteral(number: number, inSus: boolean = false) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.get(`/Auth/NumberToLiteral/${number}`, {
+    params: {
+      inSus,
+    },
+    responseType: "text"
+  });
+  return response.data as string;
 }
