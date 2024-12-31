@@ -6,7 +6,7 @@ export function roundDecimals(num: number): number {
 }
 export function numberWithDecimals(num: number): string {
   return num || num === 0
-    ? roundDecimals(num).toLocaleString("en-US", {
+    ? roundDecimals(num).toLocaleString("es-BO", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })
