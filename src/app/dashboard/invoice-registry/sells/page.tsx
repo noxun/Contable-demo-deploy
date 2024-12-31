@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import DownloadMassPurchaseFormButton from "@/modules/invoice-registry/components/DownloadMassTransactionFormButton";
 import ImportInvoiceRegistryDialog from "@/modules/invoice-registry/components/ImportInvoiceRegistryDialog";

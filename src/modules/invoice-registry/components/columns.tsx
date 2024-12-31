@@ -1,3 +1,4 @@
+"use client";
 import {
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
@@ -119,7 +120,13 @@ export const columns: ColumnDef<InvoiceRegistryResponseByType>[] = [
       const invoiceRegistry = row.original;
       return (
         <div className="flex">
-          <DialogEditInvoiceVoucher voucherId={invoiceRegistry.voucherId} type={invoiceRegistry.typeTransaction} />
+          {/* Solo se renderiza si id y type no son falsy */}
+          {invoiceRegistry.voucherId && invoiceRegistry.typeTransaction ? (
+            <DialogEditInvoiceVoucher
+              voucherId={invoiceRegistry.voucherId}
+              type={invoiceRegistry.typeTransaction}
+            />
+          ) : null}
           <DialogInvoiceVoucher invoiceRegistryId={invoiceRegistry.id} />
           <InvoiceRegistryDeleteButton invoiceRegistryId={invoiceRegistry.id} />
           <EditInvoiceRegistryButton invoiceRegistryId={invoiceRegistry.id} />
