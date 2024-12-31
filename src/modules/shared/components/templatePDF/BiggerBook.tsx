@@ -105,7 +105,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
 
                     return (
                       <View style={styles.trCell} key={item.accountId}>
-                        <Text style={[styles.col10, styles.tdCell]}>{item.typeDes ? item.typeDes : index}</Text>
+                        <Text style={[styles.col10, styles.tdCell]}>{item?.typeDes ?? index}</Text>
                         <Text style={[styles.col15, styles.tdCell]}>{format(item.createdAt, "dd/MM/yyyy")}</Text>
                         <Text style={[styles.col30, styles.tdCell]}>{item.gloss}</Text>
                         <Text style={[styles.col15, styles.tdCell]}>{formatNumber(item[debitType])}</Text>

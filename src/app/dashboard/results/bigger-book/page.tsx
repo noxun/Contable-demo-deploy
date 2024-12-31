@@ -53,6 +53,7 @@ type VoucherItem = {
   assetSus: number;
   totalDebit: number;
   totalAsset: number;
+  typeDes?: string;
 };
 
 export type AccountData = {
