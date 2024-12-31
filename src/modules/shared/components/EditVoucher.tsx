@@ -12,7 +12,11 @@ type EditVoucherProps = {
   accountDate?: string; //para invalidar la query
 };
 
-export default function EditVoucher({ id, type, accountDate }: EditVoucherProps) {
+export default function EditVoucher({
+  id,
+  type,
+  accountDate,
+}: EditVoucherProps) {
   const { token, isTokenReady } = useToken();
 
   const editVoucherQuery = useQuery({
@@ -40,7 +44,20 @@ export default function EditVoucher({ id, type, accountDate }: EditVoucherProps)
 
   return (
     <div>
-      <FormEditVoucher type={type} voucher={editVoucherQuery!.data!} accountDate={accountDate}/>
+      <h2 className="text-lg font-bold">
+        Formulario para editar{" "}
+        {editVoucherQuery.data?.type === 0
+          ? "Traspaso"
+          : editVoucherQuery.data?.type === 1
+          ? "Egreso"
+          : "Ingreso"}{" "}
+        {editVoucherQuery.data?.num ?? 0}
+      </h2>
+      <FormEditVoucher
+        type={type}
+        voucher={editVoucherQuery!.data!}
+        accountDate={accountDate}
+      />
     </div>
   );
 }
