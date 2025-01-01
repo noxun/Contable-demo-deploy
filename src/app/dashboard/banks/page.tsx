@@ -20,9 +20,9 @@ export default function BanksPage() {
           <Link href="/files/example_extract_bank.xlsx" download>
             <Button>Descargar Plantilla Extracto</Button>
           </Link>
-          <Link href="/dashboard/banks/new">
+          {/* <Link href="/dashboard/banks/new">
             <Button>Nuevo Banco</Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
       {isPending ? <div>Cargando...</div> : <TableBank data={data ?? []} />}

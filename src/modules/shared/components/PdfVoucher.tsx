@@ -16,10 +16,11 @@ import { createTw } from "react-pdf-tailwind";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, is } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { ReceiptText } from "lucide-react";
 import { numberWithDecimals } from "../utils/validate";
+import useNumberToLiteral from "../hooks/useNumberToLiteral";
 
 const tw = createTw({
   theme: {
@@ -47,7 +48,7 @@ export default function PdfVoucher({
 }) {
   const token = localStorage.getItem("token");
 
-  const {data, isLoading} = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["Vouchers", id, type],
     queryFn: async function (): Promise<Voucher> {
       const response = await axios.get(
@@ -64,28 +65,28 @@ export default function PdfVoucher({
     },
   });
 
-  if (isLoading) {
+  const items = data?.items ?? [];
+
+  const totalDebitBs =
+    items?.reduce((sum: number, item) => sum + item.debitBs!, 0) ?? 0;
+  const totalDebitSus =
+    items?.reduce((sum: number, item) => sum + item.debitSus, 0) ?? 0;
+  const totalAssetBs =
+    items?.reduce((sum: number, item) => sum + item.assetBs!, 0) ?? 0;
+  const totalAssetSus =
+    items?.reduce((sum: number, item) => sum + item.assetSus, 0) ?? 0;
+
+  const {
+    data: totalLiteral,
+    isLoading: isLoadingLiteral,
+    isError: isErrorLiteral,
+  } = useNumberToLiteral(totalDebitBs);
+
+  if (isErrorLiteral) return <div>Error al obtener el literal</div>;
+
+  if (isLoading || isLoadingLiteral) {
     return <div>Loading...</div>;
   }
-
-  const { items } = data!;
-
-  const totalDebitBs = items?.reduce(
-    (sum: number, item) => sum + item.debitBs!,
-    0
-  ) ?? 0;
-  const totalDebitSus = items?.reduce(
-    (sum: number, item) => sum + item.debitSus,
-    0
-  ) ?? 0;
-  const totalAssetBs = items?.reduce(
-    (sum: number, item) => sum + item.assetBs!,
-    0
-  ) ?? 0;
-  const totalAssetSus = items?.reduce(
-    (sum: number, item) => sum + item.assetSus,
-    0
-  ) ?? 0;
 
   return (
     <Dialog>
@@ -123,7 +124,11 @@ export default function PdfVoucher({
               <View style={tw("flex flex-row justify-between")}>
                 <Text>
                   Santa Cruz,{" "}
-                  {format(data?.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}
+                  {format(
+                    data?.voucherDate ?? new Date(),
+                    "dd 'de' MMMM 'de' yyyy",
+                    { locale: es }
+                  )}
                 </Text>
                 <Text>T/C: {data?.exchangeRate ?? "rate"}</Text>
               </View>
@@ -152,8 +157,12 @@ export default function PdfVoucher({
               {/* AGREGAR GLOSAS Y TOTAL LITERAL? */}
               {data?.items?.map((item) => (
                 <View key={item.id} style={tw("w-full flex flex-row border")}>
-                  <Text style={tw("w-[20%] border-r")}>{item?.code ?? "code"}</Text>
-                  <Text style={tw("border-r flex-1")}>{item?.description ?? "desc"}</Text>
+                  <Text style={tw("w-[20%] border-r")}>
+                    {item?.code ?? "code"}
+                  </Text>
+                  <Text style={tw("border-r flex-1")}>
+                    {item?.description ?? "desc"}
+                  </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
                     {numberWithDecimals(item.debitBs ?? 0)}
                   </Text>
@@ -181,10 +190,22 @@ export default function PdfVoucher({
               <View style={tw("w-full flex flex-row")}>
                 <Text style={tw("w-[20%]")}>DESCRIPCIÓN:</Text>
                 <Text style={tw("flex-1 text-right")}>TOTALES</Text>
-                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalDebitBs)}</Text>
-                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalAssetBs)}</Text>
-                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalDebitSus)}</Text>
-                <Text style={tw("w-[10%]")}>{numberWithDecimals(totalAssetSus)}</Text>
+                <Text style={tw("w-[10%]")}>
+                  {numberWithDecimals(totalDebitBs)}
+                </Text>
+                <Text style={tw("w-[10%]")}>
+                  {numberWithDecimals(totalAssetBs)}
+                </Text>
+                <Text style={tw("w-[10%]")}>
+                  {numberWithDecimals(totalDebitSus)}
+                </Text>
+                <Text style={tw("w-[10%]")}>
+                  {numberWithDecimals(totalAssetSus)}
+                </Text>
+              </View>
+              {/* LITERAL */}
+              <View style={tw("w-full flex")}>
+                <Text>Son: {totalLiteral}</Text>
               </View>
               {/* DESCRIPCIÓN */}
               <View style={tw("w-full flex border-b")}>
