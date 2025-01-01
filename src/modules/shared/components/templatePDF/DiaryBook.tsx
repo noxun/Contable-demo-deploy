@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { formatNumber } from "../../utils/validate";
 
@@ -98,6 +98,13 @@ const styles = StyleSheet.create({
   col55: { width: "55%" },
   col60: { width: "60%" },
   col70: { width: "70%" },
+  imageOutOfBounds: {
+    position: 'absolute',
+    top: -15,
+    left: -15,
+    height: "1.5cm",
+    objectFit: 'cover',
+  },
 });
 
 interface DateRange {
@@ -125,11 +132,17 @@ export const DiaryBookTemplate = ({
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
-        <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5 }}>
-          <Text style={{ fontSize: 20 }}>
+        <View>
+          <Image
+            style={styles.imageOutOfBounds}
+            source={{ uri: '/images/tradecruz_logo.png' }}
+          />
+        </View>
+        <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5, paddingTop: 20 }}>
+          <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold" }}>
             Libro Diario
           </Text>
-          <Text style={styles.thCell}>Expresado en {moneyType}</Text>
+          <Text style={[styles.thCell, { fontFamily: "Helvetica-Bold" }]}>(Expresado en {moneyType})</Text>
         </View>
         <View style={[styles.trCell, { paddingBottom: 5, borderTopWidth: 1 }]}>
           <View style={styles.col20}>
@@ -138,9 +151,7 @@ export const DiaryBookTemplate = ({
           <View style={[styles.col60, { textAlign: "center" }]}>
             <Text style={styles.thCell}>{messageDate}</Text>
           </View>
-          <View style={styles.col20}>
-            <Text style={[styles.thCell, { textAlign: "right" }]}>Logo</Text>
-          </View>
+          <View style={[styles.col20, { paddingTop: 1, paddingBottom: 1 }]}></View>
         </View>
 
         <View
@@ -180,10 +191,10 @@ export const DiaryBookTemplate = ({
                 <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
                   {record.description}
                 </Text>
-                <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
+                <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1, textAlign: "right" }]}>
                   {formatNumber(record[debitType])}
                 </Text>
-                <Text style={[styles.tdCell, styles.col15]}>
+                <Text style={[styles.tdCell, styles.col15, { textAlign: "right" }]}>
                   {formatNumber(record[assetType])}
                 </Text>
               </View>
@@ -195,21 +206,21 @@ export const DiaryBookTemplate = ({
               <Text style={[styles.tdCell, styles.col50, { paddingBottom: 15, borderRightWidth: 1 },]}>
                 {`${asiento.gloss} `}
               </Text>
-              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", borderRightWidth: 1, fontWeight: "bold", },]}>
+              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", borderRightWidth: 1, fontWeight: "bold", textAlign: "right" },]}>
                 {formatNumber(asiento.plusData.debe)}
               </Text>
-              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", fontWeight: "bold", },]}>
+              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", fontWeight: "bold", textAlign: "right" },]}>
                 {formatNumber(asiento.plusData.haber)}
               </Text>
             </View>
           </View>
         ))}
         <View style={[styles.trCell, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
-          <Text style={[styles.tdCell, styles.col70]}>Total</Text>
-          <Text style={[styles.tdCell, styles.col15]}>{formatNumber(records.total.debe)}</Text>
-          <Text style={[styles.tdCell, styles.col15]}>{formatNumber(records.total.haber)}</Text>
+          <Text style={[styles.tdCell, styles.col70, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
+          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.debe)}</Text>
+          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.haber)}</Text>
         </View>
       </Page>
-    </Document>
+    </Document >
   );
 };
