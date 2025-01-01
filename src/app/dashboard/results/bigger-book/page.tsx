@@ -2,7 +2,7 @@
 
 import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
-import { DateRange } from "react-day-picker";
+import { DateRange, isDateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,7 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { numberToLiteral } from "@/lib/data";
 
 // Types
 type VoucherItem = {
@@ -66,7 +67,7 @@ export type AccountData = {
 
 
 //Component for generate pdf file to biggerBook
-const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { data: AccountData[], dateRange: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string }) => {
+const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { data: AccountData[], dateRange?: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateReport = async () => {
@@ -103,6 +104,8 @@ const AccountSection = () => {
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   }
+  const [search, setSearch] = useState('');
+  const [currentSearchType, setCurrentSearchType] = useState<'date' | 'account' | null>(null);
   const [accountDate, setAccountDate] = useState<DateRange>(initialDateRange);
   const [file, setFile] = useState<JSX.Element | null>(null)
   const [searchDescription, setSearchDescription] = useState<string>("");
@@ -115,7 +118,7 @@ const AccountSection = () => {
     type: VoucherType;
   } | null>(null);
 
-  // React Query Hook
+  // hook para obtener los datos apartir de un rango de fechas
   const { data: accountsData, isLoading: isLoadingAccounts } = useQuery({
     queryKey: ["bookBiggerData", JSON.stringify(accountDate)], //stringify para que react query compare el valor de la cadena, ya que no puede comparar objetos
     queryFn: async () => {
@@ -127,6 +130,7 @@ const AccountSection = () => {
           params: {
             InitDate: format(accountDate.from, "yyyy/MM/dd"),
             EndDate: format(accountDate.to, "yyyy/MM/dd"),
+
             type: "json",
             businessId: 0,
           },
@@ -134,14 +138,44 @@ const AccountSection = () => {
       );
       return response.data;
     },
-    enabled: !!accountDate?.from && !!accountDate?.to,
+    enabled: !!accountDate?.from && !!accountDate?.to
+  });
+  // hook para buscar por la Cuenta
+  const { data: accountSearch, isLoading: isLoadingAccount, refetch } = useQuery({
+    queryKey: ["bookBiggerAcount", search],
+    queryFn: async () => {
+      if (!search.trim()) return null; // Si no hay búsqueda, no ejecutar
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BookBiggerData`,
+        {
+          params: {
+            search,
+            type: "json",
+          },
+        }
+      );
+      return response.data;
+    },
+    enabled: false
   });
 
-  const currentAccount = accountsData?.[currentAccountIndex];
+  //const currentAccounts = (accountSearch?.length > 0) ? accountSearch : accountsData
+  const currentAccounts =
+    currentSearchType === 'account' ? accountSearch : accountsData
+
+  const currentAccount = currentAccounts?.[currentAccountIndex];
+
 
   const handleChangeIsSus = () => {
     setInSus(!inSus)
   }
+
+  const handleOnSearchAccount = () => {
+    refetch()
+    setCurrentSearchType("account")
+    setFile(null)
+  };
 
   const handleSearch = () => {
     if (!searchDescription.trim()) {
@@ -149,7 +183,7 @@ const AccountSection = () => {
       return;
     }
 
-    const foundIndex = accountsData?.findIndex((account: AccountData) =>
+    const foundIndex = currentAccounts?.findIndex((account: AccountData) =>
       account.accountDescription
         .toLowerCase()
         .includes(searchDescription.toLowerCase())
@@ -159,7 +193,7 @@ const AccountSection = () => {
       setCurrentAccountIndex(foundIndex);
       setActiveFile(null)
       toast.success(
-        `Cuenta encontrada (${foundIndex + 1} de ${accountsData.length})`
+        `Cuenta encontrada (${foundIndex + 1} de ${currentAccounts.length})`
       );
     } else {
       toast.error("No se encontró ninguna cuenta con esa descripción");
@@ -217,6 +251,7 @@ const AccountSection = () => {
   //metodo para cambiar la fecha
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
+      setCurrentSearchType("date")
       setFile(null)
       setAccountDate({
         from: startDate,
@@ -227,6 +262,12 @@ const AccountSection = () => {
 
   return (
     <div className="space-y-6">
+      <SearchAccount
+        search={search}
+        setSearch={setSearch}
+        onSearch={handleOnSearchAccount}
+        isLoading={isLoadingAccount}
+      />
       <div className="flex items-center justify-evenly mt-5">
         <div className="space-y-2">
           <DateSelector onDateChange={handleDateChange} />
@@ -243,12 +284,12 @@ const AccountSection = () => {
         </Button>
       </div>
 
-      {currentAccount && accountDate?.from && accountDate.to && (
+      {currentAccount && (
         <>
           {
             accountDate?.from && accountDate.to && (
               <ReportGenerateBiggerBook
-                data={accountsData}
+                data={currentAccounts}
                 dateRange={accountDate}
                 setFile={setFile}
                 inSus={inSus}
@@ -274,7 +315,7 @@ const AccountSection = () => {
 
           <AccountNavigation
             currentIndex={currentAccountIndex}
-            total={accountsData?.length || 0}
+            total={currentAccounts?.length || 0}
             onPrevious={() => {
               setActiveFile(null)
               setCurrentAccountIndex((prev) => Math.max(0, prev - 1))
@@ -283,7 +324,7 @@ const AccountSection = () => {
             onNext={() => {
               setActiveFile(null)
               setCurrentAccountIndex((prev) =>
-                Math.min((accountsData?.length || 1) - 1, prev + 1)
+                Math.min((currentAccounts?.length || 1) - 1, prev + 1)
               )
             }
             }
@@ -334,6 +375,7 @@ const AccountSection = () => {
 
 // Main Component
 export default function BiggerBookPage() {
+
   return (
     <div className="flex flex-col gap-2 h-full">
       {/* <ReportSection /> */}
@@ -341,11 +383,46 @@ export default function BiggerBookPage() {
       <div className="flex justify-start text-[25px] font-[500]">
         <h1>Reportes</h1>
       </div>
-
       <AccountSection />
+
     </div>
   );
 }
+
+const SearchAccount = ({
+  search,
+  setSearch,
+  onSearch,
+  isLoading
+}: {
+  search: string;
+  setSearch: (value: string) => void;
+  onSearch: () => void;
+  isLoading: boolean
+}) => {
+
+
+  return (
+    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+      <div className="flex gap-2 text-sm font-normal">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por descripción..."
+          className="px-3 py-2 border rounded-md text-md"
+        />
+        <Button
+          onClick={onSearch}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          {isLoading ? 'Buscando...' : 'Buscar'}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 
 // Account Components
 const AccountInfo = ({
