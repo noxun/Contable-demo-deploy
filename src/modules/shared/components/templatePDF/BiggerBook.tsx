@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 });
 
 export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRange, inSus = false, records }) => {
-  console.log('los records son: ', records)
+  // console.log('los records son: ', records)
   const FORMAT_DATE_INITIAL = 'dd/MM/yyyy HH:mm:ss';
   const debitType = inSus ? "debitSus" : "debitBs";
   const assetType = inSus ? "assetSus" : "assetBs";

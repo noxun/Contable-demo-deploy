@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { formatNumber } from "../../utils/validate";
@@ -135,7 +137,7 @@ export const DiaryBookTemplate = ({
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            source={{ uri: '/images/tradecruz_logo.png' }}
+            source={'/images/tradecruz_logo.png'}
           />
         </View>
         <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5, paddingTop: 20 }}>
