@@ -13,11 +13,15 @@ import { Label } from "@/components/ui/label";
 
 type FormNewVoucherWithTypeSelectProps = {
   bankId?: string;
-  bankExtractId?: number ;
+  bankExtractId?: number;
+  gloss?: string;
 };
 
-
-export default function FormNewVoucherWithTypeSelect({bankId,bankExtractId}: FormNewVoucherWithTypeSelectProps) {
+export default function FormNewVoucherWithTypeSelect({
+  bankId,
+  bankExtractId,
+  gloss,
+}: FormNewVoucherWithTypeSelectProps) {
   const [selectedType, setSelectedType] = useState("0");
   return (
     <>
@@ -39,7 +43,12 @@ export default function FormNewVoucherWithTypeSelect({bankId,bankExtractId}: For
           </SelectContent>
         </Select>
       </div>
-      <FormNewVoucher type={selectedType as VoucherType} bankId={bankId} bankExtractId={bankExtractId} />
+      <FormNewVoucher
+        type={selectedType as VoucherType}
+        bankId={bankId}
+        bankExtractId={bankExtractId}
+        gloss={gloss}
+      />
     </>
   );
 }

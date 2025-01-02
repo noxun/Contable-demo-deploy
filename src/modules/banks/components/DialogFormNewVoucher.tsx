@@ -15,12 +15,14 @@ type DialogFormNewVoucherProps = {
   bankId: string;
   bankExtractId: number;
   disabled?: boolean;
+  gloss?: string;
 };
 
 export default function DialogFormNewVoucher({
   bankId,
   bankExtractId,
   disabled,
+  gloss
 }: DialogFormNewVoucherProps) {
   return (
     <Dialog>
@@ -34,7 +36,7 @@ export default function DialogFormNewVoucher({
           <DialogTitle>Nueva Transaccion</DialogTitle>
           <DialogDescription>Modal para nueva transacción</DialogDescription>
         </DialogHeader>
-        <FormNewVoucherWithTypeSelect bankId={bankId} bankExtractId={bankExtractId} />
+        <FormNewVoucherWithTypeSelect bankId={bankId} bankExtractId={bankExtractId} gloss={gloss} />
       </DialogContent>
     </Dialog>
   );

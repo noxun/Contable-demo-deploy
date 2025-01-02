@@ -66,6 +66,7 @@ type FormNewVoucherProps = {
   routeType?: VoucherTypeRoute;
   bankId?: string;
   bankExtractId?: number;
+  gloss?: string;
 };
 
 export default function FormNewVoucher({
@@ -73,6 +74,7 @@ export default function FormNewVoucher({
   bankId,
   bankExtractId,
   routeType,
+  gloss,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -91,7 +93,7 @@ export default function FormNewVoucher({
       debitSus: 0,
       assetBs: null,
       assetSus: 0,
-      gloss: "",
+      gloss: gloss ?? "",
       accountId: "",
       voucherId: "",
       canDebit: true,
@@ -258,7 +260,7 @@ export default function FormNewVoucher({
       exchangeRate: 6.97,
       coin: "BOB",
       checkNum: "",
-      gloss: "",
+      gloss: gloss ?? "",
       bankId: bankId ?? null,
       bankItemRef: bankExtractId, //ironico
     },
