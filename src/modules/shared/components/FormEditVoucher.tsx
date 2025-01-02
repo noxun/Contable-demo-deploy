@@ -45,6 +45,7 @@ import { editVoucher } from "@/lib/data";
 import useAccounts from "../hooks/useAccounts";
 import useBanks from "../hooks/useBanks";
 import { DateRange } from "react-day-picker";
+import { usePathname, useRouter } from "next/navigation";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -60,6 +61,9 @@ export default function FormEditVoucher({
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
   );
+
+  const pathname = usePathname();
+  const router = useRouter();
 
   const banksQuery = useBanks();
 
@@ -78,7 +82,10 @@ export default function FormEditVoucher({
       queryClient.invalidateQueries({
         queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type.toString()],
       });
-      toast.success("Voucher Edited Successfully");
+      toast.success("Voucher Editado Correctamente");
+      if(pathname.endsWith("edit")){
+        router.push("/dashboard/transactions");
+      }
     },
     onError: (error) => {
       console.log(error);
