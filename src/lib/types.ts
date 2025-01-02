@@ -254,6 +254,10 @@ export type BankSelectionState = {
   [key: number]: number | null;  // bankExtractId -> accountId
 };
 
+export type TypeSelectionState = {
+  [key: number]: number | null;  // bankExtractId -> type
+};
+
 export type ConfigValues = {
   id: number;
   ufvValue: number;

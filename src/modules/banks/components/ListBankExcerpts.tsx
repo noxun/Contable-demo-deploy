@@ -6,7 +6,11 @@ import { fetchBankExcerpt } from "@/lib/data";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./bank-excerpt-columns";
 import { useState } from "react";
-import { BankExcerpt, BankSelectionState } from "@/lib/types";
+import {
+  BankExcerpt,
+  BankSelectionState,
+  TypeSelectionState,
+} from "@/lib/types";
 import {
   Select,
   SelectContent,
@@ -24,6 +28,8 @@ export default function ListBankExcerpts({
     {}
   );
 
+  const [selectedTypes, setSelectedTypes] = useState<TypeSelectionState>({});
+
   const [filterByAccountId, setFilterByAccountId] = useState<
     "all" | "registered" | "unregistered"
   >("all");
@@ -37,6 +43,18 @@ export default function ListBankExcerpts({
       [bankExtractId]: accountId,
     }));
   };
+
+  const handleTypeSelectChange = (
+    bankExtractId: number,
+    type: number | null
+  ) => {
+    setSelectedTypes((prev) => ({
+      ...prev,
+      [bankExtractId]: type,
+    }));
+  };
+
+  console.log(selectedTypes,selectedAccounts)
 
   const { data, isPending, isLoading } = useQuery({
     queryKey: ["bankExcerpt", bankId],
@@ -77,7 +95,13 @@ export default function ListBankExcerpts({
 
       <DataTable
         data={filteredBankExtracts}
-        columns={columns(bankId, selectedAccounts, handleSelectChange)}
+        columns={columns(
+          bankId,
+          selectedAccounts,
+          selectedTypes,
+          handleSelectChange,
+          handleTypeSelectChange
+        )}
       />
     </>
   );
