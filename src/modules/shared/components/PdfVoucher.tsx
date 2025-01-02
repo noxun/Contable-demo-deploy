@@ -13,14 +13,20 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { createTw } from "react-pdf-tailwind";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import { format } from "date-fns";
 import { es, is } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
-import { ReceiptText } from "lucide-react";
 import { numberWithDecimals } from "../utils/validate";
 import useNumberToLiteral from "../hooks/useNumberToLiteral";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 const tw = createTw({
   theme: {
@@ -93,6 +99,14 @@ export default function PdfVoucher({
       {/* <DialogTrigger asChild><Button size="icon" variant="outline"><ReceiptText className="size-4"/></Button></DialogTrigger> */}
       <DialogTrigger> Ver Comprobante</DialogTrigger>
       <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
+        <VisuallyHidden.Root>
+          <DialogHeader>
+            <DialogTitle>Comprobante</DialogTitle>
+            <DialogDescription>
+              Muestra el comprobante de la transacción
+            </DialogDescription>
+          </DialogHeader>
+        </VisuallyHidden.Root>
         <PDFViewer showToolbar={true} className="h-full w-full">
           <Document>
             <Page size="LETTER" style={tw("p-4 flex w-full text-sm")}>
