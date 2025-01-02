@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 "use client"
 import { AccountData } from "@/app/dashboard/results/bigger-book/page";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
@@ -90,7 +91,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               <View>
                 <Image
                   style={styles.imageOutOfBounds}
-                  source={{ uri: '/images/tradecruz_logo.png' }}
+                  src="/images/tradecruz_logo.png"
                 />
               </View>
               <Text style={[styles.titlePage, { fontFamily: "Helvetica-Bold", paddingTop: 20 }]}>
