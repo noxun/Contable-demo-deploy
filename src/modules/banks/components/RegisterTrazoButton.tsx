@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { registerToTrazo } from "@/lib/data";
+import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { PlaneIcon } from "lucide-react";
@@ -36,6 +37,7 @@ export default function RegisterTrazoButton({
 
   return (
     <Button
+      className={cn("bg-red-500", { "bg-green-500": disabled })}
       disabled={disabled}
       variant="outline"
       size="icon"
