@@ -75,17 +75,21 @@ const styles = StyleSheet.create({
 });
 
 export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRange, inSus = false, records }) => {
+  console.log('los records son: ', records)
   const FORMAT_DATE_INITIAL = 'dd/MM/yyyy HH:mm:ss';
   const debitType = inSus ? "debitSus" : "debitBs";
   const assetType = inSus ? "assetSus" : "assetBs";
   const moneyType = inSus ? "Dolares" : "Bolivianos";
-
+  const saldoType = inSus ? "totalSaldoSus" : "totalSaldoBs";
+  const saldoTextType = inSus ? "totalSaldoTextSus" : "totalSaldoText";
+  let totalDebit = 0;
+  let totalAsset = 0;
 
   return (
     <Document>
       {
         records.map((record, index) => {
-          let saldo = 0;
+          let saldo = 0
           return (
             <Page key={index} size={"LETTER"} style={styles.page} wrap>
               <View>
@@ -120,8 +124,9 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
                 </View>
                 {
                   record.voucherItems.map((item, index) => {
-                    saldo += Number(item[debitType]) - Number(item[assetType])
-
+                    saldo = item[saldoType]
+                    totalDebit += item[debitType]
+                    totalAsset += item[assetType]
                     return (
                       <View style={styles.trCell} key={item.accountId}>
                         <Text style={[styles.col10, styles.tdCell]}>{item?.typeDes ?? index}</Text>
@@ -129,22 +134,19 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
                         <Text style={[styles.col30, styles.tdCell]}>{item.gloss}</Text>
                         <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[debitType])}</Text>
                         <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[assetType])}</Text>
-                        <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber((saldo))}</Text>
+                        <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber((item[saldoType]))}</Text>
                       </View>
                     )
                   })
                 }
                 <View style={[styles.trCell, { borderTopWidth: 1 }]}>
                   <Text style={[styles.thCell, styles.col55, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
-                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(record.totalDebit)}</Text>
-                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(record.totalAsset)}</Text>
+                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalDebit)}</Text>
+                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalAsset)}</Text>
                   <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber((saldo))}</Text>
                 </View>
                 <View style={[styles.trCell, { borderTopWidth: 1 }]}>
-                  <Text style={[styles.thCell, { fontFamily: 'Helvetica-Bold' }]} >Saldo {record.totalDebit > record.totalAsset ? 'Deudor' : 'Acreedor'}: </Text>
-                </View>
-                <View style={[styles.trCell]}>
-                  <Text style={[styles.tdCell, { paddingLeft: 20, fontFamily: 'Helvetica-Bold' }]} >CINCUENTA MIL QUINIENTOS TREINTA Y DOS con 00/100 BOLIVIANOS</Text>
+                  <Text style={[styles.tdCell, { fontFamily: 'Helvetica-Bold' }]} >SALDO {record[saldoTextType]}</Text>
                 </View>
               </View>
 

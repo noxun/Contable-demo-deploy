@@ -55,6 +55,8 @@ type VoucherItem = {
   totalDebit: number;
   totalAsset: number;
   typeDes?: string;
+  totalSaldoSus: number;
+  totalSaldoBs: number;
 };
 
 export type AccountData = {
@@ -63,6 +65,9 @@ export type AccountData = {
   voucherItems: VoucherItem[];
   totalDebit: number;
   totalAsset: number;
+  totalSaldoNum: number;
+  totalSaldoText: string;
+  totalSaldoTextSus: string;
 };
 
 
