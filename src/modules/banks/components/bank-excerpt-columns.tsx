@@ -1,6 +1,10 @@
 "use client";
 
-import { BankExcerpt, BankSelectionState } from "@/lib/types";
+import {
+  BankExcerpt,
+  BankSelectionState,
+  TypeSelectionState,
+} from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import RegisterSeat from "./RegisterSeat";
 import RegisterTrazoButton from "./RegisterTrazoButton";
@@ -13,7 +17,9 @@ import DialogFormNewVoucher from "./DialogFormNewVoucher";
 export function columns(
   bankId: string | number,
   selectedAccounts: BankSelectionState,
-  onSelectChange: (bankExtractId: number, accountId: number | null) => void
+  selectedTypes: TypeSelectionState,
+  onSelectChange: (bankExtractId: number, accountId: number | null) => void,
+  onTypeSelectChange: (bankExtractId: number, type: number) => void
 ): ColumnDef<BankExcerpt>[] {
   //bankId para invalidar las queries
 
@@ -47,10 +53,14 @@ export function columns(
             registeredType={bankExtract.type}
             bankExtractId={bankExtract.id}
             bankId={bankId}
-            hasBeenRegisteredToAccount={bankExtract.accountId !== 0 || bankExtract.accountingEntry}
+            hasBeenRegisteredToAccount={
+              bankExtract.accountId !== 0 || bankExtract.accountingEntry
+            }
             extractAccountId={bankExtract.accountId}
             selectedAccount={selectedAccounts[bankExtract.id]}
             onSelectChange={onSelectChange}
+            selectedType={selectedTypes[bankExtract.id]}
+            onTypeSelectChange={onTypeSelectChange}
           />
         );
       },
@@ -61,7 +71,12 @@ export function columns(
         const bankExtract = row.original;
         return (
           <div className="flex items-center gap-2">
-            <DialogFormNewVoucher bankId={bankId as string} bankExtractId={bankExtract.id} disabled={bankExtract.accountingEntry}/>
+            <DialogFormNewVoucher
+              bankId={bankId as string}
+              bankExtractId={bankExtract.id}
+              disabled={bankExtract.accountingEntry}
+              gloss={bankExtract.glossInExtract}
+            />
             <RegisterTrazoButton
               bankId={bankId}
               bankExtractId={bankExtract.id}
