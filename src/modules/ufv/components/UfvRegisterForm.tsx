@@ -39,8 +39,8 @@ export default function UfvRegisterForm({
   const ufvRegisterForm = useForm<UfvRegister>({
     resolver: zodResolver(ufvRegisterFormSchema),
     defaultValues: {
-      ufvValue: parseFloat(ufv.ufv.replace(/,/g, ".")),
-      dollarValue: parseFloat(ufv.tc.replace(/,/g, ".")),
+      ufvValue: parseFloat(ufv?.ufv?.replace(/,/g, ".") ?? 2.5),
+      dollarValue: parseFloat(ufv?.tc?.replace(/,/g, ".") ?? 6.97),
     },
   });
   //FIXME:
