@@ -85,6 +85,7 @@ export function columns(
                   ? bankExtract.trazoRegister
                   : !bankExtract.accountingEntry && !bankExtract.trazoRegister
               }
+              hasBeenRegisteredToTrazo={bankExtract.trazoRegister}
             />
             <DialogAccountDetails
               bankExtractId={bankExtract.id}

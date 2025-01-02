@@ -12,10 +12,12 @@ export default function RegisterTrazoButton({
   bankId,
   disabled,
   bankExtractId,
+  hasBeenRegisteredToTrazo,
 }: {
   bankId: string | number;
   bankExtractId: number;
   disabled: boolean;
+  hasBeenRegisteredToTrazo: boolean;
 }) {
   const queryClient = useQueryClient();
 
@@ -37,7 +39,7 @@ export default function RegisterTrazoButton({
 
   return (
     <Button
-      className={cn("bg-red-500", { "bg-green-500": disabled })}
+      className={cn("bg-red-500", { "bg-green-500": hasBeenRegisteredToTrazo })}
       disabled={disabled}
       variant="outline"
       size="icon"
