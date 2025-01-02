@@ -191,6 +191,9 @@ export default function FormNewVoucher({
     if (!applyGlossToAll) {
       const gloss = voucherForm.getValues("gloss");
       setVoucherItems((items) => items.map((item) => ({ ...item, gloss })));
+    }else{
+      const gloss = voucherForm.getValues("gloss");
+      setVoucherItems((items) => items.map((item) => ({ ...item, gloss: "" })));
     }
   }
 
@@ -598,6 +601,7 @@ export default function FormNewVoucher({
             voucherItems={voucherItems}
             setVoucherItems={setVoucherItems}
             applyGlossToAll={applyGlossToAll}
+            glossValue={voucherForm.getValues("gloss")}
           />
           <Button
             type="submit"

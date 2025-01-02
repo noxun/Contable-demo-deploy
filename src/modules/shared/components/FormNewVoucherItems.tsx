@@ -15,18 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Account } from "@/modules/account/types/account";
 import { VoucherItem } from "../types/sharedTypes";
 import NoMenuSelect from "@/components/custom/no-menu-select";
+import { gl } from "date-fns/locale";
 
 type FormNewVoucherItemsProps = {
   voucherItems: VoucherItem[];
   setVoucherItems: Dispatch<SetStateAction<VoucherItem[]>>;
   accountData: Account[];
   applyGlossToAll?: boolean;
+  glossValue?: string;
 };
 export default function FormNewVoucherItems({
   accountData,
   voucherItems,
   setVoucherItems,
   applyGlossToAll,
+  glossValue,
 }: FormNewVoucherItemsProps) {
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
@@ -93,7 +96,8 @@ export default function FormNewVoucherItems({
         <h2 className="text-lg font-medium">Asiento contable</h2>
         <Button
           type="button"
-          onClick={() =>
+          onClick={() =>{
+            
             setVoucherItems((a) => [
               ...a,
               {
@@ -101,13 +105,13 @@ export default function FormNewVoucherItems({
                 debitSus: 0,
                 assetBs: null,
                 assetSus: 0,
-                gloss: "",
+                gloss: glossValue ?? "",
                 accountId: "",
                 voucherId: "",
                 canAsset: true,
                 canDebit: true
               },
-            ])
+            ])}
           }
         >
           <span className="mr-2">Adicionar Item</span>
