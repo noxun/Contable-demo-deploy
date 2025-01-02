@@ -249,6 +249,7 @@ export default function FormNewVoucher({
     gloss: z.string(),
     bankId: z.coerce.string().nullable(),
     items: z.array(voucherItemSchema).optional(),
+    bankItemRef: z.number().optional(),
   });
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
@@ -259,6 +260,7 @@ export default function FormNewVoucher({
       checkNum: "",
       gloss: "",
       bankId: bankId ?? null,
+      bankItemRef: bankExtractId, //ironico
     },
   });
 
