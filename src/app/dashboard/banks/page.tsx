@@ -17,7 +17,7 @@ export default function BanksPage() {
       <div className="w-full flex flex-col items-center">
         <h1 className="font-bold text-3xl mb-5">BANCOS</h1>
         <div className="flex w-full items-center gap-4 justify-end">
-          <Link href="/files/example_extract_bank.xlsx" download>
+          <Link href="/files/example_extract_bank.xlsx" download prefetch={false}>
             <Button>Descargar Plantilla Extracto</Button>
           </Link>
           {/* <Link href="/dashboard/banks/new">
