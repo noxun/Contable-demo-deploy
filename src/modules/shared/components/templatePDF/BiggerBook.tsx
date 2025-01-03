@@ -82,14 +82,14 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
   const moneyType = inSus ? "Dolares" : "Bolivianos";
   const saldoType = inSus ? "totalSaldoSus" : "totalSaldoBs";
   const saldoTextType = inSus ? "totalSaldoTextSus" : "totalSaldoText";
-  let totalDebit = 0;
-  let totalAsset = 0;
 
   return (
     <Document>
       {
         records.map((record, index) => {
-          let saldo = 0
+          let saldo = 0;
+          let totalDebit = 0;
+          let totalAsset = 0;
           return (
             <Page key={index} size={"LETTER"} style={styles.page} wrap>
               <View>
@@ -124,9 +124,10 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
                 </View>
                 {
                   record.voucherItems.map((item, index) => {
-                    saldo = item[saldoType]
-                    totalDebit += item[debitType]
-                    totalAsset += item[assetType]
+                    saldo = Number(item[saldoType])
+                    totalDebit += Number(item[debitType])
+                    totalAsset += Number(item[assetType])
+
                     return (
                       <View style={styles.trCell} key={item.accountId}>
                         <Text style={[styles.col10, styles.tdCell]}>{item?.typeDes ?? index}</Text>
