@@ -33,6 +33,10 @@ import DocViewer, {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
+import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -40,7 +44,7 @@ export default function StatementIncomePage() {
     from: new Date(2024, 0, 20),
     to: addDays(new Date(2024, 0, 20), 20),
   });
-  const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
+
   const [currentDay, setCurrentDay] = useState<boolean | "indeterminate">(
     false
   );
@@ -56,9 +60,6 @@ export default function StatementIncomePage() {
 
   // --- Estados de los documentos para la tabla y el visor ---
   const [docs, setDocs] = useState<{ uri: string }[]>([]);
-  const [generatedFiles, setGeneratedFiles] = useState<
-    { type: string; date: string; link: string }[]
-  >([]);
 
   /*
     Estos estados controlan la llave y el documento activo actual del visor
@@ -170,107 +171,80 @@ export default function StatementIncomePage() {
     }
   };
 
+  const initialDateRange = {
+    from: new Date(Date.now())
+  }
+
+  const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
+  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
+  const [inSus, setInSus] = useState<boolean>(false);
+  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
+
+
+  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+    if (startDate && endDate) {
+      setPdfFile(null)
+      setDateRange({
+        from: startDate,
+        to: endDate
+      })
+    }
+  };
+
+  const handleChangeIsSus = () => setInSus(!inSus)
+
   const columns = [
     { header: "Tipo", accessorKey: "type" },
     { header: "Fecha", accessorKey: "date" },
     {
       header: "Enlace",
       accessorKey: "link",
-      cell: ({ row }: any) => (
-        <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-          Descargar
-        </a>
-      ),
+      cell: ({ row }: any) => {
+        const file = row.original.link
+        return (
+          (
+            <PDFDownloadLink
+              document={file}
+              fileName={`Reporte_${row.original.date}.pdf`}
+            >
+              Descargar
+            </PDFDownloadLink>
+          )
+        )
+      },
     },
   ];
 
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-evenly">
-      <div className="space-y-2">
+        <div className="space-y-2">
           {/* Rango de fechas */}
           <div className="flex items-center gap-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  disabled={currentDay as boolean || !!selectedMonth }
-                  id="date"
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                        {format(date.to, "LLL dd, y", { locale: es })}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y", { locale: es })
-                    )
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  locale={es}
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
-            {/* Solo mes */}
-            <Label>
-              Seleccionar Mes
-              <Input
-                type="month"
-                value={selectedMonth || ""}
-                onChange={(e) => {
-                  setSelectedMonth(e.target.value);
-                  setCurrentDay(false);
-                  setDate(undefined);
-                }}
-                disabled={currentDay as boolean}
-              />
-            </Label>
-            {/* Dia Actual */}
-            <Label>
-              Dia Actual
-              <Checkbox
-                checked={currentDay}
-                onCheckedChange={(checked) => {
-                  setCurrentDay(checked);
-                  setSelectedMonth(null);
-                  setDate(undefined);
-                }}
-              />
-            </Label>
+            <DateSelector onDateChange={handleOnDateChange} />
           </div>
           <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
+            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
             <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
           </div>
         </div>
-        <Button onClick={handleClick} disabled={isLoading}>
-          {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-        </Button>
+        <ReportGeneratorFile
+          dateRange={dateRange}
+          inSus={inSus}
+          reportNamePath="XlxsData"
+          paramType="estadoDeResultado"
+          setFile={setPdfFile}
+          setGeneratedFiles={setGeneratedFiles}
+          setShowDialog={setShowDialog}
+        />
       </div>
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        {/* Comentado pero podria ser util si se requiere en algun momento */}
-        {/* <DialogTrigger asChild>
+      {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        Comentado pero podria ser util si se requiere en algun momento
+        <DialogTrigger asChild>
           <Button variant="outline" className="hidden">
             Mostrar Links
           </Button>
-        </DialogTrigger> */}
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Archivos Generados</DialogTitle>
@@ -284,16 +258,26 @@ export default function StatementIncomePage() {
                 <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
               </Button>
             )}
-            {/* {pdfLink && (
+            {pdfLink && (
               <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
                 <FileText className="mr-2 h-4 w-4" /> Descargar PDF
               </Button>
-            )} */}
+            )}
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
       <DataTable columns={columns} data={generatedFiles} />
-      <DocViewer
+
+      {pdfFile && (
+        <div style={{ height: "800px" }}>
+          <PDFViewer style={{ width: "100%", height: "100%" }}>
+            {pdfFile}
+          </PDFViewer>
+        </div>)
+      }
+
+
+      {/* <DocViewer
         activeDocument={activeDocument}
         onDocumentChange={handleDocumentChange}
         key={viewerKey}
@@ -301,7 +285,7 @@ export default function StatementIncomePage() {
         documents={docs}
         pluginRenderers={[PDFRenderer, MSDocRenderer]}
         language="es"
-      />
+      /> */}
     </div>
   );
 }
