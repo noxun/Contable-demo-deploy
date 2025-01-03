@@ -8,20 +8,20 @@ import UnlinkAccountDialog from "./UnlinkAccountDialog";
 export const columns: ColumnDef<AccountRelation>[] = [
   {
     accessorKey: "accountDescription",
-    header: "Descripcion",
+    header: "Descripción",
   },
   {
     accessorKey: "accountCode",
-    header: "Codigo",
+    header: "Código",
   },
-  {
-    accessorKey: "accountCodeRef",
-    header: "Codigo Cuenta Relacionada",
-  },
-  {
-    accessorKey: "accountDescriptionRef",
-    header: "Descripcion Cuenta Relacionada",
-  },
+  // {
+  //   accessorKey: "accountCodeRef",
+  //   header: "Codigo Cuenta Relacionada",
+  // },
+  // {
+  //   accessorKey: "accountDescriptionRef",
+  //   header: "Descripcion Cuenta Relacionada",
+  // },
   {
     id: "actions",
     header: "Acciones",

@@ -55,6 +55,7 @@ export const TableBank = (props: { data: Bank[] }) => {
 
     {
       id: "actions",
+      header: "Acciones",
       enableHiding: false,
       cell: ({ row }) => {
         const bank = row.original;
