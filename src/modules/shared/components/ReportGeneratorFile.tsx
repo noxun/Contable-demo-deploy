@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { DateRange } from "react-day-picker";
 import { DiaryBookTemplate } from "./templatePDF/DiaryBook";
 import { es } from "date-fns/locale";
+import { BalanceGeneralTemplate } from "./templatePDF/BalanceGeneral";
+import { EstadoResultadosTemplate } from "./templatePDF/EstadoResultados";
 
 interface GeneratedFile {
   type: string;
@@ -17,6 +19,7 @@ interface ReportGeneratorProps {
   dateRange: DateRange;
   inSus: boolean;
   reportNamePath: string;
+  paramType?: string
   setGeneratedFiles: React.Dispatch<React.SetStateAction<GeneratedFile[]>>;
   setShowDialog: (show: boolean) => void;
   setFile: (file: JSX.Element | null) => void;
@@ -26,25 +29,29 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   dateRange,
   inSus,
   reportNamePath,
+  paramType,
   setGeneratedFiles,
   setShowDialog,
   setFile
 }) => {
   const FORMAT_DATE = "yyyy/MM/dd";
   const [isLoading, setIsLoading] = useState(false);
-  const URL_REQUEST = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/${reportNamePath}`;
+  const paramSearchType = `/${paramType}`;
+  const URL_REQUEST = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/${reportNamePath}${paramType ? paramSearchType : ""}`;
 
   const handleGenerateReport = async () => {
     const { from, to } = dateRange;
 
     if (from && to) {
       setIsLoading(true);
+      toast("Generando reporte...");
       try {
         const response = await axios.get(URL_REQUEST, {
           params: {
             InitDate: format(from, FORMAT_DATE),
             EndDate: format(to, FORMAT_DATE),
             inSus,
+            type: paramType
           },
           responseType: "json",
         });
@@ -58,25 +65,56 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             to: format(to, FORMAT_DATE_TEXT, { locale: es })
           }
 
-          const MyDocument = (
-            <DiaryBookTemplate
-              dateRange={dateText}
-              isSus={inSus}
-              records={response.data}
-            />
-          );
+          let MyDocument: JSX.Element | null = null;
 
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "PDF",
-              date: currentDate,
-              link: MyDocument,
-            },
-          ]);
-          setFile(MyDocument);
-          setShowDialog(true);
-          toast.success("Reporte generado exitosamente");
+          const search = paramType ? paramType : reportNamePath;
+
+          switch (search) {
+            case "diarybook":
+              MyDocument = (
+                <DiaryBookTemplate
+                  dateRange={dateText}
+                  isSus={inSus}
+                  records={response.data}
+                />
+              );
+              break;
+            case "balanceGeneral":
+              MyDocument = (
+                <BalanceGeneralTemplate
+                  dateRange={dateText}
+                  inSus={inSus}
+                  records={response.data}
+                />
+              );
+              break;
+            case "estadoDeResultado":
+              MyDocument = (
+                <EstadoResultadosTemplate
+                  dateRange={dateText}
+                  inSus={inSus}
+                  records={response.data}
+                />
+              );
+              break;
+            default:
+              toast.error("Reporte no encontrado");
+              break;
+          }
+
+          if (MyDocument) {
+            setGeneratedFiles((prevFiles) => [
+              ...prevFiles,
+              {
+                type: "PDF",
+                date: currentDate,
+                link: MyDocument,
+              },
+            ]);
+            setFile(MyDocument);
+            setShowDialog(true);
+            toast.success("Reporte generado exitosamente");
+          }
         }
       } catch (error) {
         console.error("Error al generar los reportes", error);
