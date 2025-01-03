@@ -33,6 +33,10 @@ import DocViewer, {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 
 export default function BalanceGeneralPage() {
   // --- Estados del formulario ---
@@ -40,7 +44,7 @@ export default function BalanceGeneralPage() {
     from: new Date(2024, 0, 20),
     to: addDays(new Date(2024, 0, 20), 20),
   });
-  const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
+  const [inSus, setInSus] = useState<boolean>(false);
 
   // --- Estados de los links ---
   const [excelLink, setExcelLink] = useState<string | null>(null);
@@ -57,9 +61,7 @@ export default function BalanceGeneralPage() {
 
   // --- Estados de los documentos para la tabla y el visor ---
   const [docs, setDocs] = useState<{ uri: string }[]>([]);
-  const [generatedFiles, setGeneratedFiles] = useState<
-    { type: string; date: string; link: string }[]
-  >([]);
+
 
   /*
     Estos estados controlan la llave y el documento activo actual del visor
@@ -71,6 +73,7 @@ export default function BalanceGeneralPage() {
    */
   const [viewerKey, setViewerKey] = useState(0);
   const [activeDocument, setActiveDocument] = useState(docs[0]);
+  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
 
   const handleDocumentChange = (document: any) => {
     setActiveDocument(document);
@@ -82,7 +85,8 @@ export default function BalanceGeneralPage() {
   }, [docs]);
 
   // --- Logica del componente ---
-  const handleClick = async () => {    let initDate: Date | null = null;
+  const handleClick = async () => {
+    let initDate: Date | null = null;
     let endDate: Date | null = null;
 
     if (currentDay) {
@@ -99,7 +103,7 @@ export default function BalanceGeneralPage() {
     }
 
 
-    if (initDate && endDate) {	
+    if (initDate && endDate) {
       setIsLoading(true);
       setExcelLink(null);
       // setPdfLink(null);
@@ -177,132 +181,102 @@ export default function BalanceGeneralPage() {
     {
       header: "Enlace",
       accessorKey: "link",
-      cell: ({ row }: any) => (
-        <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-          Descargar
-        </a>
-      ),
+      cell: ({ row }: any) => {
+        const file = row.original.link
+        return (
+          (
+            <PDFDownloadLink
+              document={file}
+              fileName={`BalanceGeneral_${row.original.date}.pdf`}
+            >
+              Descargar
+            </PDFDownloadLink>
+          )
+        )
+      },
     },
   ];
 
+  const initialDateRange: DateRange = {
+    from: new Date(Date.now()),
+  }
+  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
+
+  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+    if (startDate && endDate) {
+      setPdfFile(null)
+      setDateRange({
+        from: startDate,
+        to: endDate
+      })
+    }
+  };
+
+  const handleChangeIsSus = () => setInSus(!inSus)
+
   return (
     <div className="flex flex-col gap-6 h-full">
-    <div className="flex items-center justify-evenly">
-      <div className="space-y-2">
+      <div className="flex items-center justify-evenly">
         {/* Rango de fechas */}
-        <div className="flex items-center gap-4">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                disabled={currentDay as boolean || !!selectedMonth }
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                      {format(date.to, "LLL dd, y", { locale: es })}
-                    </>
-                  ) : (
-                    format(date.from, "LLL dd, y", { locale: es })
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                locale={es}
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-          {/* Solo mes */}
-          <Label>
-            Seleccionar Mes
-            <Input
-              type="month"
-              value={selectedMonth || ""}
-              onChange={(e) => {
-                setSelectedMonth(e.target.value);
-                setCurrentDay(false);
-                setDate(undefined);
-              }}
-              disabled={currentDay as boolean}
-            />
-          </Label>
-          {/* Dia Actual */}
-          <Label>
-            Dia Actual
-            <Checkbox
-              checked={currentDay}
-              onCheckedChange={(checked) => {
-                setCurrentDay(checked);
-                setSelectedMonth(null);
-                setDate(undefined);
-              }}
-            />
-          </Label>
+        <div className="space-y-2">
+          <DateSelector onDateChange={handleOnDateChange} />
+          <div className="flex items-center space-x-2">
+            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-          <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-        </div>
+        {/* aqui generar el reporte */}
+        <ReportGeneratorFile
+          dateRange={dateRange}
+          inSus={inSus}
+          reportNamePath="XlxsData"
+          paramType="balanceGeneral"
+          setFile={setPdfFile}
+          setGeneratedFiles={setGeneratedFiles}
+          setShowDialog={setShowDialog}
+        />
       </div>
-      <Button onClick={handleClick} disabled={isLoading}>
-        {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-      </Button>
+
+      {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        Comentado pero podria ser util si se requiere en algun momento
+        <DialogTrigger asChild>
+          <Button variant="outline" className="hidden">
+            Mostrar Links
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Archivos Generados</DialogTitle>
+            <DialogDescription>
+              Puedes descargar los reportes generados a continuación:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex space-x-4">
+            {excelLink && (
+              <Button onClick={() => window.open(excelLink ?? "", "_self")}>
+                <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
+              </Button>
+            )}
+            {pdfLink && (
+              <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
+                <FileText className="mr-2 h-4 w-4" /> Descargar PDF
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog> */}
+      <DataTable columns={columns} data={generatedFiles} />
+
+      {
+        pdfFile && (
+          <div style={{ height: "600px" }}>
+            <PDFViewer style={{ width: "100%", height: "100%" }}>
+              {pdfFile}
+            </PDFViewer>
+          </div>
+        )
+      }
     </div>
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      {/* Comentado pero podria ser util si se requiere en algun momento */}
-      {/* <DialogTrigger asChild>
-        <Button variant="outline" className="hidden">
-          Mostrar Links
-        </Button>
-      </DialogTrigger> */}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Archivos Generados</DialogTitle>
-          <DialogDescription>
-            Puedes descargar los reportes generados a continuación:
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex space-x-4">
-          {excelLink && (
-            <Button onClick={() => window.open(excelLink ?? "", "_self")}>
-              <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
-            </Button>
-          )}
-          {/* {pdfLink && (
-            <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
-              <FileText className="mr-2 h-4 w-4" /> Descargar PDF
-            </Button>
-          )} */}
-        </div>
-      </DialogContent>
-    </Dialog>
-    <DataTable columns={columns} data={generatedFiles} />
-    <DocViewer
-      activeDocument={activeDocument}
-      onDocumentChange={handleDocumentChange}
-      key={viewerKey}
-      style={{ height: "100%" }}
-      documents={docs}
-      pluginRenderers={[PDFRenderer, MSDocRenderer]}
-      language="es"
-    />
-  </div>
   );
 }
