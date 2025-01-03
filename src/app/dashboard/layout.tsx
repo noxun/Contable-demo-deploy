@@ -8,6 +8,7 @@ import { Archive, Bolt, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import UfvRegistrationDialog from "@/modules/ufv/components/UfvRegistrationDialog";
 import { useInitializeUserStore } from "@/modules/shared/hooks/useInitializeUserStore";
+import Image from "next/image";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   useInitializeUserStore();
@@ -18,8 +19,9 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 justify-between lg:h-[60px] lg:px-6 border-gray-500">
             <Link href="#" className="flex items-center gap-2 font-semibold">
-              <Archive className="h-6 w-6" />
-              <span className="">Noxun</span>
+              {/* <Archive className="h-6 w-6" />
+              <span className="">Noxun</span> */}
+              <Image className="h-8 w-full" src="/images/tradecruz_logo.png" width={57} height={207} alt="Logo" />
             </Link>
             <ModeToggle />
           </div>
