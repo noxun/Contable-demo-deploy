@@ -706,3 +706,23 @@ export async function numberToLiteral(number: number, inSus: boolean = false) {
   });
   return response.data as string;
 }
+
+interface QueryParams {
+  initDate?: string,
+  endDate?: string,
+  inSus?: boolean
+}
+
+export async function getApiReportExcel(path: string, queryParams: QueryParams) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+
+  setAuthToken(token);
+  const response = await api.get(`/api/report/${path}`, {
+    params: queryParams
+  });
+  return response.data;
+}
