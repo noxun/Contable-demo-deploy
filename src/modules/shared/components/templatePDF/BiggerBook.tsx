@@ -95,7 +95,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               <View>
                 <Image
                   style={styles.imageOutOfBounds}
-                  src="/images/tradecruz_logo.png"
+                  src="/images/noxun.png"
                 />
               </View>
               <Text style={[styles.titlePage, { fontFamily: "Helvetica-Bold", paddingTop: 20 }]}>

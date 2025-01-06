@@ -121,7 +121,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            src="/images/tradecruz_logo.png"
+            src="/images/noxun.png"
           />
         </View>
 

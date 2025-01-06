@@ -137,7 +137,7 @@ export const DiaryBookTemplate = ({
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            source={'/images/tradecruz_logo.png'}
+            source={'/images/noxun.png'}
           />
         </View>
         <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5, paddingTop: 20 }}>

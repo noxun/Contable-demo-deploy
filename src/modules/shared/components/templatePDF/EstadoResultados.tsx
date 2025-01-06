@@ -124,7 +124,7 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            src="/images/tradecruz_logo.png"
+            src="/images/noxun.png"
           />
         </View>
 

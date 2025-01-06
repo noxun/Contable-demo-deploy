@@ -59,7 +59,7 @@ export default function AccountDetailsDollarsPdf({
         <View style={tw("w-[207px]")}>
           <View style={tw("flex items-center")}>
             <Image
-              source="/images/tradecruz_logo.png"
+              source="/images/noxun.png"
               style={{ height: 57, width: 207 }}
             />
             <Text>NIT 3754820020</Text>
