@@ -31,6 +31,9 @@ export function columns(
   voucherType: VoucherType,
   voucherTypeRoute: VoucherTypeRoute
 ): ColumnDef<Voucher>[] {
+
+  console.log(voucherType, "voucher columns");
+
   return [
     {
       accessorKey: "num",
@@ -65,7 +68,7 @@ export function columns(
           <div className="flex items-center justify-between">
             <DeleteVoucherDialog
               voucherId={voucher.id!}
-              voucherType={voucher.type?.toString() as VoucherType}
+              voucherType={voucherType}
             />
             <Button asChild variant="outline" size="icon">
               <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}>
