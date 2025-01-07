@@ -459,6 +459,21 @@ export async function fetchTrazoCompanies() {
   return response.data as TrazoCompany[];
 }
 
+export async function postCompanyOrConcept(data: { name: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post("/api/Company", data);
+  return response.data as {
+    id: number;
+    name: string;
+    descripcion: any;
+    sigla: any;
+  };
+}
+
 export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
   let token;
   if (typeof window !== "undefined") {
@@ -702,27 +717,29 @@ export async function numberToLiteral(number: number, inSus: boolean = false) {
     params: {
       inSus,
     },
-    responseType: "text"
+    responseType: "text",
   });
   return response.data as string;
 }
 
 interface QueryParams {
-  initDate?: string,
-  endDate?: string,
-  inSus?: boolean
+  initDate?: string;
+  endDate?: string;
+  inSus?: boolean;
 }
 
-export async function getApiReportExcel(path: string, queryParams: QueryParams) {
+export async function getApiReportExcel(
+  path: string,
+  queryParams: QueryParams
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-
   setAuthToken(token);
   const response = await api.get(`/api/report/${path}`, {
-    params: queryParams
+    params: queryParams,
   });
   return response.data;
 }

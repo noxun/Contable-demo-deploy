@@ -20,7 +20,7 @@ export const columns: ColumnDef<ModelSeat>[] = [
         <div>
           {modelSeat.type === 0
             ? "Traspaso"
-            : modelSeat.type === 1
+            : modelSeat.type === 1 || modelSeat.type === 3
             ? "Egreso"
             : "Ingreso"}
         </div>

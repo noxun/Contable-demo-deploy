@@ -230,6 +230,7 @@ export type Bank = {
   nroCuentaBancaria: any,
   accountId: number,
   code: string | null,
+  saldoTotal: number,
 }
 
 export type InvoiceRegistry = {
@@ -337,6 +338,7 @@ export type BankExtractPaymentFile = {
 export type TrazoCompany = {
   razonSocial: string;
   id: number;
+  ref: "Trazo" | "Contable";
 }
 
 export type InvoiceVoucher = {
