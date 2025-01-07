@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -33,7 +32,7 @@ import { createAccountingBoxItems, postCompanyOrConcept } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import CustomSelect from "@/components/custom/select";
-import CreatableSelect from 'react-select/creatable';
+import CreatableSelect from "react-select/creatable";
 import { Dispatch, SetStateAction, useState } from "react";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { Label } from "@/components/ui/label";
@@ -82,7 +81,10 @@ export default function NewAccountingBoxForm({
   >(null);
 
   const [isCreatingOption, setIsCreatingOption] = useState(false);
-
+  const [selectedOption, setSelectedOption] = useState<null | {
+    value: number;
+    label: string;
+  }>(null);
 
   const queryClient = useQueryClient();
 
@@ -97,7 +99,6 @@ export default function NewAccountingBoxForm({
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
     null
   );
-  
 
   const { data: trazoCompanies, isLoading: isLoadingTrazoCompanies } =
     useTrazoCompanies();
@@ -138,14 +139,26 @@ export default function NewAccountingBoxForm({
         name: inputValue,
       };
       const response = await postCompanyOrConcept(dataToSend);
-      queryClient.setQueryData(["TrazoCompanies"], (oldData: TrazoCompany[]) => [
-        ...(oldData),
-        {
-          id: response.id,
-          razonSocial: response.name,
-          ref: "Contable" // Adapt this to your backend response
-        },
-      ]);
+      queryClient.setQueryData(
+        ["TrazoCompanies"],
+        (oldData: TrazoCompany[]) => [
+          ...oldData,
+          {
+            id: response.id,
+            razonSocial: response.name,
+            ref: "Contable", // Adapt this to your backend response
+          },
+        ]
+      );
+
+      const newOption = {
+        value: response.id,
+        label: response.name,
+      };
+
+      setSelectedOption(newOption);
+      setSelectedCompanyId(response.id);
+
       toast.success("Nueva opcion agregada correctamente");
     } catch (error) {
       toast.error("Error al agregar una nueva opcion");
@@ -153,7 +166,7 @@ export default function NewAccountingBoxForm({
     } finally {
       setIsCreatingOption(false);
     }
-  }
+  };
 
   function onSubmit(values: NewAccountingBox) {
     console.log(values);
@@ -166,7 +179,9 @@ export default function NewAccountingBoxForm({
     isError,
   } = useAccountingBoxBalance(accountingBoxId);
 
-  const trazoCompaniesOptions = (Array.isArray(trazoCompanies) ? trazoCompanies : []).map((company) => ({
+  const trazoCompaniesOptions = (
+    Array.isArray(trazoCompanies) ? trazoCompanies : []
+  ).map((company) => ({
     value: company.id,
     label: company.razonSocial,
   }));
@@ -346,14 +361,19 @@ export default function NewAccountingBoxForm({
                   <FormLabel>Nombre/Cliente</FormLabel>
                   <FormControl>
                     <CreatableSelect
+                      value={selectedOption}
                       isDisabled={isCreatingOption}
                       isLoading={isCreatingOption}
                       options={trazoCompaniesOptions}
                       onCreateOption={handleCreate}
                       onChange={(value) => {
+                        setSelectedOption(value);
                         setSelectedCompanyId(value?.value as number);
                         field.onChange(value?.label);
                       }}
+                      formatCreateLabel={(inputValue) =>
+                        `Crear cliente "${inputValue}"`
+                      }
                     />
                   </FormControl>
                   <FormDescription>A quien se paga</FormDescription>
@@ -417,7 +437,9 @@ export default function NewAccountingBoxForm({
           />
           <div>
             <Label> Saldo Inicial: </Label>
-            {balance ? balance.balance : "Cargando saldo actual, seleccione un tipo de caja para mostrar el saldo correspondiente"}
+            {balance
+              ? balance.balance
+              : "Cargando saldo actual, seleccione un tipo de caja para mostrar el saldo correspondiente"}
           </div>
         </div>
         <div className="flex justify-end">
