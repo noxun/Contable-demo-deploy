@@ -179,7 +179,7 @@ export const DiaryBookTemplate = ({
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
               <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, textAlign: "center", },]}>
-                -------- Comprobante {asiento.typeDes} --------
+                {asiento.typeDes}
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}> </Text>
               <Text style={styles.col15}></Text>
