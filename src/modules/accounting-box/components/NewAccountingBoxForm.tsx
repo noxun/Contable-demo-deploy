@@ -3,13 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,46 +22,42 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format, formatISO, parseISO } from "date-fns";
+import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import useAccounts from "@/modules/shared/hooks/useAccounts";
 import useCostCenter from "@/modules/shared/hooks/useCostCenter";
 import useAccountingBox from "@/modules/shared/hooks/useAccountingBox";
-import ReactSelect from "react-select";
-import useTrazoInternCodes from "@/modules/shared/hooks/useTrazoInternCodes";
 import { es } from "date-fns/locale";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAccountingBoxItems } from "@/lib/data";
+import { createAccountingBoxItems, postCompanyOrConcept } from "@/lib/data";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import CustomSelect from "@/components/custom/select";
-import useModelSeats from "@/modules/shared/hooks/useModelSeats";
+import CreatableSelect from 'react-select/creatable';
 import { Dispatch, SetStateAction, useState } from "react";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { Label } from "@/components/ui/label";
 import useTrazoInternCodesByCompanyId from "@/modules/shared/hooks/useTrazoInternCodesByCompanyId";
 import useTrazoCompanies from "@/modules/shared/hooks/useTrazoCompanies";
 import useModelSeatsByType from "@/modules/shared/hooks/useModelSeatsByType";
+import { TrazoCompany } from "@/lib/types";
 
 const newAccountingBoxFormSchema = z.object({
   fecha: z.date().transform((value) => formatISO(value)),
   accountingBoxId: z.string(),
   accountId: z.coerce.number(),
   modelSeatId: z.coerce.number(),
-  costCenterId: z.coerce.number(),
+  costCenterId: z.coerce.number().optional(),
   referencia: z.string(),
-  hojaDeRuta: z.string(),
+  hojaDeRuta: z.string().optional(),
   nombre: z.string(),
   detalle: z.string(),
-  valorPagado: z.coerce
-    .number()
-    .min(0, "El valor pagado debe ser mayor a 0")
-    // .refine(
-    //   (value) => value <= (balance?. ?? 0),
-    //   "El valor pagado no puede ser mayor al saldo actual"
-    // ),
-    //TODO: validar que el valor pagado no sea mayor al saldo actual
+  valorPagado: z.coerce.number().min(0, "El valor pagado debe ser mayor a 0"),
+  // .refine(
+  //   (value) => value <= (balance?. ?? 0),
+  //   "El valor pagado no puede ser mayor al saldo actual"
+  // ),
+  //TODO: validar que el valor pagado no sea mayor al saldo actual
 });
 // .refine((data) => {
 //   const parsedDate = parseISO(data.fecha);
@@ -91,6 +81,9 @@ export default function NewAccountingBoxForm({
     number | null | undefined
   >(null);
 
+  const [isCreatingOption, setIsCreatingOption] = useState(false);
+
+
   const queryClient = useQueryClient();
 
   const form = useForm<NewAccountingBox>({
@@ -104,6 +97,7 @@ export default function NewAccountingBoxForm({
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
     null
   );
+  
 
   const { data: trazoCompanies, isLoading: isLoadingTrazoCompanies } =
     useTrazoCompanies();
@@ -137,6 +131,30 @@ export default function NewAccountingBoxForm({
     },
   });
 
+  const handleCreate = async (inputValue: string) => {
+    setIsCreatingOption(true);
+    try {
+      const dataToSend = {
+        name: inputValue,
+      };
+      const response = await postCompanyOrConcept(dataToSend);
+      queryClient.setQueryData(["TrazoCompanies"], (oldData: TrazoCompany[]) => [
+        ...(oldData),
+        {
+          id: response.id,
+          razonSocial: response.name,
+          ref: "Contable" // Adapt this to your backend response
+        },
+      ]);
+      toast.success("Nueva opcion agregada correctamente");
+    } catch (error) {
+      toast.error("Error al agregar una nueva opcion");
+      console.log(error);
+    } finally {
+      setIsCreatingOption(false);
+    }
+  }
+
   function onSubmit(values: NewAccountingBox) {
     console.log(values);
     newAccountingBoxMutation.mutate(values);
@@ -147,6 +165,11 @@ export default function NewAccountingBoxForm({
     isLoading,
     isError,
   } = useAccountingBoxBalance(accountingBoxId);
+
+  const trazoCompaniesOptions = (Array.isArray(trazoCompanies) ? trazoCompanies : []).map((company) => ({
+    value: company.id,
+    label: company.razonSocial,
+  }));
 
   return (
     <Form {...form}>
@@ -211,7 +234,7 @@ export default function NewAccountingBoxForm({
               name="costCenterId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gestor</FormLabel>
+                  <FormLabel>Gestor(opcional)</FormLabel>
                   <CustomSelect
                     options={costCenter}
                     getOptionLabel={(costCenter) => costCenter.name}
@@ -227,14 +250,16 @@ export default function NewAccountingBoxForm({
             />
           )}
           {isPendingTrazoInternCodes ? (
-            <div>Cargando...</div>
+            <div>
+              Cargando, Seleccione un cliente para mostrar sus hojas de ruta...
+            </div>
           ) : (
             <FormField
               control={form.control}
               name="hojaDeRuta"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hoja de ruta</FormLabel>
+                  <FormLabel>Hoja de ruta(opcional)</FormLabel>
                   <CustomSelect
                     isDisabled={isLoadingTrazoCompanies}
                     options={trazoInternCodes}
@@ -320,17 +345,14 @@ export default function NewAccountingBoxForm({
                 <FormItem>
                   <FormLabel>Nombre/Cliente</FormLabel>
                   <FormControl>
-                    <CustomSelect
-                      options={trazoCompanies}
-                      getOptionLabel={(trazoCompanies) =>
-                        trazoCompanies.razonSocial
-                      }
-                      getOptionValue={(trazoCompanies) =>
-                        trazoCompanies.id.toString()
-                      }
+                    <CreatableSelect
+                      isDisabled={isCreatingOption}
+                      isLoading={isCreatingOption}
+                      options={trazoCompaniesOptions}
+                      onCreateOption={handleCreate}
                       onChange={(value) => {
-                        setSelectedCompanyId(value?.id as number);
-                        field.onChange(value?.razonSocial);
+                        setSelectedCompanyId(value?.value as number);
+                        field.onChange(value?.label);
                       }}
                     />
                   </FormControl>
@@ -366,12 +388,24 @@ export default function NewAccountingBoxForm({
                     placeholder="valor"
                     value={field.value}
                     onChange={(e) => {
-                      const value = parseFloat(e.target.value);
-                      if (isNaN(value) || value > (balance?.balance ?? 0)) {
-                        field.onChange(0);
-                        toast.info("El valor pagado no puede ser mayor al saldo");
-                      } else {
+                      const value = e.target.value;
+                      // Only allow numbers and up to 2 decimal places
+                      if (/^\d*\.?\d{0,2}$/.test(value)) {
                         field.onChange(value);
+                      } else if (value === "") {
+                        field.onChange("");
+                      }
+
+                      // Convert to number and validate against balance when there's a value
+                      const numValue = parseFloat(value);
+                      if (
+                        !isNaN(numValue) &&
+                        numValue > (balance?.balance ?? 0)
+                      ) {
+                        toast.info(
+                          "El valor pagado no puede ser mayor al saldo actual"
+                        );
+                        field.onChange("0");
                       }
                     }}
                   />
@@ -381,63 +415,10 @@ export default function NewAccountingBoxForm({
               </FormItem>
             )}
           />
-          {/* <FormField
-          control={form.control}
-          name="ingreso"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ingreso</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingreso" {...field} />
-              </FormControl>
-              <FormDescription>El Ingreso</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="egreso"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Egreso</FormLabel>
-              <FormControl>
-                <Input placeholder="Egreso" {...field} />
-              </FormControl>
-              <FormDescription>El egreso</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
           <div>
             <Label> Saldo Inicial: </Label>
-            {balance ? balance.balance : "Cargando saldo actual"}
+            {balance ? balance.balance : "Cargando saldo actual, seleccione un tipo de caja para mostrar el saldo correspondiente"}
           </div>
-          {/* <FormField
-          control={form.control}
-          name="tipoComprobante"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de Comprobante</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Tipo Comprobante" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="RECIBO">RECIBO</SelectItem>
-                  <SelectItem value="FACTURA">FACTURA</SelectItem>
-                  <SelectItem value="SIN COMPROBANTE">
-                    SIN COMPROBANTE
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>El tipo de comprobante</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         </div>
         <div className="flex justify-end">
           <Button className="mt-5" type="submit">
