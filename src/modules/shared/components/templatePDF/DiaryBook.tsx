@@ -187,42 +187,63 @@ export const DiaryBookTemplate = ({
 
             {(Array.isArray(asiento.voucherItems) ? asiento.voucherItems : []).map((record, idx) => (
               <View style={styles.entry} key={idx}>
-                <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 },]}>
-                  {record.code}
-                </Text>
-                <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
-                  {record.description}
-                </Text>
-                <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1, textAlign: "right" }]}>
-                  {formatNumber(record[debitType])}
-                </Text>
-                <Text style={[styles.tdCell, styles.col15, { textAlign: "right" }]}>
-                  {formatNumber(record[assetType])}
-                </Text>
+                <View style={styles.col20}>
+                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                    {record.code}
+                  </Text>
+                </View>
+                <View style={styles.col50}>
+                  <Text style={[styles.tdCell, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
+                    {record.description}
+                  </Text>
+                </View>
+                <View style={styles.col15}>
+                  <Text style={[styles.tdCell, { borderRightWidth: 1, textAlign: "right" }]}>
+                    {formatNumber(record[debitType])}
+                  </Text>
+                </View>
+                <View style={styles.col15}>
+                  <Text style={[styles.tdCell, { textAlign: "right" }]}>
+                    {formatNumber(record[assetType])}
+                  </Text>
+                </View>
               </View>
             ))}
             <View style={styles.trEntry}>
-              <Text style={[styles.tdCell, styles.col20, { paddingBottom: 15, borderRightWidth: 1 },]}>
-                {" "}
-              </Text>
-              <Text style={[styles.tdCell, styles.col50, { paddingBottom: 15, borderRightWidth: 1 },]}>
-                {`${asiento.gloss} `}
-              </Text>
-              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", borderRightWidth: 1, fontWeight: "bold", textAlign: "right" },]}>
-                {formatNumber(asiento.plusData.debe)}
-              </Text>
-              <Text style={[styles.tdCell, styles.col15, { paddingBottom: 15, fontFamily: "Helvetica-Bold", fontWeight: "bold", textAlign: "right" },]}>
-                {formatNumber(asiento.plusData.haber)}
-              </Text>
+              <View style={[styles.col20, { paddingBottom: 15, borderRightWidth: 1 }]}>
+                <Text style={[styles.tdCell]}>
+                  {" "}
+                </Text>
+              </View>
+              <View style={[styles.col50, { paddingBottom: 15, borderRightWidth: 1 }]} >
+                <Text style={[styles.tdCell, { fontSize: 8, fontFamily: "Helvetica-BoldOblique" }]}>
+                  {`${asiento.gloss} `}
+                </Text>
+              </View>
+              <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
+                <View style={{ alignSelf: 'flex-end', borderBottomWidth: 2 }}>
+                  <Text style={[styles.tdCell, { fontFamily: "Helvetica-Bold" },]}>
+                    {formatNumber(asiento.plusData.debe)}
+                  </Text>
+                </View>
+              </View>
+              <View style={[styles.col15, { paddingBottom: 15 }]}>
+                <View style={{ alignSelf: 'flex-end', borderBottomWidth: 2 }}>
+                  <Text style={[styles.tdCell, { fontFamily: "Helvetica-Bold" },]}>
+                    {formatNumber(asiento.plusData.haber)}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
-        ))}
+        ))
+        }
         <View style={[styles.trCell, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
           <Text style={[styles.tdCell, styles.col70, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
           <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.debe)}</Text>
           <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.haber)}</Text>
         </View>
-      </Page>
+      </Page >
     </Document >
   );
 };
