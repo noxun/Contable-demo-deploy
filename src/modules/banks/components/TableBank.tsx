@@ -52,7 +52,10 @@ export const TableBank = (props: { data: Bank[] }) => {
       accessorKey: "descripcion",
       header: "descripcion",
     },
-
+    {
+      accessorKey: "saldoTotal",
+      header: "Saldo Total",
+    },
     {
       id: "actions",
       header: "Acciones",

@@ -230,6 +230,7 @@ export type Bank = {
   nroCuentaBancaria: any,
   accountId: number,
   code: string | null,
+  saldoTotal: number,
 }
 
 export type InvoiceRegistry = {
