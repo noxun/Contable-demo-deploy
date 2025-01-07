@@ -337,6 +337,7 @@ export type BankExtractPaymentFile = {
 export type TrazoCompany = {
   razonSocial: string;
   id: number;
+  ref: "Trazo" | "Contable";
 }
 
 export type InvoiceVoucher = {
