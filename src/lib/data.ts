@@ -730,15 +730,18 @@ interface QueryParams {
 
 export async function getApiReportExcel(
   path: string,
-  queryParams: QueryParams
+  queryParams: QueryParams,
+  pathType?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
+  const typePath = pathType ? `/${pathType}` : ''
+  const URLRequest = `/api/Report/${path}${typePath}`
 
   setAuthToken(token);
-  const response = await api.get(`/api/report/${path}`, {
+  const response = await api.get(URLRequest, {
     params: queryParams,
   });
   return response.data;

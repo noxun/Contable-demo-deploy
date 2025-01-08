@@ -91,5 +91,14 @@ export function numberToLiteral(numero: number, moneda: string = "bolivianos"): 
   return `${literalEntero} con ${literalDecimal} ${moneda}`;
 }
 
+// Rutas para descargar los excel
+export const ReportPaths = {
+  BookBigger: 'BookBigguerDataExel',
+  reportExcel: 'Xlxs'
+} as const;
+
+//valores de los reportPaths
+export type ReportType = typeof ReportPaths[keyof typeof ReportPaths];
+
 
 
