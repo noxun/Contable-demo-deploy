@@ -38,6 +38,8 @@ import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/Bigg
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { getApiReportExcel, numberToLiteral } from "@/lib/data";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
 
 // Types
 type VoucherItem = {
@@ -102,62 +104,6 @@ const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { d
     </Button>
   </>
 }
-
-// Rutas para generar el libro mayor desde la api
-const ReportPaths = {
-  BookBigger: 'BookBigguerDataExel',
-} as const;
-
-//valores de los reportPaths
-type ReportType = typeof ReportPaths[keyof typeof ReportPaths];
-
-//Component for generate excel file to biggerBook
-const ReportExcelGenerate = ({ dateRange, inSus, typeFile }: { dateRange: DateRange, inSus: boolean, typeFile: ReportType }) => {
-
-  const queryParams = {
-    initDate: dateRange.from && format(dateRange.from, "yyyy-MM-dd"),
-    endDate: dateRange.to && format(dateRange.to, "yyyy-MM-dd"),
-    inSus,
-  };
-
-  const { refetch, isLoading } = useQuery({
-    queryKey: [dateRange],
-    queryFn: () => getApiReportExcel(typeFile, queryParams),
-    enabled: false
-  })
-  //eliminar posibles extensiones repetidas
-  const fixFileExtension = (url: string) => {
-    while (url.endsWith('.xlsx.xlsx')) {
-      url = url.slice(0, -5);
-    }
-    return url;
-  };
-
-  const handleOnClick = async () => {
-    toast.info('Generando Excel...')
-
-    try {
-      const { data: linkExcel } = await refetch()
-      const fileUrl = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : fixFileExtension(linkExcel);
-
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "BookBiggerData.xlsx";
-      toast.success('Archivo generado...')
-      link.click();
-    } catch (error) {
-      console.error("Error al descargar el archivo:", error);
-      toast.error('Error al descargar el archivo.');
-    }
-  }
-
-  return (
-    <Button onClick={handleOnClick}>
-      {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
-    </Button>
-  )
-}
-
 
 // AccountSection Component
 const AccountSection = () => {
