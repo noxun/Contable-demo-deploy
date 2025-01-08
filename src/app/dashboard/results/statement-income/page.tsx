@@ -37,6 +37,8 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -238,6 +240,14 @@ export default function StatementIncomePage() {
           setShowDialog={setShowDialog}
         />
       </div>
+      <div className="flex">
+        <ReportExcelGenerate
+          dateRange={dateRange}
+          inSus={inSus}
+          typeFile={ReportPaths.reportExcel}
+          typePathExcel="estadoDeResultado"
+        />
+      </div>
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
         Comentado pero podria ser util si se requiere en algun momento
         <DialogTrigger asChild>
@@ -269,11 +279,13 @@ export default function StatementIncomePage() {
       <DataTable columns={columns} data={generatedFiles} />
 
       {pdfFile && (
-        <div style={{ height: "800px" }}>
-          <PDFViewer style={{ width: "100%", height: "100%" }}>
-            {pdfFile}
-          </PDFViewer>
-        </div>)
+        <>
+          <div style={{ height: "800px" }}>
+            <PDFViewer style={{ width: "100%", height: "100%" }}>
+              {pdfFile}
+            </PDFViewer>
+          </div>
+        </>)
       }
 
 
