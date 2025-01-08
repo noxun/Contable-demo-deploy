@@ -37,6 +37,8 @@ import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
 
 export default function BalanceGeneralPage() {
   // --- Estados del formulario ---
@@ -238,6 +240,15 @@ export default function BalanceGeneralPage() {
         />
       </div>
 
+      <div className="flex">
+        <ReportExcelGenerate
+          dateRange={dateRange}
+          inSus={inSus}
+          typeFile={ReportPaths.reportExcel}
+          typePathExcel="balanceGeneral"
+        />
+      </div>
+
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
         Comentado pero podria ser util si se requiere en algun momento
         <DialogTrigger asChild>
@@ -270,7 +281,7 @@ export default function BalanceGeneralPage() {
 
       {
         pdfFile && (
-          <div style={{ height: "600px" }}>
+          <div style={{ height: "500px" }}>
             <PDFViewer style={{ width: "100%", height: "100%" }}>
               {pdfFile}
             </PDFViewer>
