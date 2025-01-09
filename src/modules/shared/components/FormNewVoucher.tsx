@@ -54,12 +54,18 @@ import {
   fetchAllModelSeats,
   fetchBranchList,
   fetchModelSeatsItems,
+  postCompanyOrConcept,
 } from "@/lib/data";
 import CustomSelect from "@/components/custom/select";
 import useCostCenter from "../hooks/useCostCenter";
 import useMotionAccounts from "../hooks/useMotionAccounts";
 import useModelSeatsByType from "../hooks/useModelSeatsByType";
 import useModelSeats from "../hooks/useModelSeats";
+import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";
+import useTrazoCompanies from "../hooks/useTrazoCompanies";
+import CreatableSelect from "react-select/creatable";
+import { TrazoCompany } from "@/lib/types";
+import { Label } from "@/components/ui/label";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -79,6 +85,15 @@ export default function FormNewVoucher({
   const router = useRouter();
   const queryClient = useQueryClient();
   const { token, isTokenReady } = useToken();
+
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  );
+  const [selectedCompanyOption, setSelectedCompanyOption] = useState<null | {
+    value: number;
+    label: string;
+  }>(null);
+  const [isCreatingOption, setIsCreatingOption] = useState(false);
 
   const [selectedModelSeat, setSelectedModelSeat] = useState(null);
   const [selectedModelSeatType, setSelectedModelSeatType] = useState<
@@ -128,6 +143,42 @@ export default function FormNewVoucher({
     },
   });
 
+  async function handleCreateCompany(inputValue: string) {
+    setIsCreatingOption(true);
+    try {
+      const dataToSend = {
+        name: inputValue,
+      };
+      const response = await postCompanyOrConcept(dataToSend);
+      queryClient.setQueryData(
+        ["TrazoCompanies"],
+        (oldData: TrazoCompany[]) => [
+          ...oldData,
+          {
+            id: response.id,
+            razonSocial: response.name,
+            ref: "Contable", // Adapt this to your backend response
+          },
+        ]
+      );
+
+      const newOption = {
+        value: response.id,
+        label: response.name,
+      };
+
+      setSelectedCompanyOption(newOption);
+      setSelectedCompanyId(response.id);
+
+      toast.success("Nueva opcion agregada correctamente");
+    } catch (error) {
+      toast.error("Error al agregar una nueva opcion");
+      console.log(error);
+    } finally {
+      setIsCreatingOption(false);
+    }
+  }
+
   const {
     data: modelSeats,
     isLoading: isLoadingModelSeats,
@@ -135,6 +186,17 @@ export default function FormNewVoucher({
   } = useModelSeatsByType(selectedModelSeatType);
 
   const accountsQuery = useMotionAccounts();
+
+  const {
+    data: trazoCompanies,
+    isLoading: isLoadingTrazoCompanies,
+    isError: isErrorTrazoCompanies,
+  } = useTrazoCompanies();
+  const {
+    data: trazoInternCodes,
+    isPending: isPendingTrazoInternCodes,
+    isError: isErrorInternCodes,
+  } = useTrazoInternCodesByCompanyId(selectedCompanyId);
 
   const branchListQuery = useQuery({
     queryKey: ["branchList"],
@@ -193,7 +255,7 @@ export default function FormNewVoucher({
     if (!applyGlossToAll) {
       const gloss = voucherForm.getValues("gloss");
       setVoucherItems((items) => items.map((item) => ({ ...item, gloss })));
-    }else{
+    } else {
       const gloss = voucherForm.getValues("gloss");
       setVoucherItems((items) => items.map((item) => ({ ...item, gloss: "" })));
     }
@@ -252,6 +314,7 @@ export default function FormNewVoucher({
     bankId: z.coerce.string().nullable(),
     items: z.array(voucherItemSchema).optional(),
     bankItemRef: z.number().optional(),
+    hojaDeRuta: z.string().optional(),
   });
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
@@ -303,7 +366,9 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined ||
     costCenter === undefined ||
-    isLoadingCostCenter
+    isLoadingCostCenter || 
+    isLoadingTrazoCompanies ||
+    trazoCompanies === undefined
   ) {
     return <Spinner />;
   }
@@ -550,6 +615,65 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
+            <div className="space-y-2">
+              <Label>Cliente</Label>
+              <CreatableSelect
+                value={selectedCompanyOption}
+                isDisabled={isCreatingOption}
+                isLoading={isCreatingOption}
+                options={(Array.isArray(trazoCompanies)
+                  ? trazoCompanies
+                  : []
+                ).map((company) => ({
+                  value: company.id,
+                  label: company.razonSocial,
+                }))}
+                onCreateOption={handleCreateCompany}
+                onChange={(value) => {
+                  setSelectedCompanyOption(value);
+                  setSelectedCompanyId(value?.value as number);
+                  // field.onChange(value?.label);
+                }}
+                formatCreateLabel={(inputValue) =>
+                  `Crear cliente "${inputValue}"`
+                }
+              />
+            </div>
+            {isPendingTrazoInternCodes ? (
+              <div>
+                Cargando, Seleccione un cliente para mostrar sus hojas de
+                ruta...
+              </div>
+            ) : (
+              <FormField
+                control={voucherForm.control}
+                name="hojaDeRuta"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hoja de Ruta (opcional)</FormLabel>
+                    <FormControl>
+                      <CustomSelect
+                        options={
+                          Array.isArray(trazoInternCodes)
+                            ? trazoInternCodes
+                            : []
+                        }
+                        onChange={(option) => {
+                          field.onChange(option?.value);
+                        }}
+                        getOptionLabel={(trazoInternCodes) =>
+                          trazoInternCodes.value
+                        }
+                        getOptionValue={(trazoInternCodes) =>
+                          trazoInternCodes.value
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             {/* <FormField
               control={voucherForm.control}
               name="branch"

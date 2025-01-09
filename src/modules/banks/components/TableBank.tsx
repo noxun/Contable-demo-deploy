@@ -27,6 +27,7 @@ import { useState } from "react";
 import DialogNewExcerpt from "./DialogNewExcerpt";
 import Link from "next/link";
 import { Bank } from "@/lib/types";
+import { numberWithDecimals } from "@/modules/shared/utils/validate";
 
 export const TableBank = (props: { data: Bank[] }) => {
   const { data } = props;
@@ -55,6 +56,9 @@ export const TableBank = (props: { data: Bank[] }) => {
     {
       accessorKey: "saldoTotal",
       header: "Saldo Total",
+      cell: ({ row }) => {
+        return <div className="text-right">{numberWithDecimals(row.original.saldoTotal)}</div>;
+      },
     },
     {
       id: "actions",
@@ -64,24 +68,28 @@ export const TableBank = (props: { data: Bank[] }) => {
         const bank = row.original;
         return (
           <div className="flex items-center justify-center gap-2">
-          {/* <DialogExcerptTable bankId={bank.id}/> */}
-          <Button asChild><Link href={`/dashboard/banks/${bank.id}/${bank.name}/extracts`}>Ver Extractos</Link></Button>
-          <DialogNewExcerpt bankId={bank.id}/>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menú</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => openEditBank(bank)}>
-                Editar
-              </DropdownMenuItem>
-              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            {/* <DialogExcerptTable bankId={bank.id}/> */}
+            <Button asChild>
+              <Link href={`/dashboard/banks/${bank.id}/${bank.name}/extracts`}>
+                Ver Extractos
+              </Link>
+            </Button>
+            <DialogNewExcerpt bankId={bank.id} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menú</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => openEditBank(bank)}>
+                  Editar
+                </DropdownMenuItem>
+                <DropdownMenuItem>Eliminar</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         );
       },
