@@ -11,6 +11,11 @@ import { format } from "date-fns";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";
+import useTrazoCompanies from "../hooks/useTrazoCompanies";
+import CreatableSelect from "react-select/creatable";
+import { TrazoCompany } from "@/lib/types";
+import { Label } from "@/components/ui/label";
 
 import {
   Form,
@@ -41,11 +46,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
-import { editVoucher } from "@/lib/data";
+import { editVoucher, postCompanyOrConcept } from "@/lib/data";
 import useAccounts from "../hooks/useAccounts";
 import useBanks from "../hooks/useBanks";
 import { DateRange } from "react-day-picker";
 import { usePathname, useRouter } from "next/navigation";
+import CustomSelect from "@/components/custom/select";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -62,6 +68,26 @@ export default function FormEditVoucher({
     voucher?.items ?? []
   );
 
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  );
+  const [selectedCompanyOption, setSelectedCompanyOption] = useState<null | {
+    value: number;
+    label: string;
+  }>(null);
+  const [isCreatingOption, setIsCreatingOption] = useState(false);
+
+  const {
+    data: trazoCompanies,
+    isLoading: isLoadingTrazoCompanies,
+    isError: isErrorTrazoCompanies,
+  } = useTrazoCompanies();
+  const {
+    data: trazoInternCodes,
+    isLoading: isLoadingTrazoInternCodes,
+    isError: isErrorInternCodes,
+  } = useTrazoInternCodesByCompanyId(selectedCompanyId);
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -74,16 +100,21 @@ export default function FormEditVoucher({
     mutationFn: editVoucher,
     onSuccess: () => {
       if (accountDate) {
-        console.log("invalidado")
-        queryClient.invalidateQueries({ queryKey: ["bookBiggerData", accountDate] });
+        console.log("invalidado");
+        queryClient.invalidateQueries({
+          queryKey: ["bookBiggerData", accountDate],
+        });
       }
-      queryClient.invalidateQueries({ queryKey: ["invoiceRegistry"], exact: false });
+      queryClient.invalidateQueries({
+        queryKey: ["invoiceRegistry"],
+        exact: false,
+      });
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
         queryKey: ["Vouchers", voucher?.id?.toString() ?? "", type.toString()],
       });
       toast.success("Voucher Editado Correctamente");
-      if(pathname.endsWith("edit")){
+      if (pathname.endsWith("edit")) {
         router.push("/dashboard/transactions");
       }
     },
@@ -92,6 +123,42 @@ export default function FormEditVoucher({
       toast.error("Hubo un error mientras se editaba el voucher");
     },
   });
+
+  async function handleCreateCompany(inputValue: string) {
+    setIsCreatingOption(true);
+    try {
+      const dataToSend = {
+        name: inputValue,
+      };
+      const response = await postCompanyOrConcept(dataToSend);
+      queryClient.setQueryData(
+        ["TrazoCompanies"],
+        (oldData: TrazoCompany[]) => [
+          ...oldData,
+          {
+            id: response.id,
+            razonSocial: response.name,
+            ref: "Contable", // Adapt this to your backend response
+          },
+        ]
+      );
+
+      const newOption = {
+        value: response.id,
+        label: response.name,
+      };
+
+      setSelectedCompanyOption(newOption);
+      setSelectedCompanyId(response.id);
+
+      toast.success("Nueva opcion agregada correctamente");
+    } catch (error) {
+      toast.error("Error al agregar una nueva opcion");
+      console.log(error);
+    } finally {
+      setIsCreatingOption(false);
+    }
+  }
 
   function onSubmit(values: Voucher) {
     values["type"] = parseInt(type);
@@ -126,6 +193,7 @@ export default function FormEditVoucher({
       .optional(),
     gloss: z.string(),
     bankId: z.coerce.string().nullable(),
+    hojaDeRuta: z.string().optional(),
     items: z.array(voucherItemSchema).optional(),
   });
 
@@ -139,7 +207,8 @@ export default function FormEditVoucher({
       coin: voucher.coin,
       checkNum: voucher.checkNum,
       gloss: voucher.gloss,
-      bankId: voucher.bankId as string ?? null,
+      bankId: (voucher.bankId as string) ?? null,
+      hojaDeRuta: voucher.hojaDeRuta ?? "",
     },
   });
 
@@ -147,7 +216,9 @@ export default function FormEditVoucher({
     banksQuery.isLoading ||
     !banksQuery.data ||
     accountsQuery.isLoading ||
-    !accountsQuery.data
+    !accountsQuery.data ||
+    isLoadingTrazoCompanies ||
+    !trazoCompanies
   ) {
     return <Spinner />;
   }
@@ -258,7 +329,7 @@ export default function FormEditVoucher({
                 <FormItem>
                   <FormLabel>Banco</FormLabel>
                   <Select
-                    defaultValue={field?.value ?? ""}
+                    // defaultValue={field?.value ?? ""}
                     onValueChange={field.onChange}
                   >
                     <FormControl>
@@ -277,6 +348,57 @@ export default function FormEditVoucher({
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="space-y-2">
+              <Label>Cliente</Label>
+              <CreatableSelect
+                value={selectedCompanyOption}
+                isDisabled={isCreatingOption}
+                isLoading={isCreatingOption}
+                options={(Array.isArray(trazoCompanies)
+                  ? trazoCompanies
+                  : []
+                ).map((company) => ({
+                  value: company.id,
+                  label: company.razonSocial,
+                }))}
+                onCreateOption={handleCreateCompany}
+                onChange={(value) => {
+                  setSelectedCompanyOption(value);
+                  setSelectedCompanyId(value?.value as number);
+                  // field.onChange(value?.label);
+                }}
+                formatCreateLabel={(inputValue) =>
+                  `Crear cliente "${inputValue}"`
+                }
+              />
+            </div>
+            <FormField
+              control={voucherForm.control}
+              name="hojaDeRuta"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hoja de Ruta (opcional)</FormLabel>
+                  <FormControl>
+                    <CustomSelect
+                      defaultInputValue={field.value}
+                      options={
+                        Array.isArray(trazoInternCodes) ? trazoInternCodes : []
+                      }
+                      onChange={(option) => {
+                        field.onChange(option?.value);
+                      }}
+                      getOptionLabel={(trazoInternCodes) =>
+                        trazoInternCodes.value
+                      }
+                      getOptionValue={(trazoInternCodes) =>
+                        trazoInternCodes.value
+                      }
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
