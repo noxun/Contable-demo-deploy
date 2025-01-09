@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica'
   },
   titlePage: {
-    fontSize: 20,
+    fontSize: 18,
     textAlign: "center",
     paddingBottom: 5
   },
@@ -30,16 +30,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   thCell: {
-    fontSize: 11,
+    fontSize: 9,
     fontWeight: "bold",
     padding: 3,
   },
   tdCell: {
-    fontSize: 10,
+    fontSize: 9,
     padding: 5,
   },
   col10: {
     width: "10%"
+  },
+  col11: {
+    width: "11%"
+  },
+  col13: {
+    width: "13%"
   },
   col15: {
     width: "15%"
@@ -65,6 +71,9 @@ const styles = StyleSheet.create({
   col85: {
     width: "85%"
   },
+  col61: {
+    width: "61%"
+  },
   imageOutOfBounds: {
     position: 'absolute',
     top: -15,
@@ -82,6 +91,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
   const moneyType = inSus ? "Dolares" : "Bolivianos";
   const saldoType = inSus ? "totalSaldoSus" : "totalSaldoBs";
   const saldoTextType = inSus ? "totalSaldoTextSus" : "totalSaldoText";
+  console.log('los records son: ', records)
 
   return (
     <Document>
@@ -115,12 +125,13 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               </View>
               <View style={{ width: "100%", border: 1 }}>
                 <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>HOJA RUTA</Text>
                   <Text style={[styles.col10, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>ASIENTO</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>FECHA</Text>
-                  <Text style={[styles.col30, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>GLOSA</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>DEBE</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>HABER</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>SALDO</Text>
+                  <Text style={[styles.col11, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>FECHA</Text>
+                  <Text style={[styles.col25, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>GLOSA</Text>
+                  <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>DEBE</Text>
+                  <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>HABER</Text>
+                  <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>SALDO</Text>
                 </View>
                 {
                   record.voucherItems.map((item, index) => {
@@ -130,21 +141,22 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
 
                     return (
                       <View style={styles.trCell} key={item.accountId}>
+                        <Text style={[styles.col15, styles.tdCell]}>{item.hojaDeRuta}</Text>
                         <Text style={[styles.col10, styles.tdCell]}>{item?.typeDes ?? index}</Text>
-                        <Text style={[styles.col15, styles.tdCell]}>{format(item.createdAt, "dd/MM/yyyy")}</Text>
-                        <Text style={[styles.col30, styles.tdCell]}>{item.gloss}</Text>
-                        <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[debitType])}</Text>
-                        <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[assetType])}</Text>
-                        <Text style={[styles.col15, styles.tdCell, { textAlign: "right" }]}>{formatNumber((item[saldoType]))}</Text>
+                        <Text style={[styles.col11, styles.tdCell]}>{format(item.createdAt, "dd/MM/yyyy")}</Text>
+                        <Text style={[styles.col25, styles.tdCell]}>{item.gloss}</Text>
+                        <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[debitType])}</Text>
+                        <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[assetType])}</Text>
+                        <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber((item[saldoType]))}</Text>
                       </View>
                     )
                   })
                 }
                 <View style={[styles.trCell, { borderTopWidth: 1 }]}>
-                  <Text style={[styles.thCell, styles.col55, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
-                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalDebit)}</Text>
-                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalAsset)}</Text>
-                  <Text style={[styles.col15, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber((saldo))}</Text>
+                  <Text style={[styles.thCell, styles.col61, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
+                  <Text style={[styles.col13, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalDebit)}</Text>
+                  <Text style={[styles.col13, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber(totalAsset)}</Text>
+                  <Text style={[styles.col13, styles.tdCell, { fontFamily: "Helvetica-Bold", textAlign: "right" }]}>{formatNumber((saldo))}</Text>
                 </View>
                 <View style={[styles.trCell, { borderTopWidth: 1 }]}>
                   <Text style={[styles.tdCell, { fontFamily: 'Helvetica-Bold' }]} >SALDO {record[saldoTextType]}</Text>

@@ -59,6 +59,7 @@ type VoucherItem = {
   typeDes?: string;
   totalSaldoSus: number;
   totalSaldoBs: number;
+  hojaDeRuta: string
 };
 
 export type AccountData = {
