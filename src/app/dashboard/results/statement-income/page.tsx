@@ -195,28 +195,6 @@ export default function StatementIncomePage() {
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`Reporte_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
-
   return (
     <div className="flex flex-col gap-6 h-full">
       <div className="flex items-center justify-evenly">
@@ -276,7 +254,10 @@ export default function StatementIncomePage() {
           </div>
         </DialogContent>
       </Dialog> */}
-      <DataTable columns={columns} data={generatedFiles} />
+
+
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
       {pdfFile && (
         <>

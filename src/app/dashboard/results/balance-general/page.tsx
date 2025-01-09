@@ -177,28 +177,6 @@ export default function BalanceGeneralPage() {
     }
   };
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`BalanceGeneral_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
-
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   }
@@ -277,7 +255,9 @@ export default function BalanceGeneralPage() {
           </div>
         </DialogContent>
       </Dialog> */}
-      <DataTable columns={columns} data={generatedFiles} />
+
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
       {
         pdfFile && (

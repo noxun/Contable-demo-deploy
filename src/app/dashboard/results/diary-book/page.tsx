@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { GeneratedFilesTable } from "@/modules/shared/components/GeneratedFilesTable";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -23,30 +24,6 @@ export default function DiaryBookPage() {
   const [inSus, setInSus] = useState(false);
 
   const handleChangeIsSus = () => setInSus(!inSus)
-
-
-
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`Reporte_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
 
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
@@ -80,7 +57,8 @@ export default function DiaryBookPage() {
         />
       </div>
 
-      <DataTable columns={columns} data={generatedFiles} />
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
       {pdfFile && (
         <div style={{ height: "500px" }}>
           <PDFViewer style={{ width: "100%", height: "100%" }}>
