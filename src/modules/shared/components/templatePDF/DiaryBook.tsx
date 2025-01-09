@@ -45,6 +45,7 @@ export interface VoucherItem {
   createdAt: Date;
   voucherId: number;
   type: number;
+  hojaDeRuta: string;
 }
 
 const styles = StyleSheet.create({
@@ -70,12 +71,12 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   thCell: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "bold",
     padding: 3,
   },
   tdCell: {
-    fontSize: 10,
+    fontSize: 9,
     padding: 5,
   },
   entry: {
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
   },
   col15: { width: "15%" },
   col20: { width: "20%" },
+  col40: { width: "40%" },
   col50: { width: "50%" },
   col55: { width: "55%" },
   col60: { width: "60%" },
@@ -141,7 +143,7 @@ export const DiaryBookTemplate = ({
           />
         </View>
         <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5, paddingTop: 20 }}>
-          <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold" }}>
+          <Text style={{ fontSize: 18, fontFamily: "Helvetica-Bold" }}>
             Libro Diario
           </Text>
           <Text style={[styles.thCell, { fontFamily: "Helvetica-Bold" }]}>(Expresado en {moneyType})</Text>
@@ -162,23 +164,21 @@ export const DiaryBookTemplate = ({
             { borderBottomWidth: 1, borderTopWidth: 1, fontFamily: "Helvetica-Bold" },
           ]}
         >
-          <Text style={[styles.thCell, styles.col20]}>Codigo</Text>
-          <Text style={[styles.thCell, styles.col50]}>Detalle</Text>
-          <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>
-            Debe
-          </Text>
-          <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>
-            Haber
-          </Text>
+          <Text style={[styles.thCell, styles.col15]}>Hoja de Ruta</Text>
+          <Text style={[styles.thCell, styles.col15]}>Codigo</Text>
+          <Text style={[styles.thCell, styles.col40]}>Detalle</Text>
+          <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>Debe</Text>
+          <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>Haber</Text>
         </View>
 
         {(Array.isArray(records.report) ? records.report : []).map((asiento, asientoIdx) => (
           <View style={styles.table} key={asientoIdx}>
             <View style={styles.trCell}>
-              <Text style={[styles.tdCell, styles.col20, { borderRightWidth: 1 }]}>
+              <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
-              <Text style={[styles.tdCell, styles.col50, { borderRightWidth: 1, textAlign: "center", },]}>
+              <Text style={[styles.col15, { borderRightWidth: 1 }]}>{" "}</Text>
+              <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", },]}>
                 {asiento.typeDes}
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}> </Text>
@@ -187,12 +187,17 @@ export const DiaryBookTemplate = ({
 
             {(Array.isArray(asiento.voucherItems) ? asiento.voucherItems : []).map((record, idx) => (
               <View style={styles.entry} key={idx}>
-                <View style={styles.col20}>
+                <View style={styles.col15}>
+                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                    {record.hojaDeRuta ?? `HOJA-${idx * 100000}`}
+                  </Text>
+                </View>
+                <View style={styles.col15}>
                   <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
                     {record.code}
                   </Text>
                 </View>
-                <View style={styles.col50}>
+                <View style={styles.col40}>
                   <Text style={[styles.tdCell, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
                     {record.description}
                   </Text>
@@ -210,13 +215,18 @@ export const DiaryBookTemplate = ({
               </View>
             ))}
             <View style={styles.trEntry}>
-              <View style={[styles.col20, { paddingBottom: 15, borderRightWidth: 1 }]}>
+              <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
                 <Text style={[styles.tdCell]}>
                   {" "}
                 </Text>
               </View>
-              <View style={[styles.col50, { paddingBottom: 15, borderRightWidth: 1 }]} >
-                <Text style={[styles.tdCell, { fontSize: 8, fontFamily: "Helvetica-BoldOblique" }]}>
+              <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
+                <Text style={[styles.tdCell]}>
+                  {" "}
+                </Text>
+              </View>
+              <View style={[styles.col40, { paddingBottom: 15, borderRightWidth: 1 }]} >
+                <Text style={[styles.tdCell, { fontSize: 9, fontFamily: "Helvetica-BoldOblique" }]}>
                   {`${asiento.gloss} `}
                 </Text>
               </View>
