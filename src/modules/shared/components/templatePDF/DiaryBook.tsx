@@ -164,9 +164,9 @@ export const DiaryBookTemplate = ({
             { borderBottomWidth: 1, borderTopWidth: 1, fontFamily: "Helvetica-Bold" },
           ]}
         >
-          <Text style={[styles.thCell, styles.col15]}>Hoja de Ruta</Text>
           <Text style={[styles.thCell, styles.col15]}>Codigo</Text>
           <Text style={[styles.thCell, styles.col40]}>Detalle</Text>
+          <Text style={[styles.thCell, styles.col15]}>Hoja de Ruta</Text>
           <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>Debe</Text>
           <Text style={[styles.thCell, styles.col15, { textAlign: "center" }]}>Haber</Text>
         </View>
@@ -177,10 +177,10 @@ export const DiaryBookTemplate = ({
               <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1 }]}>
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
-              <Text style={[styles.col15, { borderRightWidth: 1 }]}>{" "}</Text>
               <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", },]}>
                 {asiento.typeDes}
               </Text>
+              <Text style={[styles.col15, { borderRightWidth: 1 }]}>{" "}</Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}> </Text>
               <Text style={styles.col15}></Text>
             </View>
@@ -189,17 +189,17 @@ export const DiaryBookTemplate = ({
               <View style={styles.entry} key={idx}>
                 <View style={styles.col15}>
                   <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
-                    {record.hojaDeRuta ?? `HOJA-${idx * 100000}`}
-                  </Text>
-                </View>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
                     {record.code}
                   </Text>
                 </View>
                 <View style={styles.col40}>
                   <Text style={[styles.tdCell, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.padding}`, },]}>
                     {record.description}
+                  </Text>
+                </View>
+                <View style={styles.col15}>
+                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                    {record.hojaDeRuta ?? ' '}
                   </Text>
                 </View>
                 <View style={styles.col15}>
@@ -220,14 +220,14 @@ export const DiaryBookTemplate = ({
                   {" "}
                 </Text>
               </View>
-              <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
-                <Text style={[styles.tdCell]}>
-                  {" "}
-                </Text>
-              </View>
               <View style={[styles.col40, { paddingBottom: 15, borderRightWidth: 1 }]} >
                 <Text style={[styles.tdCell, { fontSize: 9, fontFamily: "Helvetica-BoldOblique" }]}>
                   {`${asiento.gloss} `}
+                </Text>
+              </View>
+              <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
+                <Text style={[styles.tdCell]}>
+                  {" "}
                 </Text>
               </View>
               <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>

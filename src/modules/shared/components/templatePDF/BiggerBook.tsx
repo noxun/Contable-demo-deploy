@@ -125,10 +125,10 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               </View>
               <View style={{ width: "100%", border: 1 }}>
                 <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>HOJA RUTA</Text>
                   <Text style={[styles.col10, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>ASIENTO</Text>
                   <Text style={[styles.col11, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>FECHA</Text>
                   <Text style={[styles.col25, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>GLOSA</Text>
+                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>HOJA DE RUTA</Text>
                   <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>DEBE</Text>
                   <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>HABER</Text>
                   <Text style={[styles.col13, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>SALDO</Text>
@@ -141,10 +141,10 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
 
                     return (
                       <View style={styles.trCell} key={item.accountId}>
-                        <Text style={[styles.col15, styles.tdCell]}>{item.hojaDeRuta}</Text>
                         <Text style={[styles.col10, styles.tdCell]}>{item?.typeDes ?? index}</Text>
                         <Text style={[styles.col11, styles.tdCell]}>{format(item.createdAt, "dd/MM/yyyy")}</Text>
                         <Text style={[styles.col25, styles.tdCell]}>{item.gloss}</Text>
+                        <Text style={[styles.col15, styles.tdCell]}>{item.hojaDeRuta ?? ' '}</Text>
                         <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[debitType])}</Text>
                         <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber(item[assetType])}</Text>
                         <Text style={[styles.col13, styles.tdCell, { textAlign: "right" }]}>{formatNumber((item[saldoType]))}</Text>
