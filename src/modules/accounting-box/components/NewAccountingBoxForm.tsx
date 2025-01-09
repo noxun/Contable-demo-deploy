@@ -276,6 +276,7 @@ export default function NewAccountingBoxForm({
                 <FormItem>
                   <FormLabel>Hoja de ruta(opcional)</FormLabel>
                   <CustomSelect
+                    isLoading={isLoadingTrazoCompanies}
                     isDisabled={isLoadingTrazoCompanies}
                     options={trazoInternCodes}
                     getOptionLabel={(trazoInternCodes) =>
