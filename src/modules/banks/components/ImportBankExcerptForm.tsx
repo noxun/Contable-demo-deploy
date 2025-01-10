@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { importBankExcerptFromExcel } from "@/lib/data";
 import { toast } from "sonner";
+import { Dispatch, SetStateAction } from "react";
 
 const importBankExcerptFormSchema = z.object({
   BankId: z.string(),
@@ -27,8 +28,10 @@ type ImportBankExcerpt = z.infer<typeof importBankExcerptFormSchema>;
 
 export default function ImportBankExcerptForm({
   bankId,
+  setOpen,
 }: {
   bankId: string | number;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const importBankExcerptForm = useForm<ImportBankExcerpt>({
     resolver: zodResolver(importBankExcerptFormSchema),
@@ -37,8 +40,6 @@ export default function ImportBankExcerptForm({
       File: null,
     },
   });
-
-
 
   function onSubmit(values: ImportBankExcerpt) {
     console.log(values);
@@ -52,13 +53,14 @@ export default function ImportBankExcerptForm({
 
   const importBankExcerptMutation = useMutation({
     mutationFn: importBankExcerptFromExcel,
-    onSuccess: () =>{
-      toast.success("Archivo enviado correctamente")
+    onSuccess: () => {
+      toast.success("Archivo enviado correctamente");
+      setOpen(false);
     },
     onError: () => {
-      toast.error("Hubo un error al enviar el archivo")
-    }
-  })
+      toast.error("Hubo un error al enviar el archivo");
+    },
+  });
 
   return (
     <Form {...importBankExcerptForm}>
@@ -73,19 +75,20 @@ export default function ImportBankExcerptForm({
                 <Input
                   {...fieldProps}
                   type="file"
+                  accept=".xlsx"
                   onChange={(event) =>
                     onChange(event.target.files && event.target.files[0])
                   }
                 />
               </FormControl>
-              <FormDescription>
-                Archivo en formato .xlsx
-              </FormDescription>
+              <FormDescription>Archivo en formato .xlsx</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button disabled={importBankExcerptMutation.isPending} type="submit">Guardar</Button>
+        <Button disabled={importBankExcerptMutation.isPending} type="submit">
+          Guardar
+        </Button>
       </form>
     </Form>
   );
