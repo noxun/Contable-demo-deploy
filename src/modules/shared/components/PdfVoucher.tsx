@@ -154,18 +154,21 @@ export default function PdfVoucher({
                 <Text style={tw("flex-1 text-center border-r py-4")}>
                   CUENTAS
                 </Text>
+                <Text style={tw("w-[20%] text-center border-r py-4")}>
+                  HOJA RUTA
+                </Text>
                 <Text style={tw("w-[10%] text-center border-r py-4")}>
                   DEBE Bs.
                 </Text>
                 <Text style={tw("w-[10%] text-center border-r py-4")}>
                   HABER Bs.
                 </Text>
-                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                {/* <Text style={tw("w-[10%] text-center border-r py-4")}>
                   DEBE $us.
                 </Text>
                 <Text style={tw("w-[10%] text-center border-r py-4")}>
                   HABER $us.
-                </Text>
+                </Text> */}
               </View>
               {/* Body tabla */}
               {/* AGREGAR GLOSAS Y TOTAL LITERAL? */}
@@ -177,28 +180,31 @@ export default function PdfVoucher({
                   <Text style={tw("border-r flex-1")}>
                     {item?.description ?? "desc"}
                   </Text>
+                  <Text style={tw("w-[20%] border-r text-right")}>
+                    {item.hojaDeRuta ?? " "}
+                  </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
                     {numberWithDecimals(item.debitBs ?? 0)}
                   </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
                     {numberWithDecimals(item.assetBs ?? 0)}
                   </Text>
-                  <Text style={tw("w-[10%] border-r text-right")}>
+                  {/* <Text style={tw("w-[10%] border-r text-right")}>
                     {numberWithDecimals(item.debitSus)}
                   </Text>
                   <Text style={tw("w-[10%] border-r text-right")}>
                     {numberWithDecimals(item.assetSus)}
-                  </Text>
+                  </Text> */}
                 </View>
               ))}
               {/* Espacio restante abajo de la tabla, abajo de los items */}
               <View style={tw("w-full flex flex-row border flex-1")}>
                 <Text style={tw("w-[20%] border-r")}></Text>
                 <Text style={tw("border-r flex-1")}></Text>
+                <Text style={tw("w-[20%] border-r text-right")}></Text>
                 <Text style={tw("w-[10%] border-r text-right")}></Text>
                 <Text style={tw("w-[10%] border-r text-right")}></Text>
-                <Text style={tw("w-[10%] border-r text-right")}></Text>
-                <Text style={tw("w-[10%] border-r text-right")}></Text>
+                {/* <Text style={tw("w-[10%] border-r text-right")}></Text> */}
               </View>
               {/* Footer tabla */}
               <View style={tw("w-full flex flex-row")}>
@@ -210,12 +216,12 @@ export default function PdfVoucher({
                 <Text style={tw("w-[10%]")}>
                   {numberWithDecimals(totalAssetBs)}
                 </Text>
-                <Text style={tw("w-[10%]")}>
+                {/* <Text style={tw("w-[10%]")}>
                   {numberWithDecimals(totalDebitSus)}
                 </Text>
                 <Text style={tw("w-[10%]")}>
                   {numberWithDecimals(totalAssetSus)}
-                </Text>
+                </Text> */}
               </View>
               {/* LITERAL */}
               <View style={tw("w-full flex")}>

@@ -23,6 +23,7 @@ export type VoucherItem = {
   accountId?: number | string;
   code?: string;
   description?: string;
+  hojaDeRuta?: string;
   typeOfExpense?: any;
   createdAt?: "string";
   voucherId?: number | string;
