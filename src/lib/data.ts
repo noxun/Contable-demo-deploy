@@ -746,3 +746,17 @@ export async function getApiReportExcel(
   });
   return response.data;
 }
+
+export async function searchByAccountBigguerBook(search: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  const URLRequest = `/api/Report/BookBiggerData`
+
+  setAuthToken(token);
+  const response = await api.get(URLRequest, {
+    params: { search },
+  });
+  return response.data;
+}
