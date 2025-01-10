@@ -168,6 +168,14 @@ export default function FormEditVoucher({
     editVoucherMutation.mutate(values);
   }
 
+  const totalDebitBs = (
+    Array.isArray(voucher.items) ? voucher.items : []
+  ).reduce((acc, item) => acc + (item?.debitBs ?? 0), 0);
+
+  const totalAssetBs = (
+    Array.isArray(voucher.items) ? voucher.items : []
+  ).reduce((acc, item) => acc + (item?.assetBs ?? 0), 0);
+
   const voucherItemSchema = z.object({
     id: z.number().optional(),
     debitBs: z.number(),
@@ -434,6 +442,11 @@ export default function FormEditVoucher({
         setVoucherItems={setVoucherItems}
         voucher={voucher}
       />
+      <br />
+      <div className="flex justify-center gap-10 border">
+        <div className="font-semibold">Total Debe Bs: {totalDebitBs}</div>
+        <div className="font-semibold">Total Haber Bs: {totalAssetBs}</div>
+      </div>
     </div>
   );
 }
