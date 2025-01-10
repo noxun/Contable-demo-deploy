@@ -12,6 +12,7 @@ import CustomSelect from "@/components/custom/select";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { numberWithDecimals } from "@/modules/shared/utils/validate";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<
@@ -77,7 +78,9 @@ const AccountingBoxPage = () => {
           {isLoadingBalance || !balance ? (
             <span>Cargando saldo...</span>
           ) : (
-            <span className="font-bold">Saldo: {balance.balance}</span>
+            <span className="font-bold">
+              Saldo: {numberWithDecimals(balance.balance)}
+            </span>
           )}
         </div>
       </div>

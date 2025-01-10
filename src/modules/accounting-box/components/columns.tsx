@@ -9,7 +9,7 @@ export const columns: ColumnDef<AccountingBoxItems>[] = [
       const accountingBox = row.original;
       const date = new Date(accountingBox.fecha);
       return date.toLocaleDateString();
-    }
+    },
   },
   {
     accessorKey: "hojaDeRuta",
@@ -29,8 +29,12 @@ export const columns: ColumnDef<AccountingBoxItems>[] = [
   },
   {
     accessorKey: "valorPagado",
-    header: "Valor Pagado",
-  }
+    header: () => <div className="text-right">Valor Pagado</div>,
+    cell: ({ row }) => {
+      const accountingBox = row.original;
+      return <div className="text-right">{accountingBox.valorPagado}</div>;
+    },
+  },
   // {
   //   id: "actions",
   //   header: "Acciones",
