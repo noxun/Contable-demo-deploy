@@ -21,7 +21,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             <Link href="#" className="flex items-center gap-2 font-semibold">
               {/* <Archive className="h-6 w-6" />
               <span className="">Noxun</span> */}
-              <Image className="h-8 w-full" src="/images/tradecruz_logo.png" width={57} height={207} alt="Logo" />
+              <Image className="h-8 w-full" src="/images/tradecruz_logo.png" width={3840} height={1040} alt="Logo" />
             </Link>
             <ModeToggle />
           </div>
