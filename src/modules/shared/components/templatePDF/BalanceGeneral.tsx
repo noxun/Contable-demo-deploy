@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   thCell: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     padding: 3,
   },
@@ -146,7 +146,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
                     <View style={styles.trCell} key={index}>
                       <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
                       <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                      <Text style={[styles.tdCell, styles.col20]}>{formatNumber(entry[totalActivo])}</Text>
+                      <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[totalActivo])}</Text>
                     </View>
                   )
                 })
@@ -168,7 +168,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
                       <View style={styles.trCell} key={index}>
                         <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
                         <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                        <Text style={[styles.tdCell, styles.col20]}>{formatNumber(entry[totalActivo])}</Text>
+                        <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[totalActivo])}</Text>
                       </View>
                     )
                   })
@@ -176,7 +176,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
                 <View style={[styles.trCell, { fontFamily: "Helvetica-Bold" }]}>
                   <Text style={[styles.tdCell, styles.col20,]} />
                   <Text style={[styles.tdCell, styles.col60]}>Total Pasivo</Text>
-                  <Text style={[styles.tdCell, styles.col20]}>{formatNumber(sumTotalPasivo)}</Text>
+                  <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(sumTotalPasivo)}</Text>
                 </View>
               </View>
 
@@ -195,7 +195,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
                       <View style={styles.trCell} key={index}>
                         <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
                         <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                        <Text style={[styles.tdCell, styles.col20]}>{formatNumber(entry[totalActivo])}</Text>
+                        <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[totalActivo])}</Text>
                       </View>
                     )
                   })
@@ -203,7 +203,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
                 <View style={[styles.trCell, { fontFamily: "Helvetica-Bold" }]}>
                   <Text style={[styles.tdCell, styles.col20,]} />
                   <Text style={[styles.tdCell, styles.col60]}>Total Patrimonio Neto</Text>
-                  <Text style={[styles.tdCell, styles.col20]}>{formatNumber(sumTotalPatrimonio)}</Text>
+                  <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(sumTotalPatrimonio)}</Text>
                 </View>
               </View>
             </View>
@@ -214,13 +214,13 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
           <View style={[styles.trCell, styles.col50]}>
             <Text style={styles.col20} />
             <Text style={[styles.thCell, styles.col60]}>Total Activo</Text>
-            <Text style={[styles.thCell, styles.col20]}>{formatNumber(sumTotalActivo)}</Text>
+            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(sumTotalActivo)}</Text>
           </View>
           <View style={[styles.trCell, styles.col50]}>
             <Text style={styles.col20} />
             <Text style={[styles.thCell, styles.col60]}>Total Pasivo y Patrimonio Neto</Text>
-            <Text style={[styles.thCell, styles.col20]}>
-              {formatNumber((Number(sumTotalPatrimonio) + Number(sumTotalPatrimonio)))}
+            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>
+              {formatNumber((Number(sumTotalPatrimonio) + Number(sumTotalPasivo)))}
             </Text>
           </View>
         </View>
