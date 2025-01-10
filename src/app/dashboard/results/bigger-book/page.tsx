@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown, FileText, Sheet } from "lucide-react";
 import { DateRange, isDateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { es } from "date-fns/locale";
 import { DataTable } from "@/components/ui/data-table";
@@ -37,9 +37,12 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { getApiReportExcel, numberToLiteral } from "@/lib/data";
+import { getApiReportExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
 import { ReportPaths } from "@/modules/shared/utils/validate";
+import { useDebounce } from "use-debounce";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { SearchComponent } from "@/modules/shared/components/SearchComponent";
 
 // Types
 type VoucherItem = {
@@ -111,8 +114,13 @@ const AccountSection = () => {
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   }
-  const [search, setSearch] = useState('');
+  // un estado por el tipo de filtro o busqueda
+  // un estado para elemento encontrado
+  // un estado para limpiar el search
+  const [accountSearch, setSearchAccount] = useState<any[] | null>(null);
   const [currentSearchType, setCurrentSearchType] = useState<'date' | 'account' | null>(null);
+  const [resetSearch, setResetSearch] = useState(false)
+
   const [accountDate, setAccountDate] = useState<DateRange>(initialDateRange);
   const [file, setFile] = useState<JSX.Element | null>(null)
   const [searchDescription, setSearchDescription] = useState<string>("");
@@ -147,42 +155,14 @@ const AccountSection = () => {
     },
     enabled: !!accountDate?.from && !!accountDate?.to
   });
-  // hook para buscar por la Cuenta
-  const { data: accountSearch, isLoading: isLoadingAccount, refetch } = useQuery({
-    queryKey: ["bookBiggerAcount", search],
-    queryFn: async () => {
-      if (!search.trim()) return null; // Si no hay búsqueda, no ejecutar
 
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BookBiggerData`,
-        {
-          params: {
-            search,
-            type: "json",
-          },
-        }
-      );
-      return response.data;
-    },
-    enabled: false
-  });
-
-  //const currentAccounts = (accountSearch?.length > 0) ? accountSearch : accountsData
   const currentAccounts =
     currentSearchType === 'account' ? accountSearch : accountsData
 
   const currentAccount = currentAccounts?.[currentAccountIndex];
 
 
-  const handleChangeIsSus = () => {
-    setInSus(!inSus)
-  }
-
-  const handleOnSearchAccount = () => {
-    refetch()
-    setCurrentSearchType("account")
-    setFile(null)
-  };
+  const handleChangeIsSus = () => setInSus(!inSus)
 
   const handleSearch = () => {
     if (!searchDescription.trim()) {
@@ -260,6 +240,7 @@ const AccountSection = () => {
     if (startDate && endDate) {
       setCurrentSearchType("date")
       setFile(null)
+      setResetSearch(true)
       setAccountDate({
         from: startDate,
         to: endDate
@@ -267,13 +248,26 @@ const AccountSection = () => {
     }
   };
 
+  const handleSelect = (value: any) => {
+    setResetSearch(false)
+    setActiveFile(null)
+    setFile(null)
+    setCurrentSearchType('account')
+    setSearchAccount([value])
+  };
+
   return (
     <div className="space-y-6">
-      <SearchAccount
-        search={search}
-        setSearch={setSearch}
-        onSearch={handleOnSearchAccount}
-        isLoading={isLoadingAccount}
+      {/* componente para buscar un recurso con una llamada a una api */}
+      <SearchComponent
+        onSelect={handleSelect}
+        suggestionKey="accountDescription"
+        placeholder="Buscar por cuenta..."
+        buttonLabel="Buscar por cuenta"
+        queryFn={(search: string) =>
+          searchByAccountBigguerBook(search)
+        }
+        resetSearch={resetSearch}
       />
       <div className="flex items-center justify-evenly mt-5">
         <div className="space-y-2">
@@ -402,41 +396,6 @@ export default function BiggerBookPage() {
     </div>
   );
 }
-
-const SearchAccount = ({
-  search,
-  setSearch,
-  onSearch,
-  isLoading
-}: {
-  search: string;
-  setSearch: (value: string) => void;
-  onSearch: () => void;
-  isLoading: boolean
-}) => {
-
-
-  return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-      <div className="flex gap-2 text-sm font-normal">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por descripción..."
-          className="px-3 py-2 border rounded-md text-md"
-        />
-        <Button
-          onClick={onSearch}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          {isLoading ? 'Buscando...' : 'Buscar'}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
 
 // Account Components
 const AccountInfo = ({
