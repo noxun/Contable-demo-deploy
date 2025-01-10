@@ -243,6 +243,11 @@ export default function FormNewVoucher({
 
       setVoucherItems([]);
       voucherForm.reset();
+      setSelectedCompanyOption(null);
+      setSelectedCompanyId(null);
+      setSelectedModelSeat(null);
+      setSelectedModelSeatType(undefined);
+      setApplyGlossToAll(false);
     },
     onError: (error) => {
       console.log(error);
@@ -294,8 +299,12 @@ export default function FormNewVoucher({
   const voucherFormSchema = z.object({
     id: z.number().optional(),
     num: z.number().optional(),
-    sucursalId: z.string().optional(),
-    costCenterId: z.coerce.number().optional(),
+    sucursalId: z
+      .string()
+      .optional(),
+    costCenterId: z
+      .string()
+      .optional(),
     voucherDate: z
       .string({
         required_error: "Fecha requerida.",
@@ -315,6 +324,12 @@ export default function FormNewVoucher({
     items: z.array(voucherItemSchema).optional(),
     bankItemRef: z.number().optional(),
     hojaDeRuta: z.string().optional(),
+  }).superRefine((data, ctx) => {
+    return {
+      ...data,
+      sucursalId: data.sucursalId ? Number(data.sucursalId) : null,
+      costCenterId: data.costCenterId ? Number(data.costCenterId) : null
+    };
   });
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
@@ -326,6 +341,8 @@ export default function FormNewVoucher({
       gloss: gloss ?? "",
       bankId: bankId ?? null,
       bankItemRef: bankExtractId, //ironico
+      costCenterId: "",
+      sucursalId: "",
     },
   });
 
@@ -366,7 +383,7 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined ||
     costCenter === undefined ||
-    isLoadingCostCenter || 
+    isLoadingCostCenter ||
     isLoadingTrazoCompanies ||
     trazoCompanies === undefined
   ) {
@@ -487,10 +504,7 @@ export default function FormNewVoucher({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Moneda</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Moneda" />
@@ -556,10 +570,7 @@ export default function FormNewVoucher({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sucursal</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sucursal" />
@@ -591,7 +602,7 @@ export default function FormNewVoucher({
                   <FormLabel>Centro de costos</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value?.toString()}
+                    value={field.value?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
