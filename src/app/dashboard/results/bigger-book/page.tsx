@@ -261,6 +261,7 @@ const AccountSection = () => {
       {/* componente para buscar un recurso con una llamada a una api */}
       <SearchComponent
         onSelect={handleSelect}
+        debounceTime={700}
         suggestionKey="accountDescription"
         placeholder="Buscar por cuenta..."
         buttonLabel="Buscar por cuenta"
