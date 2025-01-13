@@ -12,6 +12,7 @@ import { DatePickerField } from "./DatePickerField"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Save } from "lucide-react"
 
 export const FormFixedAssets = () => {
 
@@ -122,7 +123,7 @@ export const FormFixedAssets = () => {
               <FormItem className='w-full'>
                 <FormLabel>Proveedor</FormLabel>
                 <FormControl>
-                  <Input  {...field}></Input>
+                  <Input placeholder="Ingrese el proveedor"  {...field}></Input>
                 </FormControl>
               </FormItem>
             )}
@@ -134,7 +135,7 @@ export const FormFixedAssets = () => {
               <FormItem className='w-full'>
                 <FormLabel>Referencia</FormLabel>
                 <FormControl>
-                  <Input {...field}></Input>
+                  <Input placeholder="Ingrese la referencia" {...field}></Input>
                 </FormControl>
               </FormItem>
             )}
@@ -202,8 +203,8 @@ export const FormFixedAssets = () => {
                 </FormItem>
               )}
             />
-            <Button>
-              {mutation.isPending ? "Cargando..." : "Guardar"}
+            <Button className="flex items-center justify-center gap-2" disabled={mutation.isPending}>
+              <Save size={20} /> Guardar
             </Button>
           </div>
         </div>
