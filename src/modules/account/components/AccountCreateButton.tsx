@@ -21,7 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ import { z } from "zod";
 import { PlusCircle } from "lucide-react";
 
 export default function AccountCreateButton({
-  fatherId,
+  fatherId 
 }: {
   fatherId: number;
 }) {
@@ -88,11 +88,21 @@ export default function AccountCreateButton({
       queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
-
+  
   function onSubmit(values: AccountCreateForm) {
     console.log(values);
     createAccountMutation.mutate(values);
   }
+  useEffect(() => {
+      if (open) {
+        accountCreateForm.reset({
+          description: "",
+          coin: "",
+          active: true,
+          fatherId: fatherId,
+        });
+      }
+    }, [open, fatherId, accountCreateForm]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
