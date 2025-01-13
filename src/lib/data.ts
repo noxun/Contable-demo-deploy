@@ -36,6 +36,7 @@ import { RegisterForm } from "@/app/dashboard/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
+import { SchemaFixedAsset } from "@/modules/fixed-assets/types/types";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -759,4 +760,32 @@ export async function searchByAccountBigguerBook(search: string) {
     params: { search },
   });
   return response.data;
+}
+
+//obtener el listado de activos
+export async function getAllAssets() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  //cambiar la url
+  const URLRequest = `/api/Report/BookBiggerData`
+
+  setAuthToken(token);
+  const { data } = await api.get(URLRequest);
+  return data;
+}
+
+//crear un nuevo activo Fijo
+export async function postAssetFixed(FixedAsset: SchemaFixedAsset) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `/FixedAssets`
+
+  setAuthToken(token);
+  const { data } = await api.post(URLRequest, FixedAsset);
+  return data;
 }
