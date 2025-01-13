@@ -33,6 +33,7 @@ import DocViewer, {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function ClashFlowPage() {
   // --- Estados del formulario ---
@@ -82,7 +83,8 @@ export default function ClashFlowPage() {
   }, [docs]);
 
   // --- Logica del componente ---
-  const handleClick = async () => {    let initDate: Date | null = null;
+  const handleClick = async () => {
+    let initDate: Date | null = null;
     let endDate: Date | null = null;
 
     if (currentDay) {
@@ -99,7 +101,7 @@ export default function ClashFlowPage() {
     }
 
 
-    if (initDate && endDate) {	
+    if (initDate && endDate) {
       setIsLoading(true);
       setExcelLink(null);
       setPdfLink(null);
@@ -184,6 +186,22 @@ export default function ClashFlowPage() {
 
   return (
     <div className="flex flex-col gap-6 h-full">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Flujo de efectivo",
+            href: "/dashboard/results/cash-flow"
+          }
+        ]}
+      />
       <div className="flex items-center justify-evenly">
         <div className="space-y-2">
           {/* Rango de fechas */}
@@ -191,7 +209,7 @@ export default function ClashFlowPage() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={currentDay as boolean || !!selectedMonth }
+                  disabled={currentDay as boolean || !!selectedMonth}
                   id="date"
                   variant={"outline"}
                   className={cn(
