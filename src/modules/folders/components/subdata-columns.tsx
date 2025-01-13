@@ -14,14 +14,18 @@ export const columns: ColumnDef<SubData>[] = [
   {
     accessorKey: "recibo",
     header: "Recibo",
-    cell: ({row})=> {
+    cell: ({ row }) => {
       const recibo = row.original.recibo;
-      return <Badge 
-        className={cn("bg-green-500",{
-          "bg-red-500": recibo
-        })}
-      />
-    }
+      return (
+        <Badge
+          className={cn("bg-red-500", {
+            "bg-green-500": recibo,
+          })}
+        >
+          {recibo ? "Si" : "No"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -37,13 +41,16 @@ export const columns: ColumnDef<SubData>[] = [
   },
   {
     header: "Acciones",
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const subData = row.original;
       return (
         <div>
-          <ChangeReceiptStatusButton subDataId={subData.id}/>
+          <ChangeReceiptStatusButton
+            subDataId={subData.id}
+            procedureId={subData.procedureId}
+          />
         </div>
-      )
-    }
-  }
-]
+      );
+    },
+  },
+];

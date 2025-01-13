@@ -31,6 +31,7 @@ import DocViewer, {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function BalanceAmountsPage() {
   // --- Estados del formulario ---
@@ -184,6 +185,22 @@ export default function BalanceAmountsPage() {
 
   return (
     <div className="flex flex-col gap-6 h-full">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Balance de sumas y saldos",
+            href: "/dashboard/results/balance-amounts"
+          }
+        ]}
+      />
       <div className="flex items-center justify-evenly">
         <div className="space-y-2">
           {/* Rango de fechas */}
@@ -191,7 +208,7 @@ export default function BalanceAmountsPage() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={currentDay as boolean || !!selectedMonth }
+                  disabled={currentDay as boolean || !!selectedMonth}
                   id="date"
                   variant={"outline"}
                   className={cn(

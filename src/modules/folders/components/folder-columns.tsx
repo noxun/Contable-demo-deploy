@@ -3,6 +3,7 @@
 import { TrazoInternCode } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import DialogPayroll from "./DialogPayroll";
+import SheetDataset from "./SheetDataset";
 
 export const columns: ColumnDef<TrazoInternCode>[] = [
   {
@@ -20,9 +21,11 @@ export const columns: ColumnDef<TrazoInternCode>[] = [
   {
     header: "Acciones",
     cell: ({row}) => {
+      const payroll = row.original;
       return (
         <div>
-          <DialogPayroll procedureId={172}/>
+          <DialogPayroll procedureId={payroll.id}/>
+          <SheetDataset procedureId={payroll.id}/>
         </div>
       )
     }

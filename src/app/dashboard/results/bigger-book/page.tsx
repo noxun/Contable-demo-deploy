@@ -43,6 +43,9 @@ import { ReportPaths } from "@/modules/shared/utils/validate";
 import { useDebounce } from "use-debounce";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { SearchComponent } from "@/modules/shared/components/SearchComponent";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 // Types
 type VoucherItem = {
@@ -259,31 +262,33 @@ const AccountSection = () => {
   return (
     <div className="space-y-6">
       {/* componente para buscar un recurso con una llamada a una api */}
-      <SearchComponent
-        onSelect={handleSelect}
-        debounceTime={700}
-        suggestionKey="accountDescription"
-        placeholder="Buscar por cuenta..."
-        buttonLabel="Buscar por cuenta"
-        queryFn={(search: string) =>
-          searchByAccountBigguerBook(search)
-        }
-        resetSearch={resetSearch}
-      />
-      <div className="flex items-center justify-evenly mt-5">
-        <div className="space-y-2">
-          <DateSelector onDateChange={handleDateChange} />
-          <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+      <div className="flex flex-col pt-2 gap-2">
+        <SearchComponent
+          onSelect={handleSelect}
+          debounceTime={700}
+          suggestionKey="accountDescription"
+          placeholder="Buscar por cuenta..."
+          buttonLabel="Buscar por cuenta"
+          queryFn={(search: string) =>
+            searchByAccountBigguerBook(search)
+          }
+          resetSearch={resetSearch}
+        />
+        <div className="flex items-center justify-evenly mt-5">
+          <div className="space-y-2">
+            <DateSelector onDateChange={handleDateChange} />
+            <div className="flex items-center space-x-2">
+              <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+              <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+            </div>
           </div>
-        </div>
 
-        <Button disabled={isLoadingAccounts}>
-          {isLoadingAccounts
-            ? "Listando Transacciones..."
-            : "Ver Transacciones"}
-        </Button>
+          <Button disabled={isLoadingAccounts}>
+            {isLoadingAccounts
+              ? "Listando Transacciones..."
+              : "Ver Transacciones"}
+          </Button>
+        </div>
       </div>
 
       {currentAccount && (
@@ -382,16 +387,86 @@ const AccountSection = () => {
   );
 };
 
+
+function Breadcrumb() {
+  const pathname = usePathname();
+  const pathSegments = pathname.split('/').filter(segment => segment);
+
+  return (
+    <nav className="flex" aria-label="Breadcrumb">
+      <ol className="flex items-center gap-1 lg:gap-2 pb-2">
+        {pathSegments.map((segment, index) => {
+          const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
+          return (
+            <li key={href}>
+              <div className="flex items-center">
+                {index === 0 && (
+                  <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                  </svg>
+                )}
+                {index > 0 && (
+                  <>
+                    <svg
+                      className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 6 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 9 4-4-4-4"
+                      />
+                    </svg>
+                  </>
+                )}
+                <Link
+                  href={href}
+                  className={`ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white  'text-gray-500 cursor-default' : ''
+                    }`}
+                >
+                  {segment.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
+                </Link>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
+
 // Main Component
 export default function BiggerBookPage() {
+  const currentPath = usePathname()
+
 
   return (
     <div className="flex flex-col gap-2 h-full">
       {/* <ReportSection /> */}
 
-      <div className="flex justify-start text-[25px] font-[500]">
-        <h1>Reportes</h1>
-      </div>
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Libro Mayor",
+            href: "/dashboard/results/bigger-book"
+          }
+        ]}
+      />
+
       <AccountSection />
 
     </div>

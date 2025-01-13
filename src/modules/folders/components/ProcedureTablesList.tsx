@@ -12,27 +12,24 @@ export default function ProcedureTablesList({
   procedureDataset,
 }: ProcedureTablesListProps) {
   return (
-    <div>
+    <div className="space-y-4">
       <h1>Planillaje y Facturacion Contable</h1>
-      <div>{procedureDataset["a-TributosYOtrosConceptosAduaneros"]}</div>
+      <div>Tributos y Otros Conceptos Aduaneros</div>
       <DataTable
         data={procedureDataset["a-TributosYOtrosConceptosAduanerosSubDatas"]}
         columns={columns}
       />
-      <div>{procedureDataset["b-OtrosGastosDeImportacion/Exportacion"]}</div>
+      <div>Otros Gastos de Importacion/Exportacion</div>
       <DataTable
         data={procedureDataset["b-OtrosGastosDeImportacion/ExportacionSubDatas"]}
         columns={columns}
       />
-      <div>
-        {procedureDataset["c-GastosDeOperaciones"]}
-      </div>
-      <div>{procedureDataset["c-GastosDeOperaciones"]}</div>
+      <div>Gastos de Operaciones</div>
       <DataTable
         data={procedureDataset["c-GastosDeOperacionesSubDatas"] ?? []}
         columns={columns}
       />
-      <div>{procedureDataset["d-HonorariosProfesionales"]}</div>
+      <div>Honorarios Profesionales</div>
       <DataTable
         data={procedureDataset["d-HonorariosProfesionalesSubDatas"] ?? []}
         columns={columns}
