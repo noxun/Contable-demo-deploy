@@ -10,6 +10,11 @@ export async function generatePayroll(procedureId: number) {
 
 export async function fetchProcedureDataset(procedureId: number) {
 
+  // qs npm libreria para futura referencia
+  // paramsSerializer: (params) => {
+  //   return qs.stringify(params, { arrayFormat: "repeat" });
+  // },
+
   const fieldnames = [
     "a-TributosYOtrosConceptosAduaneros",
     "b-OtrosGastosDeImportacion/Exportacion",
@@ -17,13 +22,13 @@ export async function fetchProcedureDataset(procedureId: number) {
     "d-HonorariosProfesionales",
   ];
 
-  const response = await axios.get(
-    `https://trazo.tradecruz.com:8282/api/Procedure/${procedureId}/dataValues`, {
-      params: {
-        fieldnames
-      }
-    }
-  );
+  const serializedFieldnames = fieldnames
+    .map((fieldname) => `fieldnames=${encodeURIComponent(fieldname)}`)
+    .join("&");
+
+  const url = `https://trazo.tradecruz.com:8282/api/Procedure/${procedureId}/dataValues?${serializedFieldnames}`;
+
+  const response = await axios.get(url);
   return response.data as ProcedureDataset;
 }
 
@@ -35,3 +40,4 @@ export async function changeReceiptStatus(subDataId: number) {
 }
 
 //api/dataSet/subData/{subDataId}/receipt
+//https://trazo.tradecruz.com:8282/api/dataSet/procedure/subData/90052
