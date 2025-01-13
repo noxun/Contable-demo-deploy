@@ -29,7 +29,7 @@ import { z } from "zod";
 import { PlusCircle } from "lucide-react";
 
 export default function AccountCreateButton({
-  fatherId 
+  fatherId,
 }: {
   fatherId: number;
 }) {
@@ -88,21 +88,24 @@ export default function AccountCreateButton({
       queryClient.invalidateQueries({ queryKey: ["accountsAll"] });
     },
   });
-  
+
   function onSubmit(values: AccountCreateForm) {
     console.log(values);
     createAccountMutation.mutate(values);
   }
+
+  //REACT HOOK FORM CACHEA LOS VALORES POR DEFAULT
   useEffect(() => {
-      if (open) {
-        accountCreateForm.reset({
-          description: "",
-          coin: "",
-          active: true,
-          fatherId: fatherId,
-        });
-      }
-    }, [open, fatherId, accountCreateForm]);
+    if (open) {
+      accountCreateForm.reset({
+        description: "",
+        coin: "",
+        active: true,
+        fatherId: fatherId,
+      });
+    }
+  }, [open, fatherId, accountCreateForm]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

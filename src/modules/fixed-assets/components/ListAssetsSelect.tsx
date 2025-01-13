@@ -46,7 +46,7 @@ export const ListAssetsSelect = ({ value, onChange }: Props) => {
         }
         {
           listAssets && (
-            listAssets.map((asset) => (
+            listAssets.map((asset: any) => (
               <SelectItem key={asset.id} value={asset.id}>{asset.description}</SelectItem>
             ))
           )
