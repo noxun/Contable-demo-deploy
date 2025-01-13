@@ -2,14 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { changeReceiptStatus } from "@/lib/trazo-data";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ChangeReceiptStatusButton(
-  {subDataId}: {subDataId: number}
+  {subDataId, procedureId}: {subDataId: number, procedureId: number}
 ) {
+
+  const queryClient = useQueryClient();
 
   const changeReceiptStatusMutation = useMutation({
     mutationFn: changeReceiptStatus,
@@ -20,6 +22,7 @@ export default function ChangeReceiptStatusButton(
     onSuccess: () => {
       toast.success("Estado del recibo cambiado correctamente");
       //invalidate queries here later
+      queryClient.invalidateQueries({queryKey: ["procedureDataset", procedureId]});
     }
   })
 
