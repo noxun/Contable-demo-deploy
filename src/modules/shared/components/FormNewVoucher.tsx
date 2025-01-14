@@ -296,41 +296,39 @@ export default function FormNewVoucher({
     voucherId: z.number(),
   });
 
-  const voucherFormSchema = z.object({
-    id: z.number().optional(),
-    num: z.number().optional(),
-    sucursalId: z
-      .string()
-      .optional(),
-    costCenterId: z
-      .string()
-      .optional(),
-    voucherDate: z
-      .string({
-        required_error: "Fecha requerida.",
-      })
-      .or(z.date()),
-    exchangeRate: z.coerce.number(),
-    coin: z.enum(["USD", "BOB"]),
-    checkNum: z.string().optional(),
-    canceledTo: z
-      .string({
-        required_error: "Fecha requerida.",
-      })
-      .or(z.date())
-      .optional(),
-    gloss: z.string(),
-    bankId: z.coerce.string().nullable(),
-    items: z.array(voucherItemSchema).optional(),
-    bankItemRef: z.number().optional(),
-    hojaDeRuta: z.string().optional(),
-  }).superRefine((data, ctx) => {
-    return {
-      ...data,
-      sucursalId: data.sucursalId ? Number(data.sucursalId) : null,
-      costCenterId: data.costCenterId ? Number(data.costCenterId) : null
-    };
-  });
+  const voucherFormSchema = z
+    .object({
+      id: z.number().optional(),
+      num: z.number().optional(),
+      sucursalId: z.string().optional(),
+      costCenterId: z.string().optional(),
+      voucherDate: z
+        .string({
+          required_error: "Fecha requerida.",
+        })
+        .or(z.date()),
+      exchangeRate: z.coerce.number(),
+      coin: z.enum(["USD", "BOB"]),
+      checkNum: z.string().optional(),
+      canceledTo: z
+        .string({
+          required_error: "Fecha requerida.",
+        })
+        .or(z.date())
+        .optional(),
+      gloss: z.string(),
+      bankId: z.coerce.string().nullable(),
+      items: z.array(voucherItemSchema).optional(),
+      bankItemRef: z.number().optional(),
+      hojaDeRuta: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      return {
+        ...data,
+        sucursalId: data.sucursalId ? Number(data.sucursalId) : null,
+        costCenterId: data.costCenterId ? Number(data.costCenterId) : null,
+      };
+    });
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
@@ -363,15 +361,15 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
-      return total + (currentItem?.debitBs ?? 0);
+        return total + (currentItem?.debitBs ?? 0);
     }, 0);
-
     let assetTotal = voucherItems.reduce((total, currentItem) => {
-      return total + (currentItem?.assetBs ?? 0);
+        return total + (currentItem?.assetBs ?? 0);
     }, 0);
-
-    setButtonEnabled(debitTotal === assetTotal);
-  }, [voucherItems]);
+    
+    // Round both numbers to 2 decimal places before comparing
+    setButtonEnabled(debitTotal.toFixed(2) === assetTotal.toFixed(2));
+}, [voucherItems]);
 
   if (
     branchListQuery.isPending ||
