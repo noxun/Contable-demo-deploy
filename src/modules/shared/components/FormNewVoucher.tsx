@@ -345,15 +345,19 @@ export default function FormNewVoucher({
   });
 
   const handleModelSeatChange = async (selectedOption: any) => {
+    setVoucherItems([]);
     setSelectedModelSeat(selectedOption);
     const modelSeatDetails = await fetchModelSeatsItems(selectedOption.value);
     const updatedVoucherItems = modelSeatDetails.accounts.map((item) => ({
-      ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
+      // ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
       accountId: item.accountId,
       canDebit: item.debit,
       canAsset: item.asset,
       debitBs: null,
       assetBs: null,
+      debitSus: 0,
+      assetSus: 0,
+      gloss: "",
     }));
 
     setVoucherItems(updatedVoucherItems);
