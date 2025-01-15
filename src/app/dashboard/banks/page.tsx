@@ -1,10 +1,11 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TableBank } from "@/modules/banks/components/TableBank";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllBanks } from "@/lib/data";
+import { FormConvertBank } from "@/modules/banks/components/FormConvertToBank";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function BanksPage() {
   const { data, isPending } = useQuery({
@@ -23,9 +24,26 @@ export default function BanksPage() {
           {/* <Link href="/dashboard/banks/new">
             <Button>Nuevo Banco</Button>
           </Link> */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Banco a cuenta</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="pb-4">Convertir un cuenta a banco</DialogTitle>
+                <DialogDescription>
+                  <FormConvertBank />
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="m-0 p-0" />
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
-      {isPending ? <div>Cargando...</div> : <TableBank data={data ?? []} />}
-    </div>
+      </div >
+      {
+        isPending ? <div>Cargando...</div> : <TableBank data={data ?? []} />
+      }
+    </div >
   );
 }
+
