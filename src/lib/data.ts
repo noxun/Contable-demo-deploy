@@ -789,3 +789,17 @@ export async function postAssetFixed(FixedAsset: SchemaFixedAsset) {
   const { data } = await api.post(URLRequest, FixedAsset);
   return data;
 }
+
+//convertir un banco a cuenta
+export async function postConvertAccountToBank(accountId: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/Bank/ByAccount/${accountId}`
+
+  setAuthToken(token);
+  const { data } = await api.post(URLRequest, accountId);
+  return data;
+}
