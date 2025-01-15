@@ -85,13 +85,17 @@ const styles = StyleSheet.create({
 
 export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRange, inSus = false, records }) => {
   // console.log('los records son: ', records)
-  const FORMAT_DATE_INITIAL = 'dd/MM/yyyy HH:mm:ss';
+  const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
   const debitType = inSus ? "debitSus" : "debitBs";
   const assetType = inSus ? "assetSus" : "assetBs";
   const moneyType = inSus ? "Dolares" : "Bolivianos";
   const saldoType = inSus ? "totalSaldoSus" : "totalSaldoBs";
   const saldoTextType = inSus ? "totalSaldoTextSus" : "totalSaldoText";
-  console.log('los records son: ', records)
+  const dateText = dateRange?.from && (
+    dateRange?.to ?
+      `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)} al ${format(dateRange.to, FORMAT_DATE_INITIAL)}`
+      : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`
+  )
 
   return (
     <Document>
@@ -113,7 +117,7 @@ export const BiggerBookTemplate: React.FC<BiggerBookTemplateProps> = ({ dateRang
               </Text>
               <View style={[{ paddingBottom: 5 }]}>
                 <Text style={[styles.thCell, { textAlign: "center", fontFamily: "Helvetica-Bold" }]}>(Expresado en {moneyType})</Text>
-                <Text style={[styles.thCell, { textAlign: "center" }]}>Fecha y Hora: {format(Date.now(), FORMAT_DATE_INITIAL)}</Text>
+                <Text style={[styles.thCell, { textAlign: "center" }]}>{dateText}</Text>
               </View>
               <View style={[{ paddingBottom: 10 }]}>
                 <Text style={[styles.thCell]}>
