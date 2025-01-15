@@ -255,6 +255,7 @@ const AccountSection = () => {
     setResetSearch(false)
     setActiveFile(null)
     setFile(null)
+    setAccountDate({ from: undefined, to: undefined })
     setCurrentSearchType('account')
     setSearchAccount([value])
   };
