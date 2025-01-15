@@ -131,7 +131,7 @@ export default function FormNewVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell className="h-fit w-72">
+              <TableCell className="h-fit w-[35%]">
                 <NoMenuSelect
                   menuPlacement="top"
                   placeholder="Selecciona una Cuenta.."
@@ -188,7 +188,7 @@ export default function FormNewVoucherItems({
                   // defaultValue={0}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[30%]">
                 <Input
                   name="gloss"
                   onChange={(e) => onChange(e, index)}
