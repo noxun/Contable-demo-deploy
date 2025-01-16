@@ -33,7 +33,7 @@ export async function fetchProcedureDataset(procedureId: number) {
 }
 
 export async function changeReceiptStatus(subDataId: number) {
-  const response = await axios.post(
+  const response = await axios.put(
     `https://trazo.tradecruz.com:8282/api/dataSet/subData/${subDataId}/receipt`
   );
   return response.data;
