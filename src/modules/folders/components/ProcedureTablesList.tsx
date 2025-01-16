@@ -16,12 +16,12 @@ export default function ProcedureTablesList({
       <h1>Planillaje y Facturacion Contable</h1>
       <div>Tributos y Otros Conceptos Aduaneros</div>
       <DataTable
-        data={procedureDataset["a-TributosYOtrosConceptosAduanerosSubDatas"]}
+        data={procedureDataset["a-TributosYOtrosConceptosAduanerosSubDatas"] ?? []}
         columns={columns}
       />
       <div>Otros Gastos de Importacion/Exportacion</div>
       <DataTable
-        data={procedureDataset["b-OtrosGastosDeImportacion/ExportacionSubDatas"]}
+        data={procedureDataset["b-OtrosGastosDeImportacion/ExportacionSubDatas"] ?? []}
         columns={columns}
       />
       <div>Gastos de Operaciones</div>

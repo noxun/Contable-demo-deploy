@@ -112,7 +112,7 @@ export type ProcedureDataset = {
     files: Array<any>
   }
   "a-TributosYOtrosConceptosAduaneros": string
-  "a-TributosYOtrosConceptosAduanerosSubDatas": Array<{
+  "a-TributosYOtrosConceptosAduanerosSubDatas"?: Array<{
     id: number
     label: string
     description: string
@@ -132,7 +132,7 @@ export type ProcedureDataset = {
     endDate: any
   }>
   "b-OtrosGastosDeImportacion/Exportacion": string
-  "b-OtrosGastosDeImportacion/ExportacionSubDatas": Array<{
+  "b-OtrosGastosDeImportacion/ExportacionSubDatas"?: Array<{
     id: number
     label: string
     description: string
