@@ -172,7 +172,7 @@ export type SubData = {
   stringValue: any
   numberValue: number
   dataSetId: number
-  procedureId: number
+  procedureId?: number //no confiable
   recibo: boolean
   creationDate: string
   endDate: any

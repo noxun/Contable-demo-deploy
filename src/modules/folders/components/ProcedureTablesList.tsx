@@ -17,22 +17,22 @@ export default function ProcedureTablesList({
       <div>Tributos y Otros Conceptos Aduaneros</div>
       <DataTable
         data={procedureDataset["a-TributosYOtrosConceptosAduanerosSubDatas"] ?? []}
-        columns={columns}
+        columns={columns(procedureDataset.procedureId)}
       />
       <div>Otros Gastos de Importacion/Exportacion</div>
       <DataTable
         data={procedureDataset["b-OtrosGastosDeImportacion/ExportacionSubDatas"] ?? []}
-        columns={columns}
+        columns={columns(procedureDataset.procedureId)}
       />
       <div>Gastos de Operaciones</div>
       <DataTable
         data={procedureDataset["c-GastosDeOperacionesSubDatas"] ?? []}
-        columns={columns}
+        columns={columns(procedureDataset.procedureId)}
       />
       <div>Honorarios Profesionales</div>
       <DataTable
         data={procedureDataset["d-HonorariosProfesionalesSubDatas"] ?? []}
-        columns={columns}
+        columns={columns(procedureDataset.procedureId)}
       />
     </div>
   );
