@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DialogTransformAccount } from "./DialogTransformAccount";
 
 function AccountAccordion() {
   const [type, setType] = useState(1);
@@ -46,7 +47,10 @@ function AccountAccordion() {
             ))}
           </SelectContent>
         </Select>
-        <ImportAccountDialog />
+        <div className="flex gap-2 items-center justify-center">
+          <ImportAccountDialog />
+          <DialogTransformAccount />
+        </div>
       </div>
       <br />
       <ChildAccounts accounts={accounts} />
