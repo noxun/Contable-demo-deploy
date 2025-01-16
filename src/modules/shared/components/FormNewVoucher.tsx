@@ -64,7 +64,7 @@ import useModelSeats from "../hooks/useModelSeats";
 import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";
 import useTrazoCompanies from "../hooks/useTrazoCompanies";
 import CreatableSelect from "react-select/creatable";
-import { TrazoCompany } from "@/lib/types";
+import { TrazoCompany, VoucherItemFromExtractedPDF } from "@/lib/types";
 import { Label } from "@/components/ui/label";
 
 type FormNewVoucherProps = {
@@ -73,6 +73,8 @@ type FormNewVoucherProps = {
   bankId?: string;
   bankExtractId?: number;
   gloss?: string;
+  voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
+  
 };
 
 export default function FormNewVoucher({
@@ -81,6 +83,7 @@ export default function FormNewVoucher({
   bankExtractId,
   routeType,
   gloss,
+  voucherItemsFromExtractedPDF,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -115,6 +118,25 @@ export default function FormNewVoucher({
       canAsset: true,
     },
   ]);
+
+  if(voucherItemsFromExtractedPDF){
+    voucherItemsFromExtractedPDF.forEach((item) => {
+      setVoucherItems((items) => [
+        ...items,
+        {
+          debitBs: item.importValue,
+          debitSus: 0,
+          assetBs: 0,
+          assetSus: 0,
+          gloss: gloss ?? "",
+          accountId: item.accountId.toString(),
+          voucherId: "",
+          canDebit: true,
+          canAsset: true,
+        },
+      ]);
+    });
+  }
 
   const banksQuery = useQuery({
     queryKey: ["banks"],

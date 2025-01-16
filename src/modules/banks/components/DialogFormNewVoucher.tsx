@@ -8,8 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { VoucherItemFromExtractedPDF } from "@/lib/types";
 import FormNewVoucherWithTypeSelect from "@/modules/shared/components/FormNewVoucherWithTypeSelect";
+import useVoucherItemsFromExtractedPDF from "@/modules/shared/hooks/useVoucherItemsFromExtractedPDF";
 import { ReceiptText } from "lucide-react";
+import { useState } from "react";
 
 type DialogFormNewVoucherProps = {
   bankId: string;
@@ -22,10 +25,18 @@ export default function DialogFormNewVoucher({
   bankId,
   bankExtractId,
   disabled,
-  gloss
+  gloss,
 }: DialogFormNewVoucherProps) {
+  const [open, setOpen] = useState(false);
+
+  const {
+    data: voucherItemsPDF,
+    isLoading,
+    isError,
+  } = useVoucherItemsFromExtractedPDF(bankExtractId, open);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" disabled={disabled}>
           <ReceiptText className="size-4" />
@@ -33,10 +44,20 @@ export default function DialogFormNewVoucher({
       </DialogTrigger>
       <DialogContent className="min-w-[80%] h-[80%] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Nueva Transaccion</DialogTitle>
+          <DialogTitle>Nueva Transacción</DialogTitle>
           <DialogDescription>Modal para nueva transacción</DialogDescription>
         </DialogHeader>
-        <FormNewVoucherWithTypeSelect bankId={bankId} bankExtractId={bankExtractId} gloss={gloss} />
+        {isError && <div>Error al cargar los items</div>}
+        {isLoading ? (
+          <div>Cargando items...</div>
+        ) : (
+          <FormNewVoucherWithTypeSelect
+            bankId={bankId}
+            bankExtractId={bankExtractId}
+            gloss={gloss}
+            voucherItemsFromExtractedPDF={voucherItemsPDF}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
