@@ -791,7 +791,7 @@ export async function postAssetFixed(FixedAsset: SchemaFixedAsset) {
   return data;
 }
 
-//convertir un banco a cuenta
+//Crear una banco apartir de una cuenta
 export async function postConvertAccountToBank(accountId: string) {
   let token;
   if (typeof window !== "undefined") {
@@ -799,6 +799,20 @@ export async function postConvertAccountToBank(accountId: string) {
   }
 
   const URLRequest = `api/Bank/ByAccount/${accountId}`
+
+  setAuthToken(token);
+  const { data } = await api.post(URLRequest, accountId);
+  return data;
+}
+
+//Crear una a caja apartir de una cuenta
+export async function postConvertAccountToAccountingBox(accountId: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/AccountingBox/ByAccount/${accountId}`
 
   setAuthToken(token);
   const { data } = await api.post(URLRequest, accountId);
