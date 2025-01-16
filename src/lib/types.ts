@@ -368,3 +368,9 @@ export type InvoiceVoucher = {
     type: number
   }>
 }
+
+export type VoucherItemFromExtractedPDF = {
+  id: number;
+  accountId: number;
+  importValue: number; //debitBs
+}

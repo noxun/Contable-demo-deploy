@@ -25,6 +25,7 @@ import {
   TrazoInternCode,
   TypeCompany,
   Ufv,
+  VoucherItemFromExtractedPDF,
 } from "./types";
 import { api } from "./api";
 import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
@@ -802,4 +803,15 @@ export async function postConvertAccountToBank(accountId: string) {
   setAuthToken(token);
   const { data } = await api.post(URLRequest, accountId);
   return data;
+}
+
+export async function fetchVoucherItemsFromExtractedPDF(bankExtractId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  setAuthToken(token);
+  const response = await api.get(`/api/Bank/Extract/Entries/${bankExtractId}`);
+  return response.data as VoucherItemFromExtractedPDF[];
 }
