@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerPayment } from "@/lib/data";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const importBankExcerptFormSchema = z.object({
   BankDetailId: z.string(),
@@ -24,6 +25,7 @@ const importBankExcerptFormSchema = z.object({
   Number: z.coerce.number(),
   Status: z.string(),
   Providor: z.string(),
+  isExtract: z.boolean(),
 });
 
 type ImportBankExcerpt = z.infer<typeof importBankExcerptFormSchema>;
@@ -38,6 +40,9 @@ export default function ImportBankExcerptRegisterPaymentForm({
     defaultValues: {
       BankDetailId: bankExtractId.toString(),
       File: null,
+      Status: "",
+      Providor: "",
+      isExtract: false,
     },
   });
 
@@ -48,6 +53,10 @@ export default function ImportBankExcerptRegisterPaymentForm({
     const importBankExcerptFormData = new FormData();
     importBankExcerptFormData.append("BankDetailId", values.BankDetailId);
     importBankExcerptFormData.append("File", values.File!);
+    importBankExcerptFormData.append("Number", values.Number.toString());
+    importBankExcerptFormData.append("Status", values.Status);
+    importBankExcerptFormData.append("Providor", values.Providor);
+    importBankExcerptFormData.append("isExtract", values.isExtract.toString());
 
     importBankExcerptMutation.mutate(importBankExcerptFormData);
     //console.log([...importAccountFormData]);
@@ -128,6 +137,23 @@ export default function ImportBankExcerptRegisterPaymentForm({
                 <Input placeholder="Proveedor" {...field} />
               </FormControl>
               <FormDescription>Proveedor</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={importBankExcerptForm.control}
+          name="isExtract"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Es extracto</FormLabel>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>Es extracto bancario</FormDescription>
               <FormMessage />
             </FormItem>
           )}
