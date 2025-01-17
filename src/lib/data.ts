@@ -37,7 +37,7 @@ import { RegisterForm } from "@/app/dashboard/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
-import { SchemaFixedAsset } from "@/modules/fixed-assets/types/types";
+import { FixedAsset, FixedAssetsAll, SchemaFixedAsset } from "@/modules/fixed-assets/types/types";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -764,16 +764,19 @@ export async function searchByAccountBigguerBook(search: string) {
 }
 
 //obtener el listado de activos
+interface Assets {
+  id: number,
+  typeActive: string
+}
 export async function getAllAssets() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
-  //cambiar la url
-  const URLRequest = `/api/Report/BookBiggerData`
+  const URLRequest = `/FixedAssets/FixedAssets`
 
   setAuthToken(token);
-  const { data } = await api.get(URLRequest);
+  const { data } = await api.get<Assets[]>(URLRequest);
   return data;
 }
 
@@ -788,6 +791,74 @@ export async function postAssetFixed(FixedAsset: SchemaFixedAsset) {
 
   setAuthToken(token);
   const { data } = await api.post(URLRequest, FixedAsset);
+  return data;
+}
+
+//crear un nuevo activo Fijo
+export async function putAssetFixed({ IdAssets, fixedAsset }: { IdAssets: string, fixedAsset: SchemaFixedAsset }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `/FixedAssets`
+
+  setAuthToken(token);
+  const { data } = await api.put(URLRequest, fixedAsset, { params: { IdAseets: IdAssets } });
+  return data;
+}
+
+// obtener un activoFijo por Id
+export async function getFixedAsset({ id }: { id: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  if (!id || id.length === 0) return null;
+
+  const URLRequest = `/FixedAssets/items/${id}`
+
+  setAuthToken(token);
+  try {
+    const { data } = await api.get<FixedAsset>(URLRequest);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener el activo fijo:", error);
+    return null;
+  }
+}
+// obtener la lista de activos fijos
+export async function getAllFixedAssets({ dateTime }: { dateTime: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `/FixedAssets`
+
+  setAuthToken(token);
+  const { data } = await api.get<FixedAssetsAll[]>(URLRequest, {
+    params: { dateTime },
+  });
+  return data[0];
+}
+
+// eliminar un elemento de la lista de activos fijos
+export async function deleteFixedAsset({ id }: { id: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `/FixedAssets?IdAssets=${id}`
+
+  setAuthToken(token);
+  const { data } = await api.delete(URLRequest, {
+    params: {
+      IdAseets: id
+    },
+  });
   return data;
 }
 
