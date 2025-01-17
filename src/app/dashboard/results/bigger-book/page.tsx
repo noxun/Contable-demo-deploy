@@ -217,8 +217,8 @@ const AccountSection = () => {
     },
     { header: "Debe Bs", accessorKey: "debitBs" },
     { header: "Haber Bs", accessorKey: "assetBs" },
-    { header: "Debe Sus", accessorKey: "debitSus" },
-    { header: "Haber Sus", accessorKey: "assetSus" },
+    // { header: "Debe Sus", accessorKey: "debitSus" },
+    // { header: "Haber Sus", accessorKey: "assetSus" },
     {
       header: "Acciones",
       accessorKey: "",
