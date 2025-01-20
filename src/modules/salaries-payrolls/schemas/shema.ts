@@ -30,3 +30,54 @@ export const SchemaPayroll = z.object({
     .transform((value) => parseFloat(value))
     .refine((value) => value > 0, { message: "El salario debe ser un número mayor a 0" }),
 });
+
+export const SchemaSalary = z.object({
+  salariesAndwagesId: z.string().nonempty({ message: "El id de planilla es obligatorio" }),
+  productionBonus: z
+    .string()
+    .nonempty({ message: "El bono de produccion no puede estar vacio" })
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => parseFloat(value))
+    .refine((value) => value > 0, { message: "El bono debe ser un número mayor a 0" }),
+  extraTimeMinutes: z
+    .string()
+    .nonempty({ message: "El tiempo extra no puede estar vacio" })
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => parseFloat(value))
+    .refine((value) => value > 0, { message: "El tiempo extra debe ser un número mayor a 0" }),
+  valueForOvertime: z
+    .string()
+    .nonempty({ message: "El valor por horas extra es obligatorio" })
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => parseFloat(value))
+    .refine((value) => value > 0, { message: "El valor por horas extra debe ser mayor a 0" }),
+  loan: z
+    .string()
+    .nonempty({ message: "El prestamo no puede estar vacio" })
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => parseFloat(value)),
+  exelTrainingCorse: z
+    .string()
+    .default("0")
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => Math.max(0, parseFloat(value)))
+    .refine((value) => value >= 0, { message: "El valor no puede ser negativo" }),
+  anbFineSettlement: z
+    .string()
+    .default("0")
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => Math.max(0, parseFloat(value)))
+    .refine((value) => value >= 0, { message: "El valor no puede ser negativo" }),
+  onAccount: z
+    .string()
+    .default("0")
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => Math.max(0, parseFloat(value)))
+    .refine((value) => value >= 0, { message: "El valor no puede ser negativo" }),
+  dsctoShirtDelays: z
+    .string()
+    .default("0")
+    .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
+    .transform((value) => Math.max(0, parseFloat(value)))
+    .refine((value) => value >= 0, { message: "El valor no puede ser negativo" }),
+})
