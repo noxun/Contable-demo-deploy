@@ -374,3 +374,30 @@ export type VoucherItemFromExtractedPDF = {
   accountId: number;
   importValue: number; //debitBs
 }
+
+export type PaySlip = {
+  nit: string
+  position: string
+  nameEmployee: string
+  dateIncome: string
+  antique: string
+  month: string
+  daysWorked: number
+  salary: number
+  income: {
+    salary: number
+    antique: number
+    overtime: number
+    comminOtherPay: number
+    total: number
+  }
+  egress: {
+    afps: number
+    loans: number
+    advances: number
+    otherDcts: number
+    total: number
+  }
+  liquidPayable: number
+  dateNowPaySlip: string
+}
