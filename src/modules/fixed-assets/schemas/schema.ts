@@ -1,7 +1,7 @@
 import z from 'zod'
 
 export const schemaFormFixedAssets = z.object({
-  fixedAssetsId: z.string(),
+  fixedAssetsId: z.union([z.string(), z.number()]),
   detail: z.string().nonempty({ message: 'Porfavor ingrese el detalle' }),
   reference: z.string().nonempty({ message: 'Porfavor ingrese la referencia' }),
   proveedor: z.string().nonempty({ message: 'Porfavor ingrese el proveedor' }),
@@ -18,6 +18,6 @@ export const schemaFormFixedAssets = z.object({
     .refine((value) => value && !isNaN(new Date(value).getTime()), {
       message: "Debe ser una fecha válida",
     }),
-  initialNetWorth: z.string().regex(/^\d*\.?\d*$/, "Debe ser un número positivo con puntos decimales"),
-  previousDA: z.string().regex(/^\d*\.?\d*$/, "Debe ser un número positivo con puntos decimales"),
+  initialNetWorth: z.string(),
+  previousDA: z.string(),
 })
