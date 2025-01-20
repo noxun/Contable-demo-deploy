@@ -8,6 +8,7 @@ import { DatePicker } from "@/modules/fixed-assets/components/DatePicker";
 import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
 import { PayrollsDialogForm } from "@/modules/salaries-payrolls/components/PayrollsDialogForm";
 import { Payroll } from "@/modules/salaries-payrolls/types/types";
+import PaySlipDialog from "@/modules/salaries-payrolls/components/PaySlipDialog";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -86,6 +87,8 @@ function SalariesPayrollsPage() {
         const idPayroll = row.original.id
         return (
           <div className="flex items-center justify-center gap-1">
+            {/* los props ve si esta bien la fecha asi xd */}
+            <PaySlipDialog idSalaryWages={idPayroll} datePaySlip={(new Date()).toISOString()} />
             <Button
               variant="outline"
               className="size-10 p-2 text-blue-500 rounded-full"
