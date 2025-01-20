@@ -2,14 +2,17 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Label } from "@/components/ui/label";
-import { DeletePayroll, GetPayrolls } from "@/lib/data";
+import { DeletePayroll, GetPayrollById, GetPayrolls } from "@/lib/data";
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog";
 import { DatePicker } from "@/modules/fixed-assets/components/DatePicker";
+import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
 import { PayrollsDialogForm } from "@/modules/salaries-payrolls/components/PayrollsDialogForm";
+import { Payroll } from "@/modules/salaries-payrolls/types/types";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { EyeIcon, FilePenLineIcon, Trash2Icon } from "lucide-react";
+import { EyeIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -89,16 +92,13 @@ function SalariesPayrollsPage() {
               aria-label="Ver Pagos"
               title="Ver Pagos"
             >
-              <EyeIcon />
+              <Link href={`/dashboard/salaries-payrolls/${row.original.id}/salaries`}>
+                <EyeIcon />
+              </Link>
             </Button>
-            <Button
-              variant="outline"
-              className="size-10 p-2 text-blue-500 rounded-full"
-              aria-label="Actualizar"
-              title="Actualizar"
-            >
-              <FilePenLineIcon />
-            </Button>
+            <PayrollsDialogEdit
+              idPayroll={idPayroll}
+            />
             <ConfirmDeleteDialog
               message="Esta acción eliminará permanentemente la planilla seleccionada.
             Asegúrate de que esta es tu intención, ya que no podrás deshacerla"
