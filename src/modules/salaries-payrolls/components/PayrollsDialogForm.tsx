@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { FormPayrolls } from "./FormPayrolls";
 import { useState } from "react";
 
-
 export const PayrollsDialogForm = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -21,7 +20,9 @@ export const PayrollsDialogForm = () => {
           <DialogTitle>Crear Nomina</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <FormPayrolls onClose={handleClose} />
+        <FormPayrolls
+          onClose={handleClose}
+        />
       </DialogContent>
     </Dialog>
   );
