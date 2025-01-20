@@ -990,7 +990,7 @@ export async function PostSalary({ Item }: { Item: SchemaSalaryType }) {
   const { data } = await api.post(URLRequest, Item);
   return data;
 }
-//POST: Items of Payrolls
+//DELETE: Items of Payrolls
 export async function DeleteSalary({ id }: { id: string }) {
   let token;
   if (typeof window !== "undefined") {
