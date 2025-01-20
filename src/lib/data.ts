@@ -38,6 +38,7 @@ import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSea
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
 import { FixedAsset, FixedAssetsAll, SchemaFixedAsset } from "@/modules/fixed-assets/types/types";
+import { Payroll, SchemaPayrollType } from "@/modules/salaries-payrolls/types/types";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -873,6 +874,55 @@ export async function postConvertAccountToBank(accountId: string) {
 
   setAuthToken(token);
   const { data } = await api.post(URLRequest, accountId);
+  return data;
+}
+
+//CRUD: Planillas --> Payrolls
+//POST: Payrolls
+export async function PostPayroll({ payroll }: { payroll: SchemaPayrollType }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages`
+
+  setAuthToken(token);
+  const { data } = await api.post(URLRequest, payroll);
+  return data;
+}
+//GET: Payrolls
+export async function GetPayrolls({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages`
+
+  setAuthToken(token);
+  const { data } = await api.get<Payroll[]>(URLRequest, {
+    params: {
+      date: date
+    }
+  });
+  return data;
+}
+//DELETE: Payrolls
+export async function DeletePayroll({ id }: { id: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/id`
+
+  setAuthToken(token);
+  const { data } = await api.delete(URLRequest, {
+    params: {
+      id: id
+    }
+  });
   return data;
 }
 
