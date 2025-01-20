@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function HeritageEvaluationPage() {
   const [gestionInit, setGestionInit] = useState<number | "">(2022);
@@ -72,55 +73,71 @@ export default function HeritageEvaluationPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="flex flex-col gap-6 px-6">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Evolucion de patrimonio",
+            href: "/dashboard/results/heritage-evaluation"
+          }
+        ]}
+      />
       <form onSubmit={handleSubmit} >
         <h2 className="text-xl font-bold mb-5 text-center">
           Evolución del patrimonio
         </h2>
         <div className="grid grid-cols-1  sm:grid-cols-4 gap-4 mb-5" >
-        <div>
-          <label htmlFor="gestionInit" className="block text-sm font-medium">
-            Gestión Inicial
-          </label>
-          <Input
-            id="gestionInit"
-            type="number"
-            value={gestionInit}
-            onChange={(e) => setGestionInit(Number(e.target.value))}
-            required
-          />
-        </div>
-        <div className="flex gap-2 items-center">
-          <label htmlFor="inSus" className="block text-sm font-medium">
-            En Sus
-          </label>
-          <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-        </div>
-        <div>
-          <label htmlFor="exchangeRate" className="block text-sm font-medium">
-            Tasa de Cambio
-          </label>
-          <Input
-            id="exchangeRate"
-            type="number"
-            step="0.01"
-            value={exchangeRate}
-            onChange={(e) => setExchangeRate(parseFloat(e.target.value))}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium">
-            Fecha
-          </label>
-          <Input
-            id="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="gestionInit" className="block text-sm font-medium">
+              Gestión Inicial
+            </label>
+            <Input
+              id="gestionInit"
+              type="number"
+              value={gestionInit}
+              onChange={(e) => setGestionInit(Number(e.target.value))}
+              required
+            />
+          </div>
+          <div className="flex gap-2 items-center">
+            <label htmlFor="inSus" className="block text-sm font-medium">
+              En Sus
+            </label>
+            <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
+          </div>
+          <div>
+            <label htmlFor="exchangeRate" className="block text-sm font-medium">
+              Tasa de Cambio
+            </label>
+            <Input
+              id="exchangeRate"
+              type="number"
+              step="0.01"
+              value={exchangeRate}
+              onChange={(e) => setExchangeRate(parseFloat(e.target.value))}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="date" className="block text-sm font-medium">
+              Fecha
+            </label>
+            <Input
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
         </div>
         <div className="flex justify-center ">
 

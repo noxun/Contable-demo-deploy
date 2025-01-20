@@ -43,45 +43,48 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   return (
     <>
       <div className="space-y-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start justify-center text-center gap-5">
           {/* seleccionar rango de fechas */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                disabled={currentDay || !!selectedMonth}
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
-                    `${date.from.toLocaleDateString()} - ${date.to.toLocaleDateString()}`
+          <Label className="flex flex-col gap-1">
+            Selecciona un rango de fechas
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  disabled={currentDay || !!selectedMonth}
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      `${date.from.toLocaleDateString()} - ${date.to.toLocaleDateString()}`
+                    ) : (
+                      date.from.toLocaleDateString()
+                    )
                   ) : (
-                    date.from.toLocaleDateString()
-                  )
-                ) : (
-                  "Seleccionar fecha"
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                locale={es}
-                initialFocus
-                mode="range"
-                selected={date}
-                onSelect={(range: DateRange | undefined) => setDate(range)} // Aseguramos que range sea DateRange o undefined
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
+                    "Seleccionar fecha"
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  locale={es}
+                  initialFocus
+                  mode="range"
+                  selected={date}
+                  onSelect={(range: DateRange | undefined) => setDate(range)} // Aseguramos que range sea DateRange o undefined
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </Label>
           {/* seleccionar un mes */}
-          <Label>
-            Seleccionar Mes
+          <Label className="flex flex-col gap-1">
+            Seleccionar un mes
             <Input
               type="month"
               value={selectedMonth || ""}
@@ -94,20 +97,22 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
             />
           </Label>
           {/* seleccionar un dia */}
-          <Label>
-            Día Actual
-            <Checkbox
-              checked={currentDay}
-              onCheckedChange={(checked) => {
-                setCurrentDay(checked === true);
-                setSelectedMonth(null);
-                setDate(undefined);
-              }}
-            />
+          <Label className="h-full">
+            Día actual
+            <div className="flex items-center justify-center h-full py-4">
+              <Checkbox
+                checked={currentDay}
+                onCheckedChange={(checked) => {
+                  setCurrentDay(checked === true);
+                  setSelectedMonth(null);
+                  setDate(undefined);
+                }}
+              />
+            </div>
           </Label>
 
         </div>
-      </div>
+      </div >
 
 
     </>

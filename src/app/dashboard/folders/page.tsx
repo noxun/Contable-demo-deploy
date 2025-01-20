@@ -1,3 +1,4 @@
+"use client";
 import ListFolders from "@/modules/folders/components/ListFolders";
 
 export default function FoldersPage() {

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Select from "react-select"; // Asegúrate de tener react-select instalado
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchAccountingBoxItemsById } from "@/lib/data";
 import { DataTable } from "@/components/ui/data-table";
@@ -12,13 +11,14 @@ import CustomSelect from "@/components/custom/select";
 import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { numberWithDecimals } from "@/modules/shared/utils/validate";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<
     | {
-        range: DateRange;
-        rangeCompare?: DateRange;
-      }
+      range: DateRange;
+      rangeCompare?: DateRange;
+    }
     | undefined
   >();
   const [accountingBoxId, setAccountingBoxId] = useState<number | null>(null);
@@ -73,11 +73,14 @@ const AccountingBoxPage = () => {
       <h1 className="text-2xl font-bold mb-2">Caja</h1>
       <div className="flex justify-between items-center">
         <NewAccountingBoxDialog />
+
         <div>
           {isLoadingBalance || !balance ? (
             <span>Cargando saldo...</span>
           ) : (
-            <span className="font-bold">Saldo: {balance.balance}</span>
+            <span className="font-bold">
+              Saldo: {numberWithDecimals(balance.balance)}
+            </span>
           )}
         </div>
       </div>

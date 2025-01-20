@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TableBank } from "@/modules/banks/components/TableBank";
@@ -24,8 +23,11 @@ export default function BanksPage() {
             <Button>Nuevo Banco</Button>
           </Link> */}
         </div>
-      </div>
-      {isPending ? <div>Cargando...</div> : <TableBank data={data ?? []} />}
-    </div>
+      </div >
+      {
+        isPending ? <div>Cargando...</div> : <TableBank data={data ?? []} />
+      }
+    </div >
   );
 }
+

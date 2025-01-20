@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { GeneratedFilesTable } from "@/modules/shared/components/GeneratedFilesTable";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -24,30 +26,6 @@ export default function DiaryBookPage() {
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
-
-
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`Reporte_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
-
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null)
@@ -60,7 +38,24 @@ export default function DiaryBookPage() {
 
   return (
     <>
-      <div className="flex items-center justify-evenly">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Result",
+            href: "#"
+          },
+          {
+            label: "Libro Diario",
+            href: "/dashboard/results/diary-book"
+          }
+        ]}
+      />
+
+      <div className="flex items-start justify-evenly flex-col md:flex-row gap-2 md:items-center">
         {/* seccion del selector de fecha y de cambio */}
         <div className="space-y-2">
           <DateSelector onDateChange={handleDateChange} />
@@ -70,17 +65,20 @@ export default function DiaryBookPage() {
           </div>
         </div>
         {/* seccion para generar el reporte y descargar */}
-        <ReportGeneratorFile
-          dateRange={dateRange!}  // Asegúrate de que `dateRange` no sea `undefined` aquí
-          inSus={inSus}
-          reportNamePath="diarybook" // Ruta del reporte en el backend
-          setGeneratedFiles={setGeneratedFiles}
-          setShowDialog={setShowDialog}
-          setFile={setPdfFile} // Pasas la función para guardar el PDF generado
-        />
+        <div className="flex gap-4 py-3 flex-row justify-end w-full md:flex-col md:w-auto sm:justify-start">
+          <ReportGeneratorFile
+            dateRange={dateRange!}  // Asegúrate de que `dateRange` no sea `undefined` aquí
+            inSus={inSus}
+            reportNamePath="diarybook" // Ruta del reporte en el backend
+            setGeneratedFiles={setGeneratedFiles}
+            setShowDialog={setShowDialog}
+            setFile={setPdfFile} // Pasas la función para guardar el PDF generado
+          />
+        </div>
       </div>
 
-      <DataTable columns={columns} data={generatedFiles} />
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
       {pdfFile && (
         <div style={{ height: "500px" }}>
           <PDFViewer style={{ width: "100%", height: "100%" }}>

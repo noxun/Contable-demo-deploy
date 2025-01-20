@@ -10,19 +10,31 @@ import {
 import { useState } from "react";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 import { Label } from "@/components/ui/label";
+import { VoucherItemFromExtractedPDF } from "@/lib/types";
 
 type FormNewVoucherWithTypeSelectProps = {
   bankId?: string;
   bankExtractId?: number;
   gloss?: string;
+  voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
 };
 
 export default function FormNewVoucherWithTypeSelect({
   bankId,
   bankExtractId,
   gloss,
+  voucherItemsFromExtractedPDF,
 }: FormNewVoucherWithTypeSelectProps) {
   const [selectedType, setSelectedType] = useState("0");
+
+  let validVoucherItemsPDF = null;
+
+  if(!voucherItemsFromExtractedPDF || voucherItemsFromExtractedPDF.length <=0){
+    validVoucherItemsPDF = undefined;
+  }else{
+    validVoucherItemsPDF = voucherItemsFromExtractedPDF;
+  }
+
   return (
     <>
       <div className="space-y-4">
@@ -48,6 +60,7 @@ export default function FormNewVoucherWithTypeSelect({
         bankId={bankId}
         bankExtractId={bankExtractId}
         gloss={gloss}
+        voucherItemsFromExtractedPDF={validVoucherItemsPDF}
       />
     </>
   );

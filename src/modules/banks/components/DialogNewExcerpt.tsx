@@ -9,14 +9,18 @@ import {
 } from "@/components/ui/dialog";
 import { File } from "lucide-react";
 import ImportBankExcerptForm from "./ImportBankExcerptForm";
+import { useState } from "react";
 
 export default function DialogNewExcerpt({
   bankId,
 }: {
   bankId: string | number;
 }) {
+
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon">
           <File className="size-4" />
@@ -29,7 +33,7 @@ export default function DialogNewExcerpt({
             Sube el extracto del banco seleccionado
           </DialogDescription>
         </DialogHeader>
-        <ImportBankExcerptForm bankId={bankId} />
+        <ImportBankExcerptForm setOpen={setOpen} bankId={bankId} />
       </DialogContent>
     </Dialog>
   );

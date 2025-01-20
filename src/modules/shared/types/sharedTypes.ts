@@ -10,6 +10,7 @@ export type Voucher = {
   gloss: string;
   bankId: number | string | null;
   items?: VoucherItem[];
+  hojaDeRuta?: string;
 };
 
 export type VoucherItem = {
@@ -22,6 +23,7 @@ export type VoucherItem = {
   accountId?: number | string;
   code?: string;
   description?: string;
+  hojaDeRuta?: string;
   typeOfExpense?: any;
   createdAt?: "string";
   voucherId?: number | string;

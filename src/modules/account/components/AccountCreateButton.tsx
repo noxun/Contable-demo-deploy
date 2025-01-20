@@ -21,7 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -93,6 +93,19 @@ export default function AccountCreateButton({
     console.log(values);
     createAccountMutation.mutate(values);
   }
+
+  //REACT HOOK FORM CACHEA LOS VALORES POR DEFAULT
+  useEffect(() => {
+    if (open) {
+      accountCreateForm.reset({
+        description: "",
+        coin: "",
+        active: true,
+        fatherId: fatherId,
+      });
+    }
+  }, [open, fatherId, accountCreateForm]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

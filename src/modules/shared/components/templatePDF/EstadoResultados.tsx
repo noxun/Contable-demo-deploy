@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     gap: 25,
-    width: "100%",
+    width: "100%"
   },
   trCell: {
     flexDirection: "row",
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   thCell: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     padding: 3,
   },
@@ -56,15 +56,19 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderRightWidth: 1,
   },
+  col10: { width: "10%" },
   col15: { width: "15%" },
   col20: { width: "20%" },
   col25: { width: "25%" },
+  col30: { width: "30%" },
+  col40: { width: "40%" },
   col50: { width: "50%" },
   col55: { width: "55%" },
   col60: { width: "60%" },
   col65: { width: "65%" },
   col70: { width: "70%" },
   col80: { width: "80%" },
+  col100: { width: "100%" },
   imageOutOfBounds: {
     position: 'absolute',
     top: -15,
@@ -129,17 +133,17 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
         </View>
 
         <View style={[styles.header, { paddingBottom: 10 }]}>
-          <Text style={[styles.thCell, { fontSize: 20, }]}>Estado de Resultados</Text>
+          <Text style={[styles.thCell, { fontSize: 18, }]}>Estado de Resultados</Text>
           <Text style={[styles.thCell]}>{messageDate}</Text>
           <Text style={[styles.thCell]}>(Expresado en {moneyType})</Text>
         </View>
 
-        <View style={styles.table}>
-          <View>
+        <View style={[styles.table, styles.col100]}>
+          <View style={styles.col50}>
             <View style={[styles.trCell]}>
               <Text style={[styles.thCell, styles.col20]}>Cuenta</Text>
               <Text style={[styles.thCell, styles.col60]}>Gastos</Text>
-              <Text style={[styles.thCell, styles.col20]}>Monto</Text>
+              <Text style={[styles.thCell, styles.col20, { textAlign: "center" }]}>Monto</Text>
             </View>
             <View style={{ textAlign: "left" }}>
               {
@@ -149,7 +153,7 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
                     <View style={styles.trCell} key={index}>
                       <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
                       <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                      <Text style={[styles.tdCell, styles.col20]}>{formatNumber(entry[gastoType])}</Text>
+                      <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[gastoType])}</Text>
                     </View>
                   )
                 })
@@ -157,11 +161,11 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
             </View>
           </View>
 
-          <View>
+          <View style={styles.col50}>
             <View style={[styles.trCell]}>
               <Text style={[styles.thCell, styles.col20]}>Cuenta</Text>
               <Text style={[styles.thCell, styles.col60]}>Ingresos</Text>
-              <Text style={[styles.thCell, styles.col20]}>Monto</Text>
+              <Text style={[styles.thCell, styles.col20, { textAlign: "center" }]}>Monto</Text>
             </View>
             <View style={{ textAlign: "left" }}>
               {
@@ -171,7 +175,7 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
                     <View style={styles.trCell} key={index}>
                       <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
                       <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                      <Text style={[styles.tdCell, styles.col20]}>{formatNumber(entry[gastoType])}</Text>
+                      <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[gastoType])}</Text>
                     </View>
                   )
                 })
@@ -180,16 +184,16 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
           </View>
         </View>
 
-        <View style={[styles.trCell, styles.table]}>
+        <View style={[styles.trCell, styles.table, { paddingTop: 4 }]}>
           <View style={[styles.trCell, styles.col50]}>
             <Text style={styles.col20} />
             <Text style={[styles.thCell, styles.col60]}>Total Gastos</Text>
-            <Text style={[styles.thCell, styles.col20]}>{formatNumber(totalGastos)}</Text>
+            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(totalGastos)}</Text>
           </View>
           <View style={[styles.trCell, styles.col50]}>
             <Text style={styles.col20} />
             <Text style={[styles.thCell, styles.col60]}>Total Ingresos</Text>
-            <Text style={[styles.thCell, styles.col20]}>{formatNumber(totalIngresos)}</Text>
+            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(totalIngresos)}</Text>
           </View>
         </View>
 
@@ -199,17 +203,17 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
             <View style={[styles.trCell]}>
               <Text style={styles.col20} />
               <Text style={[styles.thCell, styles.col60]}>Utilidad antes de impuestos</Text>
-              <Text style={[styles.thCell, styles.col20]}>{formatNumber((totalIngresos - totalGastos))}</Text>
+              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber((totalIngresos - totalGastos))}</Text>
             </View>
             <View style={[styles.trCell]}>
               <Text style={styles.col20} />
               <Text style={[styles.thCell, styles.col60]}>Impuestos a las Utilidades</Text>
-              <Text style={[styles.thCell, styles.col20]}>{formatNumber(Number(records[taxOnProfits]))}</Text>
+              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(Number(records[taxOnProfits]))}</Text>
             </View>
             <View style={[styles.trCell]}>
               <Text style={styles.col20} />
               <Text style={[styles.thCell, styles.col60]}>Resultado de la Gestión</Text>
-              <Text style={[styles.thCell, styles.col20]}>
+              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>
                 {formatNumber(((totalIngresos - totalGastos) - Number(records?.taxOnProfits)))}
               </Text>
             </View>

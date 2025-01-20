@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown, FileText, Sheet } from "lucide-react";
 import { DateRange, isDateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { es } from "date-fns/locale";
 import { DataTable } from "@/components/ui/data-table";
@@ -37,7 +37,15 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { getApiReportExcel, numberToLiteral } from "@/lib/data";
+import { getApiReportExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
+import { useDebounce } from "use-debounce";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { SearchComponent } from "@/modules/shared/components/SearchComponent";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 // Types
 type VoucherItem = {
@@ -57,6 +65,7 @@ type VoucherItem = {
   typeDes?: string;
   totalSaldoSus: number;
   totalSaldoBs: number;
+  hojaDeRuta: string
 };
 
 export type AccountData = {
@@ -103,69 +112,18 @@ const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { d
   </>
 }
 
-// Rutas para generar el libro mayor desde la api
-const ReportPaths = {
-  BookBigger: 'BookBigguerDataExel',
-} as const;
-
-//valores de los reportPaths
-type ReportType = typeof ReportPaths[keyof typeof ReportPaths];
-
-//Component for generate excel file to biggerBook
-const ReportExcelGenerate = ({ dateRange, inSus, typeFile }: { dateRange: DateRange, inSus: boolean, typeFile: ReportType }) => {
-
-  const queryParams = {
-    initDate: dateRange.from && format(dateRange.from, "yyyy-MM-dd"),
-    endDate: dateRange.to && format(dateRange.to, "yyyy-MM-dd"),
-    inSus,
-  };
-
-  const { refetch, isLoading } = useQuery({
-    queryKey: [dateRange],
-    queryFn: () => getApiReportExcel(typeFile, queryParams),
-    enabled: false
-  })
-  //eliminar posibles extensiones repetidas
-  const fixFileExtension = (url: string) => {
-    while (url.endsWith('.xlsx.xlsx')) {
-      url = url.slice(0, -5);
-    }
-    return url;
-  };
-
-  const handleOnClick = async () => {
-    toast.info('Generando Excel...')
-
-    try {
-      const { data: linkExcel } = await refetch()
-      const fileUrl = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : fixFileExtension(linkExcel);
-
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "BookBiggerData.xlsx";
-      toast.success('Archivo generado...')
-      link.click();
-    } catch (error) {
-      console.error("Error al descargar el archivo:", error);
-      toast.error('Error al descargar el archivo.');
-    }
-  }
-
-  return (
-    <Button onClick={handleOnClick}>
-      {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
-    </Button>
-  )
-}
-
-
 // AccountSection Component
 const AccountSection = () => {
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   }
-  const [search, setSearch] = useState('');
+  // un estado por el tipo de filtro o busqueda
+  // un estado para elemento encontrado
+  // un estado para limpiar el search
+  const [accountSearch, setSearchAccount] = useState<any[] | null>(null);
   const [currentSearchType, setCurrentSearchType] = useState<'date' | 'account' | null>(null);
+  const [resetSearch, setResetSearch] = useState(false)
+
   const [accountDate, setAccountDate] = useState<DateRange>(initialDateRange);
   const [file, setFile] = useState<JSX.Element | null>(null)
   const [searchDescription, setSearchDescription] = useState<string>("");
@@ -200,42 +158,14 @@ const AccountSection = () => {
     },
     enabled: !!accountDate?.from && !!accountDate?.to
   });
-  // hook para buscar por la Cuenta
-  const { data: accountSearch, isLoading: isLoadingAccount, refetch } = useQuery({
-    queryKey: ["bookBiggerAcount", search],
-    queryFn: async () => {
-      if (!search.trim()) return null; // Si no hay búsqueda, no ejecutar
 
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/BookBiggerData`,
-        {
-          params: {
-            search,
-            type: "json",
-          },
-        }
-      );
-      return response.data;
-    },
-    enabled: false
-  });
-
-  //const currentAccounts = (accountSearch?.length > 0) ? accountSearch : accountsData
   const currentAccounts =
     currentSearchType === 'account' ? accountSearch : accountsData
 
   const currentAccount = currentAccounts?.[currentAccountIndex];
 
 
-  const handleChangeIsSus = () => {
-    setInSus(!inSus)
-  }
-
-  const handleOnSearchAccount = () => {
-    refetch()
-    setCurrentSearchType("account")
-    setFile(null)
-  };
+  const handleChangeIsSus = () => setInSus(!inSus)
 
   const handleSearch = () => {
     if (!searchDescription.trim()) {
@@ -287,8 +217,8 @@ const AccountSection = () => {
     },
     { header: "Debe Bs", accessorKey: "debitBs" },
     { header: "Haber Bs", accessorKey: "assetBs" },
-    { header: "Debe Sus", accessorKey: "debitSus" },
-    { header: "Haber Sus", accessorKey: "assetSus" },
+    // { header: "Debe Sus", accessorKey: "debitSus" },
+    // { header: "Haber Sus", accessorKey: "assetSus" },
     {
       header: "Acciones",
       accessorKey: "",
@@ -313,6 +243,7 @@ const AccountSection = () => {
     if (startDate && endDate) {
       setCurrentSearchType("date")
       setFile(null)
+      setResetSearch(true)
       setAccountDate({
         from: startDate,
         to: endDate
@@ -320,28 +251,45 @@ const AccountSection = () => {
     }
   };
 
+  const handleSelect = (value: any) => {
+    setResetSearch(false)
+    setActiveFile(null)
+    setFile(null)
+    setAccountDate({ from: undefined, to: undefined })
+    setCurrentSearchType('account')
+    setSearchAccount([value])
+  };
+
   return (
     <div className="space-y-6">
-      <SearchAccount
-        search={search}
-        setSearch={setSearch}
-        onSearch={handleOnSearchAccount}
-        isLoading={isLoadingAccount}
-      />
-      <div className="flex items-center justify-evenly mt-5">
-        <div className="space-y-2">
-          <DateSelector onDateChange={handleDateChange} />
-          <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+      {/* componente para buscar un recurso con una llamada a una api */}
+      <div className="flex flex-col pt-2 gap-2">
+        <SearchComponent
+          onSelect={handleSelect}
+          debounceTime={700}
+          suggestionKey="accountDescription"
+          placeholder="Buscar por cuenta..."
+          buttonLabel="Buscar por cuenta"
+          queryFn={(search: string) =>
+            searchByAccountBigguerBook(search)
+          }
+          resetSearch={resetSearch}
+        />
+        <div className="flex items-center justify-evenly mt-5">
+          <div className="space-y-2">
+            <DateSelector onDateChange={handleDateChange} />
+            <div className="flex items-center space-x-2">
+              <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
+              <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+            </div>
           </div>
-        </div>
 
-        <Button disabled={isLoadingAccounts}>
-          {isLoadingAccounts
-            ? "Listando Transacciones..."
-            : "Ver Transacciones"}
-        </Button>
+          <Button disabled={isLoadingAccounts}>
+            {isLoadingAccounts
+              ? "Listando Transacciones..."
+              : "Ver Transacciones"}
+          </Button>
+        </div>
       </div>
 
       {currentAccount && (
@@ -440,56 +388,91 @@ const AccountSection = () => {
   );
 };
 
+
+function Breadcrumb() {
+  const pathname = usePathname();
+  const pathSegments = pathname.split('/').filter(segment => segment);
+
+  return (
+    <nav className="flex" aria-label="Breadcrumb">
+      <ol className="flex items-center gap-1 lg:gap-2 pb-2">
+        {pathSegments.map((segment, index) => {
+          const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
+          return (
+            <li key={href}>
+              <div className="flex items-center">
+                {index === 0 && (
+                  <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                  </svg>
+                )}
+                {index > 0 && (
+                  <>
+                    <svg
+                      className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 6 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 9 4-4-4-4"
+                      />
+                    </svg>
+                  </>
+                )}
+                <Link
+                  href={href}
+                  className={`ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white  'text-gray-500 cursor-default' : ''
+                    }`}
+                >
+                  {segment.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
+                </Link>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
+
 // Main Component
 export default function BiggerBookPage() {
+  const currentPath = usePathname()
+
 
   return (
     <div className="flex flex-col gap-2 h-full">
       {/* <ReportSection /> */}
 
-      <div className="flex justify-start text-[25px] font-[500]">
-        <h1>Reportes</h1>
-      </div>
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Libro Mayor",
+            href: "/dashboard/results/bigger-book"
+          }
+        ]}
+      />
+
       <AccountSection />
 
     </div>
   );
 }
-
-const SearchAccount = ({
-  search,
-  setSearch,
-  onSearch,
-  isLoading
-}: {
-  search: string;
-  setSearch: (value: string) => void;
-  onSearch: () => void;
-  isLoading: boolean
-}) => {
-
-
-  return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-      <div className="flex gap-2 text-sm font-normal">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por descripción..."
-          className="px-3 py-2 border rounded-md text-md"
-        />
-        <Button
-          onClick={onSearch}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          {isLoading ? 'Buscando...' : 'Buscar'}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
 
 // Account Components
 const AccountInfo = ({

@@ -37,6 +37,9 @@ import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function BalanceGeneralPage() {
   // --- Estados del formulario ---
@@ -175,28 +178,6 @@ export default function BalanceGeneralPage() {
     }
   };
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`BalanceGeneral_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
-
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   }
@@ -217,9 +198,25 @@ export default function BalanceGeneralPage() {
 
   return (
     <div className="flex flex-col gap-6 h-full">
-      <div className="flex items-center justify-evenly">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Balance General",
+            href: "/dashboard/results/balance-general"
+          }
+        ]}
+      />
+      <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center">
         {/* Rango de fechas */}
-        <div className="space-y-2">
+        <div className="flex gap-2 flex-col">
           <DateSelector onDateChange={handleOnDateChange} />
           <div className="flex items-center space-x-2">
             <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
@@ -227,17 +224,24 @@ export default function BalanceGeneralPage() {
           </div>
         </div>
         {/* aqui generar el reporte */}
-        <ReportGeneratorFile
-          dateRange={dateRange}
-          inSus={inSus}
-          reportNamePath="XlxsData"
-          paramType="balanceGeneral"
-          setFile={setPdfFile}
-          setGeneratedFiles={setGeneratedFiles}
-          setShowDialog={setShowDialog}
-        />
+        <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
+          <ReportGeneratorFile
+            dateRange={dateRange}
+            inSus={inSus}
+            reportNamePath="XlxsData"
+            paramType="balanceGeneral"
+            setFile={setPdfFile}
+            setGeneratedFiles={setGeneratedFiles}
+            setShowDialog={setShowDialog}
+          />
+          <ReportExcelGenerate
+            dateRange={dateRange}
+            inSus={inSus}
+            typeFile={ReportPaths.reportExcel}
+            typePathExcel="balanceGeneral"
+          />
+        </div>
       </div>
-
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
         Comentado pero podria ser util si se requiere en algun momento
         <DialogTrigger asChild>
@@ -266,11 +270,13 @@ export default function BalanceGeneralPage() {
           </div>
         </DialogContent>
       </Dialog> */}
-      <DataTable columns={columns} data={generatedFiles} />
+
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
       {
         pdfFile && (
-          <div style={{ height: "600px" }}>
+          <div style={{ height: "500px" }}>
             <PDFViewer style={{ width: "100%", height: "100%" }}>
               {pdfFile}
             </PDFViewer>

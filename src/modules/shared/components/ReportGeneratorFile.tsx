@@ -103,14 +103,14 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
           }
 
           if (MyDocument) {
-            setGeneratedFiles((prevFiles) => [
-              ...prevFiles,
-              {
-                type: "PDF",
-                date: currentDate,
-                link: MyDocument,
-              },
-            ]);
+            // setGeneratedFiles((prevFiles) => [
+            //   ...prevFiles,
+            //   {
+            //     type: "PDF",
+            //     date: currentDate,
+            //     link: MyDocument,
+            //   },
+            // ]);
             setFile(MyDocument);
             setShowDialog(true);
             toast.success("Reporte generado exitosamente");

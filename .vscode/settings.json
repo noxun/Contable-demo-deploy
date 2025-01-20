@@ -21,6 +21,8 @@
     "types",
     "app",
     "transactions",
-    "sidebar-icons"
+    "sidebar-icons",
+    "payroll",
+    "trazo-data"
   ]
 }

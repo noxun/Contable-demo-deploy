@@ -37,6 +37,9 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
+import { ReportPaths } from "@/modules/shared/utils/validate";
+import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -193,51 +196,55 @@ export default function StatementIncomePage() {
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => {
-        const file = row.original.link
-        return (
-          (
-            <PDFDownloadLink
-              document={file}
-              fileName={`Reporte_${row.original.date}.pdf`}
-            >
-              Descargar
-            </PDFDownloadLink>
-          )
-        )
-      },
-    },
-  ];
-
   return (
     <div className="flex flex-col gap-6 h-full">
-      <div className="flex items-center justify-evenly">
-        <div className="space-y-2">
+      <BreadcrumbDashboard
+        items={[
+          {
+            label: "Panel",
+            href: "/dashboard"
+          },
+          {
+            label: "Reportes",
+            href: "#"
+          },
+          {
+            label: "Estado de resultados",
+            href: "/dashboard/results/statement-income"
+          }
+        ]}
+      />
+      <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center">
+        <div className="flex gap-2 flex-col">
           {/* Rango de fechas */}
           <div className="flex items-center gap-4">
             <DateSelector onDateChange={handleOnDateChange} />
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
             <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
           </div>
         </div>
-        <ReportGeneratorFile
-          dateRange={dateRange}
-          inSus={inSus}
-          reportNamePath="XlxsData"
-          paramType="estadoDeResultado"
-          setFile={setPdfFile}
-          setGeneratedFiles={setGeneratedFiles}
-          setShowDialog={setShowDialog}
-        />
+        <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
+
+          <ReportGeneratorFile
+            dateRange={dateRange}
+            inSus={inSus}
+            reportNamePath="XlxsData"
+            paramType="estadoDeResultado"
+            setFile={setPdfFile}
+            setGeneratedFiles={setGeneratedFiles}
+            setShowDialog={setShowDialog}
+          />
+          <ReportExcelGenerate
+            dateRange={dateRange}
+            inSus={inSus}
+            typeFile={ReportPaths.reportExcel}
+            typePathExcel="estadoDeResultado"
+          />
+        </div>
       </div>
+
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
         Comentado pero podria ser util si se requiere en algun momento
         <DialogTrigger asChild>
@@ -266,14 +273,19 @@ export default function StatementIncomePage() {
           </div>
         </DialogContent>
       </Dialog> */}
-      <DataTable columns={columns} data={generatedFiles} />
+
+
+      {/* alternativa para descargar  */}
+      {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
       {pdfFile && (
-        <div style={{ height: "800px" }}>
-          <PDFViewer style={{ width: "100%", height: "100%" }}>
-            {pdfFile}
-          </PDFViewer>
-        </div>)
+        <>
+          <div style={{ height: "800px" }}>
+            <PDFViewer style={{ width: "100%", height: "100%" }}>
+              {pdfFile}
+            </PDFViewer>
+          </div>
+        </>)
       }
 
 

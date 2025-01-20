@@ -344,7 +344,7 @@ export default function FormEditVoucherItems({
         <TableBody>
           {voucherItems.map((item, index) => (
             <TableRow key={index}>
-              <TableCell>
+              <TableCell className="w-[35%]">
                 <CustomSelect
                   menuPlacement="top"
                   isSearchable={true}
@@ -377,7 +377,7 @@ export default function FormEditVoucherItems({
                   value={item?.assetBs ?? ""}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[30%]">
                 <Input
                   name="gloss"
                   onChange={(e) => onChange(e, index)}
