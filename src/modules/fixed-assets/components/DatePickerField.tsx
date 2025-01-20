@@ -9,9 +9,10 @@ import { useState } from "react";
 interface DatePickerFieldProps {
   value: string | null;
   onChange: (date: string | null) => void;
+  className?: string
 }
 
-export function DatePickerField({ value, onChange }: DatePickerFieldProps) {
+export function DatePickerField({ value, onChange, className = "w-[240px]" }: DatePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -20,7 +21,7 @@ export function DatePickerField({ value, onChange }: DatePickerFieldProps) {
         <FormControl>
           <Button
             variant="outline"
-            className="w-[240px] pl-3 text-left font-normal"
+            className={`pl-3 text-left font-normal ${className}`}
           >
             {value ? format(new Date(value), "dd/MM/yyyy") : <span>Seleccione una fecha</span>}
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
