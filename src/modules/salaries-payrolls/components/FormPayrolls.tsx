@@ -2,7 +2,7 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form";
-import { SchemaPayrollType } from '../types/types.d'
+import { Payroll, SchemaPayrollType } from '../types/types.d'
 import { SchemaPayroll } from "../schemas/shema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,27 +10,31 @@ import { DatePickerField } from "@/modules/fixed-assets/components/DatePickerFie
 import { Button } from "@/components/ui/button";
 import { SaveIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PostPayroll } from "@/lib/data";
+import { PostPayroll, UpdatePayrollById } from "@/lib/data";
 import { toast } from "sonner";
 
 interface Props {
   onClose: () => void;
+  payroll?: Payroll;
 }
-export const FormPayrolls = ({ onClose }: Props) => {
+export const FormPayrolls = ({ onClose, payroll }: Props) => {
 
   const queryClient = useQueryClient();
+
+  const defaultValuesPayroll = {
+    DateNow: new Date().toISOString(),
+    Nombres: payroll?.nombres ?? "",
+    Area: payroll?.area ?? "",
+    Sexo: payroll?.sexo.toUpperCase() ?? "",
+    Cargo: payroll?.cargo ?? "",
+    EntryDate: payroll?.entryDate ?? "",
+    SalaryTaxReturn: payroll?.salaryTaxReturn.toString() ?? "",
+    InternalPayrollSalary: payroll?.internalPayrollSalary.toString() ?? "",
+  }
+
   const formPayroll = useForm<SchemaPayrollType>({
     resolver: zodResolver(SchemaPayroll),
-    defaultValues: {
-      DateNow: new Date().toISOString(),
-      Nombres: "",
-      Area: "",
-      Sexo: "",
-      Cargo: "",
-      EntryDate: "",
-      SalaryTaxReturn: "",
-      InternalPayrollSalary: "",
-    }
+    defaultValues: defaultValuesPayroll
   });
 
   const createMutation = useMutation({
@@ -50,9 +54,27 @@ export const FormPayrolls = ({ onClose }: Props) => {
     }
   })
 
+  const updateMutation = useMutation({
+    mutationFn: UpdatePayrollById,
+    onSuccess: () => {
+      toast.success("Planilla actualizada correctamente!");
+      onClose();
+      formPayroll.reset();
+      queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
+      queryClient.invalidateQueries({ queryKey: ['PayrollEdit'] })
+    },
+    onMutate: () => {
+      toast("actualizando planilla...");
+    },
+    onError: (e) => {
+      toast.error("Error al actualizar planilla");
+      console.error(e)
+    }
+  })
+
   const onSubmit = (data: SchemaPayrollType) => {
-    console.log('estamos recupedando lo siguiente: ', data);
-    createMutation.mutate({ payroll: data });
+    if (payroll) return updateMutation.mutate({ id: payroll.id.toString(), payroll: data })
+    return createMutation.mutate({ payroll: data });
   };
 
   return (
@@ -189,7 +211,7 @@ export const FormPayrolls = ({ onClose }: Props) => {
         <Button
           className=" mx-auto mt-4 flex items-center justify-center gap-1"
         >
-          <SaveIcon />Registrar
+          <SaveIcon />{payroll ? 'Actualizar' : 'Registrar'}
         </Button>
       </form>
     </Form>

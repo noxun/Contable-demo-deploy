@@ -1,29 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { FormPayrolls } from "./FormPayrolls";
 import { useState } from "react";
+import { FormSalary } from "./FormSalary";
 
-export const PayrollsDialogForm = () => {
+interface Props {
+  idPayroll: string
+}
+
+export const SalaryFormDialog = ({ idPayroll }: Props) => {
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = () => {
     setIsOpen(false);
   };
 
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Crear</Button>
+        <Button>Nuevo Registro</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Crear Nomina</DialogTitle>
+          <DialogTitle>Crear Registro</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <FormPayrolls
-          onClose={handleClose}
-        />
+        <FormSalary idPayroll={idPayroll} onClose={handleClose} />
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
