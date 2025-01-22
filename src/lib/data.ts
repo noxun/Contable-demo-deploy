@@ -44,6 +44,8 @@ import {
 } from "@/modules/fixed-assets/types/types";
 import {
   Payroll,
+  ResponsePayrolls,
+  Salaries,
   SchemaPayrollType, SchemaSalaryType,
 } from "@/modules/salaries-payrolls/types/types";
 
@@ -913,10 +915,10 @@ export async function GetPayrolls({ date }: { date: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages`;
+  const URLRequest = `api/SalariesAndWages/itemsGeneral`;
 
   setAuthToken(token);
-  const { data } = await api.get<Payroll[]>(URLRequest, {
+  const { data } = await api.get<ResponsePayrolls>(URLRequest, {
     params: {
       date: date
     }
@@ -992,6 +994,23 @@ export async function GetSalariesByPayrollId({ idPayroll }: { idPayroll: string 
   });
   return data;
 }
+//GET: Items of Payrolls
+export async function GetSalariesById({ id }: { id: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/itemsDatos/id`
+
+  setAuthToken(token);
+  const { data } = await api.get<Salaries>(URLRequest, {
+    params: {
+      id: id
+    }
+  });
+  return data;
+}
 //POST: Items of Payrolls
 export async function PostSalary({ Item }: { Item: SchemaSalaryType }) {
   let token;
@@ -1016,6 +1035,23 @@ export async function DeleteSalary({ id }: { id: string }) {
 
   setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
+    params: {
+      id: id
+    }
+  });
+  return data;
+}
+//UPDATE: Items of Payrolls
+export async function UpdateSalary({ id, item }: { id: string, item: SchemaSalaryType }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/items/id`
+
+  setAuthToken(token);
+  const { data } = await api.put(URLRequest, item, {
     params: {
       id: id
     }
