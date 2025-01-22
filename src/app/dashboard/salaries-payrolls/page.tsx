@@ -30,6 +30,7 @@ function SalariesPayrollsPage() {
     }
   })
 
+
   const deleteMutation = useMutation({
     mutationFn: DeletePayroll,
     onSuccess: () => {
@@ -87,11 +88,14 @@ function SalariesPayrollsPage() {
         const idPayroll = row.original.id
         return (
           <div className="flex items-center justify-center gap-1">
-            {/* los props ve si esta bien la fecha asi xd */}
-            <PaySlipDialog idSalaryWages={idPayroll} datePaySlip={(new Date()).toISOString()} />
+            <PaySlipDialog
+              idSalaryWages={idPayroll}
+              datePaySlip={(new Date()).toISOString()}
+            />
             <Button
               variant="outline"
-              className="size-10 p-2 text-blue-500 rounded-full"
+              size="icon"
+              className="p-1 text-blue-500 rounded-full"
               aria-label="Ver Pagos"
               title="Ver Pagos"
             >
@@ -122,7 +126,7 @@ function SalariesPayrollsPage() {
         <PayrollsDialogForm />
       </div>
 
-      <Label className="flex flex-col gap-3 pt-3 pb-5 mb-6" >
+      <Label className="flex flex-col gap-3 mt-3 mb-6 w-fit" >
         Seleccione la fecha de inicio
         <DatePicker
           value={selectedDate}
@@ -132,10 +136,27 @@ function SalariesPayrollsPage() {
 
       {
         listPayrolls && (
-
-          <div>
-            <DataTable columns={columnsPayrolls} data={listPayrolls} />
-          </div>
+          <>
+            <div>
+              <DataTable
+                columns={columnsPayrolls}
+                data={listPayrolls.listSalariesWages}
+              />
+            </div>
+            <div className="flex justify-end gap-6 py-4 px-6 bg-gray-50 rounded-lg">
+              {
+                [
+                  { label: "Salario Fiscal", value: listPayrolls.salaryTaxReturnTotal },
+                  { label: "Salario interno", value: listPayrolls.internalPayrollSalaryTotal },
+                ].map((item) => (
+                  <div key={item.label} className="text-start">
+                    <p className="text-sm text-gray-600">{item.label}</p>
+                    <p className="text-lg font-bold">{formatNumber(item.value)}</p>
+                  </div>
+                ))
+              }
+            </div>
+          </>
         )
       }
 
