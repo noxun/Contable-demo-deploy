@@ -28,11 +28,9 @@ export const PayrollsDialogEdit = ({ idPayroll }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="size-10 p-2 text-blue-500 rounded-full"
+          size="icon"
+          className="p-1 text-blue-500 rounded-full"
           aria-label="Actualizar"
-          onClick={async () => {
-
-          }}
           title="Actualizar"
         >
           <FilePenLineIcon />
