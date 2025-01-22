@@ -4,6 +4,23 @@ export type SchemaPayrollType = z.infer<typeof SchemaPayroll>
 
 export type SchemaSalaryType = z.infer<typeof SchemaSalary>
 
+export interface ResponsePayrolls {
+  salaryTaxReturnTotal: number;
+  bonusAntiquityTotal: number;
+  internalPayrollSalaryTotal: number;
+  productionBonus: number;
+  valueForOvertime: number;
+  totalGanadoT: number;
+  afpTotal: number;
+  loanTotal: number;
+  exelTrainingCorseTotal: number;
+  anbFineSettlementTotal: number;
+  onAccountTotal: number;
+  dsctoShirtDelaysTotal: number;
+  liquidPayableTotal: number;
+  listSalariesWages: Payroll[]
+}
+
 export interface Payroll {
   id: number;
   dateNow: Date;
@@ -17,6 +34,7 @@ export interface Payroll {
   salariesAndWagesItems: Salaries[]
 }
 
+
 export interface Salaries {
   id: number,
   salariesAndwagesId: number,
@@ -24,9 +42,13 @@ export interface Salaries {
   productionBonus: number,
   extraTimeMinutes: number,
   valueForOvertime: number,
+  totalGanado: number,
+  afp: number,
   loan: number,
   exelTrainingCorse: number,
   anbFineSettlement: number,
   onAccount: number,
-  dsctoShirtDelays: number9
+  dsctoShirtDelays: number,
+  liquidPayable: number,
+  currenDate: Date,
 }  
