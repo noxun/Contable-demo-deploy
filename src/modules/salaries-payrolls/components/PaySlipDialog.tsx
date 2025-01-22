@@ -30,7 +30,7 @@ export default function PaySlipDialog({
     data: paySlip,
     isLoading,
     isError,
-  } = usePaySlipData(idSalaryWages, datePaySlip);
+  } = usePaySlipData(idSalaryWages, datePaySlip, open);
 
   if (isError) {
     return <div>Error al cargar la boleta de pago</div>;
@@ -39,7 +39,13 @@ export default function PaySlipDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" title="Boleta de Pago">
+        <Button
+          variant="outline"
+          size="icon"
+          title="Boleta de Pago"
+          className="p-1 text-blue-500 rounded-full"
+          aria-label="Boleta de Pago"
+        >
           <ReceiptText className="size-4" />
         </Button>
       </DialogTrigger>
