@@ -25,7 +25,8 @@ export const ConfirmDeleteDialog = ({ id, onDelete, message }: Props) => {
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className="size-10 p-2 text-blue-500 rounded-full"
+          size="icon"
+          className="p-1 text-blue-500 rounded-full"
           aria-label="Eliminar"
           title="Eliminar"
         >
