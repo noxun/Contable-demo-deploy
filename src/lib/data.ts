@@ -926,6 +926,23 @@ export async function GetPayrolls({ date }: { date: string }) {
   return data;
 }
 //GET By Id: Payrolls
+export async function GetPayrollExcelByDate({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/itemsExel`
+
+  setAuthToken(token);
+  const { data } = await api.get(URLRequest, {
+    params: {
+      date: date
+    }
+  });
+  return data;
+}
+//GET By Id: Payrolls
 export async function GetPayrollById({ id }: { id: string }) {
   let token;
   if (typeof window !== "undefined") {

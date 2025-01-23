@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Label } from "@/components/ui/label";
-import { DeletePayroll, GetPayrollById, GetPayrolls } from "@/lib/data";
+import { DeletePayroll, GetPayrollById, GetPayrollExcelByDate, GetPayrolls } from "@/lib/data";
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog";
 import { DatePicker } from "@/modules/fixed-assets/components/DatePicker";
 import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
@@ -12,10 +12,12 @@ import PaySlipDialog from "@/modules/salaries-payrolls/components/PaySlipDialog"
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, SheetIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { se } from "date-fns/locale";
 
 function SalariesPayrollsPage() {
 
@@ -26,10 +28,20 @@ function SalariesPayrollsPage() {
     queryKey: ['AllPayrolls', selectedDate],
     queryFn: () => {
       const dateSelected = selectedDate || new Date();
-      return GetPayrolls({ date: format(dateSelected, 'yyyy-MM-dd') });
+      return GetPayrolls({ date: format(dateSelected, 'yyyy-MM') });
     }
   })
 
+  console.log('los datos: ', listPayrolls);
+
+  const { refetch: refetchExcel } = useQuery({
+    queryKey: [selectedDate],
+    queryFn: () => {
+      const dateSelected = selectedDate || new Date();
+      return GetPayrollExcelByDate({ date: format(dateSelected, 'yyyy-MM') });
+    },
+    enabled: false
+  })
 
   const deleteMutation = useMutation({
     mutationFn: DeletePayroll,
@@ -68,7 +80,7 @@ function SalariesPayrollsPage() {
       cell: ({ row }: any) => row.original.sexo.toUpperCase(),
     },
     {
-      header: "Fecha de inicio",
+      header: "Fecha de ingreso",
       accessorKey: "entryDate",
       cell: ({ row }: any) => format(new Date(row.original.entryDate), "dd-MM-yyyy")
     },
@@ -118,6 +130,29 @@ function SalariesPayrollsPage() {
     },
   ];
 
+  const onHandleGenerateExcel = async () => {
+    try {
+      toast.info("Generando archivo Excel...");
+      const { data: linkExcel } = await refetchExcel();
+      const fileUrl = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : linkExcel;
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "planillas.xlsx";
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      if (linkExcel instanceof Blob) {
+        URL.revokeObjectURL(fileUrl);
+      }
+
+      toast.success("Archivo Excel generado y descargado correctamente.");
+    } catch (error) {
+      console.error("Error al generar el archivo Excel:", error);
+      toast.error("Ocurrió un error al generar el archivo Excel. Por favor, inténtalo de nuevo.");
+    }
+  };
 
   return (
     <section className="px-6">
@@ -126,13 +161,21 @@ function SalariesPayrollsPage() {
         <PayrollsDialogForm />
       </div>
 
-      <Label className="flex flex-col gap-3 mt-3 mb-6 w-fit" >
-        Seleccione la fecha de inicio
-        <DatePicker
-          value={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-        />
-      </Label>
+      <div className="flex items-end gap-4 mt-3 mb-6 ">
+        <Label className="flex flex-col gap-3 w-fit" >
+          Seleccione la fecha de inicio
+          <DatePicker
+            value={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+          />
+        </Label>
+
+        <Button
+          className="flex gap-2 items-center"
+          onClick={onHandleGenerateExcel}>
+          <SheetIcon size="icon" />Descargar Excel
+        </Button>
+      </div>
 
       {
         listPayrolls && (
