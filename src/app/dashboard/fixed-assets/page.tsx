@@ -1,35 +1,39 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { deleteFixedAsset, getAllFixedAssets } from "@/lib/data"
+import { deleteFixedAsset, getAllFixedAssets, getAllFixedAssetsExcelByDate } from "@/lib/data"
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog"
-import { DatePicker } from "@/modules/fixed-assets/components/DatePicker"
 import { DialogAssetDetail } from "@/modules/fixed-assets/components/DialogAssetDetail"
-import { FixedAsset } from "@/modules/fixed-assets/types/types"
 import { formatNumber } from "@/modules/shared/utils/validate"
-import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { FilePenLineIcon, Table, Trash2Icon } from "lucide-react"
+import { FilePenLineIcon, SheetIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 
 function FixedAssetPage() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM'));
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const { data: listAssets } = useQuery({
     queryKey: ['fixedAssets', selectedDate],
     queryFn: () => {
-      const dateSelected = selectedDate || new Date();
-      return getAllFixedAssets({ dateTime: format(dateSelected, 'yyyy-MM-dd') });
+      return getAllFixedAssets({ dateTime: selectedDate });
     },
     enabled: !!selectedDate
+  })
+
+  const { refetch: refetchExcel } = useQuery({
+    queryKey: [selectedDate],
+    queryFn: () => {
+      return getAllFixedAssetsExcelByDate({ date: selectedDate });
+    },
+    enabled: false
   })
 
   const deleteMutation = useMutation({
@@ -46,6 +50,31 @@ function FixedAssetPage() {
       toast("Eliminando activo fijo...")
     }
   });
+
+  const onHandleGenerateExcel = async () => {
+    try {
+      toast.info("Generando archivo Excel...");
+      const { data: linkExcel } = await refetchExcel();
+      const urlDownload = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : linkExcel;
+
+      const link = document.createElement("a");
+      link.href = urlDownload;
+      link.download = "activosFijos.xlsx";
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      if (linkExcel instanceof Blob) {
+        URL.revokeObjectURL(urlDownload);
+      }
+
+      toast.success("Archivo Excel generado correctamente.");
+    } catch (error) {
+      console.error("Error al generar el archivo Excel:", error);
+      toast.error("Ocurrió un error al generar el excel. Por favor, inténtalo de nuevo.");
+    }
+  };
+
 
   const columnsFixedAssets = [
     {
@@ -90,7 +119,6 @@ function FixedAssetPage() {
     },
     {
       header: "Acciones",
-      accessorKey: "",
       cell: ({ row }: any) => {
         const assetId = row.original.id
         return (
@@ -126,32 +154,48 @@ function FixedAssetPage() {
           <Link href="/dashboard/fixed-assets/new">Nuevo activo fijo</Link>
         </Button>
       </div>
-      <Label className="flex flex-col gap-3 pt-3 pb-5" >
-        Seleccione la fecha de inicio
-        <DatePicker
-          value={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-        />
-      </Label>
+      <div className="flex items-end gap-4 mt-3 mb-5">
+        <Label className="flex flex-col gap-3 w-fit" >
+          Seleccione la fecha de inicio
+          <Input
+            type="month"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
+
+        </Label>
+        <Button
+          disabled={listAssets?.getFixed?.length === 0}
+          onClick={onHandleGenerateExcel}
+          className="flex items-center gap-2"
+        >
+          <SheetIcon />
+          Descargar excel
+        </Button>
+      </div>
 
       {
         listAssets?.getFixed && (
           <>
-            <DataTable columns={columnsFixedAssets} data={listAssets?.getFixed} />
-            <div className="flex justify-end gap-6 py-4 px-6 bg-gray-50 rounded-lg">
-              {
-                [
-                  { label: "Depreciacion actual", value: listAssets.totalDActual },
-                  { label: "Incremento de actualización", value: listAssets.totalIncreiceUpdate },
-                  { label: "Incremento de actualización dep acumulada", value: listAssets.totalIncreiceUpdateDP },
-                ].map((item) => (
-                  <div key={item.label} className="text-right">
-                    <p className="text-sm text-gray-600">{item.label}</p>
-                    <p className="text-lg font-bold">{formatNumber(item.value)}</p>
-                  </div>
-                ))
-              }
+            <div className="overflow-x-auto max-w-full  w-[90vw] md:w-[70vw]">
+              <DataTable columns={columnsFixedAssets} data={listAssets?.getFixed} />
             </div>
+            {listAssets?.getFixed?.length > 0 && (
+              <div className="flex justify-end gap-6 py-4 px-6 bg-gray-50 rounded-lg">
+                {
+                  [
+                    { label: "Depreciacion actual", value: listAssets.totalDActual },
+                    { label: "Incremento de actualización", value: listAssets.totalIncreiceUpdate },
+                    { label: "Incremento de actualización dep acumulada", value: listAssets.totalIncreiceUpdateDP },
+                  ].map((item) => (
+                    <div key={item.label} className="text-right">
+                      <p className="text-sm text-gray-600">{item.label}</p>
+                      <p className="text-lg font-bold">{formatNumber(item.value)}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
           </>
         )
       }

@@ -880,6 +880,21 @@ export async function deleteFixedAsset({ id }: { id: string }) {
   return data;
 }
 
+// GET; obtener el archivo excel de activos fijos
+export async function getAllFixedAssetsExcelByDate({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  const URLRequest = `/FixedAssets/FixedAssetsItems/exel`;
+
+  setAuthToken(token);
+  const { data } = await api.get(URLRequest, {
+    params: { date: date },
+  });
+  return data;
+}
+
 //Crear una banco apartir de una cuenta
 export async function postConvertAccountToBank(accountId: string) {
   let token;
