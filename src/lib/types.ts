@@ -271,6 +271,7 @@ export type ConfigValues = {
   itfValue: number;
   tributosAduaneros: number;
   ufvDate: string;
+  minimumWage: number;
 }
 
 export type NewConfigValues = Omit<ConfigValues, "id">
