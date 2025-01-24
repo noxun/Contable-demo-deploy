@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { getApiReportExcel, getBigguerBookinExcel } from "@/lib/data";
+import { getApiReportExcel } from "@/lib/data";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -9,19 +9,21 @@ import { ReportType } from "../utils/validate";
 interface Props {
   dateRange: DateRange,
   inSus: boolean,
-  search: string,
+  typeFile: ReportType,
+  typePathExcel?: string
 }
 //Component for generate excel file to biggerBook
-export const ReportExcelGenerate = ({ dateRange, search }: Props) => {
+export const ReportExcelGenerate = ({ dateRange, inSus, typeFile, typePathExcel }: Props) => {
 
-
-  const initialDate = dateRange.from && format(dateRange.from, "yyyy-MM-dd")
-  const finallyDate = dateRange.to && format(dateRange.to, "yyyy-MM-dd")
-
+  const queryParams = {
+    initDate: dateRange.from && format(dateRange.from, "yyyy-MM-dd"),
+    endDate: dateRange.to && format(dateRange.to, "yyyy-MM-dd"),
+    inSus,
+  };
 
   const { refetch, isLoading } = useQuery({
-    queryKey: [dateRange, search],
-    queryFn: () => getBigguerBookinExcel({ initDate: initialDate, endDate: finallyDate, search: search }),
+    queryKey: [dateRange],
+    queryFn: () => getApiReportExcel(typeFile, queryParams, typePathExcel),
     enabled: false
   })
   //eliminar posibles extensiones repetidas
@@ -55,7 +57,7 @@ export const ReportExcelGenerate = ({ dateRange, search }: Props) => {
   }
 
   return (
-    <Button className="flex" onClick={handleOnClick} >
+    <Button className="flex" onClick={handleOnClick} disabled={!dateRange.to} >
       {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
     </Button>
   )

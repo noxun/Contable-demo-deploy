@@ -37,7 +37,7 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { getApiReportExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
+import { getApiReportExcel, getBigguerBookinExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { useDebounce } from "use-debounce";
@@ -304,7 +304,7 @@ const AccountSection = () => {
               setFile={setFile}
               inSus={inSus}
             />
-            <ReportExcelGenerate
+            <BiggerBookExcelGenerate
               dateRange={accountDate}
               search={searchDescription}
               inSus={inSus}
@@ -563,3 +563,47 @@ const AccountTotals = ({
     </div>
   );
 };
+
+interface Props {
+  dateRange: DateRange,
+  inSus: boolean,
+  search: string,
+}
+
+const BiggerBookExcelGenerate = ({ dateRange, search }: Props) => {
+
+
+  const initialDate = dateRange.from && format(dateRange.from, "yyyy-MM-dd")
+  const finallyDate = dateRange.to && format(dateRange.to, "yyyy-MM-dd")
+
+
+  const { refetch, isLoading } = useQuery({
+    queryKey: [dateRange, search],
+    queryFn: () => getBigguerBookinExcel({ initDate: initialDate, endDate: finallyDate, search: search }),
+    enabled: false
+  })
+
+  const handleOnClick = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetch()
+      const fileUrl = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : linkExcel;
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "BookBiggerData.xlsx";
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+      toast.error('Error al descargar el archivo.');
+    }
+  }
+
+  return (
+    <Button className="flex" onClick={handleOnClick} >
+      {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
+    </Button>
+  )
+}
