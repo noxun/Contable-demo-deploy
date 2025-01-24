@@ -22,13 +22,13 @@ export const SchemaPayroll = z.object({
     .nonempty({ message: "El salario sujeto a impuestos es obligatorio" })
     .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
     .transform((value) => parseFloat(value))
-    .refine((value) => value > 0, { message: "El salario debe ser un número mayor a 0" }),
+    .refine((value) => value >= 0, { message: "El salario debe ser almenos a 0" }),
   InternalPayrollSalary: z
     .string()
     .nonempty({ message: "El salario de la planilla interna es obligatorio" })
     .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
     .transform((value) => parseFloat(value))
-    .refine((value) => value > 0, { message: "El salario debe ser un número mayor a 0" }),
+    .refine((value) => value >= 0, { message: "El salario debe ser almenos 0" }),
 });
 
 export const SchemaSalary = z.object({
@@ -38,19 +38,19 @@ export const SchemaSalary = z.object({
     .nonempty({ message: "El bono de produccion no puede estar vacio" })
     .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
     .transform((value) => parseFloat(value))
-    .refine((value) => value > 0, { message: "El bono debe ser un número mayor a 0" }),
+    .refine((value) => value >= 0, { message: "El bono debe ser almenos 0" }),
   extraTimeMinutes: z
     .string()
     .nonempty({ message: "El tiempo extra no puede estar vacio" })
     .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
     .transform((value) => parseFloat(value))
-    .refine((value) => value > 0, { message: "El tiempo extra debe ser un número mayor a 0" }),
+    .refine((value) => value >= 0, { message: "El tiempo extra debe ser almenos 0" }),
   valueForOvertime: z
     .string()
     .nonempty({ message: "El valor por horas extra es obligatorio" })
     .refine((value) => !isNaN(Number(value)), { message: "Ingrese solo números" })
     .transform((value) => parseFloat(value))
-    .refine((value) => value > 0, { message: "El valor por horas extra debe ser mayor a 0" }),
+    .refine((value) => value >= 0, { message: "El valor por horas extra debe ser almenos 0" }),
   loan: z
     .string()
     .nonempty({ message: "El prestamo no puede estar vacio" })
