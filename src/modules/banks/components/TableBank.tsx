@@ -28,6 +28,7 @@ import DialogNewExcerpt from "./DialogNewExcerpt";
 import Link from "next/link";
 import { Bank } from "@/lib/types";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
+import BiggerBookByAccountCodeDialog from "../../bigger-book/components/BiggerBookByAccountCodeDialog";
 
 export const TableBank = (props: { data: Bank[] }) => {
   const { data } = props;
@@ -69,6 +70,7 @@ export const TableBank = (props: { data: Bank[] }) => {
         return (
           <div className="flex items-center justify-center gap-2">
             {/* <DialogExcerptTable bankId={bank.id}/> */}
+            <BiggerBookByAccountCodeDialog accountCode={bank.code}/>
             <Button asChild>
               <Link href={`/dashboard/banks/${bank.id}/${bank.name}/extracts`}>
                 Ver Extractos
