@@ -6,6 +6,7 @@ import {
   Bank,
   BankExcerpt,
   BankExtractPaymentFile,
+  BookBiggerData,
   Branch,
   BranchToList,
   ConfigValues,
@@ -775,7 +776,15 @@ export async function searchByAccountBigguerBook(search: string) {
   return response.data;
 }
 //GET: Excel for bigger book
-export async function getBigguerBookinExcel({ initDate, endDate, search }: { initDate?: string, endDate?: string, search?: string }) {
+export async function getBigguerBookinExcel({
+  initDate,
+  endDate,
+  search,
+}: {
+  initDate?: string;
+  endDate?: string;
+  search?: string;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -787,7 +796,7 @@ export async function getBigguerBookinExcel({ initDate, endDate, search }: { ini
     params: {
       initDate: initDate,
       endDate: endDate,
-      search: search
+      search: search,
     },
   });
   return response.data;
@@ -1189,4 +1198,17 @@ export async function registerVoucherByDocuments(values: {
     }
   );
   return response.data;
+}
+
+export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(
+    `/api/Report/BookBiggerData/ByAccountCode/${accountCode}`
+  );
+  return response.data as BookBiggerData[];
 }
