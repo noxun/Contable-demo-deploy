@@ -46,8 +46,10 @@ import {
   Payroll,
   ResponsePayrolls,
   Salaries,
-  SchemaPayrollType, SchemaSalaryType,
+  SchemaPayrollType,
+  SchemaSalaryType,
 } from "@/modules/salaries-payrolls/types/types";
+import { RegisterVoucherByDocuments } from "./trazoTypes";
 
 function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -935,8 +937,8 @@ export async function GetPayrolls({ date }: { date: string }) {
   setAuthToken(token);
   const { data } = await api.get<ResponsePayrolls>(URLRequest, {
     params: {
-      date: date
-    }
+      date: date,
+    },
   });
   return data;
 }
@@ -947,13 +949,13 @@ export async function GetPayrollExcelByDate({ date }: { date: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/itemsExel`
+  const URLRequest = `api/SalariesAndWages/itemsExel`;
 
   setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
-      date: date
-    }
+      date: date,
+    },
   });
   return data;
 }
@@ -964,30 +966,36 @@ export async function GetPayrollById({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
 //UPDATE By Id: Payrolls
-export async function UpdatePayrollById({ id, payroll }: { id: string, payroll: Payroll }) {
+export async function UpdatePayrollById({
+  id,
+  payroll,
+}: {
+  id: string;
+  payroll: Payroll;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.put(URLRequest, payroll, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
@@ -998,7 +1006,7 @@ export async function DeletePayroll({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
@@ -1010,19 +1018,23 @@ export async function DeletePayroll({ id }: { id: string }) {
 }
 
 //GET: Items of Payrolls
-export async function GetSalariesByPayrollId({ idPayroll }: { idPayroll: string }) {
+export async function GetSalariesByPayrollId({
+  idPayroll,
+}: {
+  idPayroll: string;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items/id`
+  const URLRequest = `api/SalariesAndWages/items/id`;
 
   setAuthToken(token);
   const { data } = await api.get<Payroll>(URLRequest, {
     params: {
-      id: idPayroll
-    }
+      id: idPayroll,
+    },
   });
   return data;
 }
@@ -1033,13 +1045,13 @@ export async function GetSalariesById({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/itemsDatos/id`
+  const URLRequest = `api/SalariesAndWages/itemsDatos/id`;
 
   setAuthToken(token);
   const { data } = await api.get<Salaries>(URLRequest, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
@@ -1050,7 +1062,7 @@ export async function PostSalary({ Item }: { Item: SchemaSalaryType }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items`
+  const URLRequest = `api/SalariesAndWages/items`;
 
   setAuthToken(token);
   const { data } = await api.post(URLRequest, Item);
@@ -1063,34 +1075,39 @@ export async function DeleteSalary({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items/id`
+  const URLRequest = `api/SalariesAndWages/items/id`;
 
   setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
 //UPDATE: Items of Payrolls
-export async function UpdateSalary({ id, item }: { id: string, item: SchemaSalaryType }) {
+export async function UpdateSalary({
+  id,
+  item,
+}: {
+  id: string;
+  item: SchemaSalaryType;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items/id`
+  const URLRequest = `api/SalariesAndWages/items/id`;
 
   setAuthToken(token);
   const { data } = await api.put(URLRequest, item, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
-
 
 //Crear una a caja apartir de una cuenta
 export async function postConvertAccountToAccountingBox(accountId: string) {
@@ -1129,6 +1146,29 @@ export async function fetchPaySlipData(
   setAuthToken(token);
   const response = await api.get(
     `/api/SalariesAndWages/payment-slip/${idSalaryWages}/${datePaySlip}`
+  );
+  return response.data;
+}
+
+export async function registerVoucherByDocuments(values: {
+  data: RegisterVoucherByDocuments;
+  type: "c" | "d";
+}) {
+  const { data, type } = values;
+
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(
+    "/api/Voucher/RegisterVoucherByDocuments",
+    data,
+    {
+      params: {
+        type,
+      },
+    }
   );
   return response.data;
 }

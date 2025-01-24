@@ -156,6 +156,8 @@ export type ProcedureDataset = {
   "d-HonorariosProfesionales": string
   "d-HonorariosProfesionalesSubDatas"?: SubData[]
   fieldList: Array<any>
+  sucursal: string
+  centroCostos: string
 }
 
 export type SubData = {
@@ -163,7 +165,7 @@ export type SubData = {
   label: string
   description: string //proforma
   description2: string  //planilla
-  description3: any
+  description3: string // codigo de cuenta
   description4: any
   description5: any
   refVoucherEgressId: any
@@ -176,4 +178,18 @@ export type SubData = {
   recibo: boolean
   creationDate: string
   endDate: any
+}
+
+export type RegisterVoucherByDocuments = {
+  sucursal: string
+  centroCostos: string
+  internCode: string
+  companyRazonSocial: string
+  userId?: number
+  items: Array<{
+    description: string
+    description2: string
+    description3: string
+    recibo: boolean
+  }>
 }
