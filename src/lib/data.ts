@@ -51,7 +51,7 @@ import {
 } from "@/modules/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
 
-function setAuthToken(token: string | undefined | null) {
+export function setAuthToken(token: string | undefined | null) {
   if (token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
