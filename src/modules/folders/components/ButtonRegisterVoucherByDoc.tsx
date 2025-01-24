@@ -35,7 +35,7 @@ export default function ButtonRegisterVoucherByDoc({
 
   const handleClick = () => {
     const itemsToRegister = items.filter(
-      (subData) => subData.recibo && subData.description2
+      (subData) => !subData.recibo && subData.description2
     );
     // solo subdatas con recibo true
     const finalData = {
