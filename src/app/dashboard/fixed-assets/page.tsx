@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label"
 import { deleteFixedAsset, getAllFixedAssets, getAllFixedAssetsExcelByDate } from "@/lib/data"
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog"
 import { DialogAssetDetail } from "@/modules/fixed-assets/components/DialogAssetDetail"
+import DialogNewFixedAssetItem from "@/modules/fixed-assets/components/DialogNewFixedAssetItem"
 import { formatNumber } from "@/modules/shared/utils/validate"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
@@ -172,6 +173,7 @@ function FixedAssetPage() {
           <SheetIcon />
           Descargar excel
         </Button>
+        <DialogNewFixedAssetItem/>
       </div>
 
       {
