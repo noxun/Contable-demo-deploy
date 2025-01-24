@@ -76,7 +76,7 @@ function SalariesPage() {
       cell: ({ row }: any) => formatNumber(row.original.loan),
     },
     {
-      header: "Capacitación Excel",
+      header: "Capacitaciones",
       accessorKey: "exelTrainingCorse",
       cell: ({ row }: any) => formatNumber(row.original.exelTrainingCorse),
     },

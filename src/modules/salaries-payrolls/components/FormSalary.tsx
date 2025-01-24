@@ -49,7 +49,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
     },
     onError: (e) => {
       toast.error("Error al crear el registro");
-      console.error(e)
+      console.error("Error al crear el registro: ", e)
     }
   })
 
@@ -139,7 +139,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
             control={formSalary.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Curso de capacitacion en excel: </FormLabel>
+                <FormLabel>Cursos de capacitacion: </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
