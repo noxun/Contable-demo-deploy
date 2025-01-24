@@ -39,7 +39,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { getApiReportExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { ReportPaths } from "@/modules/shared/utils/validate";
+import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { useDebounce } from "use-debounce";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { SearchComponent } from "@/modules/shared/components/SearchComponent";
@@ -215,8 +215,11 @@ const AccountSection = () => {
       accessorKey: "gloss",
       cell: ({ row }: any) => row.original.gloss || "sin glosa",
     },
-    { header: "Debe Bs", accessorKey: "debitBs" },
-    { header: "Haber Bs", accessorKey: "assetBs" },
+    { header: "Hoja Ruta", accessorKey: "hojaDeRuta" },
+    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
+    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
+    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }: any) => formatNumber( row.original.debitBs)},
+
     // { header: "Debe Sus", accessorKey: "debitSus" },
     // { header: "Haber Sus", accessorKey: "assetSus" },
     {
@@ -358,6 +361,7 @@ const AccountSection = () => {
             <AccountTotals
               totalDebit={currentAccount.totalDebit}
               totalAsset={currentAccount.totalAsset}
+              totalSaldo={currentAccount.totalSaldoNum}
             />
           </div>
 
@@ -539,19 +543,25 @@ const AccountNavigation = ({
 const AccountTotals = ({
   totalDebit,
   totalAsset,
+  totalSaldo,
 }: {
   totalDebit: number;
   totalAsset: number;
+  totalSaldo: number;
 }) => {
   return (
     <div className="flex justify-end gap-6 p-4 bg-gray-50 rounded-lg">
       <div className="text-right">
         <p className="text-sm text-gray-600">Total Debe:</p>
-        <p className="text-lg font-bold">{totalDebit.toFixed(2)}</p>
+        <p className="text-lg font-bold">{formatNumber(totalDebit)}</p>
       </div>
       <div className="text-right">
         <p className="text-sm text-gray-600">Total Haber:</p>
-        <p className="text-lg font-bold">{totalAsset.toFixed(2)}</p>
+        <p className="text-lg font-bold">{formatNumber(totalAsset)}</p>
+      </div>
+      <div className="text-right">
+        <p className="text-sm text-gray-600">Total Saldo</p>
+        <p className="text-lg font-bold">{formatNumber(totalSaldo)}</p>
       </div>
     </div>
   );
