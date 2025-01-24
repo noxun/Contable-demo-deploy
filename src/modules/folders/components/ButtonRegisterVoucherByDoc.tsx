@@ -25,7 +25,7 @@ export default function ButtonRegisterVoucherByDoc({
   const registerVoucherByDocumentMutation = useMutation({
     mutationFn: registerVoucherByDocuments,
     onSuccess: () => {
-      toast.error("Asiento registrado correctamente");
+      toast.success("Asiento registrado correctamente");
     },
     onError: (error: AxiosError) => {
       console.log("Error al registrar asiento", error);
