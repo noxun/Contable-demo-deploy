@@ -114,9 +114,6 @@ export function BiggerBookTemplate({
   return (
     <Document>
       {records.map((record) => {
-        let saldo = 0;
-        let totalDebit = 0;
-        let totalAsset = 0;
         return (
           <Page key={record.accountCode} size={"LETTER"} style={styles.page} wrap>
             <View>
@@ -227,10 +224,6 @@ export function BiggerBookTemplate({
                 </Text>
               </View>
               {record.voucherItems.map((item, index) => {
-                saldo = Number(item[saldoType]);
-                totalDebit += Number(item[debitType]);
-                totalAsset += Number(item[assetType]);
-
                 return (
                   <View style={styles.trCell} key={item.accountId}>
                     <Text style={[styles.col10, styles.tdCell]}>
@@ -292,7 +285,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(totalDebit)}
+                  {formatNumber(record.totalDebit)}
                 </Text>
                 <Text
                   style={[
@@ -301,7 +294,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(totalAsset)}
+                  {formatNumber(record.totalAsset)}
                 </Text>
                 <Text
                   style={[
@@ -310,7 +303,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(saldo)}
+                  {formatNumber(record.totalSaldoNum)}
                 </Text>
               </View>
               <View style={[styles.trCell, { borderTopWidth: 1 }]}>
