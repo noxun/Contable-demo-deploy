@@ -760,7 +760,7 @@ export async function getApiReportExcel(
   });
   return response.data;
 }
-
+//BIGGER BOOK
 export async function searchByAccountBigguerBook(search: string) {
   let token;
   if (typeof window !== "undefined") {
@@ -771,6 +771,24 @@ export async function searchByAccountBigguerBook(search: string) {
   setAuthToken(token);
   const response = await api.get(URLRequest, {
     params: { search },
+  });
+  return response.data;
+}
+//GET: Excel for bigger book
+export async function getBigguerBookinExcel({ initDate, endDate, search }: { initDate?: string, endDate?: string, search?: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  const URLRequest = `/api/Report/BookBigguerDataExel`;
+
+  setAuthToken(token);
+  const response = await api.get(URLRequest, {
+    params: {
+      initDate: initDate,
+      endDate: endDate,
+      search: search
+    },
   });
   return response.data;
 }

@@ -295,25 +295,22 @@ const AccountSection = () => {
         </div>
       </div>
 
-      {currentAccount && (
+      {(currentAccount) && (
         <>
-          {
-            accountDate?.from && accountDate.to && (
-              <div className="flex items-center gap-4">
-                <ReportGenerateBiggerBook
-                  data={currentAccounts}
-                  dateRange={accountDate}
-                  setFile={setFile}
-                  inSus={inSus}
-                />
-                <ReportExcelGenerate
-                  dateRange={accountDate}
-                  typeFile={ReportPaths.BookBigger}
-                  inSus={inSus}
-                />
-              </div>
-            )
-          }
+          <div className="flex items-center gap-4">
+            <ReportGenerateBiggerBook
+              data={currentAccounts}
+              dateRange={accountDate}
+              setFile={setFile}
+              inSus={inSus}
+            />
+            <ReportExcelGenerate
+              dateRange={accountDate}
+              search={searchDescription}
+              inSus={inSus}
+            />
+          </div>
+
           {/* <DownloadSingleAccountReportButton data={currentAccount} /> */}
           {file !== null && (
             <div style={{ height: "500px" }}>
