@@ -10,7 +10,7 @@ export function columns(procedureId: number): ColumnDef<SubData>[] {
   return [
     {
       accessorKey: "label",
-      header: "Label",
+      header: "Nombre",
     },
     {
       accessorKey: "recibo",

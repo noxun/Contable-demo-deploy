@@ -25,7 +25,8 @@ export const columns: ColumnDef<TrazoInternCode>[] = [
       return (
         <div>
           <DialogPayroll procedureId={payroll.procedureId}/>
-          <SheetDataset procedureId={payroll.procedureId}/>
+          <SheetDataset procedureId={payroll.procedureId} value={payroll.value}/>
+          {/* value is the internCode */}
         </div>
       )
     }

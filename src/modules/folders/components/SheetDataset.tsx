@@ -15,9 +15,10 @@ import { Coins } from "lucide-react";
 
 type SheetDatasetProps = {
   procedureId: number;
+  value: string;
 };
 
-export default function SheetDataset({ procedureId }: SheetDatasetProps) {
+export default function SheetDataset({ procedureId, value }: SheetDatasetProps) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -39,13 +40,13 @@ export default function SheetDataset({ procedureId }: SheetDatasetProps) {
       </SheetTrigger>
       <SheetContent className="min-w-[50%] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Datasets</SheetTitle>
-          <SheetDescription>Datasets de la planilla</SheetDescription>
+          <SheetTitle>Planillaje y Facturacion Contable</SheetTitle>
+          <SheetDescription>Datos de la planilla</SheetDescription>
         </SheetHeader>
         {isLoading || procedureDataset === undefined ? (
           <div>Cargando...</div>
         ) : (
-          <ProcedureTablesList procedureDataset={procedureDataset} />
+          <ProcedureTablesList procedureDataset={procedureDataset} value={value}/>
         )}
       </SheetContent>
     </Sheet>
