@@ -10,12 +10,14 @@ type EditVoucherProps = {
   id: string;
   type: VoucherType;
   accountDate?: string; //para invalidar la query
+  accountCode?: string; //para invalidar la query x2
 };
 
 export default function EditVoucher({
   id,
   type,
   accountDate,
+  accountCode
 }: EditVoucherProps) {
   const { token, isTokenReady } = useToken();
 
@@ -57,6 +59,7 @@ export default function EditVoucher({
         type={type}
         voucher={editVoucherQuery!.data!}
         accountDate={accountDate}
+        accountCode={accountCode}
       />
     </div>
   );
