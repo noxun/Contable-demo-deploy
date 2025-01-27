@@ -14,6 +14,7 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
 import { AccountingBox } from "@/lib/types";
 import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/BiggerBookByAccountCodeDialog";
+import BiggerBookTable from "@/modules/bigger-book/components/BiggerBookTableByAccountCode";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<
@@ -110,7 +111,8 @@ const AccountingBoxPage = () => {
       ) : (
         <div className="flex flex-col gap-4">
           <BiggerBookByAccountCodeDialog accountCode={selectedAccountingBox.account.code}/>
-          <DataTable data={filteredData} columns={columns} />
+          <BiggerBookTable accountCode={selectedAccountingBox.account.code} />
+          {/* <DataTable data={filteredData} columns={columns} /> */}
         </div>
       )}
     </div>
