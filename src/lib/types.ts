@@ -36,6 +36,7 @@ export type User = {
   photoUrl: any;
   creationDate: string;
   lastActive: string;
+  rolName: string;
 };
 
 export type Ufv = {

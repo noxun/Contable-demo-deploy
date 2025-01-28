@@ -7,6 +7,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +41,7 @@ const registerSchema = z.object({
   fatherLastName: z.string(),
   motherLastName: z.string(),
   appCode: z.string(),
+  rolName: z.string(),
   rols: z.array(
     z.object({
       rolId: z.number(),
@@ -57,7 +65,10 @@ export default function Register() {
     mutationFn: registerUser,
     onError: (error: AxiosError) => {
       console.log(error);
-      toast.error(error?.response?.data as string ?? "Hubo un error al registrar el usuario");
+      toast.error(
+        (error?.response?.data as string) ??
+          "Hubo un error al registrar el usuario"
+      );
     },
     onSuccess: () => {
       toast.success("Usuario registrado correctamente");
@@ -82,6 +93,7 @@ export default function Register() {
       fatherLastName: "",
       motherLastName: "",
       appCode: "",
+      rolName: "",
       rols: [],
     },
   });
@@ -235,6 +247,30 @@ export default function Register() {
               </FormItem>
             )}
           />
+          <FormField
+            control={registerForm.control}
+            name="rolName"
+            render={({ field }) => (
+              <FormItem className="col-span-3">
+                <FormLabel>Rol</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Rol" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <div className="flex col-span-3 gap-4">
             <h2 className="font-semibold ">Roles</h2>
@@ -249,10 +285,7 @@ export default function Register() {
               </div>
             ))}
           </div>
-          <Button
-            type="submit"
-            className="col-start-3 col-end-4"
-          >
+          <Button type="submit" className="col-start-3 col-end-4">
             Registrar
           </Button>
         </form>
