@@ -8,9 +8,10 @@ import { FormSalary } from "./FormSalary";
 
 interface Props {
   idItem: string
+  buttonElement?: JSX.Element
 }
 
-export const SalaryDialogEdit = ({ idItem }: Props) => {
+export const SalaryDialogEdit = ({ idItem, buttonElement }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: ItemSelected } = useQuery({
@@ -19,7 +20,6 @@ export const SalaryDialogEdit = ({ idItem }: Props) => {
       return GetSalariesById({ id: idItem })
     }
   })
-  console.log('el vamos a editar es: ', ItemSelected)
 
   const handleClose = () => {
     setIsOpen(false);
@@ -28,14 +28,18 @@ export const SalaryDialogEdit = ({ idItem }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="size-10 p-2 text-blue-500 rounded-full"
-          aria-label="Actualizar"
-          title="Actualizar"
-        >
-          <FilePenLineIcon />
-        </Button>
+        {
+          buttonElement || (
+            <Button
+              variant="outline"
+              className="size-10 p-2 text-blue-500 rounded-full"
+              aria-label="Actualizar"
+              title="Actualizar"
+            >
+              <FilePenLineIcon />
+            </Button>
+          )
+        }
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

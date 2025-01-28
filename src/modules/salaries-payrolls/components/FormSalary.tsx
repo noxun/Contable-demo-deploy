@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SaveIcon } from "lucide-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { PostSalary } from "@/lib/data"
+import { PostSalary, UpdateSalary } from "@/lib/data"
 import { toast } from "sonner"
 
 interface Props {
@@ -20,7 +20,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
   const queryClient = useQueryClient()
 
   const defaultValuesItem = {
-    salariesAndwagesId: idPayroll,
+    salariesAndwagesId: itemForEdit?.salariesAndwagesId.toString() ?? '',
     productionBonus: itemForEdit?.productionBonus.toString() ?? '0',
     extraTimeMinutes: itemForEdit?.extraTimeMinutes.toString() ?? '0',
     valueForOvertime: itemForEdit?.valueForOvertime.toString() ?? '0',
@@ -43,6 +43,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
       onClose();
       formSalary.reset();
       queryClient.invalidateQueries({ queryKey: ['AllSalaries'] })
+      queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
     },
     onMutate: () => {
       toast("creando registro...");
@@ -53,8 +54,28 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
     }
   })
 
+  const updateMutation = useMutation({
+    mutationFn: UpdateSalary,
+    onSuccess: () => {
+      toast.success("Registro actualizado correctamente!");
+      onClose();
+      formSalary.reset();
+      queryClient.invalidateQueries({ queryKey: ['SalaryEdit'] })
+      queryClient.invalidateQueries({ queryKey: ['AllSalaries'] })
+      queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
+    },
+    onMutate: () => {
+      toast("actualizando registro...");
+    },
+    onError: (e) => {
+      toast.error("Error al actualizar el registro");
+      console.error("Error al actualizar el registro: ", e)
+    }
+  })
+
   const onSubmit = (data: SchemaSalaryType) => {
-    createMutation.mutate({ Item: data })
+    if (itemForEdit?.id) return updateMutation.mutate({ item: data, id: idPayroll.toString() })
+    return createMutation.mutate({ Item: data })
   }
 
   return (

@@ -5,9 +5,10 @@ import { FormSalary } from "./FormSalary";
 
 interface Props {
   idPayroll: string
+  buttonElement?: JSX.Element
 }
 
-export const SalaryFormDialog = ({ idPayroll }: Props) => {
+export const SalaryFormDialog = ({ idPayroll, buttonElement }: Props) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,7 +20,7 @@ export const SalaryFormDialog = ({ idPayroll }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Nuevo Registro</Button>
+        {buttonElement || <Button>Crear Registro</Button>}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
