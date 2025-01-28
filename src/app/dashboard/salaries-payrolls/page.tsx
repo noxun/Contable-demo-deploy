@@ -1,8 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
 import { Label } from "@/components/ui/label";
-import { DeletePayroll, GetPayrollById, GetPayrollExcelByDate, GetPayrolls } from "@/lib/data";
+import { DeletePayroll, GetPayrollExcelByDate, GetPayrollsAndSalaries } from "@/lib/data";
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog";
 import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
 import { PayrollsDialogForm } from "@/modules/salaries-payrolls/components/PayrollsDialogForm";
@@ -10,11 +9,14 @@ import PaySlipDialog from "@/modules/salaries-payrolls/components/PaySlipDialog"
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { EyeIcon, SheetIcon } from "lucide-react";
+import { CircleDollarSignIcon, EyeIcon, HandCoinsIcon, SheetIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { SalaryDialogEdit } from "@/modules/salaries-payrolls/components/SalaryDialogEdit";
+import { DataTablePayrollsSalaries } from "@/modules/salaries-payrolls/components/TablePayrolls";
+import { SalaryFormDialog } from "@/modules/salaries-payrolls/components/SalaryFormDialog";
 
 function SalariesPayrollsPage() {
 
@@ -24,7 +26,7 @@ function SalariesPayrollsPage() {
   const { data: listPayrolls } = useQuery({
     queryKey: ['AllPayrolls', selectedDate],
     queryFn: () => {
-      return GetPayrolls({ date: selectedDate });
+      return GetPayrollsAndSalaries({ date: selectedDate });
     }
   })
 
@@ -113,11 +115,104 @@ function SalariesPayrollsPage() {
       cell: ({ row }: any) => formatNumber(row.original.internalPayrollSalary),
     },
     {
+      header: "Bono Antiguedad",
+      accessorKey: "bonusAntiquity",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].bonusAntiquity : 0),
+    },
+    {
+      header: "Bono produccion",
+      accessorKey: "productionBonus",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].productionBonus : 0),
+    },
+    {
+      header: "Tiempo extra \n (minutos)",
+      accessorKey: "extraTimeMinutes",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].extraTimeMinutes : 0),
+    },
+    {
+      header: "Valor horas extras",
+      accessorKey: "valueForOvertime",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].valueForOvertime : 0),
+    },
+    {
+      header: "Total ganado",
+      accessorKey: "totalGanado",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].totalGanado : 0),
+    },
+    {
+      header: "AFP",
+      accessorKey: "afp",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].afp : 0),
+    },
+    {
+      header: "Prestamo",
+      accessorKey: "loan",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].loan : 0),
+    },
+    {
+      header: "Cursos capacitacion",
+      accessorKey: "exelTrainingCorse",
+      cell: ({ row }: any) => row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].exelTrainingCorse : 0,
+    },
+    {
+      header: "Multa ANB",
+      accessorKey: "anbFineSettlement",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].anbFineSettlement : 0),
+    },
+    {
+      header: "A cuenta",
+      accessorKey: "onAccount",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].onAccount : 0),
+    },
+    {
+      header: "Retrasos",
+      accessorKey: "dsctoShirtDelays",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].dsctoShirtDelays : 0),
+    },
+    {
+      header: "Liquido pagable",
+      accessorKey: "liquidPayable",
+      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].liquidPayable : 0),
+    },
+    {
       header: "Acciones",
       cell: ({ row }: any) => {
         const idPayroll = row.original.id
+        const createDisabled = row.original.salariesAndWagesItems[0] && row.original.salariesAndWagesItems[0].id.toString()
         return (
           <div className="flex items-center justify-center gap-1">
+            <div className={`${createDisabled ? "hidden" : "block"}`}>
+              <SalaryFormDialog
+                idPayroll={row.original.id.toString()}
+                buttonElement={
+                  <Button
+                    disabled={row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].liquidPayable : false}
+                    variant="outline"
+                    size="icon"
+                    className="p-1 text-blue-500 rounded-full"
+                    aria-label="Pagar Salario"
+                    title="Pagar Salario"
+                  >
+                    <CircleDollarSignIcon />
+                  </Button>
+                }
+              />
+            </div>
+            <div className={`${createDisabled ? "block" : "hidden"}`}>
+              <SalaryDialogEdit
+                idItem={row.original.salariesAndWagesItems[0] && row.original.salariesAndWagesItems[0].id.toString()}
+                buttonElement={
+                  <Button
+                    variant="outline"
+                    className="size-10 p-2 text-blue-500 rounded-full"
+                    aria-label="Actualizar Salario"
+                    title="Actualizar Salario"
+                  >
+                    <HandCoinsIcon />
+                  </Button>
+                }
+              />
+            </div>
             <PaySlipDialog
               idSalaryWages={idPayroll}
               datePaySlip={(new Date()).toISOString()}
@@ -142,7 +237,7 @@ function SalariesPayrollsPage() {
               id={row.original.id}
               onDelete={deleteMutation.mutate}
             />
-          </div>
+          </div >
         )
       },
     },
@@ -177,24 +272,49 @@ function SalariesPayrollsPage() {
       {
         listPayrolls && (
           <>
-            <div>
-              <DataTable
+            <div className="flex justify-start pb-3">
+              <DataTablePayrollsSalaries
+                filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}
                 data={listPayrolls.listSalariesWages}
               />
             </div>
-            <div className="flex justify-end gap-6 py-4 px-6 bg-gray-50 rounded-lg">
-              {
-                [
-                  { label: "Salario Fiscal", value: listPayrolls.salaryTaxReturnTotal },
-                  { label: "Salario interno", value: listPayrolls.internalPayrollSalaryTotal },
-                ].map((item) => (
-                  <div key={item.label} className="text-start">
-                    <p className="text-sm text-gray-600">{item.label}</p>
-                    <p className="text-lg font-bold">{formatNumber(item.value)}</p>
-                  </div>
-                ))
-              }
+            <div className="flex flex-col justify-end gap-2 py-4 rounded-lg text-[#64748b]">
+              <h2 className="text-lg font-bold">RESULTADOS</h2>
+              <ul className="grid sm:grid-cols-2 grid-cols-1 gap-2 sm:gap-4">
+                <li>
+                  <fieldset className="border-2 rounded-xl p-2">
+                    <legend>Salarios</legend>
+                    <p><span className="font-semibold ">Salario fiscal:  </span>{formatNumber(listPayrolls.salaryTaxReturnTotal)}</p>
+                    <p><span className="font-semibold ">Salario interno:  </span>{formatNumber(listPayrolls.internalPayrollSalaryTotal)}</p>
+                  </fieldset>
+                </li>
+                <li>
+                  <fieldset className="border-2 rounded-xl p-2">
+                    <legend>Bonos</legend>
+                    <p><span className="font-semibold ">Bonos de antiguedad: </span>{formatNumber(listPayrolls.bonusAntiquityTotal)}</p>
+                    <p><span className="font-semibold ">Bonos de produccion: </span>{formatNumber(listPayrolls.productionBonus)}</p>
+                  </fieldset>
+                </li>
+                <li>
+                  <fieldset className="border-2 rounded-xl p-2">
+                    <legend>Deducciones</legend>
+                    <p><span className="font-semibold ">AFP: </span>{formatNumber(listPayrolls.afpTotal)}</p>
+                    <p><span className="font-semibold ">Prestamos: </span>{formatNumber(listPayrolls.loanTotal)}</p>
+                    <p><span className="font-semibold ">Cursos de capacitacion: </span>{listPayrolls.exelTrainingCorseTotal}</p>
+                    <p><span className="font-semibold ">Multas ANB: </span>{formatNumber(listPayrolls.anbFineSettlementTotal)}</p>
+                    <p><span className="font-semibold ">Retrasos: </span>{formatNumber(listPayrolls.dsctoShirtDelaysTotal)}</p>
+                  </fieldset>
+                </li>
+                <li>
+                  <fieldset className="border-2 rounded-xl p-2">
+                    <legend>Totales</legend>
+                    <p><span className="font-semibold ">Total ganado: </span>{formatNumber(listPayrolls.totalGanadoT)}</p>
+                    <p><span className="font-semibold ">A cuenta: </span>{formatNumber(listPayrolls.onAccountTotal)}</p>
+                    <p><span className="font-semibold ">Liquido pagable: </span>{formatNumber(listPayrolls.liquidPayableTotal)}</p>
+                  </fieldset>
+                </li>
+              </ul>
             </div>
           </>
         )
