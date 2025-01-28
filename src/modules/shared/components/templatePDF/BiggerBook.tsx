@@ -12,6 +12,7 @@ import {
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { formatNumber } from "../../utils/validate";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 type BiggerBookTemplateProps = {
   dateRange?: DateRange;
@@ -119,7 +120,7 @@ export function BiggerBookTemplate({
             <View>
               <Image
                 style={styles.imageOutOfBounds}
-                src="/images/tradecruz_logo.png"
+                src={REPORTS_LOGO_URL}
               />
             </View>
             <Text

@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select";
 import useBiggerBookDataByAccountCode from "@/modules/shared/hooks/useBiggerBookDataByAccountCode";
 import EditVoucherDialog from "@/modules/shared/components/EditVoucherDialog";
+import { useState } from "react";
+import useUserStore from "@/lib/userStore";
 
 type BookBiggerData = {
   accountCode: string;
@@ -69,12 +71,11 @@ interface BiggerBookTableProps {
 }
 
 export const BiggerBookTable = ({ accountCode }: BiggerBookTableProps) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const loginData = useUserStore((state) => state.loginData);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const {
     data: bookData,
@@ -151,12 +152,18 @@ export const BiggerBookTable = ({ accountCode }: BiggerBookTableProps) => {
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <EditVoucherDialog
-            id={item.voucherId}
-            type={item.type}
-            accountCode={accountCode}
-            // accountDate={new Date().toISOString()}
-          />
+          <>
+            {loginData?.user.rolName === "admin" ? (
+              <EditVoucherDialog
+                id={item.voucherId}
+                type={item.type}
+                accountCode={accountCode}
+                // accountDate={new Date().toISOString()}
+              />
+            ) : (
+              <div>No autorizado</div>
+            )}
+          </>
         );
       },
     },

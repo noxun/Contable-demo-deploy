@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
@@ -59,7 +60,7 @@ export default function AccountDetailsDollarsPdf({
         <View style={tw("w-[207px]")}>
           <View style={tw("flex items-center")}>
             <Image
-              source="/images/tradecruz_logo.png"
+              source={REPORTS_LOGO_URL}
               style={{ height: 57, width: 207 }}
             />
             <Text>NIT 3754820020</Text>

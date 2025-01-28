@@ -27,6 +27,7 @@ import { es, is } from "date-fns/locale";
 import { numberWithDecimals } from "../utils/validate";
 import useNumberToLiteral from "../hooks/useNumberToLiteral";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 const tw = createTw({
   theme: {
@@ -114,7 +115,7 @@ export default function PdfVoucher({
               <View style={tw("w-[207px]")}>
                 <View style={tw("flex items-center")}>
                   <Image
-                    source="/images/tradecruz_logo.png"
+                    source={REPORTS_LOGO_URL}
                     style={{ height: 57, width: 207 }}
                   />
                   <Text>NIT 3754820020</Text>

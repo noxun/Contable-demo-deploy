@@ -2,6 +2,7 @@
 "use client"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { formatNumber } from "../../utils/validate";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 const styles = StyleSheet.create({
   page: {
@@ -121,7 +122,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange }: Pr
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            src="/images/tradecruz_logo.png"
+            src={REPORTS_LOGO_URL}
           />
         </View>
 
