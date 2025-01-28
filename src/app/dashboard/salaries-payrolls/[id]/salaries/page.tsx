@@ -145,9 +145,9 @@ function SalariesPage() {
                   <p><span className="font-semibold">Salario planilla interna: </span>{formatNumber(listSalaries?.internalPayrollSalary)} Bs</p>
                 </div>
               </fieldset>
-              <div className="col-span-5 lg:col-span-1 flex justify-start lg:justify-end items-center">
+              {/* <div className="col-span-5 lg:col-span-1 flex justify-start lg:justify-end items-center">
                 <SalaryFormDialog idPayroll={id.toString()} />
-              </div>
+              </div> */}
             </div>
 
             <div className="max-w-full">
