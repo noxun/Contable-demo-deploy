@@ -1229,3 +1229,28 @@ export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
   );
   return response.data as BookBiggerData[];
 }
+
+//REPORT
+//XlslData / ${reporte}
+type PathReport = 'balanceGeneral' | 'balanceDeSumas' | 'estadoDeResultado'
+type LevelData = 6 | 5 | 4 | 3 | 2 | 1
+export async function getAllDataReportByType({ iDate, eDate, typePath, level }: { iDate: string, eDate: string, typePath: PathReport, level?: LevelData }) {
+
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(
+    `/api/Report/XlxsData/${typePath}`,
+    {
+      params: {
+        InitDate: iDate,
+        EndDate: eDate,
+        Level: level
+      }
+    }
+  );
+  return response.data;
+}
