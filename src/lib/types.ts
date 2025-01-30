@@ -419,23 +419,25 @@ export type BookBiggerData = {
   totalSaldoText: string
   totalSaldoTextSus: string
   literal: any
-  voucherItems: Array<{
-    id: number
-    debitBs: number
-    debitSus: number
-    assetBs: number
-    assetSus: number
-    totalSaldoBs: number
-    totalSaldoSus: number
-    gloss: string
-    accountId: number
-    code: string
-    description: string
-    typeOfExpense: any
-    createdAt: string
-    voucherId: number
-    type: number
-    typeDes: string
-    hojaDeRuta?: string
-  }>
+  voucherItems: BookBiggerDataVoucherItem[]
+}
+
+export type BookBiggerDataVoucherItem = {
+  id: number
+  debitBs: number
+  debitSus: number
+  assetBs: number
+  assetSus: number
+  totalSaldoBs: number
+  totalSaldoSus: number
+  gloss: string
+  accountId: number
+  code: string
+  description: string
+  typeOfExpense: any
+  createdAt: string
+  voucherId: number
+  type: number
+  typeDes: string
+  hojaDeRuta?: string
 }
