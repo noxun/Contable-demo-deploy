@@ -3,6 +3,7 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { formatNumber } from "../../utils/validate";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 export interface ReportDiaryBook {
   report: DiaryBook[];
@@ -139,7 +140,7 @@ export const DiaryBookTemplate = ({
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            source={'/images/noxun.png'}
+            source={REPORTS_LOGO_URL}
           />
         </View>
         <View style={{ display: "flex", textAlign: "center", gap: 2, paddingBottom: 5, paddingTop: 20 }}>

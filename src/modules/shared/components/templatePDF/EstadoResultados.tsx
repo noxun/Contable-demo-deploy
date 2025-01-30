@@ -2,6 +2,7 @@
 "use client"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { formatNumber } from "../../utils/validate";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 const styles = StyleSheet.create({
   page: {
@@ -128,7 +129,7 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
         <View>
           <Image
             style={styles.imageOutOfBounds}
-            src="/images/noxun.png"
+            src={REPORTS_LOGO_URL}
           />
         </View>
 

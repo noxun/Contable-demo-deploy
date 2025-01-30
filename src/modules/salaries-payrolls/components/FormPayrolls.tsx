@@ -6,7 +6,6 @@ import { Payroll, SchemaPayrollType } from '../types/types.d'
 import { SchemaPayroll } from "../schemas/shema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DatePickerField } from "@/modules/fixed-assets/components/DatePickerField";
 import { Button } from "@/components/ui/button";
 import { SaveIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -88,7 +87,7 @@ export const FormPayrolls = ({ onClose, payroll }: Props) => {
               <FormItem>
                 <FormLabel>Fecha de ingreso</FormLabel>
                 <FormControl>
-                  <DatePickerField className="w-[200px]" onChange={field.onChange} value={field.value} />
+                  <Input type="date" {...field} />
                 </FormControl>
               </FormItem>
             )}

@@ -1,5 +1,7 @@
 import { PaySlip } from "@/lib/types";
+import { formatNumber } from "@/modules/shared/utils/validate";
 import { Document, Page, Text, View } from "@react-pdf/renderer";
+import { format } from "date-fns";
 import { createTw } from "react-pdf-tailwind";
 
 type PaySlipDocumentProps = {
@@ -26,36 +28,36 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
         <View style={tw("flex flex-row")}>
           <View style={tw("w-[50%]")}>
             <View style={tw("flex flex-row")}>
-              <Text style={{ fontFamily: "Helvetica-Bold" }}>NOMBRE:</Text>
+              <Text style={{ fontFamily: "Helvetica-Bold", paddingRight: 2 }}>NOMBRE:</Text>
               <Text>{data.nameEmployee ?? ""}</Text>
             </View>
             <View style={tw("flex flex-row")}>
-              <Text style={{ fontFamily: "Helvetica-Bold" }}>CARGO:</Text>
+              <Text style={{ fontFamily: "Helvetica-Bold", paddingRight: 2 }}>CARGO:</Text>
               <Text>{data.position ?? ""}</Text>
             </View>
             <View style={tw("flex flex-row")}>
-              <Text style={{ fontFamily: "Helvetica-Bold" }}>F-INGRESO:</Text>
-              <Text>{data.dateIncome ?? ""}</Text>
+              <Text style={{ fontFamily: "Helvetica-Bold", paddingRight: 2 }}>F-INGRESO:</Text>
+              <Text>{format(data.dateIncome, "dd/MM/yyyy") ?? ""}</Text>
             </View>
           </View>
           <View style={tw("w-[50%]")}>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 SUELDO BÁSICO:
               </Text>
-              <Text>{data.salary ?? ""}</Text>
+              <Text>{formatNumber(data.salary) ?? ""}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 DIAS TRABAJADOS:
               </Text>
               <Text>{data.daysWorked ?? ""}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>MES:</Text>
               <Text>{data.month ?? ""}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>ANTIGÜEDAD:</Text>
               <Text>{data.antique ?? ""}</Text>
             </View>
@@ -77,31 +79,31 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
             >
               INGRESOS
             </Text>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pr-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 SALARIO BÁSICO
               </Text>
-              <Text>{data.income.salary}</Text>
+              <Text>{formatNumber(data.income.salary)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pr-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>ANTIGUEDAD</Text>
-              <Text>{data.income.antique}</Text>
+              <Text>{formatNumber(data.income.antique)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pr-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>HORAS EXTRA</Text>
-              <Text>{data.income.overtime}</Text>
+              <Text>{formatNumber(data.income.overtime)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pr-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 COMISIONES U OTROS PAGOS
               </Text>
-              <Text>{data.income.comminOtherPay}</Text>
+              <Text>{formatNumber(data.income.comminOtherPay)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pr-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 TOTAL INGRESOS
               </Text>
-              <Text>{data.income.total}</Text>
+              <Text>{formatNumber(data.income.total)}</Text>
             </View>
           </View>
           <View style={tw("w-[50%]")}>
@@ -110,33 +112,34 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
                 fontFamily: "Helvetica-Bold",
                 backgroundColor: "#d1cece",
                 textDecoration: "underline",
+                paddingLeft: 6,
               }}
             >
               EGRESOS
             </Text>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>AFP</Text>
-              <Text>{data.egress.afps}</Text>
+              <Text>{formatNumber(data.egress.afps)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>PRESTAMOS</Text>
-              <Text>{data.egress.loans}</Text>
+              <Text>{formatNumber(data.egress.loans)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>ANTICIPOS</Text>
-              <Text>{data.egress.advances}</Text>
+              <Text>{formatNumber(data.egress.advances)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 OTROS DESCUENTOS
               </Text>
-              <Text>{data.egress.otherDcts}</Text>
+              <Text>{formatNumber(data.egress.otherDcts)}</Text>
             </View>
-            <View style={tw("flex flex-row justify-between")}>
+            <View style={tw("flex flex-row justify-between pl-2")}>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>
                 TOTAL EGRESOS
               </Text>
-              <Text>{data.egress.total}</Text>
+              <Text>{formatNumber(data.egress.total)}</Text>
             </View>
           </View>
         </View>
@@ -145,7 +148,7 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
           <Text style={{ fontFamily: "Helvetica-Bold" }}>
             LIQUIDO PAGABLE (I-E)
           </Text>
-          <Text>{data.liquidPayable}</Text>
+          <Text>{formatNumber(data.liquidPayable)}</Text>
         </View>
         {/* Fecha actual */}
         <View style={tw("w-full")}>

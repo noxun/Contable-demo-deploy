@@ -1,9 +1,11 @@
 import axios from "axios";
 import { PaymentRoll, ProcedureDataset } from "./trazoTypes";
 
+const trazoUrl = process.env.NEXT_PUBLIC_TRAZO_URL;
+
 export async function generatePayroll(procedureId: number) {
   const response = await axios.get(
-    `https://trazo.tradecruz.com:8282/api/Tradecruz/${procedureId}/payroll`
+    `${trazoUrl}/api/Tradecruz/${procedureId}/payroll`
   );
   return response.data as PaymentRoll;
 }
@@ -26,7 +28,7 @@ export async function fetchProcedureDataset(procedureId: number) {
     .map((fieldname) => `fieldnames=${encodeURIComponent(fieldname)}`)
     .join("&");
 
-  const url = `https://trazo.tradecruz.com:8282/api/Procedure/${procedureId}/dataValues?${serializedFieldnames}`;
+  const url = `${trazoUrl}/api/Procedure/${procedureId}/dataValues?${serializedFieldnames}`;
 
   const response = await axios.get(url);
   return response.data as ProcedureDataset;
@@ -34,7 +36,7 @@ export async function fetchProcedureDataset(procedureId: number) {
 
 export async function changeReceiptStatus(subDataId: number) {
   const response = await axios.put(
-    `https://trazo.tradecruz.com:8282/api/dataSet/subData/${subDataId}/receipt`
+    `${trazoUrl}/api/dataSet/subData/${subDataId}/receipt`
   );
   return response.data;
 }

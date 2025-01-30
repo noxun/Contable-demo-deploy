@@ -5,6 +5,7 @@ import Text from "@/components/generatePdf/Text";
 import { PaymentRoll } from "@/lib/trazoTypes";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 const isQuotation = false;
 const accountNumber = 123;
@@ -29,7 +30,7 @@ export default function SettlementDocument({ data }: SettlementDocumentProps) {
             >
               <View width="25%">
                 <Image
-                  src="/images/tradecruz_logo.png"
+                  src={REPORTS_LOGO_URL}
                   style={{ height: "50px" }}
                 />
               </View>

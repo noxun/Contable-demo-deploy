@@ -57,12 +57,14 @@ type FormEditVoucherProps = {
   type: VoucherType;
   voucher: Voucher;
   accountDate?: string; //para invalidar la query de bigger book
+  accountCode?: string; //para invalidar la query de bigger book x2
 };
 
 export default function FormEditVoucher({
   type,
   voucher,
   accountDate,
+  accountCode
 }: FormEditVoucherProps) {
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
@@ -103,6 +105,12 @@ export default function FormEditVoucher({
         console.log("invalidado");
         queryClient.invalidateQueries({
           queryKey: ["bookBiggerData", accountDate],
+        });
+      }
+      if (accountCode) {
+        console.log("invalidado");
+        queryClient.invalidateQueries({
+          queryKey: ["biggerBookDataByAccountCode", accountCode],
         });
       }
       queryClient.invalidateQueries({

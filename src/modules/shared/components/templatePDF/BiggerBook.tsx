@@ -12,6 +12,7 @@ import {
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { formatNumber } from "../../utils/validate";
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 
 type BiggerBookTemplateProps = {
   dateRange?: DateRange;
@@ -113,49 +114,117 @@ export function BiggerBookTemplate({
 
   return (
     <Document>
-      {
-        records.map((record, index) => {
-          let saldo = 0;
-          let totalDebit = 0;
-          let totalAsset = 0;
-          return (
-            <Page key={index} size={"LETTER"} style={styles.page} wrap>
-              <View>
-                <Image
-                  style={styles.imageOutOfBounds}
-                  src="/images/noxun.png"
-                />
-              </View>
-              <Text style={[styles.titlePage, { fontFamily: "Helvetica-Bold", paddingTop: 20 }]}>
-                Libro Mayor
+      {records.map((record) => {
+        return (
+          <Page key={record.accountCode} size={"LETTER"} style={styles.page} wrap>
+            <View>
+              <Image
+                style={styles.imageOutOfBounds}
+                src={REPORTS_LOGO_URL}
+              />
+            </View>
+            <Text
+              style={[
+                styles.titlePage,
+                { fontFamily: "Helvetica-Bold", paddingTop: 20 },
+              ]}
+            >
+              Libro Mayor
+            </Text>
+            <View style={[{ paddingBottom: 5 }]}>
+              <Text
+                style={[
+                  styles.thCell,
+                  { textAlign: "center", fontFamily: "Helvetica-Bold" },
+                ]}
+              >
+                (Expresado en {moneyType})
               </Text>
-              <View style={[{ paddingBottom: 5 }]}>
-                <Text style={[styles.thCell, { textAlign: "center", fontFamily: "Helvetica-Bold" }]}>(Expresado en {moneyType})</Text>
-                <Text style={[styles.thCell, { textAlign: "center" }]}>Fecha y Hora: {format(Date.now(), FORMAT_DATE_INITIAL)}</Text>
-              </View>
-              <View style={[{ paddingBottom: 10 }]}>
-                <Text style={[styles.thCell]}>
-                  <Text style={{ fontFamily: "Helvetica-Bold" }}>Nro de Cuenta:</Text> {record.accountCode}
+              <Text style={[styles.thCell, { textAlign: "center" }]}>
+                {dateText}
+              </Text>
+            </View>
+            <View style={[{ paddingBottom: 10 }]}>
+              <Text style={[styles.thCell]}>
+                <Text style={{ fontFamily: "Helvetica-Bold" }}>
+                  Nro de Cuenta:
+                </Text>{" "}
+                {record.accountCode}
+              </Text>
+              <Text style={[styles.thCell]}>
+                <Text style={{ fontFamily: "Helvetica-Bold" }}>
+                  Nombre de Cuenta:
+                </Text>{" "}
+                {record.accountDescription}
+              </Text>
+            </View>
+            <View style={{ width: "100%", border: 1 }}>
+              <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
+                <Text
+                  style={[
+                    styles.col10,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold" },
+                  ]}
+                >
+                  ASIENTO
                 </Text>
-                <Text style={[styles.thCell]}>
-                  <Text style={{ fontFamily: "Helvetica-Bold" }}>Nombre de Cuenta:</Text> {record.accountDescription}
+                <Text
+                  style={[
+                    styles.col11,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold" },
+                  ]}
+                >
+                  FECHA
+                </Text>
+                <Text
+                  style={[
+                    styles.col25,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold" },
+                  ]}
+                >
+                  GLOSA
+                </Text>
+                <Text
+                  style={[
+                    styles.col15,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold" },
+                  ]}
+                >
+                  HOJA DE RUTA
+                </Text>
+                <Text
+                  style={[
+                    styles.col13,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold", textAlign: "center" },
+                  ]}
+                >
+                  DEBE
+                </Text>
+                <Text
+                  style={[
+                    styles.col13,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold", textAlign: "center" },
+                  ]}
+                >
+                  HABER
+                </Text>
+                <Text
+                  style={[
+                    styles.col13,
+                    styles.thCell,
+                    { fontFamily: "Helvetica-Bold", textAlign: "center" },
+                  ]}
+                >
+                  SALDO
                 </Text>
               </View>
-              <View style={{ width: "100%", border: 1 }}>
-                <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
-                  <Text style={[styles.col10, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>ASIENTO</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>FECHA</Text>
-                  <Text style={[styles.col30, styles.thCell, { fontFamily: "Helvetica-Bold" }]}>GLOSA</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>DEBE</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>HABER</Text>
-                  <Text style={[styles.col15, styles.thCell, { fontFamily: "Helvetica-Bold", textAlign: "center" }]}>SALDO</Text>
-                </View>
-                {
-                  record.voucherItems.map((item, index) => {
-                    saldo = Number(item[saldoType])
-                    totalDebit += Number(item[debitType])
-                    totalAsset += Number(item[assetType])
-
+              {record.voucherItems.map((item, index) => {
                 return (
                   <View style={styles.trCell} key={item.accountId}>
                     <Text style={[styles.col10, styles.tdCell]}>
@@ -217,7 +286,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(totalDebit)}
+                  {formatNumber(record.totalDebit)}
                 </Text>
                 <Text
                   style={[
@@ -226,7 +295,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(totalAsset)}
+                  {formatNumber(record.totalAsset)}
                 </Text>
                 <Text
                   style={[
@@ -235,7 +304,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(saldo)}
+                  {formatNumber(record.totalSaldoNum)}
                 </Text>
               </View>
               <View style={[styles.trCell, { borderTopWidth: 1 }]}>

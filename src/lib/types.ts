@@ -36,6 +36,7 @@ export type User = {
   photoUrl: any;
   creationDate: string;
   lastActive: string;
+  rolName: string;
 };
 
 export type Ufv = {
@@ -187,7 +188,10 @@ export type AccountingBox = {
   id: number
   name: string
   descripcion: string
-  account: any
+  account: {
+    code: string
+    // en realidad hay mas campos pero solo se necesita el codigo
+  }
   accountId: number
   diaryVouchers: any
   egressVouchers: any
@@ -229,7 +233,7 @@ export type Bank = {
   sigla: any,
   nroCuentaBancaria: any,
   accountId: number,
-  code: string | null,
+  code: string,
   saldoTotal: number,
 }
 
@@ -271,6 +275,7 @@ export type ConfigValues = {
   itfValue: number;
   tributosAduaneros: number;
   ufvDate: string;
+  minimumWage: number;
 }
 
 export type NewConfigValues = Omit<ConfigValues, "id">
@@ -400,4 +405,37 @@ export type PaySlip = {
   }
   liquidPayable: number
   dateNowPaySlip: string
+}
+
+export type BookBiggerData = {
+  accountCode: string
+  accountDescription: string
+  totalDebit: number
+  totalAsset: number
+  totalDebitSus: number
+  totalAssetSus: number
+  totalSaldoNum: number
+  totalSaldoNumSus: number
+  totalSaldoText: string
+  totalSaldoTextSus: string
+  literal: any
+  voucherItems: Array<{
+    id: number
+    debitBs: number
+    debitSus: number
+    assetBs: number
+    assetSus: number
+    totalSaldoBs: number
+    totalSaldoSus: number
+    gloss: string
+    accountId: number
+    code: string
+    description: string
+    typeOfExpense: any
+    createdAt: string
+    voucherId: number
+    type: number
+    typeDes: string
+    hojaDeRuta?: string
+  }>
 }

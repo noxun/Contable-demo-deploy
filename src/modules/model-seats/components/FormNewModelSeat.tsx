@@ -65,24 +65,6 @@ export default function FormNewModelSeat() {
     isPending: isPendingAccounts,
   } = useMotionAccounts();
 
-  const newModelSeatMutation = useMutation({
-    mutationFn: postModelSeat,
-    onSuccess: () => {
-      toast.success("Asiento Modelo Creado correctamente");
-      queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
-      router.push(`/dashboard/model-seats`);
-    },
-    onError: (error) => {
-      console.log(error);
-      toast.error("Error al crear un asiento modelo");
-    },
-  });
-
-  function onSubmit(values: ModelSeatForm) {
-    console.log(values)
-    newModelSeatMutation.mutate(values);
-  }
-
   const modelSeatForm = useForm<ModelSeatForm>({
     resolver: zodResolver(modelSeatFormSchema),
     defaultValues: {
@@ -91,7 +73,31 @@ export default function FormNewModelSeat() {
     },
   });
 
-  console.log(modelSeatForm.formState.errors)
+  const accounts = modelSeatForm.watch("accounts") || [];
+
+  let totalPercentage = 0;
+  if (modelSeatForm.watch("type") == 3) {
+    accounts.forEach((account) => {
+      totalPercentage += Number(account.percentage) || 0;
+    });
+  }
+
+  const newModelSeatMutation = useMutation({
+    mutationFn: postModelSeat,
+    onSuccess: () => {
+      toast.success("Asiento Modelo Creado correctamente");
+      queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
+      router.push(`/dashboard/model-seats`);
+    },
+    onError: (error) => {
+      toast.error("Error al crear un asiento modelo");
+      console.error(error);
+    },
+  });
+
+  function onSubmit(values: ModelSeatForm) {
+    newModelSeatMutation.mutate(values);
+  }
 
   const { fields, append, remove } = useFieldArray({
     control: modelSeatForm.control,
@@ -284,7 +290,21 @@ export default function FormNewModelSeat() {
               </TableBody>
             </Table>
           </div>
-          <Button type="submit" disabled={newModelSeatMutation.isPending}>
+          {
+            totalPercentage > 100 && (
+              <p className="text-red-500">La suma de los porcentajes no deben ser mayor a 100</p>
+            )
+          }
+          {
+            totalPercentage < 0 && (
+              <p className="text-red-500">La suma de los porcentajes no debe ser menor a 0</p>
+            )
+          }
+
+          <Button
+            type="submit"
+            disabled={newModelSeatMutation.isPending || totalPercentage < 0 || totalPercentage > 100}
+          >
             <span className="mr-2">Guardar Registro</span>
             <Save size={20} />
           </Button>

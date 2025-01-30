@@ -6,6 +6,7 @@ import {
   Bank,
   BankExcerpt,
   BankExtractPaymentFile,
+  BookBiggerData,
   Branch,
   BranchToList,
   ConfigValues,
@@ -44,10 +45,14 @@ import {
 } from "@/modules/fixed-assets/types/types";
 import {
   Payroll,
-  SchemaPayrollType, SchemaSalaryType,
+  ResponsePayrolls,
+  Salaries,
+  SchemaPayrollType,
+  SchemaSalaryType,
 } from "@/modules/salaries-payrolls/types/types";
+import { RegisterVoucherByDocuments } from "./trazoTypes";
 
-function setAuthToken(token: string | undefined | null) {
+export function setAuthToken(token: string | undefined | null) {
   if (token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
@@ -756,7 +761,7 @@ export async function getApiReportExcel(
   });
   return response.data;
 }
-
+//BIGGER BOOK
 export async function searchByAccountBigguerBook(search: string) {
   let token;
   if (typeof window !== "undefined") {
@@ -767,6 +772,32 @@ export async function searchByAccountBigguerBook(search: string) {
   setAuthToken(token);
   const response = await api.get(URLRequest, {
     params: { search },
+  });
+  return response.data;
+}
+//GET: Excel for bigger book
+export async function getBigguerBookinExcel({
+  initDate,
+  endDate,
+  search,
+}: {
+  initDate?: string;
+  endDate?: string;
+  search?: string;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  const URLRequest = `/api/Report/BookBigguerDataExel`;
+
+  setAuthToken(token);
+  const response = await api.get(URLRequest, {
+    params: {
+      initDate: initDate,
+      endDate: endDate,
+      search: search,
+    },
   });
   return response.data;
 }
@@ -878,6 +909,21 @@ export async function deleteFixedAsset({ id }: { id: string }) {
   return data;
 }
 
+// GET; obtener el archivo excel de activos fijos
+export async function getAllFixedAssetsExcelByDate({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  const URLRequest = `/FixedAssets/FixedAssetsItems/exel`;
+
+  setAuthToken(token);
+  const { data } = await api.get(URLRequest, {
+    params: { date: date },
+  });
+  return data;
+}
+
 //Crear una banco apartir de una cuenta
 export async function postConvertAccountToBank(accountId: string) {
   let token;
@@ -913,13 +959,47 @@ export async function GetPayrolls({ date }: { date: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages`;
+  const URLRequest = `api/SalariesAndWages/itemsGeneral`;
 
   setAuthToken(token);
-  const { data } = await api.get<Payroll[]>(URLRequest, {
+  const { data } = await api.get<ResponsePayrolls>(URLRequest, {
     params: {
-      date: date
-    }
+      date: date,
+    },
+  });
+  return data;
+}
+//GET Payrolls and Salaries
+export async function GetPayrollsAndSalaries({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `/api/SalariesAndWages/itemsTodo`;
+
+  setAuthToken(token);
+  const { data } = await api.get<ResponsePayrolls>(URLRequest, {
+    params: {
+      date: date,
+    },
+  });
+  return data;
+}
+//GET By Id: Payrolls
+export async function GetPayrollExcelByDate({ date }: { date: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/itemsExel`;
+
+  setAuthToken(token);
+  const { data } = await api.get(URLRequest, {
+    params: {
+      date: date,
+    },
   });
   return data;
 }
@@ -930,30 +1010,36 @@ export async function GetPayrollById({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
 //UPDATE By Id: Payrolls
-export async function UpdatePayrollById({ id, payroll }: { id: string, payroll: Payroll }) {
+export async function UpdatePayrollById({
+  id,
+  payroll,
+}: {
+  id: string;
+  payroll: Payroll;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.put(URLRequest, payroll, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
@@ -964,7 +1050,7 @@ export async function DeletePayroll({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/id`
+  const URLRequest = `api/SalariesAndWages/id`;
 
   setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
@@ -976,19 +1062,40 @@ export async function DeletePayroll({ id }: { id: string }) {
 }
 
 //GET: Items of Payrolls
-export async function GetSalariesByPayrollId({ idPayroll }: { idPayroll: string }) {
+export async function GetSalariesByPayrollId({
+  idPayroll,
+}: {
+  idPayroll: string;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items/id`
+  const URLRequest = `api/SalariesAndWages/items/id`;
 
   setAuthToken(token);
   const { data } = await api.get<Payroll>(URLRequest, {
     params: {
-      id: idPayroll
-    }
+      id: idPayroll,
+    },
+  });
+  return data;
+}
+//GET: Items of Payrolls
+export async function GetSalariesById({ id }: { id: string }) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/itemsDatos/id`;
+
+  setAuthToken(token);
+  const { data } = await api.get<Salaries>(URLRequest, {
+    params: {
+      id: id,
+    },
   });
   return data;
 }
@@ -999,7 +1106,7 @@ export async function PostSalary({ Item }: { Item: SchemaSalaryType }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items`
+  const URLRequest = `api/SalariesAndWages/items`;
 
   setAuthToken(token);
   const { data } = await api.post(URLRequest, Item);
@@ -1012,17 +1119,39 @@ export async function DeleteSalary({ id }: { id: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `api/SalariesAndWages/items/id`
+  const URLRequest = `api/SalariesAndWages/items/id`;
 
   setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
     params: {
-      id: id
-    }
+      id: id,
+    },
   });
   return data;
 }
+//UPDATE: Items of Payrolls
+export async function UpdateSalary({
+  id,
+  item,
+}: {
+  id: string;
+  item: SchemaSalaryType;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
 
+  const URLRequest = `api/SalariesAndWages/items/id`;
+
+  setAuthToken(token);
+  const { data } = await api.put(URLRequest, item, {
+    params: {
+      id: id,
+    },
+  });
+  return data;
+}
 
 //Crear una a caja apartir de una cuenta
 export async function postConvertAccountToAccountingBox(accountId: string) {
@@ -1063,4 +1192,40 @@ export async function fetchPaySlipData(
     `/api/SalariesAndWages/payment-slip/${idSalaryWages}/${datePaySlip}`
   );
   return response.data;
+}
+
+export async function registerVoucherByDocuments(values: {
+  data: RegisterVoucherByDocuments;
+  type: "c" | "d";
+}) {
+  const { data, type } = values;
+
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(
+    "/api/Voucher/RegisterVoucherByDocuments",
+    data,
+    {
+      params: {
+        type,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(
+    `/api/Report/BookBiggerData/ByAccountCode/${accountCode}`
+  );
+  return response.data as BookBiggerData[];
 }

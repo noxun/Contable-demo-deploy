@@ -10,6 +10,7 @@ export interface IUserResponse {
   photoUrl: string | null
   creationDate: string
   lastActive: string
+  rolName: string
 }
 
 interface Role {
@@ -36,6 +37,7 @@ export interface FormValues {
   motherLastName: string
   ci: string
   status: string
+  rolName: string
   roles: number[]
 }
 

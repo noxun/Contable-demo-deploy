@@ -31,6 +31,7 @@ const configFormSchema = z.object({
   itfValue: z.coerce.number(),
   tributosAduaneros: z.coerce.number(),
   ufvDate: z.string(),
+  minimumWage: z.coerce.number()
 });
 
 type ConfigForm = z.infer<typeof configFormSchema>;
@@ -51,6 +52,7 @@ export default function ConfigForm() {
       itfValue: 0,
       tributosAduaneros: 0,
       ufvDate: "",
+      minimumWage: 0
     },
     values: configValues,
   });
@@ -70,6 +72,7 @@ export default function ConfigForm() {
   });
 
   function onSubmit(values: ConfigForm) {
+    console.log(values);
     updateConfigValuesMutation.mutate(values);
   }
 
@@ -193,6 +196,20 @@ export default function ConfigForm() {
         />
         <FormField
           control={configForm.control}
+          name="minimumWage"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Salario minimo nacional</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>Salario minimo nacional</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
           name="tributosAduaneros"
           render={({ field }) => (
             <FormItem className="">
@@ -205,7 +222,7 @@ export default function ConfigForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="col-start-2 col-end-4">
+        <Button type="submit" className="col-start-3 col-end-4">
           Guardar
         </Button>
       </form>

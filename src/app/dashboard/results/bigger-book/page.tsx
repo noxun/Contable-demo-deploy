@@ -37,9 +37,9 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { getApiReportExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
+import { getApiReportExcel, getBigguerBookinExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { ReportPaths } from "@/modules/shared/utils/validate";
+import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { useDebounce } from "use-debounce";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { SearchComponent } from "@/modules/shared/components/SearchComponent";
@@ -60,12 +60,10 @@ type VoucherItem = {
   assetBs: number;
   debitSus: number;
   assetSus: number;
-  totalDebit: number;
-  totalAsset: number;
   typeDes?: string;
   totalSaldoSus: number;
   totalSaldoBs: number;
-  hojaDeRuta: string
+  hojaDeRuta?: string
 };
 
 export type AccountData = {
@@ -215,8 +213,11 @@ const AccountSection = () => {
       accessorKey: "gloss",
       cell: ({ row }: any) => row.original.gloss || "sin glosa",
     },
-    { header: "Debe Bs", accessorKey: "debitBs" },
-    { header: "Haber Bs", accessorKey: "assetBs" },
+    { header: "Hoja Ruta", accessorKey: "hojaDeRuta" },
+    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
+    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
+    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }: any) => formatNumber( row.original.debitBs)},
+
     // { header: "Debe Sus", accessorKey: "debitSus" },
     // { header: "Haber Sus", accessorKey: "assetSus" },
     {
@@ -292,25 +293,22 @@ const AccountSection = () => {
         </div>
       </div>
 
-      {currentAccount && (
+      {(currentAccount) && (
         <>
-          {
-            accountDate?.from && accountDate.to && (
-              <div className="flex items-center gap-4">
-                <ReportGenerateBiggerBook
-                  data={currentAccounts}
-                  dateRange={accountDate}
-                  setFile={setFile}
-                  inSus={inSus}
-                />
-                <ReportExcelGenerate
-                  dateRange={accountDate}
-                  typeFile={ReportPaths.BookBigger}
-                  inSus={inSus}
-                />
-              </div>
-            )
-          }
+          <div className="flex items-center gap-4">
+            <ReportGenerateBiggerBook
+              data={currentAccounts}
+              dateRange={accountDate}
+              setFile={setFile}
+              inSus={inSus}
+            />
+            <BiggerBookExcelGenerate
+              dateRange={accountDate}
+              search={searchDescription}
+              inSus={inSus}
+            />
+          </div>
+
           {/* <DownloadSingleAccountReportButton data={currentAccount} /> */}
           {file !== null && (
             <div style={{ height: "500px" }}>
@@ -358,6 +356,7 @@ const AccountSection = () => {
             <AccountTotals
               totalDebit={currentAccount.totalDebit}
               totalAsset={currentAccount.totalAsset}
+              totalSaldo={currentAccount.totalSaldoNum}
             />
           </div>
 
@@ -539,20 +538,70 @@ const AccountNavigation = ({
 const AccountTotals = ({
   totalDebit,
   totalAsset,
+  totalSaldo,
 }: {
   totalDebit: number;
   totalAsset: number;
+  totalSaldo: number;
 }) => {
   return (
     <div className="flex justify-end gap-6 p-4 bg-gray-50 rounded-lg">
       <div className="text-right">
         <p className="text-sm text-gray-600">Total Debe:</p>
-        <p className="text-lg font-bold">{totalDebit.toFixed(2)}</p>
+        <p className="text-lg font-bold">{formatNumber(totalDebit)}</p>
       </div>
       <div className="text-right">
         <p className="text-sm text-gray-600">Total Haber:</p>
-        <p className="text-lg font-bold">{totalAsset.toFixed(2)}</p>
+        <p className="text-lg font-bold">{formatNumber(totalAsset)}</p>
+      </div>
+      <div className="text-right">
+        <p className="text-sm text-gray-600">Total Saldo</p>
+        <p className="text-lg font-bold">{formatNumber(totalSaldo)}</p>
       </div>
     </div>
   );
 };
+
+interface Props {
+  dateRange: DateRange,
+  inSus: boolean,
+  search: string,
+}
+
+const BiggerBookExcelGenerate = ({ dateRange, search }: Props) => {
+
+
+  const initialDate = dateRange.from && format(dateRange.from, "yyyy-MM-dd")
+  const finallyDate = dateRange.to && format(dateRange.to, "yyyy-MM-dd")
+
+
+  const { refetch, isLoading } = useQuery({
+    queryKey: [dateRange, search],
+    queryFn: () => getBigguerBookinExcel({ initDate: initialDate, endDate: finallyDate, search: search }),
+    enabled: false
+  })
+
+  const handleOnClick = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetch()
+      const fileUrl = linkExcel instanceof Blob ? URL.createObjectURL(linkExcel) : linkExcel;
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "BookBiggerData.xlsx";
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+      toast.error('Error al descargar el archivo.');
+    }
+  }
+
+  return (
+    <Button className="flex" onClick={handleOnClick} >
+      {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
+    </Button>
+  )
+}

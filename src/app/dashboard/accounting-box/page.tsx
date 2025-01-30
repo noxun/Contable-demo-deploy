@@ -12,16 +12,21 @@ import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBala
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
+import { AccountingBox } from "@/lib/types";
+import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/BiggerBookByAccountCodeDialog";
+import BiggerBookTable from "@/modules/bigger-book/components/BiggerBookTableByAccountCode";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<
     | {
-      range: DateRange;
-      rangeCompare?: DateRange;
-    }
+        range: DateRange;
+        rangeCompare?: DateRange;
+      }
     | undefined
   >();
   const [accountingBoxId, setAccountingBoxId] = useState<number | null>(null);
+  const [selectedAccountingBox, setSelectedAccountingBox] =
+    useState<AccountingBox | null>(null);
 
   const { data: accountingBoxList, isPending: isPendingAccountingBoxList } =
     useAccountingBox();
@@ -45,12 +50,6 @@ const AccountingBoxPage = () => {
   } = useAccountingBoxBalance(accountingBoxId);
 
   if (isError) return <div>Error: {error.message}</div>;
-
-  const accountingBoxOptions =
-    (Array.isArray(accountingBoxList) ? accountingBoxList : []).map((box) => ({
-      value: box.id,
-      label: box.name,
-    })) || [];
 
   const handleDateRangeChange = (values: {
     range: DateRange;
@@ -89,10 +88,14 @@ const AccountingBoxPage = () => {
           <div>Cargando cajas...</div>
         ) : (
           <CustomSelect
-            options={accountingBoxOptions}
-            onChange={(selectedOption) =>
-              setAccountingBoxId(selectedOption?.value || null)
-            }
+            options={Array.isArray(accountingBoxList) ? accountingBoxList : []}
+            getOptionLabel={(option) => option.name}
+            getOptionValue={(option) => option.id.toString()}
+            onChange={(selectedOption) => {
+              setAccountingBoxId(selectedOption?.id || null);
+              setSelectedAccountingBox(selectedOption || null);
+              console.log(selectedOption);
+            }}
             isClearable
             placeholder="Selecciona una caja"
           />
@@ -103,10 +106,14 @@ const AccountingBoxPage = () => {
           onUpdate={handleDateRangeChange}
         />
       </div>
-      {isPending ? (
+      {isPending || !selectedAccountingBox ? (
         <div>Selecciona una Caja para mostrar sus datos...</div>
       ) : (
-        <DataTable data={filteredData} columns={columns} />
+        <div className="flex flex-col gap-4">
+          <BiggerBookByAccountCodeDialog accountCode={selectedAccountingBox.account.code}/>
+          <BiggerBookTable accountCode={selectedAccountingBox.account.code} />
+          {/* <DataTable data={filteredData} columns={columns} /> */}
+        </div>
       )}
     </div>
   );

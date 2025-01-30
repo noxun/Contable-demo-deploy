@@ -93,6 +93,15 @@ export default function FormEditModelSeat({
     },
   });
 
+  const accounts = editModelSeatForm.watch("accounts") || [];
+
+  let totalPercentage = 0;
+  if (editModelSeatForm.watch("type") == 3) {
+    accounts.forEach((account) => {
+      totalPercentage += Number(account.percentage) || 0;
+    });
+  }
+
   console.log(editModelSeatForm.formState.errors);
 
   const { fields, append, remove } = useFieldArray({
@@ -291,7 +300,22 @@ export default function FormEditModelSeat({
           </div>
         )}
 
-        <Button type="submit">Guardar Cambios</Button>
+        {
+          totalPercentage > 100 && (
+            <p className="text-red-500">La suma de los porcentajes no deben ser mayor a 100</p>
+          )
+        }
+        {
+          totalPercentage < 0 && (
+            <p className="text-red-500">La suma de los porcentajes no debe ser menor a 0</p>
+          )
+        }
+        <Button
+          disabled={(totalPercentage < 0 || totalPercentage > 100)}
+          type="submit"
+        >
+          Guardar Cambios
+        </Button>
       </form>
     </Form>
   );
