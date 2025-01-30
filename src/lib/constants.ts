@@ -1,2 +1,2 @@
-export const REPORTS_LOGO_URL = "https://res.cloudinary.com/ahsoizdev/image/upload/v1738081247/logos/yi1wazohyluhdfrvmuyn.png"
-export const APP_LOGO_URL = "/images/tradecruz_logo.png"; //puede ser una relativa
+export const REPORTS_LOGO_URL = "/images/noxun.png"; //puede ser una relativa
+export const APP_LOGO_URL = "/images/noxun.png"; //puede ser una relativa
