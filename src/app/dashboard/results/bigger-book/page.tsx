@@ -46,6 +46,8 @@ import { SearchComponent } from "@/modules/shared/components/SearchComponent";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { ColumnDef } from "@tanstack/react-table";
+import { BookBiggerData, BookBiggerDataVoucherItem } from "@/lib/types";
 
 // Types
 type VoucherItem = {
@@ -188,17 +190,17 @@ const AccountSection = () => {
     }
   };
 
-  const columnsBook = [
+  const columnsBook: ColumnDef<BookBiggerDataVoucherItem>[] = [
     {
       header: "Fecha",
       accessorKey: "createdAt",
-      cell: ({ row }: any) =>
+      cell: ({ row }) =>
         format(new Date(row.original.createdAt), "yyyy-MM-dd"),
     },
     {
       header: "Tipo",
       accessorKey: "type",
-      cell: ({ row }: any) => {
+      cell: ({ row }) => {
         const type = row.original.type;
         if (type === 1) return "Egreso";
         if (type === 0) return "Traspaso";
@@ -211,12 +213,12 @@ const AccountSection = () => {
     {
       header: "Glosa",
       accessorKey: "gloss",
-      cell: ({ row }: any) => row.original.gloss || "sin glosa",
+      cell: ({ row }) => row.original.gloss || "sin glosa",
     },
     { header: "Hoja Ruta", accessorKey: "hojaDeRuta" },
-    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
-    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }: any) => formatNumber( row.original.debitBs )},
-    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }: any) => formatNumber( row.original.debitBs)},
+    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }) => formatNumber( row.original.debitBs )},
+    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }) => formatNumber( row.original.assetBs )},
+    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }) => formatNumber( row.original.totalSaldoBs)},
 
     // { header: "Debe Sus", accessorKey: "debitSus" },
     // { header: "Haber Sus", accessorKey: "assetSus" },
