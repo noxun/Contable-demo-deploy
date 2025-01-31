@@ -1254,25 +1254,51 @@ export async function fetchDiaryBookData(
 
 //REPORT
 //XlslData / ${reporte}
-type PathReport = 'balanceGeneral' | 'balanceDeSumas' | 'estadoDeResultado'
-type LevelData = 6 | 5 | 4 | 3 | 2 | 1
-export async function getAllDataReportByType({ iDate, eDate, typePath, level }: { iDate: string, eDate: string, typePath: PathReport, level?: LevelData }) {
-
+type PathReport = "balanceGeneral" | "balanceDeSumas" | "estadoDeResultado";
+type LevelData = 6 | 5 | 4 | 3 | 2 | 1;
+export async function getAllDataReportByType({
+  iDate,
+  eDate,
+  typePath,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  typePath: PathReport;
+  level?: LevelData;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
 
-  const response = await api.get(
-    `/api/Report/XlxsData/${typePath}`,
-    {
-      params: {
-        InitDate: iDate,
-        EndDate: eDate,
-        Level: level
-      }
-    }
-  );
+  const response = await api.get(`/api/Report/XlxsData/${typePath}`, {
+    params: {
+      InitDate: iDate,
+      EndDate: eDate,
+      Level: level,
+    },
+  });
   return response.data;
+}
+
+export async function generateDiaryBookExcel(InitDate: string,
+  endDate: string,
+  inSus: boolean,) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/BookDiaryBookExel`, {
+    responseType: "text",
+    params: {
+      InitDate,
+      endDate,
+      inSus,
+    }
+  });
+  return response.data as string;
 }
