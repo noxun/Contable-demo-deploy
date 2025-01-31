@@ -3,6 +3,8 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { formatNumber } from "../../utils/validate";
 import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
 
 const styles = StyleSheet.create({
   page: {
@@ -97,11 +99,6 @@ interface Records {
   income: Item[];
 }
 
-interface DateRange {
-  from: string;
-  to: string;
-}
-
 interface Props {
   inSus?: boolean;
   records: Records;
@@ -110,10 +107,16 @@ interface Props {
 
 export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) => {
 
+  const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
   const messageDate =
-    dateRange?.from === dateRange?.to
-      ? dateRange?.from
-      : `${dateRange?.from} al ${dateRange?.to}`;
+    dateRange?.from &&
+    (dateRange?.to
+      ? `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)} al ${format(
+        dateRange.to,
+        FORMAT_DATE_INITIAL
+      )}`
+      : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
+
   const moneyType = inSus ? "Dolares" : "Bolivianos";
 
   const gastoType = inSus ? "amountSus" : "amount";
