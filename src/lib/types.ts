@@ -441,3 +441,49 @@ export type BookBiggerDataVoucherItem = {
   typeDes: string
   hojaDeRuta?: string
 }
+
+export type DiaryBookResponse = {
+  report: Array<{
+    id: number
+    type: number
+    num: number
+    typeDes: string
+    voucher: any
+    gloss: string
+    exchangeRate: number
+    coin: string
+    voucherDate: string
+    date: string
+    voucherItems: Array<{
+      id: number
+      debitBs: number
+      debitSus: number
+      assetBs: number
+      assetSus: number
+      totalSaldoBs: number
+      totalSaldoSus: number
+      gloss: string
+      accountId: number
+      code: string
+      description: string
+      typeOfExpense: any
+      createdAt: string
+      voucherId: number
+      type: number
+      typeDes: string
+      hojaDeRuta?: string
+    }>
+    plusData: {
+      debe: number
+      haber: number
+      debeSus: number
+      haberSus: number
+    }
+  }>
+  total: {
+    debe: number
+    haber: number
+    debeSus: number
+    haberSus: number
+  }
+}

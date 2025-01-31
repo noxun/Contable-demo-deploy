@@ -11,6 +11,7 @@ import {
   BranchToList,
   ConfigValues,
   CostCenter,
+  DiaryBookResponse,
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
   InvoiceRegistryType,
@@ -1228,6 +1229,27 @@ export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
     `/api/Report/BookBiggerData/ByAccountCode/${accountCode}`
   );
   return response.data as BookBiggerData[];
+}
+
+export async function fetchDiaryBookData(
+  InitDate: string,
+  EndDate: string,
+  inSus: boolean
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/diarybook`, {
+    params: {
+      InitDate,
+      EndDate,
+      inSus,
+    },
+  });
+  return response.data as DiaryBookResponse;
 }
 
 //REPORT
