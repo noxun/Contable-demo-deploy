@@ -54,14 +54,14 @@ export async function fetchPayrollDropdownOptions(
 }
 
 export async function postSubData(values: {
-  data: { label: string; description: string; description2: string };
+  data: { label: string; description: number; description2: number };
   procedureId: number;
   fieldId: 531 | 532 | 533 | 534;
 }) {
   const { data, procedureId, fieldId } = values;
 
   const response = await axios.post(
-    `/api/dataSet/procedure/${procedureId}/field/${fieldId}/subdat    a`,
+    `${trazoUrl}/api/dataSet/procedure/${procedureId}/field/${fieldId}/subdata`,
     data
   );
   return response.data;
@@ -70,15 +70,15 @@ export async function postSubData(values: {
 export async function putSubData(values: {
   data: {
     label: string;
-    description: string;
-    description2: string;
-    observation: string;
+    description: number;
+    description2: number;
+    observation: number;
   };
   subDataId: number;
 }) {
   const { data, subDataId } = values;
   const response = await axios.put(
-    `/api/dataSet/procedure/subData/${subDataId}`,
+    `${trazoUrl}/api/dataSet/procedure/subData/${subDataId}`,
     data
   );
   return response.data;
@@ -86,7 +86,7 @@ export async function putSubData(values: {
 
 export async function deleteSubData(subDataId: number) {
   const response = await axios.delete(
-    `/api/dataSet/procedure/subData/${subDataId}`
+    `${trazoUrl}/api/dataSet/procedure/subData/${subDataId}`
   );
   return response.data;
 }
