@@ -11,6 +11,7 @@ import { ReportGeneratorFile } from "@/modules/shared/components/ReportGenerator
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { GeneratedFilesTable } from "@/modules/shared/components/GeneratedFilesTable";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import DiaryBookPreview from "./DiaryBookPreview";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -77,6 +78,13 @@ export default function DiaryBookPage() {
         </div>
       </div>
 
+      <div>
+        {
+          dateRange.from && dateRange.to && (
+            <DiaryBookPreview dateRange={dateRange} inSus={inSus} />
+          )
+        }
+      </div>
       {/* alternativa para descargar  */}
       {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
       {pdfFile && (
