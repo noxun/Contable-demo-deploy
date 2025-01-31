@@ -193,3 +193,10 @@ export type RegisterVoucherByDocuments = {
     recibo: boolean
   }>
 }
+
+export type DropdownOption = {
+  id: number
+  name: string
+  data: string
+  type: string
+}
