@@ -419,6 +419,8 @@ export type BookBiggerData = {
   totalSaldoText: string
   totalSaldoTextSus: string
   literal: any
+  previousBalance: number
+  previousBalanceSus: number
   voucherItems: BookBiggerDataVoucherItem[]
 }
 
@@ -430,6 +432,7 @@ export type BookBiggerDataVoucherItem = {
   assetSus: number
   totalSaldoBs: number
   totalSaldoSus: number
+  previousBalance: number
   gloss: string
   accountId: number
   code: string
