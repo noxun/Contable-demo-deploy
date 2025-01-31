@@ -359,6 +359,7 @@ const AccountSection = () => {
               totalDebit={currentAccount.totalDebit}
               totalAsset={currentAccount.totalAsset}
               totalSaldo={currentAccount.totalSaldoNum}
+              totalPreviousBalance={currentAccount.previousBalance}
             />
           </div>
 
@@ -541,13 +542,19 @@ const AccountTotals = ({
   totalDebit,
   totalAsset,
   totalSaldo,
+  totalPreviousBalance,
 }: {
   totalDebit: number;
   totalAsset: number;
   totalSaldo: number;
+  totalPreviousBalance?: number;
 }) => {
   return (
     <div className="flex justify-end gap-6 p-4 bg-gray-50 rounded-lg">
+      <div className="text-right">
+        <p className="text-sm text-gray-600">Total Saldo Anterior</p>
+        <p className="text-lg font-bold">{formatNumber(totalPreviousBalance ?? 0)}</p>
+      </div>
       <div className="text-right">
         <p className="text-sm text-gray-600">Total Debe:</p>
         <p className="text-lg font-bold">{formatNumber(totalDebit)}</p>
