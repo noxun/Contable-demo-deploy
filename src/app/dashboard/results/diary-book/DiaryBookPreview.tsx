@@ -45,7 +45,7 @@ export default function DiaryBookPreview({
         </span>
       </div>
       {/* Table Header*/}
-      <div className="grid grid-cols-5 font-bold text-base">
+      <div className="grid grid-cols-[15%_40%_15%_15%_15%] font-bold text-base">
         <div>Código</div>
         <div>Detalle</div>
         <div className="justify-self-center">Hoja de Ruta</div>
@@ -59,7 +59,7 @@ export default function DiaryBookPreview({
           style={{ height: 400 }}
           data={diaryBookData?.report}
           itemContent={(_, record) => (
-            <div key={record.id} className="flex flex-col mb-4">
+            <div key={record.id} className="flex flex-col mb-2">
               {/* no se porque gap no funciona en la linea de arriba pero bueno mb lo soluciona */}
               <div id="record">
                 <div id="row1" className="grid grid-cols-5">
@@ -67,16 +67,16 @@ export default function DiaryBookPreview({
                   <div className="justify-self-center">{record.typeDes}</div>
                   <div className="col-span-3"></div>
                 </div>
-                <div id="row2" className="grid grid-cols-5">
+                <div id="row2" className="grid grid-cols-[15%_40%_15%_15%_15%]">
                   <div>
                     {record.voucherItems.map((item) => (
-                      <div key={item.id}>{item.code}</div>
+                      <div className="" key={item.id}>{item.code}</div>
                     ))}
                   </div>
                   <div>
                     {record.voucherItems.map((item) => (
                       <div
-                        className={item.assetBs > 0 ? "pl-2" : ""}
+                        className={"truncate " + (item.assetBs > 0 ? "pl-2" : "")}
                         key={item.id}
                       >
                         {item.description}
@@ -105,7 +105,7 @@ export default function DiaryBookPreview({
                     ))}
                   </div>
                 </div>
-                <div id="row3" className="grid grid-cols-5">
+                <div id="row3" className="grid grid-cols-[15%_40%_15%_15%_15%]">
                   <div className="col-span-1"></div>
                   <div className="font-bold">{record.gloss}</div>
                   <div className="col-span-1"></div>
