@@ -742,12 +742,13 @@ interface QueryParams {
   initDate?: string;
   endDate?: string;
   inSus?: boolean;
+  level?: number
 }
 
 export async function getApiReportExcel(
   path: string,
   queryParams: QueryParams,
-  pathType?: string
+  pathType?: string,
 ) {
   let token;
   if (typeof window !== "undefined") {
