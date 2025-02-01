@@ -414,8 +414,6 @@ export type BookBiggerData = {
   totalAsset: number
   totalDebitSus: number
   totalAssetSus: number
-  previousBalance: number;
-  previousBalanceSus: number;
   totalSaldoNum: number
   totalSaldoNumSus: number
   totalSaldoText: string
