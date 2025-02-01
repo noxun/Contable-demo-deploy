@@ -5,8 +5,17 @@ import { SubData } from "@/lib/trazoTypes";
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import ChangeReceiptStatusButton from "./ChangeReceiptStatusButton";
+import DeletePayrollSubDataButton from "./DeletePayrollSubDataButton";
+import DialogEditPayRollSubData from "./DialogEditPayRollSubData";
 
-export function columns(procedureId: number): ColumnDef<SubData>[] {
+export function columns(
+  procedureId: number,
+  urlLabel:
+    | "atributos"
+    | "botrosgastos"
+    | "cgastosdeoperaciones"
+    | "dhonorariosProfesionales"
+): ColumnDef<SubData>[] {
   return [
     {
       accessorKey: "label",
@@ -45,10 +54,20 @@ export function columns(procedureId: number): ColumnDef<SubData>[] {
       cell: ({ row }) => {
         const subData = row.original;
         return (
-          <div>
+          <div className="flex gap-2">
             <ChangeReceiptStatusButton
               subDataId={subData.id}
               procedureId={procedureId}
+            />
+            <DeletePayrollSubDataButton
+              subDataId={subData.id}
+              procedureId={procedureId}
+            />
+            <DialogEditPayRollSubData
+              subData={subData}
+              subDataId={subData.id}
+              procedureId={procedureId}
+              urlLabel={urlLabel}
             />
           </div>
         );

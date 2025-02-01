@@ -4,6 +4,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { ProcedureDataset } from "@/lib/trazoTypes";
 import { columns } from "./subdata-columns";
 import ButtonRegisterVoucherByDoc from "./ButtonRegisterVoucherByDoc";
+import AddPayrollSubDataForm from "./AddPayrollSubDataForm";
 
 type ProcedureTablesListProps = {
   procedureDataset: ProcedureDataset;
@@ -17,15 +18,25 @@ export default function ProcedureTablesList({
   return (
     <div className="space-y-4">
       <section>
+        <AddPayrollSubDataForm
+          urlLabel="atributos"
+          procedureId={procedureDataset.procedureId}
+          fieldId={531}
+        />
         <div>a|Tributos y Otros Conceptos Aduaneros</div>
         <DataTable
           data={
             procedureDataset["a-TributosYOtrosConceptosAduanerosSubDatas"] ?? []
           }
-          columns={columns(procedureDataset.procedureId)}
+          columns={columns(procedureDataset.procedureId, "atributos")}
         />
       </section>
       <section>
+        <AddPayrollSubDataForm
+          urlLabel="botrosgastos"
+          procedureId={procedureDataset.procedureId}
+          fieldId={532}
+        />
         <div>b|Otros Gastos de Importación/Exportación</div>
         <DataTable
           data={
@@ -33,14 +44,19 @@ export default function ProcedureTablesList({
               "b-OtrosGastosDeImportacion/ExportacionSubDatas"
             ] ?? []
           }
-          columns={columns(procedureDataset.procedureId)}
+          columns={columns(procedureDataset.procedureId , "botrosgastos")}
         />
       </section>
       <section>
+        <AddPayrollSubDataForm
+          urlLabel="cgastosdeoperaciones"
+          procedureId={procedureDataset.procedureId}
+          fieldId={533}
+        />
         <div>c|Gastos de Operaciones</div>
         <DataTable
           data={procedureDataset["c-GastosDeOperacionesSubDatas"] ?? []}
-          columns={columns(procedureDataset.procedureId)}
+          columns={columns(procedureDataset.procedureId , "cgastosdeoperaciones")}
         />
         {procedureDataset["c-GastosDeOperacionesSubDatas"] !== undefined &&
         procedureDataset["c-GastosDeOperacionesSubDatas"].length > 0 ? (
@@ -55,10 +71,15 @@ export default function ProcedureTablesList({
         ) : null}
       </section>
       <section>
+        <AddPayrollSubDataForm
+          urlLabel="dhonorariosProfesionales"
+          procedureId={procedureDataset.procedureId}
+          fieldId={534}
+        />
         <div>d|Honorarios Profesionales</div>
         <DataTable
           data={procedureDataset["d-HonorariosProfesionalesSubDatas"] ?? []}
-          columns={columns(procedureDataset.procedureId)}
+          columns={columns(procedureDataset.procedureId , "dhonorariosProfesionales")}
         />
         {procedureDataset["d-HonorariosProfesionalesSubDatas"] !== undefined &&
         procedureDataset["d-HonorariosProfesionalesSubDatas"].length > 0 ? (
