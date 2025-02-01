@@ -82,7 +82,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             case "balanceGeneral":
               MyDocument = (
                 <BalanceGeneralTemplate
-                  dateRange={dateText}
+                  dateRange={dateRange}
                   inSus={inSus}
                   records={response.data}
                 />
@@ -91,7 +91,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             case "estadoDeResultado":
               MyDocument = (
                 <EstadoResultadosTemplate
-                  dateRange={dateText}
+                  dateRange={dateRange}
                   inSus={inSus}
                   records={response.data}
                 />
