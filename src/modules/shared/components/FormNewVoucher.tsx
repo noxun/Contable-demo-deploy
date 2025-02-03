@@ -44,7 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import FormNewVoucherItems from "./FormNewVoucherItems";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -64,7 +64,11 @@ import useModelSeats from "../hooks/useModelSeats";
 import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";
 import useTrazoCompanies from "../hooks/useTrazoCompanies";
 import CreatableSelect from "react-select/creatable";
-import { TrazoCompany, VoucherItemFromExtractedPDF } from "@/lib/types";
+import {
+  RegisterVoucherByDocumentResponse,
+  TrazoCompany,
+  VoucherItemFromExtractedPDF,
+} from "@/lib/types";
 import { Label } from "@/components/ui/label";
 
 type FormNewVoucherProps = {
@@ -74,7 +78,7 @@ type FormNewVoucherProps = {
   bankExtractId?: number;
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
-  
+  voucher?: RegisterVoucherByDocumentResponse;
 };
 
 export default function FormNewVoucher({
@@ -84,6 +88,7 @@ export default function FormNewVoucher({
   routeType,
   gloss,
   voucherItemsFromExtractedPDF,
+  voucher,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -119,7 +124,7 @@ export default function FormNewVoucher({
     },
   ]);
 
-  if(voucherItemsFromExtractedPDF){
+  if (voucherItemsFromExtractedPDF) {
     voucherItemsFromExtractedPDF.forEach((item) => {
       setVoucherItems((items) => [
         ...items,
@@ -131,6 +136,25 @@ export default function FormNewVoucher({
           gloss: gloss ?? "",
           accountId: item.accountId.toString(),
           voucherId: "",
+          canDebit: true,
+          canAsset: true,
+        },
+      ]);
+    });
+  }
+
+  if (voucher && voucher.items) {
+    voucher.items.forEach((item) => {
+      setVoucherItems((items) => [
+        ...items,
+        {
+          debitBs: item.debitBs,
+          debitSus: item.debitSus,
+          assetBs: item.assetBs,
+          assetSus: item.assetSus,
+          gloss: item.gloss,
+          accountId: item.accountId.toString(),
+          voucherId: item.voucherId,
           canDebit: true,
           canAsset: true,
         },
@@ -352,18 +376,37 @@ export default function FormNewVoucher({
       };
     });
 
+  let voucherDefaultValues = null;
+  const defaultValues = {
+    exchangeRate: 6.97,
+    coin: "BOB" as "USD" | "BOB",
+    checkNum: "",
+    gloss: gloss ?? "",
+    bankId: bankId ?? null,
+    bankItemRef: bankExtractId, //ironico
+    costCenterId: "",
+    sucursalId: "",
+  };
+
+  if (voucher) {
+    voucherDefaultValues = {
+      exchangeRate: voucher.exchangeRate ?? 6.97,
+      coin: (voucher.coin as "USD" | "BOB") ?? "BOB",
+      checkNum: voucher.checkNum ?? "",
+      gloss: voucher.gloss ?? "",
+      bankId: voucher.bankId ?? null,
+      bankItemRef: bankExtractId, //ironico
+      costCenterId: voucher.costCenterId ?? "",
+      sucursalId: voucher.sucursalId ?? "",
+      hojaDeRuta: voucher.hojaDeRuta ?? "",
+    };
+  } else {
+    voucherDefaultValues = defaultValues;
+  }
+
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
-    defaultValues: {
-      exchangeRate: 6.97,
-      coin: "BOB",
-      checkNum: "",
-      gloss: gloss ?? "",
-      bankId: bankId ?? null,
-      bankItemRef: bankExtractId, //ironico
-      costCenterId: "",
-      sucursalId: "",
-    },
+    defaultValues: defaultValues,
   });
 
   const handleModelSeatChange = async (selectedOption: any) => {
@@ -387,15 +430,15 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
-        return total + (currentItem?.debitBs ?? 0);
+      return total + (currentItem?.debitBs ?? 0);
     }, 0);
     let assetTotal = voucherItems.reduce((total, currentItem) => {
-        return total + (currentItem?.assetBs ?? 0);
+      return total + (currentItem?.assetBs ?? 0);
     }, 0);
-    
+
     // Round both numbers to 2 decimal places before comparing
     setButtonEnabled(debitTotal.toFixed(2) === assetTotal.toFixed(2));
-}, [voucherItems]);
+  }, [voucherItems]);
 
   if (
     branchListQuery.isPending ||
@@ -650,7 +693,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <div className="space-y-2">
+            <div className={`space-y-2 ${voucher ? "hidden" : ""}`}>
               <Label>Cliente</Label>
               <CreatableSelect
                 value={selectedCompanyOption}
@@ -709,6 +752,21 @@ export default function FormNewVoucher({
                 )}
               />
             )}
+            {voucher?.hojaDeRuta ? (
+              <FormField
+                control={voucherForm.control}
+                name="hojaDeRuta"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hoja de Ruta</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
             {/* <FormField
               control={voucherForm.control}
               name="branch"

@@ -10,13 +10,14 @@ import {
 import { useState } from "react";
 import { VoucherType } from "@/modules/shared/types/sharedTypes";
 import { Label } from "@/components/ui/label";
-import { VoucherItemFromExtractedPDF } from "@/lib/types";
+import { RegisterVoucherByDocumentResponse, VoucherItemFromExtractedPDF } from "@/lib/types";
 
 type FormNewVoucherWithTypeSelectProps = {
   bankId?: string;
   bankExtractId?: number;
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
+  voucher?: RegisterVoucherByDocumentResponse;
 };
 
 export default function FormNewVoucherWithTypeSelect({
@@ -24,6 +25,7 @@ export default function FormNewVoucherWithTypeSelect({
   bankExtractId,
   gloss,
   voucherItemsFromExtractedPDF,
+  voucher,
 }: FormNewVoucherWithTypeSelectProps) {
   const [selectedType, setSelectedType] = useState("0");
 
@@ -40,7 +42,7 @@ export default function FormNewVoucherWithTypeSelect({
       <div className="space-y-4">
         <Label>Selecciona el tipo de transacción que quieres realizar</Label>
         <Select
-          value={selectedType}
+          value={voucher?.type.toString() ?? selectedType}
           onValueChange={(value) => {
             setSelectedType(value);
           }}
