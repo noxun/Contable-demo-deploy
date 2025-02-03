@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/alt-text */
+import { REPORTS_LOGO_URL } from "@/lib/constants";
 import { PaySlip } from "@/lib/types";
 import { formatNumber } from "@/modules/shared/utils/validate";
-import { Document, Page, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { createTw } from "react-pdf-tailwind";
 
@@ -10,10 +12,22 @@ type PaySlipDocumentProps = {
 
 const tw = createTw({});
 
+const styles = StyleSheet.create({
+  page: {
+    padding: ".7cm",
+    width: "100%",
+  }
+})
 export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
   return (
     <Document>
-      <Page size="LETTER" style={tw("p-4 flex text-base")}>
+      <Page size="LETTER" style={[tw("flex text-base"), styles.page]}>
+        <View >
+          <Image
+            style={[tw("absolute top-0 right-0 z-50 object-cover"), { height: "1.2cm" }]}
+            src={REPORTS_LOGO_URL}
+          />
+        </View>
         {/* Fila datos header */}
         <View>
           <Text>NIT 375482020</Text>
