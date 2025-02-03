@@ -29,6 +29,8 @@ import { BalanceAmountsTemplate } from "@/modules/shared/components/templatePDF/
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { DataTableCustom } from "@/modules/shared/components/DataTableCustom";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LevelData } from "@/modules/results/types/types";
 
 
 export default function BalanceAmountsPage() {
@@ -83,6 +85,25 @@ export default function BalanceAmountsPage() {
     }
   };
   const handleChangeIsSus = () => setInSus(!inSus)
+
+  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+
+  const [isLoadingBalanceAmounts, setIsLoadingBalanceAmounts] = useState(false)
+
+
+  const { data: BalanceAmounts, refetch: refetchBalanceAmounts } = useQuery({
+    queryKey: ["AllBalanceAmounts"],
+    queryFn: () => getAllDataReportByType({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typePath: "balanceDeSumas",
+      level: selectedLevel
+    }),
+    enabled: false
+  })
+
   //excel
   const handleOnClickExcel = async () => {
     setIsLoading(true);
@@ -98,7 +119,7 @@ export default function BalanceAmountsPage() {
           params: {
             InitDate: format(dateRange.from, "yyyy/MM/dd"),
             EndDate: format(dateRange.to, "yyyy/MM/dd"),
-            Level: 2,
+            Level: selectedLevel,
             inSus: inSus,
           },
           responseType: "text",
@@ -128,19 +149,6 @@ export default function BalanceAmountsPage() {
       setIsLoading(false);
     }
   }
-  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
-  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-
-  const { data: BalanceAmounts } = useQuery({
-    queryKey: ["AllBalanceAmounts", format(dateRange.from || new Date(), 'yyyy-MM-dd')],
-    queryFn: () => getAllDataReportByType({
-      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
-      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
-      typePath: "balanceDeSumas",
-      level: 2
-    }),
-    enabled: !!dateRange.from && !!dateRange?.to
-  })
 
   const handleOnGeneratePDF = async () => {
     setPdfFile(null)
@@ -161,6 +169,12 @@ export default function BalanceAmountsPage() {
     } finally {
       setIsLoadingPDF(false);
     }
+  }
+
+  const handleOnRefetch = async () => {
+    setIsLoadingBalanceAmounts(true)
+    await refetchBalanceAmounts()
+    setIsLoadingBalanceAmounts(false)
   }
 
   const columns = [
@@ -237,16 +251,40 @@ export default function BalanceAmountsPage() {
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
-          <Button onClick={handleOnClickExcel} disabled={isLoading}>
-            {isLoading ? "Generando Reporte..." : "Generar Reporte"}
-          </Button>
-          <Button
-            onClick={handleOnGeneratePDF}
-            disabled={!BalanceAmounts}
+          <Select
+            value={selectedLevel.toString()}
+            onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
           >
-            {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Selecciona un nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Jerarquia</SelectLabel>
+                <SelectItem value="6">nivel 1</SelectItem>
+                <SelectItem value="5">nivel 2</SelectItem>
+                <SelectItem value="4">nivel 3</SelectItem>
+                <SelectItem value="3">nivel 4</SelectItem>
+                <SelectItem value="2">nivel 5</SelectItem>
+                <SelectItem value="1">nivel 6</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleOnRefetch} disabled={isLoadingBalanceAmounts}>
+            {isLoadingBalanceAmounts ? "Cargando..." : "Ver Resultados"}
           </Button>
         </div>
+      </div>
+      <div className="flex gap-4 py-3 items-center">
+        <Button onClick={handleOnClickExcel} disabled={isLoading}>
+          {isLoading ? "Generando Reporte..." : "Generar Reporte"}
+        </Button>
+        <Button
+          onClick={handleOnGeneratePDF}
+          disabled={!BalanceAmounts}
+        >
+          {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+        </Button>
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

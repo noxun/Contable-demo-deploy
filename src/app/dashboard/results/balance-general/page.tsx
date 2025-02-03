@@ -16,6 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllDataReportByType } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LevelData } from "@/modules/results/types/types";
 
 export default function BalanceGeneralPage() {
 
@@ -47,15 +49,18 @@ export default function BalanceGeneralPage() {
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-  const { data: dataBalanceGeneral } = useQuery({
-    queryKey: ["AllBalanceGeneral", format(dateRange.from ?? new Date(), 'dd-MM-yyyy')],
+  const [isLoadingBalanceGeneral, setIsLoadingBalanceGeneral] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+
+  const { data: dataBalanceGeneral, refetch: refetchBalanceGeneral } = useQuery({
+    queryKey: ["AllBalanceGeneral"],
     queryFn: () => getAllDataReportByType({
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typePath: "balanceGeneral",
-      level: 2
+      level: selectedLevel
     }),
-    enabled: !!dateRange.from && !!dateRange.to
+    enabled: false
   })
 
   const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
@@ -91,6 +96,12 @@ export default function BalanceGeneralPage() {
     }
   }
 
+  const handleOnRefetch = async () => {
+    setIsLoadingBalanceGeneral(true)
+    await refetchBalanceGeneral()
+    setIsLoadingBalanceGeneral(false)
+  }
+
   return (
     <>
       <div className="flex flex-col gap-6 h-full">
@@ -119,22 +130,46 @@ export default function BalanceGeneralPage() {
               <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
             </div>
           </div>
-          {/* aqui generar el reporte */}
           <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
-            <Button
-              onClick={handleOnGeneratePDF}
-              disabled={!dataBalanceGeneral}
+            <Select
+              value={selectedLevel.toString()}
+              onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
             >
-              {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Selecciona un nivel" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Jerarquia</SelectLabel>
+                  <SelectItem value="6">nivel 1</SelectItem>
+                  <SelectItem value="5">nivel 2</SelectItem>
+                  <SelectItem value="4">nivel 3</SelectItem>
+                  <SelectItem value="3">nivel 4</SelectItem>
+                  <SelectItem value="2">nivel 5</SelectItem>
+                  <SelectItem value="1">nivel 6</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleOnRefetch} disabled={isLoadingBalanceGeneral}>
+              {isLoadingBalanceGeneral ? "Cargando..." : "Ver Resultados"}
             </Button>
-            <ReportExcelGenerate
-              dateRange={dateRange}
-              inSus={inSus}
-              typeFile={ReportPaths.reportExcel}
-              typePathExcel="balanceGeneral"
-              level={2}
-            />
           </div>
+        </div>
+        {/* aqui generar el reporte */}
+        <div className="flex gap-4 py-3 items-center">
+          <Button
+            onClick={handleOnGeneratePDF}
+            disabled={!dataBalanceGeneral}
+          >
+            {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+          </Button>
+          <ReportExcelGenerate
+            dateRange={dateRange}
+            inSus={inSus}
+            typeFile={ReportPaths.reportExcel}
+            typePathExcel="balanceGeneral"
+            level={selectedLevel}
+          />
         </div>
 
         {/* Descargar pdf */}

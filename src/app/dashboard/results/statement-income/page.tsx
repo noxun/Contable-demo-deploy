@@ -43,6 +43,8 @@ import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDataReportByType } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LevelData } from "@/modules/results/types/types";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -186,16 +188,19 @@ export default function StatementIncomePage() {
   const [inSus, setInSus] = useState<boolean>(false);
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-  const { data: dataStatementIncome } = useQuery({
-    queryKey: ["AllStatementIncome", format(dateRange.from ?? new Date(), 'dd-MM-yyyy')],
+  const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+
+  const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
+    queryKey: ["AllStatementIncome"],
 
     queryFn: () => getAllDataReportByType({
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typePath: "estadoDeResultado",
-      level: 2
+      level: selectedLevel
     }),
-    enabled: !!dateRange.from && !!dateRange.to
+    enabled: false
   })
 
 
@@ -251,6 +256,13 @@ export default function StatementIncomePage() {
     },
   ];
 
+
+  const handleOnRefetch = async () => {
+    setIsLoadingStatementIncome(true)
+    await refetchStatementIncome()
+    setIsLoadingStatementIncome(false)
+  }
+
   const columnsIncome = createColumns('Ingresos')
   const columnsExpenses = createColumns('Gastos')
 
@@ -284,19 +296,45 @@ export default function StatementIncomePage() {
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
-          <Button
-            onClick={handleOnGeneratePDF}
-            disabled={!dataStatementIncome}
+          <Select
+            value={selectedLevel.toString()}
+            onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
           >
-            {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Selecciona un nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Jerarquia</SelectLabel>
+                <SelectItem value="6">nivel 1</SelectItem>
+                <SelectItem value="5">nivel 2</SelectItem>
+                <SelectItem value="4">nivel 3</SelectItem>
+                <SelectItem value="3">nivel 4</SelectItem>
+                <SelectItem value="2">nivel 5</SelectItem>
+                <SelectItem value="1">nivel 6</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleOnRefetch} disabled={isLoadingStatementIncome}>
+            {isLoadingStatementIncome ? "Cargando..." : "Ver Resultados"}
           </Button>
-          <ReportExcelGenerate
-            dateRange={dateRange}
-            inSus={inSus}
-            typeFile={ReportPaths.reportExcel}
-            typePathExcel="estadoDeResultado"
-          />
         </div>
+      </div>
+
+      <div className="flex gap-4 py-3 items-center">
+        <Button
+          onClick={handleOnGeneratePDF}
+          disabled={!dataStatementIncome}
+        >
+          {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+        </Button>
+        <ReportExcelGenerate
+          level={selectedLevel}
+          dateRange={dateRange}
+          inSus={inSus}
+          typeFile={ReportPaths.reportExcel}
+          typePathExcel="estadoDeResultado"
+        />
       </div>
 
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
