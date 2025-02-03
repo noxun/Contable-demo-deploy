@@ -63,7 +63,7 @@ export default function FormNewVoucherWithTypeSelect({
         bankExtractId={bankExtractId}
         gloss={gloss}
         voucherItemsFromExtractedPDF={validVoucherItemsPDF}
-        voucher={voucher}
+        voucherFromRegisterByDocResponse={voucher}
       />
     </>
   );
