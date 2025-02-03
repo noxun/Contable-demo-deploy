@@ -78,7 +78,7 @@ type FormNewVoucherProps = {
   bankExtractId?: number;
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
-  voucher?: RegisterVoucherByDocumentResponse;
+  voucherFromRegisterByDocResponse?: RegisterVoucherByDocumentResponse;
 };
 
 export default function FormNewVoucher({
@@ -88,7 +88,7 @@ export default function FormNewVoucher({
   routeType,
   gloss,
   voucherItemsFromExtractedPDF,
-  voucher,
+  voucherFromRegisterByDocResponse,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -143,24 +143,23 @@ export default function FormNewVoucher({
     });
   }
 
-  if (voucher && voucher.items) {
-    voucher.items.forEach((item) => {
-      setVoucherItems((items) => [
-        ...items,
-        {
-          debitBs: item.debitBs,
-          debitSus: item.debitSus,
-          assetBs: item.assetBs,
-          assetSus: item.assetSus,
-          gloss: item.gloss,
-          accountId: item.accountId.toString(),
-          voucherId: item.voucherId,
-          canDebit: true,
-          canAsset: true,
-        },
-      ]);
-    });
-  }
+  useEffect(() => {
+    if (voucherFromRegisterByDocResponse && voucherFromRegisterByDocResponse.items) {
+      const newItems = voucherFromRegisterByDocResponse.items.map((item) => ({
+        debitBs: item.debitBs,
+        debitSus: item.debitSus,
+        assetBs: item.assetBs,
+        assetSus: item.assetSus,
+        gloss: item.gloss,
+        accountId: item.accountId.toString(),
+        voucherId: item.voucherId,
+        canDebit: true,
+        canAsset: true,
+      }));
+
+      setVoucherItems(newItems);
+    }
+  }, [voucherFromRegisterByDocResponse]);
 
   const banksQuery = useQuery({
     queryKey: ["banks"],
@@ -388,17 +387,17 @@ export default function FormNewVoucher({
     sucursalId: "",
   };
 
-  if (voucher) {
+  if (voucherFromRegisterByDocResponse) {
     voucherDefaultValues = {
-      exchangeRate: voucher.exchangeRate ?? 6.97,
-      coin: (voucher.coin as "USD" | "BOB") ?? "BOB",
-      checkNum: voucher.checkNum ?? "",
-      gloss: voucher.gloss ?? "",
-      bankId: voucher.bankId ?? null,
+      exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
+      coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
+      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "",
+      gloss: voucherFromRegisterByDocResponse.gloss ?? "",
+      bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
-      costCenterId: voucher.costCenterId ?? "",
-      sucursalId: voucher.sucursalId ?? "",
-      hojaDeRuta: voucher.hojaDeRuta ?? "",
+      costCenterId: voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
+      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "",
+      hojaDeRuta: voucherFromRegisterByDocResponse.hojaDeRuta ?? "",
     };
   } else {
     voucherDefaultValues = defaultValues;
@@ -406,7 +405,7 @@ export default function FormNewVoucher({
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
-    defaultValues: defaultValues,
+    defaultValues: voucherDefaultValues
   });
 
   const handleModelSeatChange = async (selectedOption: any) => {
@@ -693,7 +692,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <div className={`space-y-2 ${voucher ? "hidden" : ""}`}>
+            <div className={`space-y-2 ${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
               <Label>Cliente</Label>
               <CreatableSelect
                 value={selectedCompanyOption}
@@ -718,7 +717,7 @@ export default function FormNewVoucher({
               />
             </div>
             {isPendingTrazoInternCodes ? (
-              <div>
+              <div className={`${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
                 Cargando, Seleccione un cliente para mostrar sus hojas de
                 ruta...
               </div>
@@ -752,7 +751,7 @@ export default function FormNewVoucher({
                 )}
               />
             )}
-            {voucher?.hojaDeRuta ? (
+            {voucherFromRegisterByDocResponse?.hojaDeRuta ? (
               <FormField
                 control={voucherForm.control}
                 name="hojaDeRuta"
@@ -760,7 +759,7 @@ export default function FormNewVoucher({
                   <FormItem>
                     <FormLabel>Hoja de Ruta</FormLabel>
                     <FormControl>
-                      <Input placeholder="" {...field}/>
+                      <Input disabled placeholder="" {...field}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
