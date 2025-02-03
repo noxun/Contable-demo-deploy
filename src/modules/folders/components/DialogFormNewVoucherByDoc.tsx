@@ -33,7 +33,7 @@ export default function DialogFormNewVoucherByDoc(
             Formulario para registrar un nuevo voucher
           </DialogDescription>
         </DialogHeader>
-        <FormNewVoucherWithTypeSelect/>
+        <FormNewVoucherWithTypeSelect voucher={voucher}/>
       </DialogContent>
     </Dialog>
   );
