@@ -490,3 +490,35 @@ export type DiaryBookResponse = {
     haberSus: number
   }
 }
+
+export type RegisterVoucherByDocumentResponse = {
+  type: number
+  exchangeRate: number
+  voucherDate: string
+  coin: string
+  checkNum: any
+  canceledTo: any
+  gloss: string
+  bankId: any
+  bankItemRef: number
+  accountingBoxItemRef: number
+  sucursalId: number
+  costCenterId: number
+  createdById: number
+  hojaDeRuta: string
+  bookSBRef: number
+  typeDocument: string
+  items: Array<{
+    debitBs: number
+    debitSus: number
+    assetBs: number
+    assetSus: number
+    gloss: string
+    accountId: number
+    voucherId: number
+    createdAt: string
+    conceptExpenseId: any
+    carpeta: any
+    typeOfExpense: any
+  }>
+}

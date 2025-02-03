@@ -20,6 +20,7 @@ import {
   ModelSeatDetailResponse,
   NewConfigValues,
   PostModelSeat,
+  RegisterVoucherByDocumentResponse,
   Role,
   RoleMenu,
   SiatMotionAccount,
@@ -1216,7 +1217,7 @@ export async function registerVoucherByDocuments(values: {
       },
     }
   );
-  return response.data;
+  return response.data as RegisterVoucherByDocumentResponse;
 }
 
 export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
