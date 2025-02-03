@@ -26,7 +26,7 @@ export default function DialogFormNewVoucherByDoc(
 
   return (
     <Dialog open={open} onOpenChange={setOpen} >
-      <DialogContent>
+      <DialogContent className="min-w-[80%] h-auto overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nuevo Voucher</DialogTitle>
           <DialogDescription>
