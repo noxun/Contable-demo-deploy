@@ -1,16 +1,24 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { registerVoucherByDocuments } from "@/lib/data";
 import { SubData } from "@/lib/trazoTypes";
 import { RegisterVoucherByDocumentResponse } from "@/lib/types";
 import useUserStore from "@/lib/userStore";
-import DialogFormNewVoucher from "@/modules/banks/components/DialogFormNewVoucher";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
-import DialogFormNewVoucherByDoc from "./DialogFormNewVoucherByDoc";
+import FormNewVoucherWithTypeSelect from "@/modules/shared/components/FormNewVoucherWithTypeSelect";
 
 export default function ButtonRegisterVoucherByDoc({
   items,
@@ -64,18 +72,27 @@ export default function ButtonRegisterVoucherByDoc({
     });
 
     setReturnedData(returnedData);
-
   };
 
-  return (<>
-    <Button onClick={handleClick}>Registrar asiento</Button>
-    {
-      returnedData && (
-        <DialogFormNewVoucherByDoc
-          isOpen={true}
-          voucher={returnedData}
-        />
-      )
-    }
-  </>);
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button onClick={handleClick}>Registrar asiento</Button>
+      </DialogTrigger>
+      <DialogContent className="min-w-[80%] h-[80%] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Nuevo Voucher</DialogTitle>
+          <DialogDescription>
+            Formulario para registrar un nuevo voucher
+          </DialogDescription>
+        </DialogHeader>
+
+        {registerVoucherByDocumentMutation.isPending || !returnedData ? (
+          <div>Cargando...</div>
+        ) : (
+          <FormNewVoucherWithTypeSelect voucher={returnedData} />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }
