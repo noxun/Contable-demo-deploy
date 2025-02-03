@@ -1,3 +1,4 @@
+export type LevelData = 6 | 5 | 4 | 3 | 2 | 1;
 
 export interface BalanceAmounts {
   debit: number;

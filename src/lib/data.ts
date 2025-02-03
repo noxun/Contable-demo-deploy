@@ -53,6 +53,7 @@ import {
   SchemaSalaryType,
 } from "@/modules/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
+import { LevelData } from "@/modules/results/types/types";
 
 export function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -1257,7 +1258,6 @@ export async function fetchDiaryBookData(
 //REPORT
 //XlslData / ${reporte}
 type PathReport = "balanceGeneral" | "balanceDeSumas" | "estadoDeResultado";
-type LevelData = 6 | 5 | 4 | 3 | 2 | 1;
 export async function getAllDataReportByType({
   iDate,
   eDate,
