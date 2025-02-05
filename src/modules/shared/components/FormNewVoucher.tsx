@@ -434,9 +434,9 @@ export default function FormNewVoucher({
     let assetTotal = voucherItems.reduce((total, currentItem) => {
       return total + (currentItem?.assetBs ?? 0);
     }, 0);
-
-    // Round both numbers to 2 decimal places before comparing
-    setButtonEnabled(debitTotal.toFixed(2) === assetTotal.toFixed(2));
+  
+    // Use Math.abs to compare with a small epsilon value
+    setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
   }, [voucherItems]);
 
   if (
