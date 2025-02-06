@@ -34,7 +34,6 @@ export interface Payroll {
   salariesAndWagesItems: Salaries[]
 }
 
-
 export interface Salaries {
   id: number,
   salariesAndwagesId: number,
@@ -51,4 +50,62 @@ export interface Salaries {
   dsctoShirtDelays: number,
   liquidPayable: number,
   currenDate: Date,
-}  
+}
+
+export interface ItemPayment {
+  idItems: number,
+  bonusAntiquity: number,
+  extraTimeMinutes: number,
+  valueForOvertime: number,
+  productionBonus: number,
+  loan: number,
+  exelTrainingCorse: number,
+  anbFineSettlement: number,
+  onAccount: number,
+  dsctoShirtDelays: number,
+}
+
+export interface ResponseSalariesAndPayrolls {
+  salaryTaxReturnTotal: number;
+  bonusAntiquityTotal: number;
+  internalPayrollSalaryTotal: number;
+  productionBonus: number;
+  valueForOvertime: number;
+  totalGanadoT: number;
+  afpTotal: number;
+  loanTotal: number;
+  exelTrainingCorseTotal: number;
+  anbFineSettlementTotal: number;
+  onAccountTotal: number;
+  dsctoShirtDelaysTotal: number;
+  liquidPayableTotal: number;
+  itemsSalariesWages: SalaryAndPayrollItem[];
+}
+
+export interface SalaysAndPayrollItem {
+  id: number;
+  dateNow: Date;
+  nombres: string;
+  area: string;
+  sexo: string;
+  cargo: string;
+  entryDate: Date;
+  salaryTaxReturn: number;
+  internalPayrollSalary: number;
+  idItems: number;
+  salariesAndwagesId: number;
+  bonusAntiquity: number;
+  productionBonus: number;
+  extraTimeMinutes: number;
+  valueForOvertime: number;
+  totalGanado: number;
+  afp: number;
+  loan: number;
+  exelTrainingCorse: number;
+  anbFineSettlement: number;
+  onAccount: number;
+  dsctoShirtDelays: number;
+  liquidPayable: number;
+  currenDate: Date;
+  isPaid: boolean;
+}
