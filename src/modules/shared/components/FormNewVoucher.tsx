@@ -110,6 +110,9 @@ export default function FormNewVoucher({
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
+  const [totalDebitValue, setTotalDebitValue] = useState(0);
+  const [totalAssetValue, setTotalAssetValue] = useState(0);
+
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
       debitBs: null,
@@ -434,9 +437,17 @@ export default function FormNewVoucher({
     let assetTotal = voucherItems.reduce((total, currentItem) => {
       return total + (currentItem?.assetBs ?? 0);
     }, 0);
+
+    setTotalDebitValue(debitTotal);
+    setTotalAssetValue(assetTotal);
   
     // Use Math.abs to compare with a small epsilon value
-    setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
+    // setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
+    if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
+      setButtonEnabled(true);
+    }else{
+      toast.info("La suma de los débitos y créditos no es igual");
+    }
   }, [voucherItems]);
 
   if (
@@ -822,6 +833,8 @@ export default function FormNewVoucher({
             setVoucherItems={setVoucherItems}
             applyGlossToAll={applyGlossToAll}
             glossValue={voucherForm.getValues("gloss")}
+            totalDebitValue={totalDebitValue}
+            totalAssetValue={totalAssetValue}
           />
           <Button
             type="submit"

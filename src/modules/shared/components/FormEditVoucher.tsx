@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Voucher, VoucherItem, VoucherType } from "../types/sharedTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBank } from "@/modules/banks/interface/banks";
@@ -64,11 +64,16 @@ export default function FormEditVoucher({
   type,
   voucher,
   accountDate,
-  accountCode
+  accountCode,
 }: FormEditVoucherProps) {
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>(
     voucher?.items ?? []
   );
+
+  const [totalDebitBs, setTotalDebitBs] = useState(0);
+  const [totalAssetBs, setTotalAssetBs] = useState(0);
+
+  const [editionEnabled, setEditionEnabled] = useState(false);
 
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
     null
@@ -176,13 +181,23 @@ export default function FormEditVoucher({
     editVoucherMutation.mutate(values);
   }
 
-  const totalDebitBs = (
-    Array.isArray(voucher.items) ? voucher.items : []
-  ).reduce((acc, item) => acc + (item?.debitBs ?? 0), 0);
+  useEffect(() => {
+    let totalDebitBs = voucherItems.reduce((total, currentItem) => {
+      return total + (currentItem?.debitBs ?? 0);
+    }, 0);
+    let totalAssetBs = voucherItems.reduce((total, currentItem) => {
+      return total + (currentItem?.assetBs ?? 0);
+    }, 0);
 
-  const totalAssetBs = (
-    Array.isArray(voucher.items) ? voucher.items : []
-  ).reduce((acc, item) => acc + (item?.assetBs ?? 0), 0);
+    console.log(typeof totalDebitBs, typeof totalAssetBs);
+    setTotalDebitBs(totalDebitBs);
+    setTotalAssetBs(totalAssetBs);
+
+    setEditionEnabled(
+      Number(Number(totalDebitBs).toFixed(2)) ===
+        Number(Number(totalAssetBs).toFixed(2))
+    );
+  }, [voucherItems]);
 
   const voucherItemSchema = z.object({
     id: z.number().optional(),
@@ -238,6 +253,8 @@ export default function FormEditVoucher({
   ) {
     return <Spinner />;
   }
+
+  console.log(totalDebitBs, totalAssetBs);
 
   return (
     <div className="max-h-[80vh] overflow-y-auto px-2">
@@ -434,7 +451,7 @@ export default function FormEditVoucher({
             )}
           />
           <br />
-          <Button type="submit">
+          <Button type="submit" disabled={!editionEnabled}>
             <span className="mr-2">Guardar Edicion de Registro {}</span>
             <Save size={20} />
           </Button>
@@ -452,8 +469,12 @@ export default function FormEditVoucher({
       />
       <br />
       <div className="flex justify-center gap-10 border">
-        <div className="font-semibold">Total Debe Bs: {totalDebitBs}</div>
-        <div className="font-semibold">Total Haber Bs: {totalAssetBs}</div>
+        <div className="font-semibold">
+          Total Debe Bs: {totalDebitBs.toFixed(2)}
+        </div>
+        <div className="font-semibold">
+          Total Haber Bs: {totalAssetBs.toFixed(2)}
+        </div>
       </div>
     </div>
   );
