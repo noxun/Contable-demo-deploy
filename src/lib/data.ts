@@ -98,14 +98,15 @@ export async function fetchConfigValues() {
 export async function fetchVouchers(
   voucherType: VoucherType,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
+  siat: "" | "siat" = ""
 ) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/Voucher/All`, {
+  const response = await api.get(`/api/Voucher/all${siat}`, {
     params: {
       type: voucherType,
       PageNumber: page,
@@ -1332,4 +1333,15 @@ export async function generateDiaryBookExcel(InitDate: string,
     }
   });
   return response.data as string;
+}
+
+export async function synchronizeAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(`/api/Voucher/Syncronize`);
+  return response.data;
 }
