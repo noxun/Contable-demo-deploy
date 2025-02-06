@@ -14,11 +14,12 @@ interface Props {
 export const SalaryDialogEdit = ({ idItem, buttonElement }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: ItemSelected } = useQuery({
-    queryKey: ['SalaryEdit', idItem],
+  const { data: ItemSelected, refetch: refetchPayment, isRefetching } = useQuery({
+    queryKey: ['SalaryEdit'],
     queryFn: () => {
       return GetSalariesById({ id: idItem })
-    }
+    },
+    enabled: false
   })
 
   const handleClose = () => {
@@ -35,23 +36,28 @@ export const SalaryDialogEdit = ({ idItem, buttonElement }: Props) => {
               className="size-10 p-2 text-blue-500 rounded-full"
               aria-label="Actualizar"
               title="Actualizar"
+              onClick={async () => await refetchPayment()}
             >
               <FilePenLineIcon />
             </Button>
           )
         }
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Actualizar Registro</DialogTitle>
-          <DialogDescription />
-        </DialogHeader>
-        <FormSalary
-          idPayroll={idItem}
-          onClose={handleClose}
-          itemForEdit={ItemSelected}
-        />
-      </DialogContent>
+      {
+        !isRefetching && idItem && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Actualizar Registro</DialogTitle>
+              <DialogDescription />
+            </DialogHeader>
+            <FormSalary
+              idPayroll={idItem}
+              onClose={handleClose}
+              itemForEdit={ItemSelected}
+            />
+          </DialogContent>
+        )
+      }
     </Dialog>
   )
 }
