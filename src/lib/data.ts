@@ -46,8 +46,10 @@ import {
   SchemaFixedAsset,
 } from "@/modules/fixed-assets/types/types";
 import {
+  ItemPayment,
   Payroll,
   ResponsePayrolls,
+  ResponseSalariesAndPayrolls,
   Salaries,
   SchemaPayrollType,
   SchemaSalaryType,
@@ -980,10 +982,10 @@ export async function GetPayrollsAndSalaries({ date }: { date: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `/api/SalariesAndWages/itemsTodo`;
+  const URLRequest = `/api/SalariesAndWages/itemsMonth`;
 
   setAuthToken(token);
-  const { data } = await api.get<ResponsePayrolls>(URLRequest, {
+  const { data } = await api.get<ResponseSalariesAndPayrolls>(URLRequest, {
     params: {
       date: date,
     },
@@ -1027,10 +1029,12 @@ export async function GetPayrollById({ id }: { id: string }) {
 //UPDATE By Id: Payrolls
 export async function UpdatePayrollById({
   id,
+  idItem,
   payroll,
 }: {
   id: string;
-  payroll: Payroll;
+  idItem: string;
+  payroll: Payroll & ItemPayment;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1043,6 +1047,31 @@ export async function UpdatePayrollById({
   const { data } = await api.put(URLRequest, payroll, {
     params: {
       id: id,
+      IdItems: idItem
+    },
+  });
+  return data;
+}
+//UPDATE Paid By employeeId
+export async function updatePaymentStatusByEmployeeId({
+  idEmployee,
+  paid,
+}: {
+  idEmployee: string;
+  paid: boolean;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/items/IsPaid`;
+
+  setAuthToken(token);
+  const { data } = await api.put(URLRequest, idEmployee, {
+    params: {
+      id: idEmployee,
+      IsPaid: paid,
     },
   });
   return data;
