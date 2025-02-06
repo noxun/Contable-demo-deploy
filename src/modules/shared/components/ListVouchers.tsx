@@ -18,19 +18,21 @@ import { Button } from "@/components/ui/button";
 type ListVouchersProps = {
   voucherType: VoucherType;
   voucherTypeRoute: VoucherTypeRoute;
+  siat?: "siat" | "";
 };
 
 export default function ListVouchers({
   voucherType,
   voucherTypeRoute,
+  siat = "",
 }: ListVouchersProps) {
   const [page, setPage] = useState(1);
   const [inputPage, setInputPage] = useState('');
   const pageSize = 10;
 
   const { data, isLoading, isPending, error } = useQuery({
-    queryKey: ["Vouchers", voucherType, page, pageSize],
-    queryFn: () => fetchVouchers(voucherType, page, pageSize),
+    queryKey: ["Vouchers", voucherType, page, pageSize, siat],
+    queryFn: () => fetchVouchers(voucherType, page, pageSize, siat),
     placeholderData: keepPreviousData,
   });
 
