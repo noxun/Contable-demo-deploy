@@ -419,23 +419,106 @@ export type BookBiggerData = {
   totalSaldoText: string
   totalSaldoTextSus: string
   literal: any
-  voucherItems: Array<{
+  previousBalance: number
+  previousBalanceSus: number
+  voucherItems: BookBiggerDataVoucherItem[]
+}
+
+export type BookBiggerDataVoucherItem = {
+  id: number
+  debitBs: number
+  debitSus: number
+  assetBs: number
+  assetSus: number
+  totalSaldoBs: number
+  totalSaldoSus: number
+  previousBalance: number
+  gloss: string
+  accountId: number
+  code: string
+  description: string
+  typeOfExpense: any
+  createdAt: string
+  voucherId: number
+  type: number
+  typeDes: string
+  hojaDeRuta?: string
+}
+
+export type DiaryBookResponse = {
+  report: Array<{
     id: number
+    type: number
+    num: number
+    typeDes: string
+    voucher: any
+    gloss: string
+    exchangeRate: number
+    coin: string
+    voucherDate: string
+    date: string
+    voucherItems: Array<{
+      id: number
+      debitBs: number
+      debitSus: number
+      assetBs: number
+      assetSus: number
+      totalSaldoBs: number
+      totalSaldoSus: number
+      gloss: string
+      accountId: number
+      code: string
+      description: string
+      typeOfExpense: any
+      createdAt: string
+      voucherId: number
+      type: number
+      typeDes: string
+      hojaDeRuta?: string
+    }>
+    plusData: {
+      debe: number
+      haber: number
+      debeSus: number
+      haberSus: number
+    }
+  }>
+  total: {
+    debe: number
+    haber: number
+    debeSus: number
+    haberSus: number
+  }
+}
+
+export type RegisterVoucherByDocumentResponse = {
+  type: number
+  exchangeRate: number
+  voucherDate: string
+  coin: string
+  checkNum: any
+  canceledTo: any
+  gloss: string
+  bankId: any
+  bankItemRef: number
+  accountingBoxItemRef: number
+  sucursalId: number
+  costCenterId: number
+  createdById: number
+  hojaDeRuta: string
+  bookSBRef: number
+  typeDocument: string
+  items: Array<{
     debitBs: number
     debitSus: number
     assetBs: number
     assetSus: number
-    totalSaldoBs: number
-    totalSaldoSus: number
     gloss: string
     accountId: number
-    code: string
-    description: string
-    typeOfExpense: any
-    createdAt: string
     voucherId: number
-    type: number
-    typeDes: string
-    hojaDeRuta?: string
+    createdAt: string
+    conceptExpenseId: any
+    carpeta: any
+    typeOfExpense: any
   }>
 }

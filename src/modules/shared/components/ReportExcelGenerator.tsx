@@ -11,14 +11,16 @@ interface Props {
   inSus: boolean,
   typeFile: ReportType,
   typePathExcel?: string
+  level?: number
 }
 //Component for generate excel file to biggerBook
-export const ReportExcelGenerate = ({ dateRange, inSus, typeFile, typePathExcel }: Props) => {
+export const ReportExcelGenerate = ({ dateRange, inSus, typeFile, typePathExcel, level }: Props) => {
 
   const queryParams = {
-    initDate: dateRange.from && format(dateRange.from, "yyyy-MM-dd"),
-    endDate: dateRange.to && format(dateRange.to, "yyyy-MM-dd"),
+    InitDate: dateRange.from && format(dateRange.from, "yyyy-MM-dd"),
+    EndDate: dateRange.to && format(dateRange.to, "yyyy-MM-dd"),
     inSus,
+    Level: level
   };
 
   const { refetch, isLoading } = useQuery({

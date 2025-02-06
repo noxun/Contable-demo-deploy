@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { es } from "date-fns/locale";
 import { DataTable } from "@/components/ui/data-table";
@@ -38,8 +38,13 @@ import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePD
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { ReportPaths } from "@/modules/shared/utils/validate";
+import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDataReportByType } from "@/lib/data";
+import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LevelData } from "@/modules/results/types/types";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -182,6 +187,21 @@ export default function StatementIncomePage() {
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
   const [inSus, setInSus] = useState<boolean>(false);
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
+  const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+
+  const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
+    queryKey: ["AllStatementIncome"],
+
+    queryFn: () => getAllDataReportByType({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typePath: "estadoDeResultado",
+      level: selectedLevel
+    }),
+    enabled: false
+  })
 
 
   const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
@@ -195,6 +215,56 @@ export default function StatementIncomePage() {
   };
 
   const handleChangeIsSus = () => setInSus(!inSus)
+
+  const handleOnGeneratePDF = async () => {
+    setPdfFile(null)
+    if (!dataStatementIncome) return
+    try {
+      setIsLoadingPDF(true);
+      toast("Generando reporte...");
+      const MyDocument = (
+        <EstadoResultadosTemplate
+          dateRange={dateRange}
+          records={dataStatementIncome}
+        />
+      );
+      setPdfFile(MyDocument);
+      toast.success("Reporte generado exitosamente");
+    } catch (error) {
+      toast.error("Error al generar el reporte, intente nuevamente")
+    } finally {
+      setIsLoadingPDF(false);
+    }
+  }
+
+  type ColumnType = "Ingresos" | "Gastos";
+  const createColumns = (type: ColumnType) => [
+    {
+      header: "Cuenta",
+      accessorKey: "account",
+      cell: ({ row }: any) => row.original.account,
+    },
+    {
+      header: type,
+      accessorKey: "description",
+      cell: ({ row }: any) => row.original.description,
+    },
+    {
+      header: "Monto",
+      accessorKey: "amount",
+      cell: ({ row }: any) => formatNumber(row.original.amount),
+    },
+  ];
+
+
+  const handleOnRefetch = async () => {
+    setIsLoadingStatementIncome(true)
+    await refetchStatementIncome()
+    setIsLoadingStatementIncome(false)
+  }
+
+  const columnsIncome = createColumns('Ingresos')
+  const columnsExpenses = createColumns('Gastos')
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -226,23 +296,45 @@ export default function StatementIncomePage() {
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
-
-          <ReportGeneratorFile
-            dateRange={dateRange}
-            inSus={inSus}
-            reportNamePath="XlxsData"
-            paramType="estadoDeResultado"
-            setFile={setPdfFile}
-            setGeneratedFiles={setGeneratedFiles}
-            setShowDialog={setShowDialog}
-          />
-          <ReportExcelGenerate
-            dateRange={dateRange}
-            inSus={inSus}
-            typeFile={ReportPaths.reportExcel}
-            typePathExcel="estadoDeResultado"
-          />
+          <Select
+            value={selectedLevel.toString()}
+            onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Selecciona un nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Jerarquia</SelectLabel>
+                <SelectItem value="6">nivel 1</SelectItem>
+                <SelectItem value="5">nivel 2</SelectItem>
+                <SelectItem value="4">nivel 3</SelectItem>
+                <SelectItem value="3">nivel 4</SelectItem>
+                <SelectItem value="2">nivel 5</SelectItem>
+                <SelectItem value="1">nivel 6</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleOnRefetch} disabled={isLoadingStatementIncome}>
+            {isLoadingStatementIncome ? "Cargando..." : "Ver Resultados"}
+          </Button>
         </div>
+      </div>
+
+      <div className="flex gap-4 py-3 items-center">
+        <Button
+          onClick={handleOnGeneratePDF}
+          disabled={!dataStatementIncome}
+        >
+          {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+        </Button>
+        <ReportExcelGenerate
+          level={selectedLevel}
+          dateRange={dateRange}
+          inSus={inSus}
+          typeFile={ReportPaths.reportExcel}
+          typePathExcel="estadoDeResultado"
+        />
       </div>
 
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -278,16 +370,52 @@ export default function StatementIncomePage() {
       {/* alternativa para descargar  */}
       {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
-      {pdfFile && (
-        <>
-          <div style={{ height: "800px" }}>
-            <PDFViewer style={{ width: "100%", height: "100%" }}>
-              {pdfFile}
-            </PDFViewer>
-          </div>
-        </>)
-      }
+      {/* Descargar PDF (estado de resultados) */}
+      <div className="h-16 flex items-center">
+        {pdfFile && (
+          <ButtonLinkPDF
+            pdfFile={pdfFile}
+            nameFile="R_estado_resultados"
+          />
+        )}
+      </div>
+      {/* Vista Previa */}
+      {
+        dataStatementIncome && (
+          <section className="flex flex-col gap-2">
+            <details>
+              <summary className="pb-2">Ingresos</summary>
+              <>
+                <DataTable columns={columnsIncome} data={dataStatementIncome.income} />
 
+              </>
+            </details>
+            <details>
+              <summary className="pb-2">Gastos</summary>
+              <DataTable columns={columnsExpenses} data={dataStatementIncome.expenses} />
+            </details>
+            <details>
+              <summary className="pb-2">Resultados</summary>
+              <div className="grid grid-cols-2 w-full sm:w-1/2 gap-1 text-sm text-gray-600 font-semibold">
+                {
+                  [
+                    { label: 'Total Gastos', value: formatNumber(dataStatementIncome.totalExpense) },
+                    { label: 'Total Ingresos', value: formatNumber(dataStatementIncome.totalIncome) },
+                    { label: 'Impuestos antes de utilidades', value: formatNumber(dataStatementIncome.periodUtility) },
+                    { label: 'Impuestos alas utilidades', value: formatNumber(dataStatementIncome.taxOnProfits) },
+                    { label: 'Resultado de gestion', value: formatNumber(dataStatementIncome.managementResult) },
+                  ].map((item, index) => (
+                    <React.Fragment key={index}>
+                      <p>{item.label}</p>
+                      <p className="text-base text-right">{item.value}</p>
+                    </React.Fragment>
+                  ))
+                }
+              </div>
+            </details>
+          </section>
+        )
+      }
 
       {/* <DocViewer
         activeDocument={activeDocument}

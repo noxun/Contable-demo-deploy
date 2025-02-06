@@ -63,7 +63,7 @@ export default function FormEditVoucherItems({
   setVoucherItems,
   accountData,
   voucher,
-  accountDate
+  accountDate,
 }: FormEditVoucherItemsProps) {
   const { token } = useToken();
 
@@ -72,7 +72,7 @@ export default function FormEditVoucherItems({
     let listVoucherItem = voucherItems;
     listVoucherItem[index] = {
       ...listVoucherItem[index],
-      [name]: value,
+      [name]: isNaN(parseFloat(value)) ? 0 : parseFloat(value),
     };
     setVoucherItems([...listVoucherItem]);
   }
@@ -133,9 +133,11 @@ export default function FormEditVoucherItems({
     },
 
     onSuccess: () => {
-      if(accountDate){
-        console.log("llego aca?")
-        queryClient.invalidateQueries({ queryKey: ["bookBiggerData", accountDate] });
+      if (accountDate) {
+        console.log("llego aca?");
+        queryClient.invalidateQueries({
+          queryKey: ["bookBiggerData", accountDate],
+        });
       }
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       queryClient.invalidateQueries({
@@ -157,11 +159,13 @@ export default function FormEditVoucherItems({
 
   //ESTO SE MUERE
   //FIXME:
-  const accountOptions = (Array.isArray(accountData) ? accountData : []).map((item) => ({
-    value: item.id.toString(),
-    label: item.description,
-    //...item
-  }));
+  const accountOptions = (Array.isArray(accountData) ? accountData : []).map(
+    (item) => ({
+      value: item.id.toString(),
+      label: item.description,
+      //...item
+    })
+  );
 
   //const formatOptionLabel = ({ label }) => <div>{label}</div>;
   //const getOptionValue = (option) => option.value;
@@ -228,7 +232,7 @@ export default function FormEditVoucherItems({
     <div>
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-medium">Asiento contable</h2>
-        <Dialog >
+        <Dialog>
           <DialogTrigger asChild>
             <Button>
               <span className="mr-2">Adicionar Item</span>

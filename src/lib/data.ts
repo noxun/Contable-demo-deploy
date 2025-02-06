@@ -11,6 +11,7 @@ import {
   BranchToList,
   ConfigValues,
   CostCenter,
+  DiaryBookResponse,
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
   InvoiceRegistryType,
@@ -19,6 +20,7 @@ import {
   ModelSeatDetailResponse,
   NewConfigValues,
   PostModelSeat,
+  RegisterVoucherByDocumentResponse,
   Role,
   RoleMenu,
   SiatMotionAccount,
@@ -51,6 +53,7 @@ import {
   SchemaSalaryType,
 } from "@/modules/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
+import { LevelData } from "@/modules/results/types/types";
 
 export function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -741,12 +744,13 @@ interface QueryParams {
   initDate?: string;
   endDate?: string;
   inSus?: boolean;
+  level?: number
 }
 
 export async function getApiReportExcel(
   path: string,
   queryParams: QueryParams,
-  pathType?: string
+  pathType?: string,
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1214,7 +1218,7 @@ export async function registerVoucherByDocuments(values: {
       },
     }
   );
-  return response.data;
+  return response.data as RegisterVoucherByDocumentResponse;
 }
 
 export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
@@ -1228,4 +1232,75 @@ export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
     `/api/Report/BookBiggerData/ByAccountCode/${accountCode}`
   );
   return response.data as BookBiggerData[];
+}
+
+export async function fetchDiaryBookData(
+  InitDate: string,
+  EndDate: string,
+  inSus: boolean
+) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/diarybook`, {
+    params: {
+      InitDate,
+      EndDate,
+      inSus,
+    },
+  });
+  return response.data as DiaryBookResponse;
+}
+
+//REPORT
+//XlslData / ${reporte}
+type PathReport = "balanceGeneral" | "balanceDeSumas" | "estadoDeResultado";
+export async function getAllDataReportByType({
+  iDate,
+  eDate,
+  typePath,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  typePath: PathReport;
+  level?: LevelData;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/XlxsData/${typePath}`, {
+    params: {
+      InitDate: iDate,
+      EndDate: eDate,
+      Level: level,
+    },
+  });
+  return response.data;
+}
+
+export async function generateDiaryBookExcel(InitDate: string,
+  endDate: string,
+  inSus: boolean,) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/BookDiaryBookExel`, {
+    responseType: "text",
+    params: {
+      InitDate,
+      endDate,
+      inSus,
+    }
+  });
+  return response.data as string;
 }

@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Account } from "@/modules/account/types/account";
 import { VoucherItem } from "../types/sharedTypes";
 import NoMenuSelect from "@/components/custom/no-menu-select";
-import { gl } from "date-fns/locale";
 
 type FormNewVoucherItemsProps = {
   voucherItems: VoucherItem[];
@@ -23,6 +22,8 @@ type FormNewVoucherItemsProps = {
   accountData: Account[];
   applyGlossToAll?: boolean;
   glossValue?: string;
+  totalDebitValue: number;
+  totalAssetValue: number;
 };
 export default function FormNewVoucherItems({
   accountData,
@@ -30,6 +31,8 @@ export default function FormNewVoucherItems({
   setVoucherItems,
   applyGlossToAll,
   glossValue,
+  totalDebitValue,
+  totalAssetValue,
 }: FormNewVoucherItemsProps) {
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
@@ -68,15 +71,6 @@ export default function FormNewVoucherItems({
     };
     setVoucherItems(listVoucherItem);
   }
-
-  const totalDebitValue = voucherItems.reduce((total, num) => {
-    return total + (num?.debitBs ?? 0);
-  }, 0);
-
-  const totalAssetValue = voucherItems.reduce((total, num) => {
-    return total + (num?.assetBs ?? 0);
-  }, 0);
-
   //console.log(voucherItems);
 
   function removeVoucherItem(index: number) {
@@ -209,8 +203,8 @@ export default function FormNewVoucherItems({
           ))}
           <TableRow>
             <TableCell>Total</TableCell>
-            <TableCell>{totalDebitValue}</TableCell>
-            <TableCell>{totalAssetValue}</TableCell>
+            <TableCell>{totalDebitValue.toFixed(2)}</TableCell>
+            <TableCell>{totalAssetValue.toFixed(2)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

@@ -186,7 +186,8 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     <div className="flex flex-col gap-4">
       <Input type="search" onChange={handleSearch} placeholder="Buscar Cuenta" value={searchQuery}/>
       <Virtuoso
-        style={{ height: 400, border: 1 }}
+        style={{ height: 400}}
+        className="!important border-2"
         data={visibleAccounts}
         // data={filteredAccounts}
         itemContent={renderAccount}

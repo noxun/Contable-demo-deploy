@@ -44,7 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import FormNewVoucherItems from "./FormNewVoucherItems";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -64,7 +64,11 @@ import useModelSeats from "../hooks/useModelSeats";
 import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";
 import useTrazoCompanies from "../hooks/useTrazoCompanies";
 import CreatableSelect from "react-select/creatable";
-import { TrazoCompany, VoucherItemFromExtractedPDF } from "@/lib/types";
+import {
+  RegisterVoucherByDocumentResponse,
+  TrazoCompany,
+  VoucherItemFromExtractedPDF,
+} from "@/lib/types";
 import { Label } from "@/components/ui/label";
 
 type FormNewVoucherProps = {
@@ -74,7 +78,7 @@ type FormNewVoucherProps = {
   bankExtractId?: number;
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
-  
+  voucherFromRegisterByDocResponse?: RegisterVoucherByDocumentResponse;
 };
 
 export default function FormNewVoucher({
@@ -84,6 +88,7 @@ export default function FormNewVoucher({
   routeType,
   gloss,
   voucherItemsFromExtractedPDF,
+  voucherFromRegisterByDocResponse,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -105,6 +110,9 @@ export default function FormNewVoucher({
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
+  const [totalDebitValue, setTotalDebitValue] = useState(0);
+  const [totalAssetValue, setTotalAssetValue] = useState(0);
+
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
       debitBs: null,
@@ -119,7 +127,7 @@ export default function FormNewVoucher({
     },
   ]);
 
-  if(voucherItemsFromExtractedPDF){
+  if (voucherItemsFromExtractedPDF) {
     voucherItemsFromExtractedPDF.forEach((item) => {
       setVoucherItems((items) => [
         ...items,
@@ -137,6 +145,24 @@ export default function FormNewVoucher({
       ]);
     });
   }
+
+  useEffect(() => {
+    if (voucherFromRegisterByDocResponse && voucherFromRegisterByDocResponse.items) {
+      const newItems = voucherFromRegisterByDocResponse.items.map((item) => ({
+        debitBs: item.debitBs,
+        debitSus: item.debitSus,
+        assetBs: item.assetBs,
+        assetSus: item.assetSus,
+        gloss: item.gloss,
+        accountId: item.accountId.toString(),
+        voucherId: item.voucherId,
+        canDebit: true,
+        canAsset: true,
+      }));
+
+      setVoucherItems(newItems);
+    }
+  }, [voucherFromRegisterByDocResponse]);
 
   const banksQuery = useQuery({
     queryKey: ["banks"],
@@ -352,18 +378,37 @@ export default function FormNewVoucher({
       };
     });
 
+  let voucherDefaultValues = null;
+  const defaultValues = {
+    exchangeRate: 6.97,
+    coin: "BOB" as "USD" | "BOB",
+    checkNum: "",
+    gloss: gloss ?? "",
+    bankId: bankId ?? null,
+    bankItemRef: bankExtractId, //ironico
+    costCenterId: "",
+    sucursalId: "",
+  };
+
+  if (voucherFromRegisterByDocResponse) {
+    voucherDefaultValues = {
+      exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
+      coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
+      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "",
+      gloss: voucherFromRegisterByDocResponse.gloss ?? "",
+      bankId: voucherFromRegisterByDocResponse.bankId ?? null,
+      bankItemRef: bankExtractId, //ironico
+      costCenterId: voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
+      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "",
+      hojaDeRuta: voucherFromRegisterByDocResponse.hojaDeRuta ?? "",
+    };
+  } else {
+    voucherDefaultValues = defaultValues;
+  }
+
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
-    defaultValues: {
-      exchangeRate: 6.97,
-      coin: "BOB",
-      checkNum: "",
-      gloss: gloss ?? "",
-      bankId: bankId ?? null,
-      bankItemRef: bankExtractId, //ironico
-      costCenterId: "",
-      sucursalId: "",
-    },
+    defaultValues: voucherDefaultValues
   });
 
   const handleModelSeatChange = async (selectedOption: any) => {
@@ -387,15 +432,23 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     let debitTotal = voucherItems.reduce((total, currentItem) => {
-        return total + (currentItem?.debitBs ?? 0);
+      return total + (currentItem?.debitBs ?? 0);
     }, 0);
     let assetTotal = voucherItems.reduce((total, currentItem) => {
-        return total + (currentItem?.assetBs ?? 0);
+      return total + (currentItem?.assetBs ?? 0);
     }, 0);
-    
-    // Round both numbers to 2 decimal places before comparing
-    setButtonEnabled(debitTotal.toFixed(2) === assetTotal.toFixed(2));
-}, [voucherItems]);
+
+    setTotalDebitValue(debitTotal);
+    setTotalAssetValue(assetTotal);
+  
+    // Use Math.abs to compare with a small epsilon value
+    // setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
+    if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
+      setButtonEnabled(true);
+    }else{
+      toast.info("La suma de los débitos y créditos no es igual");
+    }
+  }, [voucherItems]);
 
   if (
     branchListQuery.isPending ||
@@ -650,7 +703,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <div className="space-y-2">
+            <div className={`space-y-2 ${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
               <Label>Cliente</Label>
               <CreatableSelect
                 value={selectedCompanyOption}
@@ -675,7 +728,7 @@ export default function FormNewVoucher({
               />
             </div>
             {isPendingTrazoInternCodes ? (
-              <div>
+              <div className={`${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
                 Cargando, Seleccione un cliente para mostrar sus hojas de
                 ruta...
               </div>
@@ -709,6 +762,21 @@ export default function FormNewVoucher({
                 )}
               />
             )}
+            {voucherFromRegisterByDocResponse?.hojaDeRuta ? (
+              <FormField
+                control={voucherForm.control}
+                name="hojaDeRuta"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hoja de Ruta</FormLabel>
+                    <FormControl>
+                      <Input disabled placeholder="" {...field}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
             {/* <FormField
               control={voucherForm.control}
               name="branch"
@@ -765,6 +833,8 @@ export default function FormNewVoucher({
             setVoucherItems={setVoucherItems}
             applyGlossToAll={applyGlossToAll}
             glossValue={voucherForm.getValues("gloss")}
+            totalDebitValue={totalDebitValue}
+            totalAssetValue={totalAssetValue}
           />
           <Button
             type="submit"

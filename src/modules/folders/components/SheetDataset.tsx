@@ -38,7 +38,7 @@ export default function SheetDataset({ procedureId, value }: SheetDatasetProps) 
           <Coins className="size-4"/>
         </Button>
       </SheetTrigger>
-      <SheetContent className="min-w-[50%] overflow-y-auto">
+      <SheetContent className="min-w-[60%] overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Planillaje y Facturacion Contable</SheetTitle>
           <SheetDescription>Datos de la planilla</SheetDescription>
