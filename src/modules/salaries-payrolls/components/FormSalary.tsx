@@ -20,7 +20,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
   const queryClient = useQueryClient()
 
   const defaultValuesItem = {
-    salariesAndwagesId: itemForEdit?.salariesAndwagesId.toString() ?? '',
+    salariesAndwagesId: idPayroll.toString() ?? '',
     productionBonus: itemForEdit?.productionBonus.toString() ?? '0',
     extraTimeMinutes: itemForEdit?.extraTimeMinutes.toString() ?? '0',
     valueForOvertime: itemForEdit?.valueForOvertime.toString() ?? '0',
