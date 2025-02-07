@@ -315,6 +315,23 @@ export default function FormNewVoucher({
   }
 
   function onSubmit(values: Voucher) {
+
+    let debitTotal = voucherItems.reduce((total, currentItem) => {
+      return total + (currentItem?.debitBs ?? 0);
+    }, 0);
+    let assetTotal = voucherItems.reduce((total, currentItem) => {
+      return total + (currentItem?.assetBs ?? 0);
+    }, 0);
+  
+
+    if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
+      toast.info("La suma del debe y haber es correcta");
+    }else{
+      toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
+      return
+    }
+
+
     // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
