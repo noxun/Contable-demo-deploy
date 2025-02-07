@@ -32,8 +32,7 @@ function SalariesPayrollsPage() {
   const { refetch: refetchExcel } = useQuery({
     queryKey: [selectedDate],
     queryFn: () => {
-      const dateSelected = selectedDate || new Date();
-      return GetPayrollExcelByDate({ date: format(dateSelected, 'yyyy-MM') });
+      return GetPayrollExcelByDate({ date: selectedDate });
     },
     enabled: false
   })
@@ -99,6 +98,7 @@ function SalariesPayrollsPage() {
 
   const columnsPayrolls = [
     {
+      isSticky: true,
       header: "Nombre",
       accessorKey: "nombres",
       cell: ({ row }: any) => <p className="whitespace-nowrap">{row.original.nombres}</p>,
@@ -294,7 +294,6 @@ function SalariesPayrollsPage() {
           <>
             <div className="flex justify-start pb-3">
               <DataTablePayrollsSalaries
-                fixedId={true}
                 filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}
                 data={listPayrolls.itemsSalariesWages}
