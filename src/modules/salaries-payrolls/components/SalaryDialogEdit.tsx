@@ -44,7 +44,7 @@ export const SalaryDialogEdit = ({ idItem, buttonElement }: Props) => {
         }
       </DialogTrigger>
       {
-        !isRefetching && idItem && (
+        !isRefetching && idItem && ItemSelected && (
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Actualizar Registro</DialogTitle>
