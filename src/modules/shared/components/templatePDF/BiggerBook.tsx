@@ -107,9 +107,9 @@ export function BiggerBookTemplate({
     dateRange?.from &&
     (dateRange?.to
       ? `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)} al ${format(
-          dateRange.to,
-          FORMAT_DATE_INITIAL
-        )}`
+        dateRange.to,
+        FORMAT_DATE_INITIAL
+      )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
 
   return (
@@ -231,7 +231,7 @@ export function BiggerBookTemplate({
                       {item?.typeDes ?? index}
                     </Text>
                     <Text style={[styles.col11, styles.tdCell]}>
-                      {format(item.createdAt, "dd/MM/yyyy")}
+                      {format(item.voucherDate, "dd/MM/yyyy")}
                     </Text>
                     <Text style={[styles.col25, styles.tdCell]}>
                       {item.gloss}

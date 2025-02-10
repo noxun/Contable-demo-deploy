@@ -439,6 +439,7 @@ export type BookBiggerDataVoucherItem = {
   description: string
   typeOfExpense: any
   createdAt: string
+  voucherDate: string
   voucherId: number
   type: number
   typeDes: string
