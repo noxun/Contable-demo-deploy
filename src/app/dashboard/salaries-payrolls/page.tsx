@@ -146,7 +146,7 @@ function SalariesPayrollsPage() {
     {
       header: "Tiempo extra \n (minutos)",
       accessorKey: "extraTimeMinutes",
-      cell: ({ row }: any) => formatNumber(row.original.extraTimeMinutes),
+      cell: ({ row }: any) => row.original.extraTimeMinutes,
     },
     {
       header: "Valor horas extras",

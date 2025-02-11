@@ -120,23 +120,6 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            name="valueForOvertime"
-            control={formSalary.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Valor por horas extras: </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Ingrese el valor por horas extras"
-                  />
-                </FormControl>
-                <FormMessage className="text-sm" />
-              </FormItem>
-            )}
-          />
-          <FormField
             name="loan"
             control={formSalary.control}
             render={({ field }) => (
@@ -153,8 +136,6 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
               </FormItem>
             )}
           />
-        </div>
-        <div className="grid grid-cols-1dot gap-4">
           <FormField
             name="exelTrainingCorse"
             control={formSalary.control}
@@ -172,6 +153,8 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
               </FormItem>
             )}
           />
+        </div>
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             name="anbFineSettlement"
             control={formSalary.control}
