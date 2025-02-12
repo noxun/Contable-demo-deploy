@@ -204,13 +204,13 @@ export default function BalanceAmountsPage() {
     },
     {
       header: "Debe",
-      accessorKey: "asset",
-      cell: ({ row }: any) => formatNumber(row.original.asset)
+      accessorKey: "debit",
+      cell: ({ row }: any) => formatNumber(row.original.debit)
     },
     {
       header: "Haber",
-      accessorKey: "debit",
-      cell: ({ row }: any) => formatNumber(row.original.debit)
+      accessorKey: "asset",
+      cell: ({ row }: any) => formatNumber(row.original.asset)
     },
     {
       header: "Deudor",
