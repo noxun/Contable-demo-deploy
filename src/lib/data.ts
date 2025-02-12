@@ -448,14 +448,32 @@ export async function fetchAccountsByType(type: number) {
   return response.data as Account[];
 }
 
-export async function fetchTrazoInternCodes() {
+export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: string) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/api/Trazo/interncode");
-  return response.data as TrazoInternCode[];
+  const response = await api.get("/api/Trazo/interncode", {
+    params: {
+      PageNumber: page,
+      PageSize: pageSize,
+      codeIntern: searchQuery,
+    }
+  });
+  console.log(response)
+
+  const paginationHeader = response.headers;
+  const paginationInfo = paginationHeader
+  ? JSON.parse(paginationHeader["pagination"])
+  : null;
+
+  console.log("what",paginationInfo);
+
+  return {
+    data: response.data as TrazoInternCode[],
+    pagination: paginationInfo,
+  }
 }
 
 export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
