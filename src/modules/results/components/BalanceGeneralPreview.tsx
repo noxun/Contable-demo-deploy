@@ -18,100 +18,107 @@ export const BalanceGeneralPreview = ({ data, dateRange }: Props) => {
   return (
     <table className="text-left min-w-[700px] md:w-full text-xs md:text-sm lg:text-base text-[#4A4A4A] dark:text-[#ECECEC]">
       {/* HEADER */}
-      <tr className="text-left md:text-right">
-        <td colSpan={5}>{messageDate}</td>
-      </tr>
-      <tr>
-        <th className="text-base md:text-xl text-left md:text-center pb-3" colSpan={5}>BALANCE GENERAL</th>
-      </tr>
-      {/* ACTIVOS */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Activo Corriente</th>
-        <th className="text-right">{formatNumber(data.totalActiveCurrent)}</th>
-      </tr>
-      {/* Activo corriente */}
-      {data.activeCurrentItems.map((item, index) => (
-        <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-          <td className="pl-3">{item.account}</td>
-          <td colSpan={2}>{item.description}</td>
-          <td className="text-right">{formatNumber(item.amount)}</td>
+      <thead>
+        <tr className="text-left md:text-right">
+          <th style={{ fontWeight: 500 }} colSpan={5}>{messageDate}</th>
         </tr>
-      ))}
-      <br />
-      {/* Activo no corriente */}
-      <tr className="pt-8 hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Activo No Corriente</th>
-        <th className="text-right">{formatNumber(data.totalActiveNoCurrent)}</th>
-      </tr>
-      {data.activeNoCurrentItems.map((item, index) => (
-        <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-          <td className="pl-3">{item.account}</td>
-          <td colSpan={2}>{item.description}</td>
-          <td className="text-right">{formatNumber(item.amount)}</td>
+        <tr>
+          <th className="text-base md:text-xl text-left md:text-center pb-3" colSpan={5}>BALANCE GENERAL</th>
         </tr>
-      ))}
-      {/* Resultado Activo */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Total Activo</th>
-        <th className="text-right">{formatNumber(data.totalActive)}</th>
-      </tr>
+      </thead>
 
-      <br />
-      {/* PASIVOS */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Pasivo Corriente</th>
-        <th className="text-right">{formatNumber(data.totalLiabilityCurrent)}</th>
-      </tr>
-      {/* Pasivo corriente */}
-      {data.liabilityCurrentItems.map((item, index) => (
-        <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-          <td className="pl-3">{item.account}</td>
-          <td colSpan={2}>{item.description}</td>
-          <td className="text-right">{formatNumber(item.amount)}</td>
+      <tbody>
+        {/* ACTIVOS */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Activo Corriente</td>
+          <td className="text-right">{formatNumber(data.totalActiveCurrent)}</td>
         </tr>
-      ))}
-      <br />
-      {/* Pasivo no corriente */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Pasivo No Corriente</th>
-        <th className="text-right">{formatNumber(data.totalLiabilityNoCurrent)}</th>
-      </tr>
-      {data.liabilityNoCurrentItems.map((item, index) => (
-        <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-          <td className="pl-3">{item.account}</td>
-          <td colSpan={2}>{item.description}</td>
-          <td className="text-right">{formatNumber(item.amount)}</td>
-        </tr>
-      ))}
-      {/* Resultado Pasivo */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Total Pasivo</th>
-        <th className="text-right">{formatNumber(data.totalLiability)}</th>
-      </tr>
+        {/* Activo corriente */}
+        {data.activeCurrentItems.map((item, index) => (
+          <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+            <td className="pl-3">{item.account}</td>
+            <td colSpan={2}>{item.description}</td>
+            <td className="text-right">{formatNumber(item.amount)}</td>
+          </tr>
+        ))}
+        <tr className="h-5" />
 
-      <br />
-      {/* PATRIMONIOS */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Patrimonio</th>
-        <th className="text-right">{formatNumber(data.totalEquity)}</th>
-      </tr>
-      {data.equityItems.map((item, index) => (
-        <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-          <td className="pl-3">{item.account}</td>
-          <td colSpan={2}>{item.description}</td>
-          <td className="text-right">{formatNumber(item.amount)}</td>
+        {/* Activo no corriente */}
+        <tr style={{ fontWeight: 700 }} className="pt-8 hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Activo No Corriente</td>
+          <td className="text-right">{formatNumber(data.totalActiveNoCurrent)}</td>
         </tr>
-      ))}
-      {/* Resultados Patrimonio */}
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Total Patrimonio Neto</th>
-        <th className="text-right">{formatNumber(data.totalLiabilityNoCurrent)}</th>
-      </tr>
-      <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-        <th colSpan={3}>Total Pasivo y Patrimonio</th>
-        <th className="text-right">{formatNumber(data.totalLiabilityEquity)}</th>
-      </tr>
-      <br />
+        {data.activeNoCurrentItems.map((item, index) => (
+          <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+            <td className="pl-3">{item.account}</td>
+            <td colSpan={2}>{item.description}</td>
+            <td className="text-right">{formatNumber(item.amount)}</td>
+          </tr>
+        ))}
+        {/* Resultado Activo */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Total Activo</td>
+          <td className="text-right">{formatNumber(data.totalActive)}</td>
+        </tr>
+        <tr className="h-5" />
+
+        {/* PASIVOS */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Pasivo Corriente</td>
+          <td className="text-right">{formatNumber(data.totalLiabilityCurrent)}</td>
+        </tr>
+        {/* Pasivo corriente */}
+        {data.liabilityCurrentItems.map((item, index) => (
+          <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+            <td className="pl-3">{item.account}</td>
+            <td colSpan={2}>{item.description}</td>
+            <td className="text-right">{formatNumber(item.amount)}</td>
+          </tr>
+        ))}
+        <tr className="h-5" />
+
+        {/* Pasivo no corriente */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Pasivo No Corriente</td>
+          <td className="text-right">{formatNumber(data.totalLiabilityNoCurrent)}</td>
+        </tr>
+        {data.liabilityNoCurrentItems.map((item, index) => (
+          <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+            <td className="pl-3">{item.account}</td>
+            <td colSpan={2}>{item.description}</td>
+            <td className="text-right">{formatNumber(item.amount)}</td>
+          </tr>
+        ))}
+        {/* Resultado Pasivo */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Total Pasivo</td>
+          <td className="text-right">{formatNumber(data.totalLiability)}</td>
+        </tr>
+        <tr className="h-5" />
+
+        {/* PATRIMONIOS */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Patrimonio</td>
+          <td className="text-right">{formatNumber(data.totalEquity)}</td>
+        </tr>
+        {data.equityItems.map((item, index) => (
+          <tr key={index} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+            <td className="pl-3">{item.account}</td>
+            <td colSpan={2}>{item.description}</td>
+            <td className="text-right">{formatNumber(item.amount)}</td>
+          </tr>
+        ))}
+        {/* Resultados Patrimonio */}
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Total Patrimonio Neto</td>
+          <td className="text-right">{formatNumber(data.totalLiabilityNoCurrent)}</td>
+        </tr>
+        <tr style={{ fontWeight: 700 }} className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
+          <td colSpan={3}>Total Pasivo y Patrimonio</td>
+          <td className="text-right">{formatNumber(data.totalLiabilityEquity)}</td>
+        </tr>
+        <tr className="h-5" />
+      </tbody>
     </table>
   );
 };
