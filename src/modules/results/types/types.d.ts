@@ -1,5 +1,6 @@
 export type LevelData = 6 | 5 | 4 | 3 | 2 | 1;
 
+// Balance De Sumas y Saldos
 export interface BalanceAmounts {
   debit: number;
   asset: number;
@@ -17,7 +18,7 @@ interface ItemAmounts {
   creditor: number;
 }
 
-
+// Balance General
 export interface BalanceGeneralType {
   totalActiveCurrent: number
   totalActiveNoCurrent: number
@@ -38,4 +39,21 @@ interface ItemBalance {
   description: string
   amount: number
   amountDetail?: number
+}
+
+// Estado de Restultados
+export interface StatementIncomeType {
+  totalExpense: number;
+  totalIncome: number;
+  periodUtility: number;
+  taxOnProfits: number;
+  managementResult: number;
+  expenses: StatementIncomeItem[];
+  income: StatementIncomeItem[];
+}
+
+export interface StatementIncomeItem {
+  account: string;
+  description: string;
+  amount: number;
 }

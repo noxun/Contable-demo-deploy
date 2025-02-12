@@ -45,6 +45,7 @@ import { getAllDataReportByType } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
+import { StatementIncomePreview } from "@/modules/results/components/StatementIncome";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -379,43 +380,22 @@ export default function StatementIncomePage() {
           />
         )}
       </div>
-      {/* Vista Previa */}
-      {
-        dataStatementIncome && (
-          <section className="flex flex-col gap-2">
-            <details>
-              <summary className="pb-2">Ingresos</summary>
-              <>
-                <DataTable columns={columnsIncome} data={dataStatementIncome.income} />
 
-              </>
-            </details>
-            <details>
-              <summary className="pb-2">Gastos</summary>
-              <DataTable columns={columnsExpenses} data={dataStatementIncome.expenses} />
-            </details>
-            <details>
-              <summary className="pb-2">Resultados</summary>
-              <div className="grid grid-cols-2 w-full sm:w-1/2 gap-1 text-sm text-gray-600 font-semibold">
-                {
-                  [
-                    { label: 'Total Gastos', value: formatNumber(dataStatementIncome.totalExpense) },
-                    { label: 'Total Ingresos', value: formatNumber(dataStatementIncome.totalIncome) },
-                    { label: 'Impuestos antes de utilidades', value: formatNumber(dataStatementIncome.periodUtility) },
-                    { label: 'Impuestos alas utilidades', value: formatNumber(dataStatementIncome.taxOnProfits) },
-                    { label: 'Resultado de gestion', value: formatNumber(dataStatementIncome.managementResult) },
-                  ].map((item, index) => (
-                    <React.Fragment key={index}>
-                      <p>{item.label}</p>
-                      <p className="text-base text-right">{item.value}</p>
-                    </React.Fragment>
-                  ))
-                }
+      {/* Vista Previa */}
+      <div className="pb-12" >
+        {
+          dataStatementIncome && (
+            <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] max-h-screen py-3">
+              <div className="flex px-2">
+                <StatementIncomePreview
+                  data={dataStatementIncome}
+                  dateRange={dateRange}
+                />
               </div>
-            </details>
-          </section>
-        )
-      }
+            </div>
+          )
+        }
+      </div>
 
       {/* <DocViewer
         activeDocument={activeDocument}
