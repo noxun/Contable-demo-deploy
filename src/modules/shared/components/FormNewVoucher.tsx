@@ -326,10 +326,11 @@ export default function FormNewVoucher({
 
     if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
       toast.info("La suma del debe y haber es correcta");
-    }else{
-      toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
-      return
     }
+    // }else{
+    //   toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
+    //   return
+    // }
 
 
     // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
