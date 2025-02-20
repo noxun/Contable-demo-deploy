@@ -277,7 +277,7 @@ export default function FormNewVoucher({
           },
         }
       );
-      return response.data;
+      return response.data as {id:number; type: number};
     },
     onSuccess: () => {
       toast.success("Voucher Creado correctamente");
@@ -463,8 +463,6 @@ export default function FormNewVoucher({
     // setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
     if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
       setButtonEnabled(true);
-    }else{
-      toast.info("La suma de los débitos y créditos no es igual");
     }
   }, [voucherItems]);
 
