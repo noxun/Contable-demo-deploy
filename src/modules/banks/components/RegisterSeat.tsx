@@ -16,16 +16,30 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 
-type RegisterSeatProps = {
+export type RegisterSeatProps = {
   bankExtractId: number;
   bankId: string | number;
   registeredType: number | undefined; //egreso, traspaso, ingreso
   hasBeenRegisteredToAccount: boolean;
   extractAccountId: number;
+  accountDetail?: string;
   selectedAccount: number | null;
   onSelectChange: (bankExtractId: number, accountId: number | null) => void;
   selectedType: number | null;
   onTypeSelectChange: (bankExtractId: number, type: number) => void;
+};
+
+const getTypeLabel = (type: number) => {
+  switch (type) {
+    case 0:
+      return "Traspaso";
+    case 1:
+      return "Egreso";
+    case 2:
+      return "Ingreso";
+    default:
+      return "";
+  }
 };
 
 export default function RegisterSeat({
@@ -34,6 +48,7 @@ export default function RegisterSeat({
   bankId,
   hasBeenRegisteredToAccount,
   extractAccountId,
+  accountDetail,
   selectedAccount: selectedAccountId,
   onSelectChange,
   selectedType,
@@ -69,13 +84,13 @@ export default function RegisterSeat({
     }
   }
 
-  const selectedAccountOption =
-    (Array.isArray(accounts) ? accounts : []).find(
-      (account) => account.id === selectedAccountId
-    ) ??
-    (extractAccountId !== 0
-      ? accounts?.find((account) => account.id === extractAccountId)
-      : null);
+  // const selectedAccountOption =
+  //   (Array.isArray(accounts) ? accounts : []).find(
+  //     (account) => account.id === selectedAccountId
+  //   ) ??
+  //   (extractAccountId !== 0
+  //     ? accounts?.find((account) => account.id === extractAccountId)
+  //     : null);
 
   if (isPending || accounts === undefined) {
     return <Spinner />;
@@ -83,40 +98,41 @@ export default function RegisterSeat({
 
   return (
     <div className="flex items-center justify-between gap-2">
-      {
-        <>
-          <CustomSelect
-            isDisabled={hasBeenRegisteredToAccount}
-            onChange={(option) => {
-              onSelectChange(bankExtractId, option ? option.id : null);
-            }}
-            value={selectedAccountOption}
-            options={accounts}
-            getOptionValue={(account) => account.id.toString()}
-            getOptionLabel={(account) =>
-              `${account.code}-${account.description}`
-            }
-          />
-          <Select
-            value={selectedType?.toString() ?? ""}
-            defaultValue={registeredType?.toString() ?? ""}
-            onValueChange={(value) => {
-              // setType(value)
-              onTypeSelectChange(bankExtractId, parseInt(value));
-            }}
-            disabled={hasBeenRegisteredToAccount}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tipo de registro" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Traspaso</SelectItem>
-              <SelectItem value="1">Egreso</SelectItem>
-              <SelectItem value="2">Ingreso</SelectItem>
-            </SelectContent>
-          </Select>
-        </>
-      }
+      {accountDetail ? (
+        <div className="min-w-[300px]">{accountDetail}</div>
+      ) : (
+        <CustomSelect
+          isDisabled={hasBeenRegisteredToAccount}
+          onChange={(option) => {
+            onSelectChange(bankExtractId, option ? option.id : null);
+          }}
+          value={accounts?.find((account) => account.id === selectedAccountId)}
+          options={accounts}
+          getOptionValue={(account) => account.id.toString()}
+          getOptionLabel={(account) => `${account.code}-${account.description}`}
+        />
+      )}
+      {registeredType !== undefined && hasBeenRegisteredToAccount ? (
+        <div className="min-w-[180px]">{getTypeLabel(registeredType)}</div>
+      ) : (
+        <Select
+          value={selectedType?.toString() ?? ""}
+          onValueChange={(value) => {
+            onTypeSelectChange(bankExtractId, parseInt(value));
+          }}
+          disabled={hasBeenRegisteredToAccount}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Tipo de registro" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0">Traspaso</SelectItem>
+            <SelectItem value="1">Egreso</SelectItem>
+            <SelectItem value="2">Ingreso</SelectItem>
+          </SelectContent>
+        </Select>
+      )}
+
       <Button
         disabled={hasBeenRegisteredToAccount}
         title="Registrar Asiento Contable"
