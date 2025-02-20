@@ -70,6 +70,7 @@ import {
   VoucherItemFromExtractedPDF,
 } from "@/lib/types";
 import { Label } from "@/components/ui/label";
+import PdfVoucher from "./PdfVoucher";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -283,7 +284,8 @@ export default function FormNewVoucher({
       );
       return response.data as { id: number; type: number };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
       //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
@@ -328,9 +330,11 @@ export default function FormNewVoucher({
 
     if (Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))) {
       toast.info("La suma del debe y haber es correcta");
-    }else{
-      toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
-      return
+    } else {
+      toast.warning(
+        "La suma del debe y haber no es igual, corrija e intente de nuevo"
+      );
+      return;
     }
 
     // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
@@ -870,7 +874,12 @@ export default function FormNewVoucher({
               <Save size={20} />
             </Button>
             {newVoucherMutation.data ? (
-              <Button type="button">Ver Comprobante del Ultimo Creado</Button>
+                <PdfVoucher
+                  id={newVoucherMutation.data.id}
+                  type={newVoucherMutation.data.type.toString() as VoucherType}
+                  triggerTitle="Ver Comprobante del Ultimo Creado"
+                  isButton
+                />
             ) : (
               <Button type="button" disabled>
                 Ver Comprobante del Ultimo Creado
