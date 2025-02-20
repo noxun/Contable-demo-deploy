@@ -147,7 +147,10 @@ export default function FormNewVoucher({
   }
 
   useEffect(() => {
-    if (voucherFromRegisterByDocResponse && voucherFromRegisterByDocResponse.items) {
+    if (
+      voucherFromRegisterByDocResponse &&
+      voucherFromRegisterByDocResponse.items
+    ) {
       const newItems = voucherFromRegisterByDocResponse.items.map((item) => ({
         debitBs: item.debitBs,
         debitSus: item.debitSus,
@@ -179,7 +182,8 @@ export default function FormNewVoucher({
 
   const changeBankExtractStatusMutation = useMutation({
     mutationFn: changeBankExtractStatus,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       toast.success("Registrado correctamente");
       if (bankId) {
         queryClient.invalidateQueries({ queryKey: ["bankExcerpt", bankId] });
@@ -277,7 +281,7 @@ export default function FormNewVoucher({
           },
         }
       );
-      return response.data as {id:number; type: number};
+      return response.data as { id: number; type: number };
     },
     onSuccess: () => {
       toast.success("Voucher Creado correctamente");
@@ -315,23 +319,19 @@ export default function FormNewVoucher({
   }
 
   function onSubmit(values: Voucher) {
-
     let debitTotal = voucherItems.reduce((total, currentItem) => {
       return total + (currentItem?.debitBs ?? 0);
     }, 0);
     let assetTotal = voucherItems.reduce((total, currentItem) => {
       return total + (currentItem?.assetBs ?? 0);
     }, 0);
-  
 
-    if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
+    if (Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))) {
       toast.info("La suma del debe y haber es correcta");
+    }else{
+      toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
+      return
     }
-    // }else{
-    //   toast.warning("La suma del debe y haber no es igual, corrija e intente de nuevo");
-    //   return
-    // }
-
 
     // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
     let validatedVoucherItems = voucherItems.map((item) => ({
@@ -416,7 +416,8 @@ export default function FormNewVoucher({
       gloss: voucherFromRegisterByDocResponse.gloss ?? "",
       bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
-      costCenterId: voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
+      costCenterId:
+        voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
       sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "",
       hojaDeRuta: voucherFromRegisterByDocResponse.hojaDeRuta ?? "",
     };
@@ -426,7 +427,7 @@ export default function FormNewVoucher({
 
   const voucherForm = useForm<z.infer<typeof voucherFormSchema>>({
     resolver: zodResolver(voucherFormSchema),
-    defaultValues: voucherDefaultValues
+    defaultValues: voucherDefaultValues,
   });
 
   const handleModelSeatChange = async (selectedOption: any) => {
@@ -458,10 +459,10 @@ export default function FormNewVoucher({
 
     setTotalDebitValue(debitTotal);
     setTotalAssetValue(assetTotal);
-  
+
     // Use Math.abs to compare with a small epsilon value
     // setButtonEnabled(Math.abs(debitTotal - assetTotal) < 0.01);
-    if(Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))){
+    if (Number(debitTotal.toFixed(2)) === Number(assetTotal.toFixed(2))) {
       setButtonEnabled(true);
     }
   }, [voucherItems]);
@@ -719,7 +720,11 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <div className={`space-y-2 ${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
+            <div
+              className={`space-y-2 ${
+                voucherFromRegisterByDocResponse ? "hidden" : ""
+              }`}
+            >
               <Label>Cliente</Label>
               <CreatableSelect
                 value={selectedCompanyOption}
@@ -744,7 +749,11 @@ export default function FormNewVoucher({
               />
             </div>
             {isPendingTrazoInternCodes ? (
-              <div className={`${voucherFromRegisterByDocResponse ? "hidden" : ""}`}>
+              <div
+                className={`${
+                  voucherFromRegisterByDocResponse ? "hidden" : ""
+                }`}
+              >
                 Cargando, Seleccione un cliente para mostrar sus hojas de
                 ruta...
               </div>
@@ -786,7 +795,7 @@ export default function FormNewVoucher({
                   <FormItem>
                     <FormLabel>Hoja de Ruta</FormLabel>
                     <FormControl>
-                      <Input disabled placeholder="" {...field}/>
+                      <Input disabled placeholder="" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -852,13 +861,22 @@ export default function FormNewVoucher({
             totalDebitValue={totalDebitValue}
             totalAssetValue={totalAssetValue}
           />
-          <Button
-            type="submit"
-            disabled={!buttonEnabled || newVoucherMutation.isPending}
-          >
-            <span className="mr-2">Guardar Registro</span>
-            <Save size={20} />
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              disabled={!buttonEnabled || newVoucherMutation.isPending}
+            >
+              <span className="mr-2">Guardar Registro</span>
+              <Save size={20} />
+            </Button>
+            {newVoucherMutation.data ? (
+              <Button type="button">Ver Comprobante del Ultimo Creado</Button>
+            ) : (
+              <Button type="button" disabled>
+                Ver Comprobante del Ultimo Creado
+              </Button>
+            )}
+          </div>
         </form>
       </Form>
     </div>
