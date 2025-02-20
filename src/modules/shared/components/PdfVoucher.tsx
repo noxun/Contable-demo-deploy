@@ -23,11 +23,12 @@ import {
 } from "@/components/ui/dialog";
 import { Voucher, VoucherType } from "../types/sharedTypes";
 import { format } from "date-fns";
-import { es, is } from "date-fns/locale";
+import { es, is, tr } from "date-fns/locale";
 import { numberWithDecimals } from "../utils/validate";
 import useNumberToLiteral from "../hooks/useNumberToLiteral";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
 
 const tw = createTw({
   theme: {
@@ -49,9 +50,13 @@ Font.register({
 export default function PdfVoucher({
   id,
   type,
+  triggerTitle,
+  isButton,
 }: {
   id: number;
   type: VoucherType;
+  triggerTitle?: string;
+  isButton?: boolean;
 }) {
   const token = localStorage.getItem("token");
 
@@ -98,7 +103,13 @@ export default function PdfVoucher({
   return (
     <Dialog>
       {/* <DialogTrigger asChild><Button size="icon" variant="outline"><ReceiptText className="size-4"/></Button></DialogTrigger> */}
-      <DialogTrigger> Ver Comprobante</DialogTrigger>
+      <DialogTrigger asChild={isButton}>
+        {isButton ? (
+          <Button>{triggerTitle ?? "Ver comprobante"}</Button>
+        ) : (
+          triggerTitle ?? "Ver comprobante"
+        )}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
         <VisuallyHidden.Root>
           <DialogHeader>
