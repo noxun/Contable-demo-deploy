@@ -5,7 +5,7 @@ import Spinner from "@/components/ui/spinner";
 import { fetchBankExcerpt } from "@/lib/data";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./bank-excerpt-columns";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   BankExcerpt,
   BankSelectionState,
@@ -32,27 +32,27 @@ export default function ListBankExcerpts({
 
   const [filterByAccountId, setFilterByAccountId] = useState<
     "all" | "registered" | "unregistered"
-  >("all");
+  >("unregistered");
 
-  const handleSelectChange = (
-    bankExtractId: number,
-    accountId: number | null
-  ) => {
-    setSelectedAccounts((prev) => ({
-      ...prev,
-      [bankExtractId]: accountId,
-    }));
-  };
+  const handleSelectChange = useCallback(
+    (bankExtractId: number, accountId: number | null) => {
+      setSelectedAccounts((prev) => ({
+        ...prev,
+        [bankExtractId]: accountId,
+      }));
+    },
+    []
+  );
 
-  const handleTypeSelectChange = (
-    bankExtractId: number,
-    type: number | null
-  ) => {
-    setSelectedTypes((prev) => ({
-      ...prev,
-      [bankExtractId]: type,
-    }));
-  };
+  const handleTypeSelectChange = useCallback(
+    (bankExtractId: number, type: number | null) => {
+      setSelectedTypes((prev) => ({
+        ...prev,
+        [bankExtractId]: type,
+      }));
+    },
+    []
+  );
 
   console.log(selectedTypes,selectedAccounts)
 
@@ -61,17 +61,29 @@ export default function ListBankExcerpts({
     queryFn: () => fetchBankExcerpt(bankId.toString()),
   });
 
-  const filteredBankExtracts = (Array.isArray(data) ? data : []).filter(
-    (bankExcerpt) => {
-      if (filterByAccountId === "unregistered")
-        return bankExcerpt.accountId === 0;
-      if (filterByAccountId === "registered")
-        return bankExcerpt.accountId !== 0;
+  const filteredBankExtracts = useMemo(
+    () => (Array.isArray(data) ? data : []).filter((bankExcerpt) => {
+      if (filterByAccountId === "unregistered") return bankExcerpt.accountId === 0;
+      if (filterByAccountId === "registered") return bankExcerpt.accountId !== 0;
       return true;
-    }
+    }),
+    [data, filterByAccountId]
+  );
+
+  const memoizedColumns = useMemo(
+    () => columns(
+      bankId,
+      selectedAccounts,
+      selectedTypes,
+      handleSelectChange,
+      handleTypeSelectChange
+    ),
+    [bankId, selectedAccounts, selectedTypes, handleSelectChange, handleTypeSelectChange]
   );
 
   if (isLoading || isPending || data === undefined) return <Spinner />;
+
+  console.log(selectedAccounts, selectedTypes)
 
   return (
     <>
@@ -95,13 +107,7 @@ export default function ListBankExcerpts({
 
       <DataTable
         data={filteredBankExtracts}
-        columns={columns(
-          bankId,
-          selectedAccounts,
-          selectedTypes,
-          handleSelectChange,
-          handleTypeSelectChange
-        )}
+        columns={memoizedColumns}
       />
     </>
   );
