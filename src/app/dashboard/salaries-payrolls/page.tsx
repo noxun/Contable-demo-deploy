@@ -40,30 +40,30 @@ function SalariesPayrollsPage() {
   const deleteMutation = useMutation({
     mutationFn: DeletePayroll,
     onSuccess: () => {
-      toast.success('Planilla eliminada correctamente')
+      toast.success('Funcionario eliminado correctamente')
       queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
     },
     onError: (error) => {
-      toast.error('Error al eliminar la planilla')
-      console.error('Ocurrio un error al eliminar la planilla: ', error)
+      toast.error('Error al eliminar el funcionario')
+      console.error('Ocurrio un error al eliminar el funcionario: ', error)
     },
     onMutate: () => {
-      toast("Eliminando activo fijo...")
+      toast("Eliminando funcionario..")
     }
   })
 
   const updatePaidSalary = useMutation({
     mutationFn: updatePaymentStatusByEmployeeId,
     onSuccess: () => {
-      toast.success('Planilla actualizada correctamente')
+      toast.success('Funcionario actualizado correctamente')
       queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
     },
     onError: (error) => {
-      toast.error('Error al actualizar la planilla')
-      console.error('Ocurrio un error al actualizar la planilla: ', error)
+      toast.error('Error al actualizar el funcionario')
+      console.error('Ocurrio un error al actualizar el funcionario: ', error)
     },
     onMutate: () => {
-      toast("Actualizando planilla...")
+      toast("Actualizando funcionario...")
     }
   })
 
