@@ -57,3 +57,79 @@ export interface StatementIncomeItem {
   description: string;
   amount: number;
 }
+
+
+//Ratios financieros
+export interface FinancialRatiosResponse {
+  liquidityRatios: {
+    currentLiquidity: number;
+    liqCurrentAsset: number;
+    liqCurrentLiability: number;
+    acidTest: number;
+    acidInventories: number;
+    acidCurrentLiability: number;
+    cashRatio: number;
+    cashAvailabilities: number;
+    netWorkingCapital: number;
+    netCurrentAsset: number;
+    netCurrentLiability: number;
+  };
+  debtRatios: {
+    liabilityToAsset: number;
+    ltaCurrentLiability: number;
+    ltaCurrentNonLiability: number;
+    ltaAssetTotal: number;
+    liabilityToEquity: number;
+    lteCurrentLiability: number;
+    lteCurrentNonLiability: number;
+    lteNetEquity: number;
+    debtToAsset: number;
+    dtaShortFinancialDebts: number;
+    dtaLongFinancialDebts: number;
+    dtaAssetTotal: number;
+    debtToEquity: number;
+    dteShortFinancialDebts: number;
+    dteLongFinancialDebts: number;
+    dteNetEquity: number;
+    debtToLiability: number;
+    dtlShortFinancialDebts: number;
+    dtlLongFinancialDebts: number;
+    dtlCurrentLiability: number;
+    dtlCurrentNonLiability: number;
+  };
+  profitabilityRatios: {
+    profitability: number;
+    proNetProfit: number;
+    propSocialCapital: number;
+    roi: number;
+    roiNetProfit: number;
+    roiTotalInvestment: number;
+    roe: number;
+    roeNetProfit: number;
+    roeNetWorth: number;
+    roa: number;
+    roaNetProfit: number;
+    roaTotalAsset: number;
+  };
+}
+
+export interface RatioItem {
+  name: string;
+  value: number;
+  interpretation?: string;
+}
+
+export interface FinancialRatiosData {
+  liquidityRatios: {
+    title: string;
+    items: RatioItem[];
+  };
+  debtRatios: {
+    title: string;
+    items: RatioItem[];
+  };
+  profitabilityRatios: {
+    title: string;
+    items: RatioItem[];
+  };
+}
