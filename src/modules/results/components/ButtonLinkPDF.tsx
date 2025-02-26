@@ -1,5 +1,6 @@
 import { BlobProvider } from "@react-pdf/renderer"
 import { format } from "date-fns"
+import { LoaderIcon } from "lucide-react"
 
 interface Props {
   pdfFile: JSX.Element
@@ -11,7 +12,7 @@ export const ButtonLinkPDF = ({ pdfFile, nameFile }: Props) => {
     <BlobProvider document={pdfFile}>
       {({ url, loading, error }) => (
         <div className="flex items-center gap-1 border-2 border-[#da3929] min-w-36 text-[#da3929] w-fit rounded-md">
-          {(loading) && <div className="py-2 px-3 size-full">Cargando Link</div>}
+          {(loading) && <div className="py-2 px-3 flex gap-2"><LoaderIcon className="animate-spin" /> Cargando...</div>}
           {(!loading && error) && <div className="py-2 px-3 size-full">Algo salio mal</div>}
           {(url && !loading) && (<a
             href={url}

@@ -5,18 +5,21 @@ import { useState } from "react";
 import { FilePenLineIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { GetPayrollById } from "@/lib/data";
+import { ItemPayment } from "../types/types";
 
 interface Props {
   idPayroll: string
+  itemPayment: ItemPayment
 }
-export const PayrollsDialogEdit = ({ idPayroll }: Props) => {
+export const PayrollsDialogEdit = ({ idPayroll, itemPayment }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: payrollSelected } = useQuery({
-    queryKey: ['PayrollEdit', idPayroll],
+  const { data: payrollSelected, refetch: refetchPayroll } = useQuery({
+    queryKey: ['PayrollEdit'],
     queryFn: () => {
       return GetPayrollById({ id: idPayroll })
-    }
+    },
+    enabled: false
   })
 
   const handleClose = () => {
@@ -32,6 +35,7 @@ export const PayrollsDialogEdit = ({ idPayroll }: Props) => {
           className="p-1 text-blue-500 rounded-full"
           aria-label="Actualizar"
           title="Actualizar"
+          onClick={async () => await refetchPayroll()}
         >
           <FilePenLineIcon />
         </Button>
@@ -44,6 +48,7 @@ export const PayrollsDialogEdit = ({ idPayroll }: Props) => {
         {
           payrollSelected && (
             <FormPayrolls
+              itemPayment={itemPayment}
               onClose={handleClose}
               payroll={payrollSelected}
             />

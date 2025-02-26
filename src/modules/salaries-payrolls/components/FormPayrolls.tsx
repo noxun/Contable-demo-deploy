@@ -2,7 +2,7 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form";
-import { Payroll, SchemaPayrollType } from '../types/types.d'
+import { ItemPayment, Payroll, SchemaPayrollType } from '../types/types.d'
 import { SchemaPayroll } from "../schemas/shema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,12 +11,14 @@ import { SaveIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostPayroll, UpdatePayrollById } from "@/lib/data";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 interface Props {
   onClose: () => void;
   payroll?: Payroll;
+  itemPayment?: ItemPayment
 }
-export const FormPayrolls = ({ onClose, payroll }: Props) => {
+export const FormPayrolls = ({ onClose, payroll, itemPayment }: Props) => {
 
   const queryClient = useQueryClient();
 
@@ -26,7 +28,7 @@ export const FormPayrolls = ({ onClose, payroll }: Props) => {
     Area: payroll?.area ?? "",
     Sexo: payroll?.sexo.toUpperCase() ?? "",
     Cargo: payroll?.cargo ?? "",
-    EntryDate: payroll?.entryDate ?? "",
+    EntryDate: payroll?.entryDate ? format(payroll?.entryDate, 'yyyy-MM-dd') : "",
     SalaryTaxReturn: payroll?.salaryTaxReturn.toString() ?? "",
     InternalPayrollSalary: payroll?.internalPayrollSalary.toString() ?? "",
   }
@@ -72,7 +74,15 @@ export const FormPayrolls = ({ onClose, payroll }: Props) => {
   })
 
   const onSubmit = (data: SchemaPayrollType) => {
-    if (payroll) return updateMutation.mutate({ id: payroll.id.toString(), payroll: data })
+
+    if (payroll && itemPayment) return updateMutation.mutate({
+      id: payroll.id.toString(),
+      idItem: itemPayment.idItems.toString(),
+      payroll: {
+        ...data,
+        ...itemPayment
+      }
+    })
     return createMutation.mutate({ payroll: data });
   };
 
@@ -87,7 +97,10 @@ export const FormPayrolls = ({ onClose, payroll }: Props) => {
               <FormItem>
                 <FormLabel>Fecha de ingreso</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input
+                    disabled={payroll ? true : false}
+                    type="date" {...field}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -98,7 +111,11 @@ export const FormPayrolls = ({ onClose, payroll }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Genero</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value} >
+                <Select
+                  disabled={payroll ? true : false}
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger className="w-[200px]">
                       <SelectValue

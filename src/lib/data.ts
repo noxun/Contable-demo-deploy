@@ -46,8 +46,10 @@ import {
   SchemaFixedAsset,
 } from "@/modules/fixed-assets/types/types";
 import {
+  ItemPayment,
   Payroll,
   ResponsePayrolls,
+  ResponseSalariesAndPayrolls,
   Salaries,
   SchemaPayrollType,
   SchemaSalaryType,
@@ -96,14 +98,15 @@ export async function fetchConfigValues() {
 export async function fetchVouchers(
   voucherType: VoucherType,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
+  siat: "" | "siat" = ""
 ) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/Voucher/All`, {
+  const response = await api.get(`/api/Voucher/all${siat}`, {
     params: {
       type: voucherType,
       PageNumber: page,
@@ -445,14 +448,32 @@ export async function fetchAccountsByType(type: number) {
   return response.data as Account[];
 }
 
-export async function fetchTrazoInternCodes() {
+export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: string) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get("/api/Trazo/interncode");
-  return response.data as TrazoInternCode[];
+  const response = await api.get("/api/Trazo/interncode", {
+    params: {
+      PageNumber: page,
+      PageSize: pageSize,
+      codeIntern: searchQuery,
+    }
+  });
+  console.log(response)
+
+  const paginationHeader = response.headers;
+  const paginationInfo = paginationHeader
+  ? JSON.parse(paginationHeader["pagination"])
+  : null;
+
+  console.log("what",paginationInfo);
+
+  return {
+    data: response.data as TrazoInternCode[],
+    pagination: paginationInfo,
+  }
 }
 
 export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
@@ -980,10 +1001,10 @@ export async function GetPayrollsAndSalaries({ date }: { date: string }) {
     token = localStorage.getItem("token");
   }
 
-  const URLRequest = `/api/SalariesAndWages/itemsTodo`;
+  const URLRequest = `/api/SalariesAndWages/itemsMonth`;
 
   setAuthToken(token);
-  const { data } = await api.get<ResponsePayrolls>(URLRequest, {
+  const { data } = await api.get<ResponseSalariesAndPayrolls>(URLRequest, {
     params: {
       date: date,
     },
@@ -1027,10 +1048,12 @@ export async function GetPayrollById({ id }: { id: string }) {
 //UPDATE By Id: Payrolls
 export async function UpdatePayrollById({
   id,
+  idItem,
   payroll,
 }: {
   id: string;
-  payroll: Payroll;
+  idItem: string;
+  payroll: Payroll & ItemPayment;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1043,6 +1066,31 @@ export async function UpdatePayrollById({
   const { data } = await api.put(URLRequest, payroll, {
     params: {
       id: id,
+      IdItems: idItem
+    },
+  });
+  return data;
+}
+//UPDATE Paid By employeeId
+export async function updatePaymentStatusByEmployeeId({
+  idEmployee,
+  paid,
+}: {
+  idEmployee: string;
+  paid: boolean;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  const URLRequest = `api/SalariesAndWages/items/IsPaid`;
+
+  setAuthToken(token);
+  const { data } = await api.put(URLRequest, idEmployee, {
+    params: {
+      id: idEmployee,
+      IsPaid: paid,
     },
   });
   return data;
@@ -1303,4 +1351,15 @@ export async function generateDiaryBookExcel(InitDate: string,
     }
   });
   return response.data as string;
+}
+
+export async function synchronizeAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(`/api/Voucher/Syncronize`);
+  return response.data;
 }

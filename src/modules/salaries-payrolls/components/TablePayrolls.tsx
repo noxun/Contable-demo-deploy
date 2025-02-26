@@ -38,20 +38,22 @@ interface FilterProps {
   placeholder?: string;
   type?: "text" | "number" | "month" | "date";
 }
-type ColumnDefWithSum<TData, TValue> = ColumnDef<TData, TValue> & {
-  sum?: boolean;
+type ColumnDefWithFixed<TData, TValue> = ColumnDef<TData, TValue> & {
+  isSticky?: boolean;
 };
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDefWithSum<TData, TValue>[]
+  columns: ColumnDefWithFixed<TData, TValue>[]
   data: TData[],
   filter?: FilterProps
+  fixedId?: boolean
 }
 
 export function DataTablePayrollsSalaries<TData, TValue>({
   columns,
   data,
-  filter
+  filter,
+  fixedId
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -74,27 +76,6 @@ export function DataTablePayrollsSalaries<TData, TValue>({
       columnVisibility,
     },
   })
-
-  // const visibleRows = table.getFilteredRowModel().rows;
-
-  // const totals = React.useMemo(() => {
-  //   const sums: Record<string, number> = {};
-  //   // Utilizar los datos filtrados de la tabla
-  //   table.getFilteredRowModel().rows.forEach((row) => {
-  //     columns.forEach((column) => {
-  //       if ('sum' in column && column.sum && 'accessorKey' in column) {
-  //         const columnId = column.accessorKey;
-  //         if (columnId && typeof columnId === "string") {
-  //           const value = row.original[columnId as keyof TData];
-  //           if (typeof value === "number") {
-  //             sums[columnId] = (sums[columnId] || 0) + value;
-  //           }
-  //         }
-  //       }
-  //     });
-  //   });
-  //   return sums;
-  // }, [columns, visibleRows]);
 
   return (
     <div>
@@ -167,21 +148,36 @@ export function DataTablePayrollsSalaries<TData, TValue>({
         </div>
       </div>
 
-      <div className="rounded-md mx-auto border w-[90vw] md:w-[69vw] max-w-full overflow-x-auto">
+      <div className="relative rounded-md mx-auto border w-[90vw] md:w-[69vw] max-h-[90vh] max-w-full overflow-auto">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky inset-0 z-20 bg-[#2563eb] hover:bg-[#2563eb]/90">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
+                  const isSticky = (header.column.columnDef as ColumnDefWithFixed<TData, TValue>).isSticky;
+
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
+                    <React.Fragment key={`col-${header.id}`}>
+                      {
+                        fixedId && index === 0 && (
+                          <TableHead
+                            className={`${fixedId ? 'sticky left-0 z-30 bg-[#ececec] text-[#2563eb]' : 'text-[#ececec]'}`}
+                          >
+                            Nro
+                          </TableHead>
+                        )
+                      }
+                      <TableHead
+                        className={`${isSticky ? 'sticky left-0 z-30 bg-[#ececec] text-[#2563eb]' : 'text-[#ececec]'}`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    </React.Fragment>
                   )
                 })}
               </TableRow>
@@ -189,16 +185,35 @@ export function DataTablePayrollsSalaries<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, rowIndex) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell, index) => {
+
+                    const isSticky = (cell.column.columnDef as ColumnDefWithFixed<TData, TValue>).isSticky;
+
+                    return (
+                      <React.Fragment key={`cell-${cell.id}`}>
+                        {
+                          fixedId && index === 0 && (
+                            <TableCell
+                              className={`${fixedId ? 'sticky left-0 z-10 bg-[#2563eb] text-[#ececec]' : ''}`}
+                            >
+                              {rowIndex + 1}
+                            </TableCell>
+                          )
+                        }
+                        <TableCell
+                          className={`${isSticky ? 'sticky left-0 z-10 bg-[#2563eb] text-[#ececec]' : ''}`}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      </React.Fragment>
+                    )
+                  }
+                  )}
                 </TableRow>
               ))
             ) : (
@@ -208,22 +223,6 @@ export function DataTablePayrollsSalaries<TData, TValue>({
                 </TableCell>
               </TableRow>
             )}
-            {/* Fila de totales */}
-            {/* <TableRow >
-              {columns.map((column) => {
-                if (!('accessorKey' in column)) return '';
-                const isVisible = table.getColumn(column.accessorKey as string)?.getIsVisible();
-                if (!isVisible) return ''
-
-                return (
-                  <TableCell key={column.id + crypto.randomUUID()} className="font-bold">
-                    {isVisible && 'sum' in column && column.sum
-                      ? formatNumber(totals[column.accessorKey as string]) || 0
-                      : ' '}
-                  </TableCell>
-                );
-              })}
-            </TableRow> */}
           </TableBody>
         </Table>
       </div>

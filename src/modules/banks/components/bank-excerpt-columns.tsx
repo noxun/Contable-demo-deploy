@@ -13,6 +13,52 @@ import DeleteBankExcerptButton from "./DeleteBankExcerptButton";
 import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 import DialogAccountDetailsDollar from "./DialogAccountDetailsDollar";
 import DialogFormNewVoucher from "./DialogFormNewVoucher";
+import { memo } from "react";
+
+interface MemoizedBankRowProps {
+  bankExtract: {
+    id: number;
+    type: number | undefined;
+    accountId: number;
+    accountingEntry: boolean;
+    accountDetail: string;
+  };
+  bankId: string | number;
+  selectedAccounts: {
+    [key: number]: number | null;
+  };
+  selectedTypes: {
+    [key: number]: number | null;
+  };
+  onSelectChange: (bankExtractId: number, accountId: number | null) => void;
+  onTypeSelectChange: (bankExtractId: number, type: number) => void;
+}
+
+const MemoizedBankRow = memo(function MemoizedBankRow({
+  bankExtract,
+  bankId,
+  selectedAccounts,
+  selectedTypes,
+  onSelectChange,
+  onTypeSelectChange,
+}: MemoizedBankRowProps) {
+  return (
+    <RegisterSeat
+      registeredType={bankExtract.type}
+      bankExtractId={bankExtract.id}
+      accountDetail={bankExtract.accountDetail}
+      bankId={bankId}
+      hasBeenRegisteredToAccount={
+        bankExtract.accountId !== 0 || bankExtract.accountingEntry
+      }
+      extractAccountId={bankExtract.accountId}
+      selectedAccount={selectedAccounts[bankExtract.id]}
+      onSelectChange={onSelectChange}
+      selectedType={selectedTypes[bankExtract.id]}
+      onTypeSelectChange={onTypeSelectChange}
+    />
+  );
+});
 
 export function columns(
   bankId: string | number,
@@ -49,17 +95,12 @@ export function columns(
       cell: ({ row }) => {
         const bankExtract = row.original;
         return (
-          <RegisterSeat
-            registeredType={bankExtract.type}
-            bankExtractId={bankExtract.id}
+          <MemoizedBankRow
+            bankExtract={bankExtract}
             bankId={bankId}
-            hasBeenRegisteredToAccount={
-              bankExtract.accountId !== 0 || bankExtract.accountingEntry
-            }
-            extractAccountId={bankExtract.accountId}
-            selectedAccount={selectedAccounts[bankExtract.id]}
+            selectedAccounts={selectedAccounts}
+            selectedTypes={selectedTypes}
             onSelectChange={onSelectChange}
-            selectedType={selectedTypes[bankExtract.id]}
             onTypeSelectChange={onTypeSelectChange}
           />
         );

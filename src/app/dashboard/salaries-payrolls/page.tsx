@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { DeletePayroll, GetPayrollExcelByDate, GetPayrollsAndSalaries } from "@/lib/data";
+import { DeletePayroll, GetPayrollExcelByDate, GetPayrollsAndSalaries, updatePaymentStatusByEmployeeId } from "@/lib/data";
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog";
 import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
 import { PayrollsDialogForm } from "@/modules/salaries-payrolls/components/PayrollsDialogForm";
@@ -9,14 +9,13 @@ import PaySlipDialog from "@/modules/salaries-payrolls/components/PaySlipDialog"
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { CircleDollarSignIcon, EyeIcon, HandCoinsIcon, SheetIcon } from "lucide-react";
+import { CheckIcon, CircleDollarSignIcon, Clock3Icon, ClockIcon, EyeIcon, HandCoinsIcon, ReceiptIcon, SheetIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { SalaryDialogEdit } from "@/modules/salaries-payrolls/components/SalaryDialogEdit";
 import { DataTablePayrollsSalaries } from "@/modules/salaries-payrolls/components/TablePayrolls";
-import { SalaryFormDialog } from "@/modules/salaries-payrolls/components/SalaryFormDialog";
 
 function SalariesPayrollsPage() {
 
@@ -33,8 +32,7 @@ function SalariesPayrollsPage() {
   const { refetch: refetchExcel } = useQuery({
     queryKey: [selectedDate],
     queryFn: () => {
-      const dateSelected = selectedDate || new Date();
-      return GetPayrollExcelByDate({ date: format(dateSelected, 'yyyy-MM') });
+      return GetPayrollExcelByDate({ date: selectedDate });
     },
     enabled: false
   })
@@ -42,17 +40,37 @@ function SalariesPayrollsPage() {
   const deleteMutation = useMutation({
     mutationFn: DeletePayroll,
     onSuccess: () => {
-      toast.success('Planilla eliminada correctamente')
+      toast.success('Funcionario eliminado correctamente')
       queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
     },
     onError: (error) => {
-      toast.error('Error al eliminar la planilla')
-      console.error('Ocurrio un error al eliminar la planilla: ', error)
+      toast.error('Error al eliminar el funcionario')
+      console.error('Ocurrio un error al eliminar el funcionario: ', error)
     },
     onMutate: () => {
-      toast("Eliminando activo fijo...")
+      toast("Eliminando funcionario..")
     }
   })
+
+  const updatePaidSalary = useMutation({
+    mutationFn: updatePaymentStatusByEmployeeId,
+    onSuccess: () => {
+      toast.success('Funcionario actualizado correctamente')
+      queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
+    },
+    onError: (error) => {
+      toast.error('Error al actualizar el funcionario')
+      console.error('Ocurrio un error al actualizar el funcionario: ', error)
+    },
+    onMutate: () => {
+      toast("Actualizando funcionario...")
+    }
+  })
+
+  const onUpdatePaymentStatus = (id: string, paid: boolean) => {
+    if (paid) return updatePaidSalary.mutate({ idEmployee: id, paid: false });
+    updatePaidSalary.mutate({ idEmployee: id, paid: true });
+  }
 
   const onHandleGenerateExcel = async () => {
     try {
@@ -80,9 +98,10 @@ function SalariesPayrollsPage() {
 
   const columnsPayrolls = [
     {
+      isSticky: true,
       header: "Nombre",
       accessorKey: "nombres",
-      cell: ({ row }: any) => row.original.nombres,
+      cell: ({ row }: any) => <p className="whitespace-nowrap">{row.original.nombres}</p>,
     },
     {
       header: "Area",
@@ -97,12 +116,12 @@ function SalariesPayrollsPage() {
     {
       header: "Sexo",
       accessorKey: "sexo",
-      cell: ({ row }: any) => row.original.sexo.toUpperCase(),
+      cell: ({ row }: any) => <p className="text-center">{row.original.sexo.toUpperCase()}</p>,
     },
     {
       header: "Fecha de ingreso",
       accessorKey: "entryDate",
-      cell: ({ row }: any) => format(new Date(row.original.entryDate), "dd-MM-yyyy")
+      cell: ({ row }: any) => <p className="whitespace-nowrap">{format(new Date(row.original.entryDate), "dd-MM-yyyy")}</p>
     },
     {
       header: "Salario fiscal",
@@ -117,107 +136,96 @@ function SalariesPayrollsPage() {
     {
       header: "Bono Antiguedad",
       accessorKey: "bonusAntiquity",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].bonusAntiquity : 0),
+      cell: ({ row }: any) => formatNumber(row.original.bonusAntiquity),
     },
     {
       header: "Bono produccion",
       accessorKey: "productionBonus",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].productionBonus : 0),
+      cell: ({ row }: any) => formatNumber(row.original.productionBonus),
     },
     {
       header: "Tiempo extra \n (minutos)",
       accessorKey: "extraTimeMinutes",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].extraTimeMinutes : 0),
+      cell: ({ row }: any) => row.original.extraTimeMinutes,
     },
     {
       header: "Valor horas extras",
       accessorKey: "valueForOvertime",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].valueForOvertime : 0),
+      cell: ({ row }: any) => formatNumber(row.original.valueForOvertime),
     },
     {
       header: "Total ganado",
       accessorKey: "totalGanado",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].totalGanado : 0),
+      cell: ({ row }: any) => formatNumber(row.original.totalGanado),
     },
     {
       header: "AFP",
       accessorKey: "afp",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].afp : 0),
+      cell: ({ row }: any) => formatNumber(row.original.afp),
     },
     {
       header: "Prestamo",
       accessorKey: "loan",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].loan : 0),
+      cell: ({ row }: any) => formatNumber(row.original.loan),
     },
     {
       header: "Cursos capacitacion",
       accessorKey: "exelTrainingCorse",
-      cell: ({ row }: any) => row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].exelTrainingCorse : 0,
+      cell: ({ row }: any) => row.original.exelTrainingCorse,
     },
     {
       header: "Multa ANB",
       accessorKey: "anbFineSettlement",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].anbFineSettlement : 0),
+      cell: ({ row }: any) => formatNumber(row.original.anbFineSettlement),
     },
     {
       header: "A cuenta",
       accessorKey: "onAccount",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].onAccount : 0),
+      cell: ({ row }: any) => formatNumber(row.original.onAccount),
     },
     {
       header: "Retrasos",
       accessorKey: "dsctoShirtDelays",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].dsctoShirtDelays : 0),
+      cell: ({ row }: any) => formatNumber(row.original.dsctoShirtDelays),
     },
     {
       header: "Liquido pagable",
       accessorKey: "liquidPayable",
-      cell: ({ row }: any) => formatNumber(row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].liquidPayable : 0),
+      cell: ({ row }: any) => formatNumber(row.original.liquidPayable),
     },
     {
-      header: "Acciones",
+      header: "Pagos",
       cell: ({ row }: any) => {
         const idPayroll = row.original.id
-        const createDisabled = row.original.salariesAndWagesItems[0] && row.original.salariesAndWagesItems[0].id.toString()
+        const paymentStatus = row.original.isPaid
         return (
           <div className="flex items-center justify-center gap-1">
-            <div className={`${createDisabled ? "hidden" : "block"}`}>
-              <SalaryFormDialog
-                idPayroll={row.original.id.toString()}
-                buttonElement={
-                  <Button
-                    disabled={row.original.salariesAndWagesItems[0] ? row.original.salariesAndWagesItems[0].liquidPayable : false}
-                    variant="outline"
-                    size="icon"
-                    className="p-1 text-blue-500 rounded-full"
-                    aria-label="Pagar Salario"
-                    title="Pagar Salario"
-                  >
-                    <CircleDollarSignIcon />
-                  </Button>
-                }
-              />
-            </div>
-            <div className={`${createDisabled ? "block" : "hidden"}`}>
-              <SalaryDialogEdit
-                idItem={row.original.salariesAndWagesItems[0] && row.original.salariesAndWagesItems[0].id.toString()}
-                buttonElement={
-                  <Button
-                    variant="outline"
-                    className="size-10 p-2 text-blue-500 rounded-full"
-                    aria-label="Actualizar Salario"
-                    title="Actualizar Salario"
-                  >
-                    <HandCoinsIcon />
-                  </Button>
-                }
-              />
-            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="p-1 text-blue-500 rounded-full"
+              aria-label={(!paymentStatus) ? "Pagar Salario" : "Pagado"}
+              title={(!paymentStatus) ? "Pagar Salario" : "Pagado"}
+              onClick={() => onUpdatePaymentStatus(row.original.idItems, paymentStatus)}
+            >
+              {(paymentStatus) && <ReceiptIcon />}
+              {(!paymentStatus) && <Clock3Icon />}
+            </Button>
+            <SalaryDialogEdit idItem={row.original.idItems.toString()} />
             <PaySlipDialog
               idSalaryWages={idPayroll}
               datePaySlip={(new Date()).toISOString()}
             />
-            <Button
+          </div >
+        )
+      },
+    },
+    {
+      header: "Personal",
+      cell: ({ row }: any) => {
+        return (
+          <div className="flex items-center justify-center gap-1">
+            {/* <Button
               variant="outline"
               size="icon"
               className="p-1 text-blue-500 rounded-full"
@@ -227,9 +235,21 @@ function SalariesPayrollsPage() {
               <Link href={`/dashboard/salaries-payrolls/${row.original.id}/salaries`}>
                 <EyeIcon />
               </Link>
-            </Button>
+            </Button> */}
             <PayrollsDialogEdit
-              idPayroll={idPayroll}
+              itemPayment={{
+                idItems: row.original.idItems,
+                bonusAntiquity: row.original.bonusAntiquity,
+                extraTimeMinutes: row.original.extraTimeMinutes,
+                valueForOvertime: row.original.valueForOvertime,
+                productionBonus: row.original.productionBonus,
+                loan: row.original.loan,
+                exelTrainingCorse: row.original.exelTrainingCorse,
+                anbFineSettlement: row.original.anbFineSettlement,
+                onAccount: row.original.onAccount,
+                dsctoShirtDelays: row.original.dsctoShirtDelays,
+              }}
+              idPayroll={row.original.idItems}
             />
             <ConfirmDeleteDialog
               message="Esta acción eliminará permanentemente la planilla seleccionada.
@@ -276,7 +296,7 @@ function SalariesPayrollsPage() {
               <DataTablePayrollsSalaries
                 filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}
-                data={listPayrolls.listSalariesWages}
+                data={listPayrolls.itemsSalariesWages}
               />
             </div>
             <div className="flex flex-col justify-end gap-2 py-4 rounded-lg text-[#64748b]">

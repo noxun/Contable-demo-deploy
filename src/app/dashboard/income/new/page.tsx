@@ -1,3 +1,4 @@
+"use client"
 import FormNewVoucher from "@/modules/shared/components/FormNewVoucher";
 import {
   VoucherType,

@@ -56,6 +56,7 @@ type VoucherItem = {
   createdAt: string;
   type: number;
   voucherId: number;
+  voucherDate: string;
   description: string;
   gloss: string;
   debitBs: number;
@@ -195,7 +196,7 @@ const AccountSection = () => {
       header: "Fecha",
       accessorKey: "createdAt",
       cell: ({ row }) =>
-        format(new Date(row.original.createdAt), "yyyy-MM-dd"),
+        format(new Date(row.original.voucherDate), "yyyy-MM-dd"),
     },
     {
       header: "Tipo",
@@ -216,9 +217,9 @@ const AccountSection = () => {
       cell: ({ row }) => row.original.gloss || "sin glosa",
     },
     { header: "Hoja Ruta", accessorKey: "hojaDeRuta" },
-    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }) => formatNumber( row.original.debitBs )},
-    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }) => formatNumber( row.original.assetBs )},
-    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }) => formatNumber( row.original.totalSaldoBs)},
+    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }) => formatNumber(row.original.debitBs) },
+    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }) => formatNumber(row.original.assetBs) },
+    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }) => formatNumber(row.original.totalSaldoBs) },
 
     // { header: "Debe Sus", accessorKey: "debitSus" },
     // { header: "Haber Sus", accessorKey: "assetSus" },

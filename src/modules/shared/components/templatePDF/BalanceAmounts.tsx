@@ -168,8 +168,8 @@ export const BalanceAmountsTemplate = ({ records, dateRange }: Props) => {
                   <View style={[styles.col10, styles.tdCell, { borderRightWidth: 1 }]}><Text>{record.code}</Text></View>
                   <View style={[styles.col50, styles.tdCell]}><Text>{record.description}</Text></View>
                   <View style={[styles.trCell, styles.col20, { borderLeftWidth: 1 }]}>
-                    <View style={[styles.col50, styles.tdCell, { textAlign: "right" }]}><Text>{formatNumber(record.asset)}</Text></View>
                     <View style={[styles.col50, styles.tdCell, { textAlign: "right" }]}><Text>{formatNumber(record.debit)}</Text></View>
+                    <View style={[styles.col50, styles.tdCell, { textAlign: "right" }]}><Text>{formatNumber(record.asset)}</Text></View>
                   </View>
                   <View style={[styles.trCell, styles.col20, { borderLeftWidth: 1 }]}>
                     <View style={[styles.tdCell, styles.col50, { textAlign: "right" }]}><Text>{formatNumber(record.debtor)}</Text></View>
