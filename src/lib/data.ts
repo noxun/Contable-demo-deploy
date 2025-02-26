@@ -12,6 +12,7 @@ import {
   ConfigValues,
   CostCenter,
   DiaryBookResponse,
+  HeritageEvaluationData,
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
   InvoiceRegistryType,
@@ -1362,4 +1363,42 @@ export async function synchronizeAccounts() {
 
   const response = await api.post(`/api/Voucher/Syncronize`);
   return response.data;
+}
+
+
+// export async function fetchHeritageEvaluationData(
+//   initDate: string,
+//   endDate: string,
+//   inSus: boolean,
+//   type: "1"
+// ): Promise<string>; 
+// export async function fetchHeritageEvaluationData(
+//   initDate: string,
+//   endDate: string,
+//   inSus: boolean,
+//   type: "2"
+// ): Promise<HeritageEvaluationData>;
+export async function fetchHeritageEvaluationData(initDate: string, endDate: string, inSus:boolean, type: "1" | "2"){
+  // 1: XLSX, 2: DATA
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/FinancialState/HeritageEvaluation`, {
+    params:{
+      InitDate: initDate,
+      EndDate: endDate,
+      InSus: inSus,
+      Type: type,
+    }
+  });
+
+  if(type === "1"){
+    return response.data as string;//excel link
+  }else{
+    return response.data as HeritageEvaluationData;
+  }
+
 }
