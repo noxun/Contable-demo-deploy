@@ -24,6 +24,7 @@ import {
   RegisterVoucherByDocumentResponse,
   Role,
   RoleMenu,
+  SendAllSubDatas,
   SiatMotionAccount,
   TrazoCompany,
   TrazoInternCode,
@@ -1400,5 +1401,36 @@ export async function fetchHeritageEvaluationData(initDate: string, endDate: str
   }else{
     return response.data as HeritageEvaluationData;
   }
+}
 
+export async function fetchContableNotesBlob(){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/ContableNotes`, {
+    responseType: "blob",
+  })
+
+  return response.data
+}
+
+export async function postAllSubDatas(data: SendAllSubDatas){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(`/api/Voucher/RegisterVoucherByDocumentsInvert`, data, 
+    {
+      params: {
+        type: "t"// esto no requiere ser un argumento en la funcion ya que nunca cambiara
+      }
+    }
+  )
+
+  return response.data as RegisterVoucherByDocumentResponse;
 }
