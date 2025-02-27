@@ -10,8 +10,10 @@ import { addDays } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import HeritageEvaluationPreview from "./HeritageEvaluationPreview";
+import HeritageEvaluationPreview from "../../../../modules/results/heritage-evaluation/components/HeritageEvaluationPreview";
 import { HeritageEvaluationData } from "@/lib/types";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import HeritageEvaluationPDF from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPDF";
 
 const options = [
   { value: "1", label: "Excel" },
@@ -88,9 +90,23 @@ export default function HeritageEvaluationPage() {
             </Link>
           </Button>
           {responseType === "2" ? (
-            <HeritageEvaluationPreview
-              data={heritageEvaluationData as HeritageEvaluationData}
-            />
+            <>
+              <Button asChild>
+                <PDFDownloadLink
+                  document={
+                    <HeritageEvaluationPDF
+                      data={heritageEvaluationData as HeritageEvaluationData}
+                    />
+                  }
+                  fileName="heritage.pdf"
+                >
+                  Descargar PDF
+                </PDFDownloadLink>
+              </Button>
+              <HeritageEvaluationPreview
+                data={heritageEvaluationData as HeritageEvaluationData}
+              />
+            </>
           ) : null}
         </>
       )}
