@@ -561,3 +561,18 @@ export type HeritageEvaluationData = {
     reslCumulResults: number;
   };
 };
+
+export type SendAllSubDatas = {
+  sucursal: string
+  centroCostos: string
+  internCode: string
+  companyRazonSocial: string
+  total: string //totalProforma
+  userId: number
+  items: Array<{
+    description: string
+    description2: string
+    description3: string
+    recibo?: boolean
+  }>
+}
