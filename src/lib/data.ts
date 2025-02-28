@@ -24,6 +24,8 @@ import {
   RegisterVoucherByDocumentResponse,
   Role,
   RoleMenu,
+  SalariesAndWagesAccounts,
+  SalaryAndWageAccount,
   SendAllSubDatas,
   SiatMotionAccount,
   TrazoCompany,
@@ -450,7 +452,11 @@ export async function fetchAccountsByType(type: number) {
   return response.data as Account[];
 }
 
-export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: string) {
+export async function fetchTrazoInternCodes(
+  page = 1,
+  pageSize = 10,
+  searchQuery: string
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -461,21 +467,21 @@ export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: 
       PageNumber: page,
       PageSize: pageSize,
       codeIntern: searchQuery,
-    }
+    },
   });
-  console.log(response)
+  console.log(response);
 
   const paginationHeader = response.headers;
   const paginationInfo = paginationHeader
-  ? JSON.parse(paginationHeader["pagination"])
-  : null;
+    ? JSON.parse(paginationHeader["pagination"])
+    : null;
 
-  console.log("what",paginationInfo);
+  console.log("what", paginationInfo);
 
   return {
     data: response.data as TrazoInternCode[],
     pagination: paginationInfo,
-  }
+  };
 }
 
 export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
@@ -767,13 +773,13 @@ interface QueryParams {
   initDate?: string;
   endDate?: string;
   inSus?: boolean;
-  level?: number
+  level?: number;
 }
 
 export async function getApiReportExcel(
   path: string,
   queryParams: QueryParams,
-  pathType?: string,
+  pathType?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1068,7 +1074,7 @@ export async function UpdatePayrollById({
   const { data } = await api.put(URLRequest, payroll, {
     params: {
       id: id,
-      IdItems: idItem
+      IdItems: idItem,
     },
   });
   return data;
@@ -1335,9 +1341,11 @@ export async function getAllDataReportByType({
   return response.data;
 }
 
-export async function generateDiaryBookExcel(InitDate: string,
+export async function generateDiaryBookExcel(
+  InitDate: string,
   endDate: string,
-  inSus: boolean,) {
+  inSus: boolean
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -1350,7 +1358,7 @@ export async function generateDiaryBookExcel(InitDate: string,
       InitDate,
       endDate,
       inSus,
-    }
+    },
   });
   return response.data as string;
 }
@@ -1366,20 +1374,24 @@ export async function synchronizeAccounts() {
   return response.data;
 }
 
-
 // export async function fetchHeritageEvaluationData(
 //   initDate: string,
 //   endDate: string,
 //   inSus: boolean,
 //   type: "1"
-// ): Promise<string>; 
+// ): Promise<string>;
 // export async function fetchHeritageEvaluationData(
 //   initDate: string,
 //   endDate: string,
 //   inSus: boolean,
 //   type: "2"
 // ): Promise<HeritageEvaluationData>;
-export async function fetchHeritageEvaluationData(initDate: string, endDate: string, inSus:boolean, type: "1" | "2"){
+export async function fetchHeritageEvaluationData(
+  initDate: string,
+  endDate: string,
+  inSus: boolean,
+  type: "1" | "2"
+) {
   // 1: XLSX, 2: DATA
   let token;
   if (typeof window !== "undefined") {
@@ -1388,22 +1400,22 @@ export async function fetchHeritageEvaluationData(initDate: string, endDate: str
   setAuthToken(token);
 
   const response = await api.get(`/api/FinancialState/HeritageEvaluation`, {
-    params:{
+    params: {
       InitDate: initDate,
       EndDate: endDate,
       InSus: inSus,
       Type: type,
-    }
+    },
   });
 
-  if(type === "1"){
-    return response.data as string;//excel link
-  }else{
+  if (type === "1") {
+    return response.data as string; //excel link
+  } else {
     return response.data as HeritageEvaluationData;
   }
 }
 
-export async function fetchContableNotesBlob(){
+export async function fetchContableNotesBlob() {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -1412,25 +1424,57 @@ export async function fetchContableNotesBlob(){
 
   const response = await api.get(`/api/Report/ContableNotes`, {
     responseType: "blob",
-  })
+  });
 
-  return response.data
+  return response.data;
 }
 
-export async function postAllSubDatas(data: SendAllSubDatas){
+export async function postAllSubDatas(data: SendAllSubDatas) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
 
-  const response = await api.post(`/api/Voucher/RegisterVoucherByDocumentsInvert`, data, 
+  const response = await api.post(
+    `/api/Voucher/RegisterVoucherByDocumentsInvert`,
+    data,
     {
       params: {
-        type: "t"// esto no requiere ser un argumento en la funcion ya que nunca cambiara
-      }
+        type: "t", // esto no requiere ser un argumento en la funcion ya que nunca cambiara
+      },
     }
-  )
+  );
 
   return response.data as RegisterVoucherByDocumentResponse;
+}
+
+export async function fetchSalariesAndWagesAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(
+    `/api/SalariesAndWages/accounts/salaries-to-pay`
+  );
+
+  return response.data as SalariesAndWagesAccounts;
+}
+
+export async function postSalariesAndWagesAccounts(name: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(
+    `/api/SalariesAndWages/accounts/salaries-to-pay`,
+    name
+  );
+  //the name will be put in the account description
+  //all other field will be filled by the backend
+  return response.data as SalaryAndWageAccount;
 }
