@@ -12,13 +12,17 @@ import { useState } from "react";
 import ProcedureTablesList from "./ProcedureTablesList";
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
+import usePayrollData from "@/modules/shared/hooks/usePayrollData";
 
 type SheetDatasetProps = {
   procedureId: number;
   value: string;
 };
 
-export default function SheetDataset({ procedureId, value }: SheetDatasetProps) {
+export default function SheetDataset({
+  procedureId,
+  value,
+}: SheetDatasetProps) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -27,15 +31,21 @@ export default function SheetDataset({ procedureId, value }: SheetDatasetProps) 
     isError,
   } = useProcedureDataset(procedureId, open);
 
-  if (isError) {
+  const {
+    data: payrollData,
+    isError: isErrorPayRoll,
+    isLoading: isLoadingPayRoll,
+  } = usePayrollData(procedureId, open);
+
+  if (isError || isErrorPayRoll) {
     return <div>Hubo un error al obtener los datos del dataset</div>;
   }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-      <Button size="icon" variant="outline">
-          <Coins className="size-4"/>
+        <Button size="icon" variant="outline">
+          <Coins className="size-4" />
         </Button>
       </SheetTrigger>
       <SheetContent className="min-w-[60%] overflow-y-auto">
@@ -43,10 +53,17 @@ export default function SheetDataset({ procedureId, value }: SheetDatasetProps) 
           <SheetTitle>Planillaje y Facturacion Contable</SheetTitle>
           <SheetDescription>Datos de la planilla</SheetDescription>
         </SheetHeader>
-        {isLoading || procedureDataset === undefined ? (
+        {isLoading ||
+        isLoadingPayRoll ||
+        procedureDataset === undefined ||
+        payrollData === undefined ? (
           <div>Cargando...</div>
         ) : (
-          <ProcedureTablesList procedureDataset={procedureDataset} value={value}/>
+          <ProcedureTablesList
+            procedureDataset={procedureDataset}
+            value={value}
+            totalProformaBs={payrollData.totalProformaBs}
+          />
         )}
       </SheetContent>
     </Sheet>

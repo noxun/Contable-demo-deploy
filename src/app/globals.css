@@ -136,3 +136,14 @@
 #react-doc-viewer #proxy-renderer {
   height: 100% !important;
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

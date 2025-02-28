@@ -70,10 +70,20 @@ export default function FormEditVoucherItems({
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
     let listVoucherItem = voucherItems;
+
+    // Check if the field name is "gloss" to handle it as a string
+    const newValue =
+      name === "gloss"
+        ? value
+        : isNaN(parseFloat(value))
+        ? 0
+        : parseFloat(value);
+
     listVoucherItem[index] = {
       ...listVoucherItem[index],
-      [name]: isNaN(parseFloat(value)) ? 0 : parseFloat(value),
+      [name]: newValue,
     };
+
     setVoucherItems([...listVoucherItem]);
   }
   const queryClient = useQueryClient();
@@ -383,6 +393,7 @@ export default function FormEditVoucherItems({
               </TableCell>
               <TableCell className="w-[30%]">
                 <Input
+                  type="text"
                   name="gloss"
                   onChange={(e) => onChange(e, index)}
                   value={item.gloss}

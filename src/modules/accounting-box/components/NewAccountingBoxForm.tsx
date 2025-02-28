@@ -156,6 +156,7 @@ export default function NewAccountingBoxForm({
         label: response.name,
       };
 
+      //FIXME: set the formvalue with setValue so it is synced with react hook form
       setSelectedOption(newOption);
       setSelectedCompanyId(response.id);
 
@@ -368,6 +369,7 @@ export default function NewAccountingBoxForm({
                       options={trazoCompaniesOptions}
                       onCreateOption={handleCreate}
                       onChange={(value) => {
+                        console.log(value, 'hmmm')
                         setSelectedOption(value);
                         setSelectedCompanyId(value?.value as number);
                         field.onChange(value?.label);
@@ -379,7 +381,7 @@ export default function NewAccountingBoxForm({
                   </FormControl>
                   <FormDescription>A quien se paga</FormDescription>
                   <FormMessage />
-                </FormItem>
+                </FormItem> 
               )}
             />
           )}

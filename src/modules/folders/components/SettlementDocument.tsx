@@ -6,17 +6,20 @@ import { PaymentRoll } from "@/lib/trazoTypes";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { User } from "@/lib/types";
 
 const isQuotation = false;
-const accountNumber = 123;
-
-//TODO: agregar el usuario que elabora el documento
 
 type SettlementDocumentProps = {
   data: PaymentRoll;
+  user: User;
 };
 
-export default function SettlementDocument({ data }: SettlementDocumentProps) {
+export default function SettlementDocument({
+  data,
+  user,
+}: SettlementDocumentProps) {
+  const accountNumber = data?.accountNumber ?? "NO DISPONIBLE";
   return (
     <Document>
       <Page size="LETTER" style={{ padding: "20px" }}>
@@ -29,10 +32,7 @@ export default function SettlementDocument({ data }: SettlementDocumentProps) {
               padding="4px 0"
             >
               <View width="25%">
-                <Image
-                  src={REPORTS_LOGO_URL}
-                  style={{ height: "50px" }}
-                />
+                <Image src={REPORTS_LOGO_URL} style={{ height: "50px" }} />
               </View>
               <View
                 width="60%"
@@ -507,9 +507,8 @@ export default function SettlementDocument({ data }: SettlementDocumentProps) {
               </View>
               <View width="50%" flexDirection="column">
                 <Text padding="2px 3px">
-                  {/* Elaborado por: {user.user.name} {user.user.fatherLastName}{" "}
-                  {user.user.motherLastName} */}
-                  Elaborado por: Usuario Noxun
+                  Elaborado por: {user?.name} {user?.fatherLastName}{" "}
+                  {user?.motherLastName}{" "}
                 </Text>
                 <Text padding="2px 3px">NIT: 375482020</Text>
                 <Text padding="2px 3px">SWIFT: BAUNBO22</Text>

@@ -15,6 +15,7 @@ import SettlementDocument from "./SettlementDocument";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { Notebook } from "lucide-react";
+import useUserStore from "@/lib/userStore";
 
 export default function DialogPayroll({
   procedureId,
@@ -22,6 +23,7 @@ export default function DialogPayroll({
   procedureId: number;
 }) {
   const [open, setOpen] = useState(false);
+  const user = useUserStore((state) =>  state.loginData?.user);
 
   const {
     data: payrollData,
@@ -49,11 +51,11 @@ export default function DialogPayroll({
             <DialogDescription>Esta es la planilla</DialogDescription>
           </DialogHeader>
         </VisuallyHidden.Root>
-        {isLoading || payrollData === undefined ? (
+        {isLoading || payrollData === undefined || user === undefined ? (
           <div>Cargando...</div>
         ) : (
           <PDFViewer className="w-full h-full">
-            <SettlementDocument data={payrollData} />
+            <SettlementDocument data={payrollData} user={user}/>
           </PDFViewer>
         )}
       </DialogContent>

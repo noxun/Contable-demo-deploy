@@ -158,7 +158,7 @@ export function BiggerBookTemplate({
                 {record.accountDescription}
               </Text>
             </View>
-            <View style={{ width: "100%", border: 1 }}>
+            <View style={{ width: "100%" }}>
               <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
                 <Text
                   style={[

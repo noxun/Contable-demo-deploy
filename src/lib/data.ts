@@ -9,9 +9,12 @@ import {
   BookBiggerData,
   Branch,
   BranchToList,
+  BudgetExecutionData,
+  BudgetExecutionResponse,
   ConfigValues,
   CostCenter,
   DiaryBookResponse,
+  HeritageEvaluationData,
   InvoiceRegistry,
   InvoiceRegistryResponseByType,
   InvoiceRegistryType,
@@ -23,6 +26,9 @@ import {
   RegisterVoucherByDocumentResponse,
   Role,
   RoleMenu,
+  SalariesAndWagesAccounts,
+  SalaryAndWageAccount,
+  SendAllSubDatas,
   SiatMotionAccount,
   TrazoCompany,
   TrazoInternCode,
@@ -448,7 +454,11 @@ export async function fetchAccountsByType(type: number) {
   return response.data as Account[];
 }
 
-export async function fetchTrazoInternCodes(page = 1, pageSize = 10, searchQuery: string) {
+export async function fetchTrazoInternCodes(
+  page = 1,
+  pageSize = 10,
+  searchQuery: string
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -459,9 +469,9 @@ export async function fetchTrazoInternCodes(page = 1, pageSize = 10, searchQuery
       PageNumber: page,
       PageSize: pageSize,
       codeIntern: searchQuery,
-    }
+    },
   });
-  console.log(response)
+  console.log(response);
 
   const paginationHeader = response.headers;
   const paginationInfo = paginationHeader
@@ -473,7 +483,7 @@ export async function fetchTrazoInternCodes(page = 1, pageSize = 10, searchQuery
   return {
     data: response.data as TrazoInternCode[],
     pagination: paginationInfo,
-  }
+  };
 }
 
 export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
@@ -765,13 +775,13 @@ interface QueryParams {
   initDate?: string;
   endDate?: string;
   inSus?: boolean;
-  level?: number
+  level?: number;
 }
 
 export async function getApiReportExcel(
   path: string,
   queryParams: QueryParams,
-  pathType?: string,
+  pathType?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1066,7 +1076,7 @@ export async function UpdatePayrollById({
   const { data } = await api.put(URLRequest, payroll, {
     params: {
       id: id,
-      IdItems: idItem
+      IdItems: idItem,
     },
   });
   return data;
@@ -1447,9 +1457,11 @@ export async function getAllDataCashFlowTemporal({
   }
 }
 
-export async function generateDiaryBookExcel(InitDate: string,
+export async function generateDiaryBookExcel(
+  InitDate: string,
   endDate: string,
-  inSus: boolean,) {
+  inSus: boolean
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -1462,7 +1474,7 @@ export async function generateDiaryBookExcel(InitDate: string,
       InitDate,
       endDate,
       inSus,
-    }
+    },
   });
   return response.data as string;
 }
@@ -1476,4 +1488,121 @@ export async function synchronizeAccounts() {
 
   const response = await api.post(`/api/Voucher/Syncronize`);
   return response.data;
+}
+
+// export async function fetchHeritageEvaluationData(
+//   initDate: string,
+//   endDate: string,
+//   inSus: boolean,
+//   type: "1"
+// ): Promise<string>;
+// export async function fetchHeritageEvaluationData(
+//   initDate: string,
+//   endDate: string,
+//   inSus: boolean,
+//   type: "2"
+// ): Promise<HeritageEvaluationData>;
+export async function fetchHeritageEvaluationData(
+  initDate: string,
+  endDate: string,
+  inSus: boolean,
+  type: "1" | "2"
+) {
+  // 1: XLSX, 2: DATA
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/FinancialState/HeritageEvaluation`, {
+    params: {
+      InitDate: initDate,
+      EndDate: endDate,
+      InSus: inSus,
+      Type: type,
+    },
+  });
+
+  if (type === "1") {
+    return response.data as string; //excel link
+  } else {
+    return response.data as HeritageEvaluationData;
+  }
+}
+
+export async function fetchContableNotesBlob() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Report/ContableNotes`, {
+    responseType: "blob",
+  });
+
+  return response.data;
+}
+
+export async function postAllSubDatas(data: SendAllSubDatas) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(
+    `/api/Voucher/RegisterVoucherByDocumentsInvert`,
+    data,
+    {
+      params: {
+        type: "t", // esto no requiere ser un argumento en la funcion ya que nunca cambiara
+      },
+    }
+  );
+
+  return response.data as RegisterVoucherByDocumentResponse;
+}
+
+export async function fetchSalariesAndWagesAccounts() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(
+    `/api/SalariesAndWages/accounts/salaries-to-pay`
+  );
+
+  return response.data as SalariesAndWagesAccounts;
+}
+
+export async function postSalariesAndWagesAccounts(name: string) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.post(
+    `/api/SalariesAndWages/accounts/salaries-to-pay`,
+    name
+  );
+  //the name will be put in the account description
+  //all other field will be filled by the backend
+  return response.data as SalaryAndWageAccount;
+}
+
+export async function fetchBudgetExecutionData() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Budget`);
+
+  return response.data as BudgetExecutionResponse;
 }
