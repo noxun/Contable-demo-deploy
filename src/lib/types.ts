@@ -576,3 +576,16 @@ export type SendAllSubDatas = {
     recibo?: boolean
   }>
 }
+
+export type SalariesAndWagesAccounts = SalaryAndWageAccount[]
+
+export type SalaryAndWageAccount = {
+  id: number
+  code: string
+  description: string
+  coin: string
+  active: boolean
+  isBudgetable: boolean
+  isMotion: boolean
+  isCost: boolean
+}
