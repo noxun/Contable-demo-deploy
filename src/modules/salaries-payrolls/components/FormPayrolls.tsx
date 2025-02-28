@@ -174,9 +174,9 @@ export const FormPayrolls = ({ onClose, payroll, itemPayment }: Props) => {
       // Initialize selectedOption when editing
       setSelectedOption({
         value: payroll.nombres,
-        label: payroll.nombres
+        label: payroll.nombres,
       });
-      
+
       // Reset form with payroll data
       formPayroll.reset({
         DateNow: new Date().toISOString(),
@@ -184,13 +184,14 @@ export const FormPayrolls = ({ onClose, payroll, itemPayment }: Props) => {
         Area: payroll.area,
         Sexo: payroll.sexo.toUpperCase(),
         Cargo: payroll.cargo,
-        EntryDate: payroll.entryDate ? format(payroll.entryDate, "yyyy-MM-dd") : "",
+        EntryDate: payroll.entryDate
+          ? format(payroll.entryDate, "yyyy-MM-dd")
+          : "",
         SalaryTaxReturn: payroll.salaryTaxReturn.toString(),
-        InternalPayrollSalary: payroll.internalPayrollSalary.toString()
+        InternalPayrollSalary: payroll.internalPayrollSalary.toString(),
       });
     }
   }, [payroll, formPayroll]);
-
 
   return (
     <Form {...formPayroll}>
@@ -248,28 +249,37 @@ export const FormPayrolls = ({ onClose, payroll, itemPayment }: Props) => {
             <FormItem>
               <FormLabel>Nombres y apellidos: </FormLabel>
               <FormControl>
-                <CreatableSelect
-                  placeholder="El nombre del empleado"
-                  value={
-                    selectedOption ||
-                    // If not and we have a field value, find the matching option
-                    (field.value
-                      ? salariesOptions.find(
-                          (option) => option.value === field.value
-                        )
-                      : null)
-                  }
-                  isDisabled={isCreating}
-                  isLoading={isCreating}
-                  options={salariesOptions}
-                  onCreateOption={handleCreate}
-                  formatCreateLabel={(inputValue) => `Crear: ${inputValue}`}
-                  onChange={(value) => {
-                    setSelectedOption(value);
-                    //esto se ejeucta cuando se selecciona una opcion
-                    field.onChange(value?.value);
-                  }}
+                {payroll?.nombres || payroll?.nombres.length === 0 ? (
+                  <Input
+                  {...field}
+                  type="text"
+                  placeholder="Ingrese los nombres y apellidos"
                 />
+                ) : (
+                  <CreatableSelect
+                    placeholder="El nombre del empleado"
+                    value={
+                      selectedOption
+                      // If not and we have a field value, find the matching option
+                      //  || (field.value
+                      //   ? salariesOptions.find(
+                      //       (option) => option.value === field.value
+                      //     )
+                      //   : null)
+                      //podria ser util en el futuro
+                    }
+                    isDisabled={isCreating}
+                    isLoading={isCreating}
+                    options={salariesOptions}
+                    onCreateOption={handleCreate}
+                    formatCreateLabel={(inputValue) => `Crear: ${inputValue}`}
+                    onChange={(value) => {
+                      setSelectedOption(value);
+                      //esto se ejeucta cuando se selecciona una opcion
+                      field.onChange(value?.value);
+                    }}
+                  />
+                )}
               </FormControl>
               <FormMessage className="text-sm" />
             </FormItem>
