@@ -1,188 +1,275 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
+import { LoaderIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { es } from "date-fns/locale";
-import { DataTable } from "@/components/ui/data-table";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-
-} from "@/components/ui/dialog";
-import DocViewer, {
-  PDFRenderer,
-  MSDocRenderer,
-
-} from "@cyntler/react-doc-viewer";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { CashFlowTemplate } from "@/modules/shared/components/templatePDF/CashFlow";
+import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDataCashFlow, getAllDataCashFlowTemporal } from "@/lib/data";
+import { formatNumber } from "@/modules/shared/utils/validate";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LevelData } from "@/modules/results/types/types";
+import { CashFlowPreview } from "@/modules/results/components/CashFlowPreview";
+
+const mockup = {
+  "balanceSheet": {
+    "totalActiveCurrent": 278761.4,
+    "totalActiveNoCurrent": 15751.8,
+    "totalActive": 294513.2,
+    "totalLiabilityCurrent": -2807.5499999999447,
+    "totalLiabilityNoCurrent": 0,
+    "totalLiability": -2807.5499999999447,
+    "totalEquity": 320008.265,
+    "totalLiabilityEquity": 317200.7150000001,
+    "activeCurrentItems": [
+      {
+        "account": "111010100000",
+        "description": "CAJA CENTRAL",
+        "amount": 1.3599999999996726
+      },
+      {
+        "account": "111010200000",
+        "description": "CAJA VVI",
+        "amount": 480
+      },
+      {
+        "account": "111010300000",
+        "description": "CAJA CHICA LP",
+        "amount": 1000
+      }
+    ],
+    "activeNoCurrentItems": [
+      {
+        "amountDetail": 0,
+        "account": "122020100000",
+        "description": " BOLETA DE GARANTÍA GESTION 2025 TRADECRUZ SRL",
+        "amount": 15751.8
+      }
+    ],
+    "liabilityCurrentItems": [
+      {
+        "account": "211010200001",
+        "description": "FACT. CARMEN POR PAGAR - DIEGO",
+        "amount": 4018
+      },
+      {
+        "account": "211010200004",
+        "description": "FACT. CARMEN POR PAGAR - CARMEN",
+        "amount": -272
+      }
+    ],
+    "liabilityNoCurrentItems": [
+      {
+        "account": "211010200001",
+        "description": "FACT. CARMEN POR PAGAR - DIEGO",
+        "amount": 4018
+      }
+    ],
+    "equityItems": [
+      {
+        "account": "311040100000",
+        "description": "RESULTADO ACUMULADO GESTIONES ANTERIORES",
+        "amount": 297320.75
+      },
+      {
+        "account": "311040300000",
+        "description": "RESULTADO GESTION",
+        "amount": 22687.515000000025
+      }
+    ]
+  },
+  "statementIncome": {
+    "totalExpense": 97357.7,
+    "totalIncome": 127607.72000000003,
+    "periodUtility": 30250.020000000033,
+    "taxOnProfits": 7562.505000000008,
+    "managementResult": 22687.515000000025,
+    "expenses": [
+      {
+        "account": "511010100002",
+        "description": "UT ENCARGADO DANIEL CALLAO",
+        "amount": 14285
+      },
+      {
+        "account": "511020100005",
+        "description": "OTRAS RETRIBUCIONES GESTORIA",
+        "amount": 618
+      }
+    ],
+    "income": [
+      {
+        "account": "411010100001",
+        "description": "HT DANIEL CALLAO",
+        "amount": 59050.00000000001
+      },
+      {
+        "account": "411010100002",
+        "description": "HT DIEGO CALLAO",
+        "amount": 39407.950000000026
+      }
+    ]
+  },
+  cashFlowDirect: {
+    cobros: [
+      { description: "Cobros a clientes", amount: 3945053 },
+      { description: "Otros cobros", amount: 171938 },
+    ],
+    pagos: [
+      { description: "Pagos por compras", amount: -2395158 },
+      { description: "Pagos por gastos de administración", amount: -130247 },
+      { description: "Pagos por gastos de comercialización", amount: -467043 },
+      { description: "Pagos por gastos financieros", amount: -106312 },
+      { description: "Pagos por impuestos", amount: -92679 },
+      { description: "Otros pagos", amount: -146929 },
+    ],
+    FEAO: { description: "Flujo de efectivo en actividades operativas", amount: 778623 },
+    resultadoAntesIntereses: 391008,
+    partidasNoEfectivo: 354187,
+    CAPEX: -603756,
+    movimientosNetos: 112729,
+    FELF: 254168,
+    FELP: -141763,
+  },
+  "clashFlowIndirect": {
+    resultadoNeto: 311707,
+    partidasNoEfectivo: [
+      { description: "Depreciación de activos fijos", amount: 290862 },
+      { description: "Amortización de activos intangibles", amount: 13364 },
+      { description: "Previsión para incobrabilidad", amount: 23991 },
+      { description: "Previsión para obsolescencia de inventarios", amount: 38246 },
+      { description: "Previsión para indemnizaciones", amount: 13870 },
+      { description: "Pérdida en inversiones permanentes", amount: -16247 },
+      { description: "Ajuste por inflación y tenencia de bienes", amount: -18863 },
+      { description: "Diferencia de cambio", amount: 8964 },
+    ],
+    movimientosNetos: [
+      { description: "Cuentas por cobrar comerciales", amount: 156361 },
+      { description: "Otras cuentas por cobrar", amount: 5712 },
+      { description: "Inventario", amount: -95416 },
+      { description: "Anticipos a proveedores", amount: -6272 },
+      { description: "Gastos prepagados", amount: 43197 },
+      { description: "Cuentas por pagar comerciales", amount: -22126 },
+      { description: "Obligaciones fiscales y sociales", amount: 2717 },
+      { description: "Intereses por pagar", amount: -3432 },
+      { description: "Ingresos diferidos", amount: -11518 },
+      { description: "Otras cuentas por pagar", amount: 3385 },
+      { description: "Previsión para indemnizaciones", amount: 40121 },
+    ],
+    FEAO: { description: "Flujo de efectivo en actividades operativas", amount: 778623 },
+    inversiones: [
+      { description: "Inversiones temporarias", amount: 27416 },
+      { description: "Inversión en PPE", amount: -480327 },
+      { description: "Inversión en activos intangibles", amount: -123429 },
+      { description: "Inversiones permanentes", amount: 164292 },
+    ],
+    FEAI: { description: "Flujo de efectivo en actividades de inversión", amount: -412048 },
+    financiamiento: [
+      { description: "Pago de dividendos", amount: -143301 },
+      { description: "Deuda financiera", amount: -133501 },
+      { description: "Deuda bursátil", amount: -183129 },
+    ],
+    FEAF: { description: "Flujo de efectivo en actividades de financiamiento", amount: -459931 },
+    variacionEfectivo: -93356,
+    saldoInicio: 203857,
+    conversionMonetaria: 9899,
+    saldoFinal: 120400,
+  }
+}
 
 export default function ClashFlowPage() {
-  // --- Estados del formulario ---
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2024, 0, 20), 20),
-  });
-  const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
 
-  const [currentDay, setCurrentDay] = useState<boolean | "indeterminate">(
-    false
-  );
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const initialDateRange: DateRange = {
+    from: new Date(Date.now()),
+  }
 
-  // --- Estados de los links ---
-  const [excelLink, setExcelLink] = useState<string | null>(null);
-  const [pdfLink, setPdfLink] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
+  const [dateRange, setDateRange] = useState<DateRange>(initialDateRange)
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false)
+  const [isLoadingCashFlow, setIsLoadingCashFlow] = useState(false)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
 
-  // --- Estados de carga o visualizacion ---
-  const [isLoading, setIsLoading] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
+  const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
+    queryKey: ["AllCashFlow"],
+    queryFn: () => getAllDataCashFlowTemporal({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      level: pendingLevel,
+    }),
+    enabled: false
+  })
 
-  // --- Estados de los documentos para la tabla y el visor ---
-  const [docs, setDocs] = useState<{ uri: string }[]>([]);
-  const [generatedFiles, setGeneratedFiles] = useState<
-    { type: string; date: string; link: string }[]
-  >([]);
 
-  /*
-    Estos estados controlan la llave y el documento activo actual del visor
-    debido a un error en la libreria, se necesita esto mas la funcion
-    handleDocumentPage para rerenderizar el visor de archivos
-    https://github.com/cyntler/react-doc-viewer/issues/161
-    Probablemente esto sea arreglado en la proxima release de la libreria
-    pero de momento este es el fix que se tiene.
-   */
-  const [viewerKey, setViewerKey] = useState(0);
-  const [activeDocument, setActiveDocument] = useState(docs[0]);
+  const { data: dataCashFlowExcel, refetch: refetchCashFlowExcel, isRefetching: isRefetchingExcel } = useQuery({
+    queryKey: ["AllCashFlowExcel"],
+    queryFn: () => getAllDataCashFlow({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typeFetchBalance: 1,
+    }),
+    enabled: false
+  })
 
-  const handleDocumentChange = (document: any) => {
-    setActiveDocument(document);
-    setViewerKey((prevKey) => prevKey + 1);
+  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+    if (startDate && endDate) {
+      setPdfFile(null)
+      setDateRange({
+        from: startDate,
+        to: endDate
+      })
+    }
   };
 
-  useEffect(() => {
-    setViewerKey((prevKey) => prevKey + 1);
-  }, [docs]);
-
-  // --- Logica del componente ---
-  const handleClick = async () => {
-    let initDate: Date | null = null;
-    let endDate: Date | null = null;
-
-    if (currentDay) {
-      const today = new Date();
-      initDate = today;
-      endDate = today;
-    } else if (selectedMonth) {
-      const [year, month] = selectedMonth.split("-").map(Number);
-      initDate = new Date(year, month - 1, 1);
-      endDate = new Date(year, month, 0);
-    } else if (date?.from && date?.to) {
-      initDate = date.from;
-      endDate = date.to;
-    }
-
-
-    if (initDate && endDate) {
-      setIsLoading(true);
-      setExcelLink(null);
-      setPdfLink(null);
-      setDocs([]);
+  const handleOnGeneratePDF = async () => {
+    setPdfFile(null)
+    try {
+      setIsLoadingPDF(true);
       toast("Generando reporte...");
-      try {
-        // Generar el reporte de Excel
-        const excelResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/ClashFlow`,
-          {
-            params: {
-              InitDate: format(initDate, "yyyy/MM/dd"),
-              EndDate: format(endDate, "yyyy/MM/dd"),
-              type: "xlsx",
-              inSus: inSus,
-            },
-            responseType: "text",
-          }
-        );
-        // Generar el reporte de PDF
-        const pdfResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/ClashFlow`,
-          {
-            params: {
-              InitDate: format(initDate, "yyyy/MM/dd"),
-              EndDate: format(endDate, "yyyy/MM/dd"),
-              type: "pdf",
-              inSus: inSus,
-            },
-            responseType: "text",
-          }
-        );
-        const currentDate = new Date().toLocaleString();
-        if (pdfResponse.data) {
-          setPdfLink(pdfResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: pdfResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "PDF",
-              date: currentDate,
-              link: pdfResponse.data,
-            },
-          ]);
-        }
-        if (excelResponse.data) {
-          setExcelLink(excelResponse.data);
-          setDocs((prevDocs) => [...prevDocs, { uri: excelResponse.data }]);
-          setGeneratedFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              type: "Excel",
-              date: currentDate,
-              link: excelResponse.data,
-            },
-          ]);
-        }
-        setShowDialog(true);
-        toast.success("Reporte generado exitosamente");
-      } catch (error) {
-        console.error("Error al generar los reportes", error);
-        toast.error("Error al generar el reporte, intente nuevamente");
-      } finally {
-        setIsLoading(false);
-      }
+      const MyDocument = (
+        <CashFlowTemplate />
+      );
+      setPdfFile(MyDocument);
+      toast.success("Reporte generado exitosamente");
+    } catch (error) {
+      toast.error("Error al generar el reporte, intente nuevamente")
+    } finally {
+      setIsLoadingPDF(false);
     }
   };
 
-  const columns = [
-    { header: "Tipo", accessorKey: "type" },
-    { header: "Fecha", accessorKey: "date" },
-    {
-      header: "Enlace",
-      accessorKey: "link",
-      cell: ({ row }: any) => (
-        <a href={row.original.link} target="_blank" rel="noopener noreferrer">
-          Descargar
-        </a>
-      ),
-    },
-  ];
+  const handleOnGenerateExcel = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetchCashFlowExcel()
+
+      if (!linkExcel) {
+        throw new Error();
+      }
+
+      const link = document.createElement("a");
+      link.href = linkExcel;
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al generar el archivo:", error);
+      toast.error('Error al generar el archivo.');
+    }
+  }
+
+  const handleOnRefetch = async () => {
+    setIsLoadingCashFlow(true)
+    await refetchCashFlow()
+    console.log('tenemos los datos de: ', dataCashFlow)
+    setIsLoadingCashFlow(false)
+  }
+  const messageDate = "Del 2024/01/01"
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -202,122 +289,78 @@ export default function ClashFlowPage() {
           }
         ]}
       />
-      <div className="flex items-center justify-evenly">
-        <div className="space-y-2">
-          {/* Rango de fechas */}
-          <div className="flex items-center gap-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  disabled={currentDay as boolean || !!selectedMonth}
-                  id="date"
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                        {format(date.to, "LLL dd, y", { locale: es })}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y", { locale: es })
-                    )
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  locale={es}
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
-            {/* Solo mes */}
-            <Label>
-              Seleccionar Mes
-              <Input
-                type="month"
-                value={selectedMonth || ""}
-                onChange={(e) => {
-                  setSelectedMonth(e.target.value);
-                  setCurrentDay(false);
-                  setDate(undefined);
-                }}
-                disabled={currentDay as boolean}
-              />
-            </Label>
-            {/* Dia Actual */}
-            <Label>
-              Dia Actual
-              <Checkbox
-                checked={currentDay}
-                onCheckedChange={(checked) => {
-                  setCurrentDay(checked);
-                  setSelectedMonth(null);
-                  setDate(undefined);
-                }}
-              />
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="inSus" checked={inSus} onCheckedChange={setInSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
-          </div>
-        </div>
-        <Button onClick={handleClick} disabled={isLoading}>
-          {isLoading ? "Generando Reporte..." : "Generar Reporte"}
+      <div className="flex items-center justify-center gap-6">
+        <DateSelector onDateChange={handleOnDateChange} />
+        <Select
+          value={pendingLevel.toString()}
+          onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
+        >
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="Selecciona un nivel" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Jerarquia</SelectLabel>
+              <SelectItem value="6">nivel 1</SelectItem>
+              <SelectItem value="5">nivel 2</SelectItem>
+              <SelectItem value="4">nivel 3</SelectItem>
+              <SelectItem value="3">nivel 4</SelectItem>
+              <SelectItem value="2">nivel 5</SelectItem>
+              <SelectItem value="1">nivel 6</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button onClick={handleOnRefetch} disabled={isLoadingCashFlow}>
+          {isLoadingCashFlow ? "Cargando..." : "Ver Resultados"}
         </Button>
       </div>
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        {/* Comentado pero podria ser util si se requiere en algun momento */}
-        {/* <DialogTrigger asChild>
-          <Button variant="outline" className="hidden">
-            Mostrar Links
-          </Button>
-        </DialogTrigger> */}
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Archivos Generados</DialogTitle>
-            <DialogDescription>
-              Puedes descargar los reportes generados a continuación:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex space-x-4">
-            {excelLink && (
-              <Button onClick={() => window.open(excelLink ?? "", "_self")}>
-                <Sheet className="mr-2 h-4 w-4" /> Descargar Excel
-              </Button>
-            )}
-            {/* {pdfLink && (
-              <Button onClick={() => window.open(pdfLink ?? "", "_self")}>
-                <FileText className="mr-2 h-4 w-4" /> Descargar PDF
-              </Button>
-            )} */}
-          </div>
-        </DialogContent>
-      </Dialog>
-      <DataTable columns={columns} data={generatedFiles} />
-      <DocViewer
-        activeDocument={activeDocument}
-        onDocumentChange={handleDocumentChange}
-        key={viewerKey}
-        style={{ height: "100%" }}
-        documents={docs}
-        pluginRenderers={[PDFRenderer, MSDocRenderer]}
-        language="es"
-      />
+
+      <div className="flex items-center gap-4">
+        {/* <Button
+          onClick={handleOnGeneratePDF}
+          className="w-fit"
+        >
+          {isLoadingPDF
+            ? (<><LoaderIcon className="animate-spin" /> Generando PDF</>)
+            : 'Generar PDF'}
+        </Button> */}
+        <Button
+          className="w-fit flex gap-1 items-center"
+          onClick={handleOnGenerateExcel}
+          title={"Generar Excel"}
+          disabled={isRefetchingExcel || !dateRange}
+        >
+          {
+            isRefetchingExcel
+              ? <><LoaderIcon className="animate-spin" />Cargando...</>
+              : <>Generar Excel</>
+          }
+        </Button>
+      </div>
+
+      {/* <div>
+        {
+          pdfFile && (
+            <ButtonLinkPDF
+              pdfFile={pdfFile}
+            // nameFile="R_balance_general"
+            />
+          )
+        }
+      </div> */}
+
+      {
+        dataCashFlow && (
+          <CashFlowPreview
+            dateRange={dateRange}
+            data={{
+              balanceSheet: dataCashFlow?.balanceSheet,
+              statementIncome: dataCashFlow?.statementIncome
+            }}
+          />
+        )
+      }
+
     </div>
   );
 }

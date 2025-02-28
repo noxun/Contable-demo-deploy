@@ -13,11 +13,13 @@ import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGene
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataReportByType } from "@/lib/data";
+import { getAllDataBalanceGeneral, getAllDataReportByType } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
+import { PDFViewer } from "@react-pdf/renderer";
+import { LoaderIcon } from "lucide-react";
 
 export default function BalanceGeneralPage() {
 
@@ -50,16 +52,30 @@ export default function BalanceGeneralPage() {
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingBalanceGeneral, setIsLoadingBalanceGeneral] = useState(false)
-  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2);
+
 
   const { data: dataBalanceGeneral, refetch: refetchBalanceGeneral } = useQuery({
     queryKey: ["AllBalanceGeneral"],
-    queryFn: () => getAllDataReportByType({
+    queryFn: () => getAllDataBalanceGeneral({
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
-      typePath: "balanceGeneral",
-      level: selectedLevel
+      typeFetchBalance: 2,
+      level: pendingLevel
     }),
+    enabled: false
+  })
+
+  const { refetch: refetchBalanceGeneralExcel, isFetching: isFetchingExcel } = useQuery({
+    queryKey: ["AllBalanceGeneralExcel"],
+    queryFn: () => getAllDataBalanceGeneral({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typeFetchBalance: 1,
+      level: pendingLevel
+    }),
+    retry: 1,
     enabled: false
   })
 
@@ -83,6 +99,7 @@ export default function BalanceGeneralPage() {
       toast("Generando reporte...");
       const MyDocument = (
         <BalanceGeneralTemplate
+          currentLevel={selectedLevel}
           dateRange={dateRange}
           records={dataBalanceGeneral}
         />
@@ -96,8 +113,30 @@ export default function BalanceGeneralPage() {
     }
   }
 
+  const handleOnGenerateExcel = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetchBalanceGeneralExcel()
+      console.log('el excel aqui: ', linkExcel)
+
+      if (!linkExcel) {
+        throw new Error();
+      }
+
+      const link = document.createElement("a");
+      link.href = linkExcel;
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al generar el archivo:", error);
+      toast.error('Error al generar el archivo.');
+    }
+  }
+
   const handleOnRefetch = async () => {
     setIsLoadingBalanceGeneral(true)
+    setSelectedLevel(pendingLevel)
     await refetchBalanceGeneral()
     setIsLoadingBalanceGeneral(false)
   }
@@ -132,8 +171,8 @@ export default function BalanceGeneralPage() {
           </div>
           <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
             <Select
-              value={selectedLevel.toString()}
-              onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
+              value={pendingLevel.toString()}
+              onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
             >
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Selecciona un nivel" />
@@ -163,13 +202,19 @@ export default function BalanceGeneralPage() {
           >
             {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
           </Button>
-          <ReportExcelGenerate
-            dateRange={dateRange}
-            inSus={inSus}
-            typeFile={ReportPaths.reportExcel}
-            typePathExcel="balanceGeneral"
-            level={selectedLevel}
-          />
+          <Button
+            className="w-fit flex gap-1 items-center"
+            onClick={handleOnGenerateExcel}
+            title={"Generar Excel"}
+            disabled={isFetchingExcel || !dateRange}
+          >
+            {
+              isFetchingExcel
+                ? <><LoaderIcon className="animate-spin" />Cargando...</>
+                : <>Generar Excel</>
+            }
+
+          </Button>
         </div>
 
         {/* Descargar pdf */}
@@ -183,13 +228,17 @@ export default function BalanceGeneralPage() {
         </div>
         {/* Vista Previa */}
       </div>
+      {isLoadingBalanceGeneral && (
+        <LoaderIcon className="mx-auto animate-spin size-10 text-[#2563EB]" />
+      )}
       {
-        dataBalanceGeneral && (
+        dataBalanceGeneral && !isLoadingBalanceGeneral && (
           <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] min-h-screen py-3">
-            <div className="flex px-2">
+            <div className="dark:text-[#bbbbbb] px-2">
               <BalanceGeneralPreview
                 dateRange={dateRange}
                 data={dataBalanceGeneral}
+                currentLevel={selectedLevel}
               />
             </div>
           </div>

@@ -1,25 +1,23 @@
 import { DateRange } from "react-day-picker";
+import { ItemStatementIncomeType, StatementIncomeType } from "../types/types";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { format } from "date-fns";
-import { BalanceGeneralType, BalanceItemType } from "../types/types";
 
 interface Props {
-  data: BalanceGeneralType
+  data: StatementIncomeType
   dateRange: DateRange
   currentLevel: number
 }
 
-export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) => {
+
+export const StatementIncomePreview = ({ data, dateRange, currentLevel }: Props) => {
   const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
   const iDate = dateRange.from && format(dateRange.from, FORMAT_DATE_INITIAL)
   const eDate = dateRange.to && format(dateRange.to, FORMAT_DATE_INITIAL)
 
-  const messageDate = iDate && eDate
-    ? (iDate === eDate ? `Del ${iDate}`
-      : `Del ${iDate} al ${eDate}`)
-    : `Del ${iDate}`
+  const messageDate = iDate && eDate ? (iDate === eDate ? `Del ${iDate}` : `Del ${iDate} al ${eDate}`) : `Del ${iDate}`
 
-  const renderItem = (item: BalanceItemType, level = 1): JSX.Element => {
+  const renderItem = (item: ItemStatementIncomeType, level = 1): JSX.Element => {
     return (
       <>
         <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40" >
@@ -36,58 +34,35 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) 
         {/* Los totales */}
         {level === 1 && (
           <>
-            {item.description === 'ACTIVO' && (
+            {/* Total ingresos */}
+            {item.description === 'INGRESOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
                   <td></td>
-                  <td>Total Activo</td>
-                  <td className="text-end">{formatNumber(data.totalActive)}</td>
+                  <td>Total Ingresos</td>
+                  <td className="text-end">{formatNumber(data.totalIncome)}</td>
                   <td></td>
                   <td></td>
                 </tr>
                 <tr className="h-4"></tr>
               </>
             )}
-            {item.description === 'PASIVOS' && (
+            {/* Total Costos y Gastos */}
+            {item.description === 'COSTOS Y GASTOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
                   <td></td>
-                  <td>Total Pasivo</td>
-                  <td className="text-end">{formatNumber(data.totalPassive)}</td>
+                  <td>Total Costos y Gastos</td>
+                  <td className="text-end">{formatNumber(data.totalExpense)}</td>
                   <td></td>
                   <td></td>
                 </tr>
                 <tr className="h-4"></tr>
               </>
             )}
-            {item.description === 'PATRIMONIO' && (
-              <>
-                <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
-                  <td></td>
-                  <td>Total Patrimonio</td>
-                  <td className="text-end">{formatNumber(data.totalHeritage)}</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className="bg-[#D0D0D0] dark:text-[#4a4a4a] font-bold">
-                  <td></td>
-                  <td>Resultado</td>
-                  <td className="text-end">{formatNumber(data.result)}</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className="bg-[#C0C0C0] dark:text-[#4a4a4a] font-bold">
-                  <td></td>
-                  <td>Total Pasivo + Patrimonio + Resultado</td>
-                  <td className="text-end">{formatNumber(data.liabilityEquityResult)}</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </>
-            )}
+
           </>
         )}
       </>)
@@ -97,7 +72,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) 
     <>
       <div className="flex flex-col items-center justify-center gap-2 py-2">
         <p className="w-full text-end">{messageDate}</p>
-        <h3 className="text-xl font-bold">BALANCE GENERAL</h3>
+        <h3 className="text-xl font-bold">ESTADO DE RESULTADOS</h3>
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
@@ -105,12 +80,37 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) 
             <th className="font-semibold">Cuenta</th>
             <th className="font-semibold">Descripción</th>
             <th className="font-semibold">Imp. Niv. {currentLevel}</th>
-            <th className="font-semibold">{(currentLevel - 1) <= 0 ? ' ' : `Imp. Niv. ${currentLevel - 1}`}</th>
-            <th className="font-semibold">{(currentLevel - 2) <= 0 ? ' ' : `Imp. Niv. ${currentLevel - 2}`}</th>
+            <th className="font-semibold">{(currentLevel - 1) <= 0 ? " " : `Imp. Niv. ${currentLevel - 1}`}</th>
+            <th className="font-semibold">{(currentLevel - 2) <= 0 ? " " : `Imp. Niv. ${currentLevel - 2}`}</th>
           </tr>
         </thead>
         <tbody>
           {data.items.map((item) => renderItem(item))}
+          <tr className="h-4"></tr>
+          {/* Periodo de utilidad */}
+          <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+            <td></td>
+            <td>Periodo de Utilidad</td>
+            <td className="text-end">{formatNumber(data.periodUtility)}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          {/* Impuestos sobre beneficios */}
+          <tr className="bg-[#D0D0D0] dark:text-[#4a4a4a] font-bold">
+            <td></td>
+            <td>Impuestos sobre beneficios</td>
+            <td className="text-end">{formatNumber(data.taxOnProfits)}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          {/* Resultado de gestion */}
+          <tr className="bg-[#C0C0C0] dark:text-[#4a4a4a] font-bold">
+            <td></td>
+            <td>Resultado de gestion</td>
+            <td className="text-end">{formatNumber(data.managementResult)}</td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </>
