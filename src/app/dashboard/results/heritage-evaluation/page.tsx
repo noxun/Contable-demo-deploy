@@ -16,7 +16,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import HeritageEvaluationPDF from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPDF";
 
 const options = [
-  { value: "1", label: "Excel" },
+  // { value: "1", label: "Excel" },
   { value: "2", label: "Vista Previa" },
 ] as const;
 
@@ -77,7 +77,7 @@ export default function HeritageEvaluationPage() {
         <p>Cargando...</p>
       ) : (
         <>
-          <Button
+          {/* <Button
             asChild={responseType === "1" && isFetched}
             disabled={responseType !== "1"}
           >
@@ -88,7 +88,7 @@ export default function HeritageEvaluationPage() {
             >
               Descargar Excel
             </Link>
-          </Button>
+          </Button> */}
           {responseType === "2" ? (
             <>
               <Button asChild>
