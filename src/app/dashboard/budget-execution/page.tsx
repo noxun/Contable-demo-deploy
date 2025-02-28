@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTable } from "@/components/ui/nested-header-data-table";
-import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 import { fetchBudgetExecutionData } from "@/lib/data";
 import { BudgetExecutionData } from "@/lib/types";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
@@ -30,7 +29,7 @@ export default function BudgetExecutionPage() {
     <main className="flex flex-col w-full gap-8">
       <h1 className="font-bold text-4xl">Ejecución Presupuestaria</h1>
       <DataTable data={budgetExecution.list} columns={columns} />
-      <div className="grid grid-cols-10 border-t border-gray-300">
+      <div className="grid grid-cols-10 border-t border-gray-300 text-xs">
         <div className="col-span-2 font-bold text-center border-r border-gray-300 p-2">
           TOTALES
         </div>
@@ -48,7 +47,7 @@ const columns: ColumnDef<BudgetExecutionData>[] = [
   {
     header: "DETALLE",
     columns: [
-      { header: "CUENTA", accessorKey: "codeAccount" },
+      { header: "CUENTA", accessorKey: "description" },
       { header: "ETIQUETA", accessorKey: "tag" },
     ],
   },
@@ -58,22 +57,22 @@ const columns: ColumnDef<BudgetExecutionData>[] = [
       {
         header: "INICIAL",
         columns: [
-          { header: "ANUAL", accessorFn: (row) => row.initial.annual },
-          { header: "MENSUAL", accessorFn: (row) => row.initial.monthly },
+          { header: "ANUAL", accessorFn: (row) => numberWithDecimals(row.initial.annual) },
+          { header: "MENSUAL", accessorFn: (row) => numberWithDecimals(row.initial.monthly) },
         ],
       },
       {
         header: "MODIFICACIONES",
         columns: [
-          { header: "ANUAL", accessorFn: (row) => row.modifications.annual },
-          { header: "MENSUAL", accessorFn: (row) => row.modifications.monthly },
+          { header: "ANUAL", accessorFn: (row) => numberWithDecimals(row.modifications.annual) },
+          { header: "MENSUAL", accessorFn: (row) => numberWithDecimals(row.modifications.monthly) },
         ],
       },
       {
         header: "VIGENTE",
         columns: [
-          { header: "ANUAL", accessorFn: (row) => row.inEffect.annual },
-          { header: "MENSUAL", accessorFn: (row) => row.inEffect.monthly },
+          { header: "ANUAL", accessorFn: (row) => numberWithDecimals(row.inEffect.annual) },
+          { header: "MENSUAL", accessorFn: (row) => numberWithDecimals(row.inEffect.monthly) },
         ],
       },
     ],
@@ -83,13 +82,13 @@ const columns: ColumnDef<BudgetExecutionData>[] = [
     columns: [
       {
         header: "EJECUTADOS",
-        accessorKey: "disbursements",
+        accessorFn: (row) => numberWithDecimals(row.disbursements),
       },
     ],
   },
   {
     header: "DESVIACION",
-    accessorKey: "deviation",
+    accessorFn: (row) => numberWithDecimals(row.deviation),
   },
   // {
   //   header: "EJECUCION",
