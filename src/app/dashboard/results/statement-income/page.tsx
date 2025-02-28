@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
+import { Calendar as CalendarIcon, FileText, Loader2Icon, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -34,18 +34,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataReportByType } from "@/lib/data";
+import { getAllDataReportByType, getAllDataStatementIncome } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
-import { StatementIncomePreview } from "@/modules/results/components/StatementIncome";
+import { StatementIncomePreview } from "@/modules/results/components/StatementIncomePreview";
+import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -190,17 +190,29 @@ export default function StatementIncomePage() {
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
   const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
 
   const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
     queryKey: ["AllStatementIncome"],
-
-    queryFn: () => getAllDataReportByType({
+    queryFn: () => getAllDataStatementIncome({
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
-      typePath: "estadoDeResultado",
-      level: selectedLevel
+      typeFetchBalance: 2,
+      level: pendingLevel
     }),
+    enabled: false
+  })
+
+  const { refetch: refetchStatementIncomeExcel, isRefetching: isFetchingExcel } = useQuery({
+    queryKey: ["AllStatementIncomeExcel"],
+    queryFn: () => getAllDataStatementIncome({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typeFetchBalance: 1,
+      level: pendingLevel
+    }),
+    retry: 1,
     enabled: false
   })
 
@@ -227,6 +239,7 @@ export default function StatementIncomePage() {
         <EstadoResultadosTemplate
           dateRange={dateRange}
           records={dataStatementIncome}
+          currentLevel={selectedLevel}
         />
       );
       setPdfFile(MyDocument);
@@ -237,6 +250,34 @@ export default function StatementIncomePage() {
       setIsLoadingPDF(false);
     }
   }
+
+  const handleOnGenerateExcel = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetchStatementIncomeExcel()
+
+      if (!linkExcel) {
+        throw new Error();
+      }
+
+      const link = document.createElement("a");
+      link.href = linkExcel;
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al generar el archivo:", error);
+      toast.error('Error al generar el archivo.');
+    }
+  }
+
+  const handleOnRefetch = async () => {
+    setIsLoadingStatementIncome(true)
+    setSelectedLevel(pendingLevel)
+    await refetchStatementIncome()
+    setIsLoadingStatementIncome(false)
+  }
+
 
   type ColumnType = "Ingresos" | "Gastos";
   const createColumns = (type: ColumnType) => [
@@ -256,13 +297,6 @@ export default function StatementIncomePage() {
       cell: ({ row }: any) => formatNumber(row.original.amount),
     },
   ];
-
-
-  const handleOnRefetch = async () => {
-    setIsLoadingStatementIncome(true)
-    await refetchStatementIncome()
-    setIsLoadingStatementIncome(false)
-  }
 
   const columnsIncome = createColumns('Ingresos')
   const columnsExpenses = createColumns('Gastos')
@@ -298,8 +332,8 @@ export default function StatementIncomePage() {
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
           <Select
-            value={selectedLevel.toString()}
-            onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
+            value={pendingLevel.toString()}
+            onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
           >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Selecciona un nivel" />
@@ -329,13 +363,19 @@ export default function StatementIncomePage() {
         >
           {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
         </Button>
-        <ReportExcelGenerate
-          level={selectedLevel}
-          dateRange={dateRange}
-          inSus={inSus}
-          typeFile={ReportPaths.reportExcel}
-          typePathExcel="estadoDeResultado"
-        />
+        <Button
+          className="w-fit flex gap-1 items-center"
+          onClick={handleOnGenerateExcel}
+          title={"Generar Excel"}
+          disabled={isFetchingExcel || !dateRange}
+        >
+          {
+            isFetchingExcel
+              ? <><LoaderIcon className="animate-spin" />Cargando...</>
+              : <>Generar Excel</>
+          }
+
+        </Button>
       </div>
 
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -383,13 +423,17 @@ export default function StatementIncomePage() {
 
       {/* Vista Previa */}
       <div className="pb-12" >
+        {isLoadingStatementIncome && (
+          <LoaderIcon className="mx-auto animate-spin size-10 text-[#2563EB]" />
+        )}
         {
-          dataStatementIncome && (
+          dataStatementIncome && !isLoadingStatementIncome && (
             <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] max-h-screen py-3">
-              <div className="flex px-2">
+              <div className="px-2 dark:text-[#bbbbbb]">
                 <StatementIncomePreview
                   data={dataStatementIncome}
                   dateRange={dateRange}
+                  currentLevel={selectedLevel}
                 />
               </div>
             </div>

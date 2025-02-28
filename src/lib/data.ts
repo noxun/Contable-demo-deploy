@@ -448,7 +448,7 @@ export async function fetchAccountsByType(type: number) {
   return response.data as Account[];
 }
 
-export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: string) {
+export async function fetchTrazoInternCodes(page = 1, pageSize = 10, searchQuery: string) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -465,10 +465,10 @@ export async function fetchTrazoInternCodes(page = 1, pageSize=10, searchQuery: 
 
   const paginationHeader = response.headers;
   const paginationInfo = paginationHeader
-  ? JSON.parse(paginationHeader["pagination"])
-  : null;
+    ? JSON.parse(paginationHeader["pagination"])
+    : null;
 
-  console.log("what",paginationInfo);
+  console.log("what", paginationInfo);
 
   return {
     data: response.data as TrazoInternCode[],
@@ -1331,6 +1331,120 @@ export async function getAllDataReportByType({
     },
   });
   return response.data;
+}
+
+// 1 --> excel  2 --> data 
+type TypeFetchBalance = 1 | 2
+export async function getAllDataBalanceGeneral({
+  iDate,
+  eDate,
+  typeFetchBalance,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  typeFetchBalance: TypeFetchBalance;
+  level?: LevelData;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  try {
+    const response = await api.get(`/api/FinancialState/BalanceSheet`, {
+      params: {
+        Level: level,
+        InitDate: iDate,
+        EndDate: eDate,
+        Type: typeFetchBalance
+      },
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function getAllDataStatementIncome({
+  iDate,
+  eDate,
+  typeFetchBalance,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  typeFetchBalance: TypeFetchBalance;
+  level?: LevelData;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  try {
+    const response = await api.get(`/api/FinancialState/StatementIncome`, {
+      params: {
+        Level: level,
+        InitDate: iDate,
+        EndDate: eDate,
+        Type: typeFetchBalance
+      },
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function getAllDataCashFlow({
+  iDate,
+  eDate,
+  typeFetchBalance,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  typeFetchBalance: TypeFetchBalance;
+  level?: LevelData;
+}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  try {
+    const response = await api.get(`/api/FinancialState/ClashFlow`, {
+      params: {
+        Level: level,
+        InitDate: iDate,
+        EndDate: eDate,
+        Type: typeFetchBalance
+      },
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function getAllDataCashFlowTemporal({
+  iDate,
+  eDate,
+  level,
+}: {
+  iDate: string;
+  eDate: string;
+  level?: LevelData;
+}) {
+  const datos = {}
+  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level })
+  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level })
+  console.log('tenemos los datos de: ', balanceGeneral, estadoResultados)
+  return {
+    balanceSheet: balanceGeneral,
+    statementIncome: estadoResultados
+  }
 }
 
 export async function generateDiaryBookExcel(InitDate: string,
