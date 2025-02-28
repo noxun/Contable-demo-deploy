@@ -563,29 +563,64 @@ export type HeritageEvaluationData = {
 };
 
 export type SendAllSubDatas = {
-  sucursal: string
-  centroCostos: string
-  internCode: string
-  companyRazonSocial: string
-  total: string //totalProforma
-  userId: number
+  sucursal: string;
+  centroCostos: string;
+  internCode: string;
+  companyRazonSocial: string;
+  total: string; //totalProforma
+  userId: number;
   items: Array<{
-    description: string
-    description2: string
-    description3: string
-    recibo?: boolean
-  }>
-}
+    description: string;
+    description2: string;
+    description3: string;
+    recibo?: boolean;
+  }>;
+};
 
-export type SalariesAndWagesAccounts = SalaryAndWageAccount[]
+export type SalariesAndWagesAccounts = SalaryAndWageAccount[];
 
 export type SalaryAndWageAccount = {
-  id: number
-  code: string
-  description: string
-  coin: string
-  active: boolean
-  isBudgetable: boolean
-  isMotion: boolean
-  isCost: boolean
-}
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+};
+
+export type BudgetExecutionData = {
+  codeAccount: string;
+  description: string;
+  tag: any;
+  disbursements: number;
+  deviation: number;
+  execution: string;
+  initial: {
+    annual: number;
+    monthly: number;
+  };
+  modifications: {
+    annual: number;
+    monthly: number;
+  };
+  inEffect: {
+    annual: number;
+    monthly: number;
+  };
+};
+
+export type BudgetExecutionResponse = {
+  list: BudgetExecutionData[];
+  totals: {
+    disbursementsTotal: number;
+    deviation: number;
+    initialAnnualTotal: number;
+    initialMonthlyTotal: number;
+    modificationsAnnualTotal: number;
+    modificationsMonthlyTotal: number;
+    inEffectAnnualTotal: number;
+    inEffectMonthlyTotal: number;
+  };
+};

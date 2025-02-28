@@ -9,6 +9,8 @@ import {
   BookBiggerData,
   Branch,
   BranchToList,
+  BudgetExecutionData,
+  BudgetExecutionResponse,
   ConfigValues,
   CostCenter,
   DiaryBookResponse,
@@ -1477,4 +1479,16 @@ export async function postSalariesAndWagesAccounts(name: string) {
   //the name will be put in the account description
   //all other field will be filled by the backend
   return response.data as SalaryAndWageAccount;
+}
+
+export async function fetchBudgetExecutionData() {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.get(`/api/Budget`);
+
+  return response.data as BudgetExecutionResponse;
 }
