@@ -15,10 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import DocViewer, {
-  PDFRenderer,
-  MSDocRenderer,
-} from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
@@ -248,7 +244,7 @@ export default function BalanceAmountsPage() {
           <DateSelector onDateChange={handleDateChange} />
           <div className="flex items-center space-x-2">
             <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+            <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
@@ -277,6 +273,9 @@ export default function BalanceAmountsPage() {
         </div>
       </div>
       <div className="flex gap-4 py-3 items-center">
+        <Button onClick={handleOnClickExcel} disabled={isLoading}>
+          {isLoading ? "Generando Excel..." : "Generar Excel"}
+        </Button>
         <Button
           onClick={handleOnGeneratePDF}
           disabled={!BalanceAmounts}

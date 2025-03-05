@@ -71,7 +71,7 @@ export default function DiaryBookPage() {
               checked={inSus}
               onCheckedChange={handleChangeIsSus}
             />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+            <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
           </div>
         </div>
         {/* seccion para generar el reporte y descargar */}

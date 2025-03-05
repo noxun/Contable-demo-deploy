@@ -281,7 +281,7 @@ const AccountSection = () => {
             <DateSelector onDateChange={handleDateChange} />
             <div className="flex items-center space-x-2">
               <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-              <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+              <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
             </div>
           </div>
 
