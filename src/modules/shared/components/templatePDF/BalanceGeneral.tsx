@@ -6,6 +6,7 @@ import { REPORTS_LOGO_URL } from "@/lib/constants";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { BalanceGeneralResultsType, BalanceGeneralType, BalanceItemType } from "@/modules/results/types/types";
+import { toast } from "sonner";
 
 const styles = StyleSheet.create({
   page: {
@@ -118,6 +119,11 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange, curr
         FORMAT_DATE_INITIAL
       )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
+
+  if (records?.items.length >= 0) {
+    toast.warning('sin resultados')
+    return
+  }
 
   return (
     <Document>
