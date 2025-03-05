@@ -166,7 +166,7 @@ export default function BalanceGeneralPage() {
             <DateSelector onDateChange={handleOnDateChange} />
             <div className="flex items-center space-x-2">
               <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-              <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+              <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
             </div>
           </div>
           <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
