@@ -178,7 +178,7 @@ export const DiaryBookTemplate = ({
               <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1, height: '100%' }]}>
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
-              <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", height: '100%'}]}>
+              <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", height: '100%' }]}>
                 {asiento.typeDes}
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}>{" "}</Text>
@@ -188,23 +188,23 @@ export const DiaryBookTemplate = ({
 
             {(Array.isArray(asiento.voucherItems) ? asiento.voucherItems : []).map((record) => (
               <View style={styles.entry} key={record.id}>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell]}>
                     {record.code}
                   </Text>
                 </View>
-                <View style={styles.col40}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.paddingHorizontal}`, },]}>
+                <View style={[styles.col40, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell, { paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.paddingHorizontal}`, },]}>
                     {record.description}
                   </Text>
                 </View>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell]}>
                     {record.hojaDeRuta ?? ' '}
                   </Text>
                 </View>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1, textAlign: "right" }]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell, { textAlign: "right" }]}>
                     {formatNumber(record[debitType])}
                   </Text>
                 </View>

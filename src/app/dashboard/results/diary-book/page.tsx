@@ -15,6 +15,7 @@ import DiaryBookPreview from "./DiaryBookPreview";
 import { Button } from "@/components/ui/button";
 import useDiaryBookExcel from "@/modules/shared/hooks/useDiaryBookExcel";
 import DiaryBookExcelButton from "./DiaryBookExcelButton";
+import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -76,27 +77,25 @@ export default function DiaryBookPage() {
         {/* seccion para generar el reporte y descargar */}
         <div className="flex gap-4 py-3 flex-row justify-end w-full md:flex-col md:w-auto sm:justify-start">
           <ReportGeneratorFile
-            dateRange={dateRange!} // Asegúrate de que `dateRange` no sea `undefined` aquí
+            dateRange={dateRange!}
             inSus={inSus}
-            reportNamePath="diarybook" // Ruta del reporte en el backend
+            reportNamePath="diarybook"
             setGeneratedFiles={setGeneratedFiles}
             setShowDialog={setShowDialog}
-            setFile={setPdfFile} // Pasas la función para guardar el PDF generado
+            setFile={setPdfFile}
           />
-          {!pdfFile ? (
-            <Button disabled>Descargar PDF</Button>
-          ) : (
-            <Button asChild>
-              <PDFDownloadLink document={pdfFile} fileName="diarybook.pdf">
-                Descargar PDF
-              </PDFDownloadLink>
-            </Button>
-          )}
-          {pdfFile && dateRange.from && dateRange.to && (
+          {dateRange.from && dateRange.to && (
             <DiaryBookExcelButton dateRange={dateRange} inSus={inSus} />
           )}
         </div>
       </div>
+
+      {pdfFile && (
+        <ButtonLinkPDF
+          pdfFile={pdfFile}
+          nameFile="R_libro_diario"
+        />
+      )}
 
       <div>
         {dateRange.from && dateRange.to && (
