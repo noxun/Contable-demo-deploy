@@ -265,7 +265,7 @@ const AccountSection = () => {
     <div className="space-y-6">
       {/* componente para buscar un recurso con una llamada a una api */}
       <div className="flex flex-col pt-2 gap-2">
-        <SearchComponent
+        {/* <SearchComponent
           onSelect={handleSelect}
           debounceTime={700}
           suggestionKey="accountDescription"
@@ -275,7 +275,8 @@ const AccountSection = () => {
             searchByAccountBigguerBook(search)
           }
           resetSearch={resetSearch}
-        />
+        /> */}
+        {/* AUN FUNCIONA PERO SE DESHABILITO ESTA CARACTERISTICA */}
         <div className="flex items-center justify-evenly mt-5">
           <div className="space-y-2">
             <DateSelector onDateChange={handleDateChange} />
