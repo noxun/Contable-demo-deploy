@@ -120,9 +120,9 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange, curr
       )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
 
-  if (records?.items.length >= 0) {
+  if (records?.items.length <= 0) {
     toast.warning('sin resultados')
-    return
+    return <></>
   }
 
   return (

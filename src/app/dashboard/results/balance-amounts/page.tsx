@@ -31,6 +31,7 @@ import { LevelData } from "@/modules/results/types/types";
 
 export default function BalanceAmountsPage() {
   const [inSus, setInSus] = useState<boolean>(false);
+  const [inSusSelected, setInSusSelected] = useState<boolean>(false);
   // --- Estados de los links ---
   const [excelLink, setExcelLink] = useState<string | null>(null);
   // const [pdfLink, setPdfLink] = useState<string | null>(null);
@@ -158,6 +159,7 @@ export default function BalanceAmountsPage() {
         <BalanceAmountsTemplate
           dateRange={dateRange}
           records={BalanceAmounts}
+          inSus={inSusSelected}
         />
       );
       setPdfFile(MyDocument);
@@ -170,6 +172,7 @@ export default function BalanceAmountsPage() {
   }
 
   const handleOnRefetch = async () => {
+    setInSusSelected(inSus)
     setIsLoadingBalanceAmounts(true)
     await refetchBalanceAmounts()
     setIsLoadingBalanceAmounts(false)
@@ -274,9 +277,6 @@ export default function BalanceAmountsPage() {
         </div>
       </div>
       <div className="flex gap-4 py-3 items-center">
-        <Button onClick={handleOnClickExcel} disabled={isLoading}>
-          {isLoading ? "Generando Excel..." : "Generar Excel"}
-        </Button>
         <Button
           onClick={handleOnGeneratePDF}
           disabled={!BalanceAmounts}
