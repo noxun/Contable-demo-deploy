@@ -264,7 +264,7 @@ function SalariesPayrollsPage() {
   ];
 
   return (
-    <section className="px-6">
+    <section className="max-w-7xl">
       <div className="w-full flex justify-between items-center">
         <h2 className="text-lg font-semibold">Planillas y salarios</h2>
         <PayrollsDialogForm />
@@ -292,7 +292,7 @@ function SalariesPayrollsPage() {
       {
         listPayrolls && (
           <>
-            <div className="flex justify-start pb-3">
+            <div className="overflow-x-auto max-w-full w-[90vw] md:w-[70vw]">
               <DataTablePayrollsSalaries
                 filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}

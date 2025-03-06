@@ -815,10 +815,12 @@ export async function getBigguerBookinExcel({
   initDate,
   endDate,
   search,
+  inSus = false,
 }: {
   initDate?: string;
   endDate?: string;
   search?: string;
+  inSus?: boolean;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1321,11 +1323,13 @@ export async function getAllDataReportByType({
   eDate,
   typePath,
   level,
+  inSus = false,
 }: {
   iDate: string;
   eDate: string;
   typePath: PathReport;
   level?: LevelData;
+  inSus?: boolean;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1338,6 +1342,7 @@ export async function getAllDataReportByType({
       InitDate: iDate,
       EndDate: eDate,
       Level: level,
+      InSus: inSus
     },
   });
   return response.data;
@@ -1350,11 +1355,13 @@ export async function getAllDataBalanceGeneral({
   eDate,
   typeFetchBalance,
   level,
+  inSus = false
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
+  inSus?: boolean
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1367,7 +1374,8 @@ export async function getAllDataBalanceGeneral({
         Level: level,
         InitDate: iDate,
         EndDate: eDate,
-        Type: typeFetchBalance
+        Type: typeFetchBalance,
+        inSus
       },
     });
     return response.data;
@@ -1381,11 +1389,13 @@ export async function getAllDataStatementIncome({
   eDate,
   typeFetchBalance,
   level,
+  inSus = false
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
+  inSus?: boolean
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1398,7 +1408,8 @@ export async function getAllDataStatementIncome({
         Level: level,
         InitDate: iDate,
         EndDate: eDate,
-        Type: typeFetchBalance
+        Type: typeFetchBalance,
+        InSus: inSus
       },
     });
     return response.data;

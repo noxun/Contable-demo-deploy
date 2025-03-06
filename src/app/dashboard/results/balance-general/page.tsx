@@ -24,6 +24,7 @@ import { LoaderIcon } from "lucide-react";
 export default function BalanceGeneralPage() {
 
   const [inSus, setInSus] = useState<boolean>(false);
+  const [inSusSelected, setInSusSelected] = useState<boolean>(false);
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -62,7 +63,8 @@ export default function BalanceGeneralPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 2,
-      level: pendingLevel
+      level: pendingLevel,
+      inSus
     }),
     enabled: false
   })
@@ -73,7 +75,8 @@ export default function BalanceGeneralPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 1,
-      level: pendingLevel
+      level: pendingLevel,
+      inSus
     }),
     retry: 1,
     enabled: false
@@ -137,6 +140,7 @@ export default function BalanceGeneralPage() {
   const handleOnRefetch = async () => {
     setIsLoadingBalanceGeneral(true)
     setSelectedLevel(pendingLevel)
+    setInSusSelected(() => inSus)
     await refetchBalanceGeneral()
     setIsLoadingBalanceGeneral(false)
   }
@@ -180,12 +184,12 @@ export default function BalanceGeneralPage() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Jerarquia</SelectLabel>
-                  <SelectItem value="6">nivel 1</SelectItem>
-                  <SelectItem value="5">nivel 2</SelectItem>
-                  <SelectItem value="4">nivel 3</SelectItem>
-                  <SelectItem value="3">nivel 4</SelectItem>
-                  <SelectItem value="2">nivel 5</SelectItem>
-                  <SelectItem value="1">nivel 6</SelectItem>
+                  <SelectItem value="1">nivel 1</SelectItem>
+                  <SelectItem value="2">nivel 2</SelectItem>
+                  <SelectItem value="3">nivel 3</SelectItem>
+                  <SelectItem value="4">nivel 4</SelectItem>
+                  <SelectItem value="5">nivel 5</SelectItem>
+                  <SelectItem value="6">nivel 6</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -206,7 +210,7 @@ export default function BalanceGeneralPage() {
             className="w-fit flex gap-1 items-center"
             onClick={handleOnGenerateExcel}
             title={"Generar Excel"}
-            disabled={isFetchingExcel || !dateRange}
+            disabled={isFetchingExcel || !dateRange.to}
           >
             {
               isFetchingExcel
@@ -239,6 +243,7 @@ export default function BalanceGeneralPage() {
                 dateRange={dateRange}
                 data={dataBalanceGeneral}
                 currentLevel={selectedLevel}
+                inSus={inSusSelected}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 import "@cyntler/react-doc-viewer/dist/index.css";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Sheet } from "lucide-react";
+import { Calendar as CalendarIcon, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -95,7 +95,8 @@ export default function BalanceAmountsPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typePath: "balanceDeSumas",
-      level: selectedLevel
+      level: selectedLevel,
+      inSus: inSus
     }),
     enabled: false
   })
@@ -201,22 +202,22 @@ export default function BalanceAmountsPage() {
     {
       header: "Debe",
       accessorKey: "debit",
-      cell: ({ row }: any) => formatNumber(row.original.debit)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.debit)}</p>
     },
     {
       header: "Haber",
       accessorKey: "asset",
-      cell: ({ row }: any) => formatNumber(row.original.asset)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.asset)}</p>
     },
     {
       header: "Deudor",
       accessorKey: "debtor",
-      cell: ({ row }: any) => formatNumber(row.original.debtor)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.debtor)}</p>
     },
     {
       header: "Acreedor",
       accessorKey: "creditor",
-      cell: ({ row }: any) => formatNumber(row.original.creditor)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.creditor)}</p>
     },
   ];
 
@@ -257,12 +258,12 @@ export default function BalanceAmountsPage() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Jerarquia</SelectLabel>
-                <SelectItem value="6">nivel 1</SelectItem>
-                <SelectItem value="5">nivel 2</SelectItem>
-                <SelectItem value="4">nivel 3</SelectItem>
-                <SelectItem value="3">nivel 4</SelectItem>
-                <SelectItem value="2">nivel 5</SelectItem>
-                <SelectItem value="1">nivel 6</SelectItem>
+                <SelectItem value="1">nivel 1</SelectItem>
+                <SelectItem value="2">nivel 2</SelectItem>
+                <SelectItem value="3">nivel 3</SelectItem>
+                <SelectItem value="4">nivel 4</SelectItem>
+                <SelectItem value="5">nivel 5</SelectItem>
+                <SelectItem value="6">nivel 6</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -280,6 +281,11 @@ export default function BalanceAmountsPage() {
           disabled={!BalanceAmounts}
         >
           {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+        </Button>
+        <Button onClick={handleOnClickExcel} disabled={isLoading || !dateRange.to}>
+          {isLoading ? (
+            <><LoaderIcon className="animate-spin mr-2" />Cargando...</>
+          ) : "Generar Excel"}
         </Button>
       </div>
 
