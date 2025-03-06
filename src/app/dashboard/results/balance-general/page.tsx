@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
+
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
@@ -18,8 +18,8 @@ import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
-import { PDFViewer } from "@react-pdf/renderer";
 import { LoaderIcon } from "lucide-react";
+import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
 
 export default function BalanceGeneralPage() {
 
@@ -105,6 +105,7 @@ export default function BalanceGeneralPage() {
           currentLevel={selectedLevel}
           dateRange={dateRange}
           records={dataBalanceGeneral}
+          inSus={inSusSelected}
         />
       );
       setPdfFile(MyDocument);

@@ -223,6 +223,7 @@ export default function StatementIncomePage() {
           dateRange={dateRange}
           records={dataStatementIncome}
           currentLevel={selectedLevel}
+          inSus={inSusSelected}
         />
       );
       setPdfFile(MyDocument);
