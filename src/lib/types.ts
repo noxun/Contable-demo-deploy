@@ -624,3 +624,39 @@ export type BudgetExecutionResponse = {
     inEffectMonthlyTotal: number;
   };
 };
+
+export type RelationAccount = {
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+  businessEntityId: number;
+  businessEntityName: any;
+  typeCompanyId: number;
+  accountIdRef: number;
+  accountCodeRef: any;
+  accountDescriptionRef: any;
+  items: RelationAccountItem[];
+};
+
+export type RelationAccountItem = {
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+  businessEntityId: number;
+  businessEntityName: any;
+  typeCompanyId: number;
+  accountIdRef: number;
+  accountCodeRef: any;
+  accountDescriptionRef: any;
+  items: RelationAccountItem[];
+};
