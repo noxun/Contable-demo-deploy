@@ -59,8 +59,8 @@ export default function HeritageEvaluationPage() {
         </Label>
         <DateRangePicker
           onUpdate={handleUpdateDateRange}
-          initialDateFrom={new Date()}
-          initialDateTo={addDays(new Date(), 1)}
+          initialDateFrom={new Date(new Date().getFullYear(), 0, 1)}
+          initialDateTo={new Date()}
           locale="es-BO"
           showCompare={false}
         />

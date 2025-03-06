@@ -1,6 +1,6 @@
 "use client";
 import "@cyntler/react-doc-viewer/dist/index.css";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
@@ -67,7 +67,8 @@ export default function BalanceAmountsPage() {
 
   //version modificada
   const initialDateRange: DateRange = {
-    from: new Date(Date.now()),
+    from: new Date(new Date().getFullYear(), 0, 1),
+    to: new Date()
   }
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange)
 
@@ -354,15 +355,6 @@ export default function BalanceAmountsPage() {
           </>
         )
       }
-      {/* <DocViewer
-        activeDocument={activeDocument}
-        onDocumentChange={handleDocumentChange}
-        key={viewerKey}
-        style={{ height: "100%" }}
-        documents={docs}
-        pluginRenderers={[PDFRenderer, MSDocRenderer]}
-        language="es"
-      /> */}
     </div>
   );
 }
