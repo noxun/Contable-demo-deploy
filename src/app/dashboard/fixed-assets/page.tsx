@@ -179,7 +179,7 @@ function FixedAssetPage() {
       {
         listAssets?.getFixed && (
           <>
-            <div className="overflow-x-auto max-w-full  w-[90vw] md:w-[70vw]">
+            <div className="flex justify-start pb-3">
               <DataTable columns={columnsFixedAssets} data={listAssets?.getFixed} />
             </div>
             {listAssets?.getFixed?.length > 0 && (
