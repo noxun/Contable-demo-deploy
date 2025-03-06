@@ -1,7 +1,7 @@
 "use client";
 import "@cyntler/react-doc-viewer/dist/index.css";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon, Sheet } from "lucide-react";
+import { addDays, format } from "date-fns";
+import { Calendar as CalendarIcon, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -31,6 +31,7 @@ import { LevelData } from "@/modules/results/types/types";
 
 export default function BalanceAmountsPage() {
   const [inSus, setInSus] = useState<boolean>(false);
+  const [inSusSelected, setInSusSelected] = useState<boolean>(false);
   // --- Estados de los links ---
   const [excelLink, setExcelLink] = useState<string | null>(null);
   // const [pdfLink, setPdfLink] = useState<string | null>(null);
@@ -67,7 +68,8 @@ export default function BalanceAmountsPage() {
 
   //version modificada
   const initialDateRange: DateRange = {
-    from: new Date(Date.now()),
+    from: new Date(new Date().getFullYear(), 0, 1),
+    to: new Date()
   }
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange)
 
@@ -95,7 +97,8 @@ export default function BalanceAmountsPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typePath: "balanceDeSumas",
-      level: selectedLevel
+      level: selectedLevel,
+      inSus: inSus
     }),
     enabled: false
   })
@@ -156,6 +159,7 @@ export default function BalanceAmountsPage() {
         <BalanceAmountsTemplate
           dateRange={dateRange}
           records={BalanceAmounts}
+          inSus={inSusSelected}
         />
       );
       setPdfFile(MyDocument);
@@ -168,6 +172,7 @@ export default function BalanceAmountsPage() {
   }
 
   const handleOnRefetch = async () => {
+    setInSusSelected(inSus)
     setIsLoadingBalanceAmounts(true)
     await refetchBalanceAmounts()
     setIsLoadingBalanceAmounts(false)
@@ -201,22 +206,22 @@ export default function BalanceAmountsPage() {
     {
       header: "Debe",
       accessorKey: "debit",
-      cell: ({ row }: any) => formatNumber(row.original.debit)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.debit)}</p>
     },
     {
       header: "Haber",
       accessorKey: "asset",
-      cell: ({ row }: any) => formatNumber(row.original.asset)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.asset)}</p>
     },
     {
       header: "Deudor",
       accessorKey: "debtor",
-      cell: ({ row }: any) => formatNumber(row.original.debtor)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.debtor)}</p>
     },
     {
       header: "Acreedor",
       accessorKey: "creditor",
-      cell: ({ row }: any) => formatNumber(row.original.creditor)
+      cell: ({ row }: any) => <p className="text-right">{formatNumber(row.original.creditor)}</p>
     },
   ];
 
@@ -257,12 +262,12 @@ export default function BalanceAmountsPage() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Jerarquia</SelectLabel>
-                <SelectItem value="6">nivel 1</SelectItem>
-                <SelectItem value="5">nivel 2</SelectItem>
-                <SelectItem value="4">nivel 3</SelectItem>
-                <SelectItem value="3">nivel 4</SelectItem>
-                <SelectItem value="2">nivel 5</SelectItem>
-                <SelectItem value="1">nivel 6</SelectItem>
+                <SelectItem value="1">nivel 1</SelectItem>
+                <SelectItem value="2">nivel 2</SelectItem>
+                <SelectItem value="3">nivel 3</SelectItem>
+                <SelectItem value="4">nivel 4</SelectItem>
+                <SelectItem value="5">nivel 5</SelectItem>
+                <SelectItem value="6">nivel 6</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -272,14 +277,16 @@ export default function BalanceAmountsPage() {
         </div>
       </div>
       <div className="flex gap-4 py-3 items-center">
-        <Button onClick={handleOnClickExcel} disabled={isLoading}>
-          {isLoading ? "Generando Excel..." : "Generar Excel"}
-        </Button>
         <Button
           onClick={handleOnGeneratePDF}
           disabled={!BalanceAmounts}
         >
           {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
+        </Button>
+        <Button onClick={handleOnClickExcel} disabled={isLoading || !dateRange.to}>
+          {isLoading ? (
+            <><LoaderIcon className="animate-spin mr-2" />Cargando...</>
+          ) : "Generar Excel"}
         </Button>
       </div>
 
@@ -348,15 +355,6 @@ export default function BalanceAmountsPage() {
           </>
         )
       }
-      {/* <DocViewer
-        activeDocument={activeDocument}
-        onDocumentChange={handleDocumentChange}
-        key={viewerKey}
-        style={{ height: "100%" }}
-        documents={docs}
-        pluginRenderers={[PDFRenderer, MSDocRenderer]}
-        language="es"
-      /> */}
     </div>
   );
 }

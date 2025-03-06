@@ -7,12 +7,14 @@ interface Props {
   data: BalanceGeneralType
   dateRange: DateRange
   currentLevel: number
+  inSus?: boolean
 }
 
-export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) => {
+export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = false }: Props) => {
   const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
   const iDate = dateRange.from && format(dateRange.from, FORMAT_DATE_INITIAL)
   const eDate = dateRange.to && format(dateRange.to, FORMAT_DATE_INITIAL)
+  const moneyType = inSus ? "Dolares" : "Bolivianos";
 
   const messageDate = iDate && eDate
     ? (iDate === eDate ? `Del ${iDate}`
@@ -27,9 +29,9 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) 
           <td style={{ paddingLeft: `${level * 10}px` }} className={`${currentLevel === level ? "font-normal" : "font-semibold"}`}>
             {item.description}
           </td>
-          <td className={`text-center ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel === item.level ? formatNumber(item.sld) : " "}</td>
-          <td className={`text-center ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 1 === item.level ? formatNumber(item.sld) : " "}</td>
-          <td className={`text-center ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 2 === item.level ? formatNumber(item.sld) : " "}</td>
+          <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel === item.level ? formatNumber(item.sld) : " "}</td>
+          <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 1 === item.level ? formatNumber(item.sld) : " "}</td>
+          <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 2 === item.level ? formatNumber(item.sld) : " "}</td>
         </tr>
         {item.itemsChild.length > 0 && item.itemsChild.map((child) => renderItem(child, level + 1))}
 
@@ -93,11 +95,14 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel }: Props) 
       </>)
   }
 
+  if (data?.items.length <= 0) return <div>Sin Resultados</div>
+
   return (
     <>
-      <div className="flex flex-col items-center justify-center gap-2 py-2">
+      <div className="flex flex-col items-center justify-center gap-1 pt-2 pb-4">
         <p className="w-full text-end">{messageDate}</p>
         <h3 className="text-xl font-bold">BALANCE GENERAL</h3>
+        <p className="w-full text-center">(Expresado en {moneyType})</p>
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>

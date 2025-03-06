@@ -1,7 +1,7 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, Check, ChevronsUpDown, FileText, Sheet } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown, FileText, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange, isDateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import DocViewer, {
   PDFRenderer,
@@ -75,18 +76,22 @@ export type AccountData = {
   voucherItems: VoucherItem[];
   totalDebit: number;
   totalAsset: number;
+  totalDebitSus: number;
+  totalAssetSus: number;
   totalSaldoNum: number;
+  totalSaldoNumSus: number;
   totalSaldoText: string;
   totalSaldoTextSus: string;
+  previousBalance: number;
+  previousBalanceSus: number;
 };
 
 
 //Component for generate pdf file to biggerBook
-const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { data: AccountData[], dateRange?: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string }) => {
+const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text, className }: { data: AccountData[], dateRange?: DateRange, setFile: (file: JSX.Element | null) => void, inSus: boolean, text?: string, className?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateReport = async () => {
-
     try {
       setIsLoading(true);
       toast("Generando reporte...");
@@ -107,8 +112,8 @@ const ReportGenerateBiggerBook = ({ data, dateRange, setFile, inSus, text }: { d
   }
 
   return <>
-    <Button onClick={handleGenerateReport}>
-      {isLoading ? 'Generando Reporte...' : (text ? text : "Generar Reporte")}
+    <Button className={className} onClick={handleGenerateReport}>
+      {isLoading ? 'Generando PDF...' : (text ? text : "Generar PDF")}
     </Button>
   </>
 }
@@ -160,36 +165,35 @@ const AccountSection = () => {
     enabled: !!accountDate?.from && !!accountDate?.to
   });
 
-  const currentAccounts =
-    currentSearchType === 'account' ? accountSearch : accountsData
+  const currentAccounts = currentSearchType === 'account' ? accountSearch : accountsData
 
   const currentAccount = currentAccounts?.[currentAccountIndex];
 
+  // cambio a la moneda seleccionada
+  const messages = {
+    debitMsg: `Debe ${inSus ? "Sus" : "Bs"}`,
+    assetMsg: `Haber ${inSus ? "Sus" : "Bs"}`,
+    saldoMsg: `Saldo ${inSus ? "Sus" : "Bs"}`,
+  };
+
+  const { assetMsg, debitMsg, saldoMsg } = messages
+  const debitValue = inSus ? "debitSus" : "debitBs"
+  const assetValue = inSus ? "assetSus" : "assetBs"
+  const saldoValue = inSus ? "totalSaldoSus" : "totalSaldoBs"
+
+  const tDebitKey = inSus ? "totalDebitSus" : "totalDebit"
+  const tAssetKey = inSus ? "totalAssetSus" : "totalAsset"
+  const tSaldoKey = inSus ? "totalSaldoNumSus" : "totalSaldoNum"
+  const tPreviousBalanceKey = inSus ? "previousBalanceSus" : "previousBalance"
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
-  const handleSearch = () => {
-    if (!searchDescription.trim()) {
-      toast.error("Por favor ingrese una descripción para buscar");
-      return;
-    }
-
+  const handleOnSelectedAccount = (accountCode: string) => {
     const foundIndex = currentAccounts?.findIndex((account: AccountData) =>
-      account.accountDescription
-        .toLowerCase()
-        .includes(searchDescription.toLowerCase())
+      account.accountCode.toLowerCase() === accountCode.toLowerCase()
     );
-
-    if (foundIndex !== -1) {
-      setCurrentAccountIndex(foundIndex);
-      setActiveFile(null)
-      toast.success(
-        `Cuenta encontrada (${foundIndex + 1} de ${currentAccounts.length})`
-      );
-    } else {
-      toast.error("No se encontró ninguna cuenta con esa descripción");
-    }
-  };
+    setCurrentAccountIndex(foundIndex)
+  }
 
   const columnsBook: ColumnDef<BookBiggerDataVoucherItem>[] = [
     {
@@ -217,12 +221,9 @@ const AccountSection = () => {
       cell: ({ row }) => row.original.gloss || "sin glosa",
     },
     { header: "Hoja Ruta", accessorKey: "hojaDeRuta" },
-    { header: "Debe Bs", accessorKey: "debitBs", cell: ({ row }) => formatNumber(row.original.debitBs) },
-    { header: "Haber Bs", accessorKey: "assetBs", cell: ({ row }) => formatNumber(row.original.assetBs) },
-    { header: "Saldo Bs", accessorKey: "totalSaldoBs", cell: ({ row }) => formatNumber(row.original.totalSaldoBs) },
-
-    // { header: "Debe Sus", accessorKey: "debitSus" },
-    // { header: "Haber Sus", accessorKey: "assetSus" },
+    { header: debitMsg, accessorKey: "debitBs", cell: ({ row }) => formatNumber(row.original[debitValue]) },
+    { header: assetMsg, accessorKey: "assetBs", cell: ({ row }) => formatNumber(row.original[assetValue]) },
+    { header: saldoMsg, accessorKey: "totalSaldoBs", cell: ({ row }) => formatNumber(row.original[saldoValue]) },
     {
       header: "Acciones",
       accessorKey: "",
@@ -246,6 +247,7 @@ const AccountSection = () => {
   const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setCurrentSearchType("date")
+      setCurrentAccountIndex(0)
       setFile(null)
       setResetSearch(true)
       setAccountDate({
@@ -268,7 +270,7 @@ const AccountSection = () => {
     <div className="space-y-6">
       {/* componente para buscar un recurso con una llamada a una api */}
       <div className="flex flex-col pt-2 gap-2">
-        <SearchComponent
+        {/* <SearchComponent
           onSelect={handleSelect}
           debounceTime={700}
           suggestionKey="accountDescription"
@@ -278,7 +280,8 @@ const AccountSection = () => {
             searchByAccountBigguerBook(search)
           }
           resetSearch={resetSearch}
-        />
+        /> */}
+        {/* AUN FUNCIONA PERO SE DESHABILITO ESTA CARACTERISTICA */}
         <div className="flex items-center justify-evenly mt-5">
           <div className="space-y-2">
             <DateSelector onDateChange={handleDateChange} />
@@ -322,56 +325,65 @@ const AccountSection = () => {
           )}
 
           <AccountInfo
+            currentAccounts={currentAccounts}
             accountCode={currentAccount.accountCode}
             accountDescription={currentAccount.accountDescription}
-            searchDescription={searchDescription}
-            onSearchChange={setSearchDescription}
-            onSearch={handleSearch}
+            onSelectedAccountIndex={handleOnSelectedAccount}
           />
 
-          <AccountNavigation
-            currentIndex={currentAccountIndex}
-            total={currentAccounts?.length || 0}
-            onPrevious={() => {
-              setActiveFile(null)
-              setCurrentAccountIndex((prev) => Math.max(0, prev - 1))
-            }
-            }
-            onNext={() => {
-              setActiveFile(null)
-              setCurrentAccountIndex((prev) =>
-                Math.min((currentAccounts?.length || 1) - 1, prev + 1)
-              )
-            }
-            }
-          />
+          <div className="relative flex justify-center">
+            <Dialog >
+              <DialogTrigger title={`Ver PDF de la cuenta de ${currentAccount.accountDescription}`}>
+                <ReportGenerateBiggerBook
+                  data={[currentAccount]}
+                  dateRange={accountDate}
+                  setFile={setActiveFile}
+                  inSus={inSus}
+                  text="Ver en PDF"
+                  className="absolute right-0 bottom-0"
+                />
+              </DialogTrigger>
+              <DialogContent className="min-w-[90vw] md:min-w-[70vw]">
+                {
+                  activeFile !== null && (
+                    <div className="h-[500px]">
+                      <PDFViewer style={{ width: "100%", height: "100%" }}>
+                        {activeFile}
+                      </PDFViewer>
+                    </div>
+                  )
+                }
+              </DialogContent>
+            </Dialog>
+
+            <AccountNavigation
+              currentIndex={currentAccountIndex}
+              total={currentAccounts?.length || 0}
+              onPrevious={() => {
+                setActiveFile(null)
+                setCurrentAccountIndex((prev) => Math.max(0, prev - 1))
+              }
+              }
+              onNext={() => {
+                setActiveFile(null)
+                setCurrentAccountIndex((prev) =>
+                  Math.min((currentAccounts?.length || 1) - 1, prev + 1)
+                )
+              }
+              }
+            />
+          </div>
 
           <DataTable columns={columnsBook} data={currentAccount.voucherItems} />
 
           <div className="flex items-center justify-between">
-            <ReportGenerateBiggerBook
-              data={[currentAccount]}
-              dateRange={accountDate}
-              setFile={setActiveFile}
-              inSus={inSus}
-              text="Ver en PDF"
-            />
             <AccountTotals
-              totalDebit={currentAccount.totalDebit}
-              totalAsset={currentAccount.totalAsset}
-              totalSaldo={currentAccount.totalSaldoNum}
-              totalPreviousBalance={currentAccount.previousBalance}
+              totalDebit={currentAccount[tDebitKey]}
+              totalAsset={currentAccount[tAssetKey]}
+              totalSaldo={currentAccount[tSaldoKey]}
+              totalPreviousBalance={currentAccount[tPreviousBalanceKey]}
             />
           </div>
-
-          {activeFile !== null && (
-            <div style={{ height: "500px" }}>
-              <PDFViewer style={{ width: "100%", height: "100%" }}>
-                {activeFile}
-              </PDFViewer>
-            </div>
-          )}
-
         </>
       )}
 
@@ -390,60 +402,6 @@ const AccountSection = () => {
     </div>
   );
 };
-
-
-function Breadcrumb() {
-  const pathname = usePathname();
-  const pathSegments = pathname.split('/').filter(segment => segment);
-
-  return (
-    <nav className="flex" aria-label="Breadcrumb">
-      <ol className="flex items-center gap-1 lg:gap-2 pb-2">
-        {pathSegments.map((segment, index) => {
-          const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
-          return (
-            <li key={href}>
-              <div className="flex items-center">
-                {index === 0 && (
-                  <svg className="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                  </svg>
-                )}
-                {index > 0 && (
-                  <>
-                    <svg
-                      className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 6 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m1 9 4-4-4-4"
-                      />
-                    </svg>
-                  </>
-                )}
-                <Link
-                  href={href}
-                  className={`ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white  'text-gray-500 cursor-default' : ''
-                    }`}
-                >
-                  {segment.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
-                </Link>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
-  );
-}
-
 
 // Main Component
 export default function BiggerBookPage() {
@@ -479,18 +437,37 @@ export default function BiggerBookPage() {
 
 // Account Components
 const AccountInfo = ({
+  currentAccounts,
   accountCode,
   accountDescription,
-  searchDescription,
-  onSearchChange,
-  onSearch,
+  onSelectedAccountIndex
 }: {
+  currentAccounts: AccountData[]
   accountCode: string;
   accountDescription: string;
-  searchDescription: string;
-  onSearchChange: (value: string) => void;
-  onSearch: () => void;
+  onSelectedAccountIndex: (index: string) => void;
 }) => {
+  const [open, setOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedValue] = useDebounce(searchTerm, 400);
+  const [filteredAccounts, setFilteredAccounts] = useState<AccountData[] | []>([])
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOnSearch = async () => {
+    setIsLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const filteredItems = currentAccounts.filter((account) => {
+      return account.accountDescription.toLowerCase().includes(searchTerm.toLowerCase())
+    })
+    setFilteredAccounts(filteredItems)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    handleOnSearch()
+  }, [debouncedValue]);
+
+
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
       <div className="space-y-1">
@@ -499,15 +476,43 @@ const AccountInfo = ({
           Descripción: {accountDescription}
         </p>
       </div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={searchDescription}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Buscar por descripción..."
-          className="px-3 py-2 border rounded-md"
-        />
-        <Button onClick={onSearch}>Buscar</Button>
+      <div className="flex gap-2 relative">
+        <Command shouldFilter={false} className="w-72">
+          <CommandInput
+            value={searchTerm}
+            onValueChange={(value) => {
+              console.log('cambiando: ', value.length > 0)
+              setSearchTerm(value)
+              setOpen(value.length > 0);
+            }}
+            placeholder="Buscar cuenta..."
+          />
+          {open && (
+            <CommandList className="absolute z-50 top-full bg-white">
+              {isLoading && (
+                <CommandItem disabled>Cargando...</CommandItem>
+              )}
+              {filteredAccounts.length > 0 ? (
+                filteredAccounts.map((item) => (
+                  <CommandItem
+                    className="cursor-pointer"
+                    key={item.accountCode}
+                    value={item.accountCode}
+                    onSelect={() => {
+                      onSelectedAccountIndex(item.accountCode)
+                      setSearchTerm(item.accountDescription)
+                      setOpen(false)
+                    }}
+                  >
+                    {item.accountDescription}
+                  </CommandItem>
+                ))
+              ) : (
+                <CommandItem disabled>No hay resultados</CommandItem>
+              )}
+            </CommandList>
+          )}
+        </Command>
       </div>
     </div>
   );
@@ -578,7 +583,7 @@ interface Props {
   search: string,
 }
 
-const BiggerBookExcelGenerate = ({ dateRange, search }: Props) => {
+const BiggerBookExcelGenerate = ({ dateRange, search, inSus }: Props) => {
 
 
   const initialDate = dateRange.from && format(dateRange.from, "yyyy-MM-dd")
@@ -587,7 +592,12 @@ const BiggerBookExcelGenerate = ({ dateRange, search }: Props) => {
 
   const { refetch, isLoading } = useQuery({
     queryKey: [dateRange, search],
-    queryFn: () => getBigguerBookinExcel({ initDate: initialDate, endDate: finallyDate, search: search }),
+    queryFn: () => getBigguerBookinExcel({
+      initDate: initialDate,
+      endDate: finallyDate,
+      search: search,
+      inSus
+    }),
     enabled: false
   })
 
@@ -610,8 +620,10 @@ const BiggerBookExcelGenerate = ({ dateRange, search }: Props) => {
   }
 
   return (
-    <Button className="flex" onClick={handleOnClick} >
-      {isLoading ? 'Descargando Excel...' : 'Descargar Excel'}
+    <Button disabled={isLoading} className="flex gap-2 items-center" onClick={handleOnClick} >
+      {isLoading ? (
+        <><LoaderIcon className="animate-spin" />Cargando..</>
+      ) : 'Generar Excel'}
     </Button>
   )
 }

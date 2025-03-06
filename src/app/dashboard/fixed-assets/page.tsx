@@ -7,6 +7,7 @@ import { deleteFixedAsset, getAllFixedAssets, getAllFixedAssetsExcelByDate } fro
 import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog"
 import { DialogAssetDetail } from "@/modules/fixed-assets/components/DialogAssetDetail"
 import DialogNewFixedAssetItem from "@/modules/fixed-assets/components/DialogNewFixedAssetItem"
+import { DataTablePayrollsSalaries } from "@/modules/salaries-payrolls/components/TablePayrolls"
 import { formatNumber } from "@/modules/shared/utils/validate"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
@@ -81,12 +82,13 @@ function FixedAssetPage() {
     {
       header: "Tipo Activo",
       accessorKey: "typeActive",
-      cell: ({ row }: any) => row.original.typeActive,
+      isSticky: true,
+      cell: ({ row }: any) => <p className="whitespace-nowrap">{row.original.typeActive}</p>,
     },
     {
       header: "Detalle",
       accessorKey: "detail",
-      cell: ({ row }: any) => row.original.detail,
+      cell: ({ row }: any) => <p className="min-w-60 max-w-96">{row.original.detail}</p>,
     },
     {
       header: "% Depreciacion",
@@ -148,7 +150,7 @@ function FixedAssetPage() {
   ];
 
   return (
-    <main>
+    <main className="max-w-xl">
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Activos Fijos</h1>
         <Button asChild>
@@ -156,6 +158,7 @@ function FixedAssetPage() {
         </Button>
       </div>
       <div className="flex items-end gap-4 mt-3 mb-5">
+        {/* <Button className="fixed top-20 z-50" >Esto sera fixed</Button> */}
         <Label className="flex flex-col gap-3 w-fit" >
           Seleccione la fecha de inicio
           <Input
@@ -173,14 +176,19 @@ function FixedAssetPage() {
           <SheetIcon />
           Descargar excel
         </Button>
-        <DialogNewFixedAssetItem/>
+        <DialogNewFixedAssetItem />
       </div>
 
       {
         listAssets?.getFixed && (
           <>
-            <div className="flex justify-start pb-3">
-              <DataTable columns={columnsFixedAssets} data={listAssets?.getFixed} />
+            <div className="overflow-x-auto max-w-full w-[90vw] md:w-[70vw]">
+              <DataTablePayrollsSalaries
+                filter={{ type: "text", placeholder: "Buscar activo fijo...", columnName: "typeActive" }}
+                columns={columnsFixedAssets}
+                data={listAssets?.getFixed}
+              />
+              {/* <DataTable columns={columnsFixedAssets} data={listAssets?.getFixed} /> */}
             </div>
             {listAssets?.getFixed?.length > 0 && (
               <div className="flex justify-end gap-6 py-4 px-6 bg-gray-50 rounded-lg">

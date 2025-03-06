@@ -103,6 +103,13 @@ export function BiggerBookTemplate({
   const moneyType = inSus ? "Dolares" : "Bolivianos";
   const saldoType = inSus ? "totalSaldoSus" : "totalSaldoBs";
   const saldoTextType = inSus ? "totalSaldoTextSus" : "totalSaldoText";
+
+
+  const tDebitKey = inSus ? "totalDebitSus" : "totalDebit"
+  const tAssetKey = inSus ? "totalAssetSus" : "totalAsset"
+  const tSaldoKey = inSus ? "totalSaldoNumSus" : "totalSaldoNum"
+  const tPreviousBalanceKey = inSus ? "previousBalanceSus" : "previousBalance"
+
   const dateText =
     dateRange?.from &&
     (dateRange?.to
@@ -151,14 +158,22 @@ export function BiggerBookTemplate({
                 </Text>{" "}
                 {record.accountCode}
               </Text>
-              <Text style={[styles.thCell]}>
-                <Text style={{ fontFamily: "Helvetica-Bold" }}>
-                  Nombre de Cuenta:
-                </Text>{" "}
-                {record.accountDescription}
-              </Text>
+              <View style={styles.trCell}>
+                <Text style={[styles.thCell]}>
+                  <Text style={{ fontFamily: "Helvetica-Bold" }}>
+                    Nombre de Cuenta:
+                  </Text>{" "}
+                  {record.accountDescription}
+                </Text>
+                <Text style={[styles.thCell]}>
+                  <Text style={{ fontFamily: "Helvetica-Bold" }}>
+                    Balance Previo:
+                  </Text>{" "}
+                  {record[tPreviousBalanceKey]}
+                </Text>
+              </View>
             </View>
-            <View style={{ width: "100%" }}>
+            <View style={{ width: "100%", borderWidth: 1 }}>
               <View style={[styles.trCell, { borderBottomWidth: 1 }]}>
                 <Text
                   style={[
@@ -286,7 +301,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(record.totalDebit)}
+                  {formatNumber(record[tDebitKey])}
                 </Text>
                 <Text
                   style={[
@@ -295,7 +310,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(record.totalAsset)}
+                  {formatNumber(record[tAssetKey])}
                 </Text>
                 <Text
                   style={[
@@ -304,7 +319,7 @@ export function BiggerBookTemplate({
                     { fontFamily: "Helvetica-Bold", textAlign: "right" },
                   ]}
                 >
-                  {formatNumber(record.totalSaldoNum)}
+                  {formatNumber(record[tSaldoKey])}
                 </Text>
               </View>
               <View style={[styles.trCell, { borderTopWidth: 1 }]}>

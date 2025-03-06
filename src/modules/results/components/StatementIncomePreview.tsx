@@ -7,13 +7,15 @@ interface Props {
   data: StatementIncomeType
   dateRange: DateRange
   currentLevel: number
+  inSus?: boolean
 }
 
 
-export const StatementIncomePreview = ({ data, dateRange, currentLevel }: Props) => {
+export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = false }: Props) => {
   const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
   const iDate = dateRange.from && format(dateRange.from, FORMAT_DATE_INITIAL)
   const eDate = dateRange.to && format(dateRange.to, FORMAT_DATE_INITIAL)
+  const moneyType = inSus ? "Dolares" : "Bolivianos";
 
   const messageDate = iDate && eDate ? (iDate === eDate ? `Del ${iDate}` : `Del ${iDate} al ${eDate}`) : `Del ${iDate}`
 
@@ -73,6 +75,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel }: Props)
       <div className="flex flex-col items-center justify-center gap-2 py-2">
         <p className="w-full text-end">{messageDate}</p>
         <h3 className="text-xl font-bold">ESTADO DE RESULTADOS</h3>
+        <p className="w-full text-center">(Expresado en {moneyType})</p>
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>

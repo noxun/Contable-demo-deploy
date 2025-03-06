@@ -37,9 +37,8 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   const FORMAT_DATE = "yyyy/MM/dd";
   const [isLoading, setIsLoading] = useState(false);
   const paramSearchType = `/${paramType}`;
-  const URL_REQUEST = `${
-    process.env.NEXT_PUBLIC_BACKEND_URL
-  }/api/Report/${reportNamePath}${paramType ? paramSearchType : ""}`;
+  const URL_REQUEST = `${process.env.NEXT_PUBLIC_BACKEND_URL
+    }/api/Report/${reportNamePath}${paramType ? paramSearchType : ""}`;
 
   const handleGenerateReport = async () => {
     const { from, to } = dateRange;
@@ -81,40 +80,12 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
                 />
               );
               break;
-            case "balanceGeneral":
-              MyDocument = (
-                <BalanceGeneralTemplate
-                  currentLevel={5}
-                  dateRange={dateRange}
-                  inSus={inSus}
-                  records={response.data}
-                />
-              );
-              break;
-            case "estadoDeResultado":
-              MyDocument = (
-                <EstadoResultadosTemplate
-                  currentLevel={5}
-                  dateRange={dateRange}
-                  inSus={inSus}
-                  records={response.data}
-                />
-              );
-              break;
             default:
               toast.error("Reporte no encontrado");
               break;
           }
 
           if (MyDocument) {
-            // setGeneratedFiles((prevFiles) => [
-            //   ...prevFiles,
-            //   {
-            //     type: "PDF",
-            //     date: currentDate,
-            //     link: MyDocument,
-            //   },
-            // ]);
             setFile(MyDocument);
             setShowDialog(true);
             toast.success("Reporte generado exitosamente");
@@ -131,7 +102,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
 
   return (
     <Button onClick={handleGenerateReport} disabled={isLoading}>
-      {isLoading ? "Generando Reporte" : "Generar Reporte"}
+      {isLoading ? "Generando PDF..." : "Generar PDF"}
     </Button>
   );
 };

@@ -6,7 +6,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { DateRange } from "react-day-picker";
 import { es } from "date-fns/locale";
 
@@ -15,7 +19,10 @@ type DateSelectorProps = {
 };
 
 export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
-  const [date, setDate] = useState<DateRange | undefined>(undefined); // DateRange en lugar de un objeto con from y to
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().getFullYear(), 0, 1),
+    to: new Date(),
+  }) // DateRange en lugar de un objeto con from y to
   const [currentDay, setCurrentDay] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
@@ -59,15 +66,11 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      `${date.from.toLocaleDateString()} - ${date.to.toLocaleDateString()}`
-                    ) : (
-                      date.from.toLocaleDateString()
-                    )
-                  ) : (
-                    "Seleccionar fecha"
-                  )}
+                  {date?.from
+                    ? date.to
+                      ? `${date.from.toLocaleDateString()} - ${date.to.toLocaleDateString()}`
+                      : date.from.toLocaleDateString()
+                    : "Seleccionar fecha"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -110,11 +113,8 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
               />
             </div>
           </Label>
-
         </div>
-      </div >
-
-
+      </div>
     </>
   );
 };

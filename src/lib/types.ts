@@ -167,21 +167,19 @@ export type BranchToList = {
   nameSucutsal: string;
 };
 
+export type CostCenterAccountItem = {
+  accountId: number;
+  code: string;
+  description: string;
+};
+
 export type CostCenter = {
   id: number;
   name: string;
   descripcion: string;
-  account: any;
+  code: any;
   accountId: number;
-  diaryVouchers: any;
-  egressVouchers: any;
-  incomeVouchers: any;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
-  createdById: any;
-  updatedById: any;
-  deletedById: any;
+  accountItems: CostCenterAccountItem[];
 };
 
 export type AccountingBox = {
@@ -623,4 +621,40 @@ export type BudgetExecutionResponse = {
     inEffectAnnualTotal: number;
     inEffectMonthlyTotal: number;
   };
+};
+
+export type RelationAccount = {
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+  businessEntityId: number;
+  businessEntityName: any;
+  typeCompanyId: number;
+  accountIdRef: number;
+  accountCodeRef: any;
+  accountDescriptionRef: any;
+  items: RelationAccountItem[];
+};
+
+export type RelationAccountItem = {
+  id: number;
+  code: string;
+  description: string;
+  coin: string;
+  active: boolean;
+  isBudgetable: boolean;
+  isMotion: boolean;
+  isCost: boolean;
+  businessEntityId: number;
+  businessEntityName: any;
+  typeCompanyId: number;
+  accountIdRef: number;
+  accountCodeRef: any;
+  accountDescriptionRef: any;
+  items: RelationAccountItem[];
 };
