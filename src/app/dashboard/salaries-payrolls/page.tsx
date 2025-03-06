@@ -159,7 +159,7 @@ function SalariesPayrollsPage() {
       cell: ({ row }: any) => formatNumber(row.original.totalGanado),
     },
     {
-      header: "AFP",
+      header: "Gestora",//AFP
       accessorKey: "afp",
       cell: ({ row }: any) => formatNumber(row.original.afp),
     },
@@ -319,7 +319,7 @@ function SalariesPayrollsPage() {
                 <li>
                   <fieldset className="border-2 rounded-xl p-2">
                     <legend>Deducciones</legend>
-                    <p><span className="font-semibold ">AFP: </span>{formatNumber(listPayrolls.afpTotal)}</p>
+                    <p><span className="font-semibold ">Gestora: </span>{formatNumber(listPayrolls.afpTotal)}</p>
                     <p><span className="font-semibold ">Prestamos: </span>{formatNumber(listPayrolls.loanTotal)}</p>
                     <p><span className="font-semibold ">Cursos de capacitacion: </span>{listPayrolls.exelTrainingCorseTotal}</p>
                     <p><span className="font-semibold ">Multas ANB: </span>{formatNumber(listPayrolls.anbFineSettlementTotal)}</p>

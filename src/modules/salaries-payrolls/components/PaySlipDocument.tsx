@@ -132,7 +132,7 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
               EGRESOS
             </Text>
             <View style={tw("flex flex-row justify-between pl-2")}>
-              <Text style={{ fontFamily: "Helvetica-Bold" }}>AFP</Text>
+              <Text style={{ fontFamily: "Helvetica-Bold" }}>Gestora</Text>
               <Text>{formatNumber(data.egress.afps)}</Text>
             </View>
             <View style={tw("flex flex-row justify-between pl-2")}>
