@@ -8,19 +8,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AccountRelation } from "@/lib/types";
 import LinkAccountForm from "./LinkAccountForm";
+import { RelationAccount } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 
 type LinkAccountDialogProps = {
-  account: AccountRelation
+  account: RelationAccount;
+  triggerClassName?: string;
 }
 
-export default function LinkAccountDialog({account}: LinkAccountDialogProps) {
+export default function LinkAccountDialog({account, triggerClassName}: LinkAccountDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Relacionar</Button>
+        <Button className={cn("", triggerClassName)}>Relacionar</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
