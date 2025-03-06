@@ -1254,7 +1254,11 @@ export async function fetchPaySlipData(
 
   setAuthToken(token);
   const response = await api.get(
-    `/api/SalariesAndWages/payment-slip/${idSalaryWages}/${datePaySlip}`
+    `/api/SalariesAndWages/payment-slip/${idSalaryWages}`, {
+      params: {
+        datePaySlip
+      }
+    }
   );
   return response.data;
 }

@@ -214,7 +214,7 @@ function SalariesPayrollsPage() {
             <SalaryDialogEdit idItem={row.original.idItems.toString()} />
             <PaySlipDialog
               idSalaryWages={idPayroll}
-              datePaySlip={(new Date()).toISOString()}
+              datePaySlip={format(new Date(), 'yyyy-MM-dd')}
             />
           </div >
         )
