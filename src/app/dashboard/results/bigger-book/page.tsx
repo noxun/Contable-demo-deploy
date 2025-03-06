@@ -76,9 +76,14 @@ export type AccountData = {
   voucherItems: VoucherItem[];
   totalDebit: number;
   totalAsset: number;
+  totalDebitSus: number;
+  totalAssetSus: number;
   totalSaldoNum: number;
+  totalSaldoNumSus: number;
   totalSaldoText: string;
   totalSaldoTextSus: string;
+  previousBalance: number;
+  previousBalanceSus: number;
 };
 
 
