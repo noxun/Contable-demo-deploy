@@ -167,21 +167,19 @@ export type BranchToList = {
   nameSucutsal: string;
 };
 
+export type CostCenterAccountItem = {
+  accountId: number;
+  code: string;
+  description: string;
+};
+
 export type CostCenter = {
   id: number;
   name: string;
   descripcion: string;
-  account: any;
+  code: any;
   accountId: number;
-  diaryVouchers: any;
-  egressVouchers: any;
-  incomeVouchers: any;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
-  createdById: any;
-  updatedById: any;
-  deletedById: any;
+  accountItems: CostCenterAccountItem[];
 };
 
 export type AccountingBox = {
