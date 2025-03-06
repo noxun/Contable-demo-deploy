@@ -44,6 +44,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
       formSalary.reset();
       queryClient.invalidateQueries({ queryKey: ['AllSalaries'] })
       queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
+      queryClient.invalidateQueries({ queryKey: ["paySlipData"], exact: false })
     },
     onMutate: () => {
       toast("creando registro...");
@@ -63,6 +64,7 @@ export const FormSalary = ({ itemForEdit, idPayroll, onClose }: Props) => {
       queryClient.invalidateQueries({ queryKey: ['SalaryEdit'] })
       queryClient.invalidateQueries({ queryKey: ['AllSalaries'] })
       queryClient.invalidateQueries({ queryKey: ['AllPayrolls'] })
+      queryClient.invalidateQueries({ queryKey: ["paySlipData"], exact: false })
     },
     onMutate: () => {
       toast("actualizando registro...");
