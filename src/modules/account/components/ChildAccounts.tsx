@@ -123,7 +123,7 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
   const renderAccount = useCallback(
     (_: number, account: FlattenedAccount) => (
       <div
-        className="flex items-center gap-2 border px-2 py-1"
+        className="flex items-center gap-2 border px-2 py-1 text-xl"
         style={{ paddingLeft: `${account.depth * 20}px` }}
       >
         {account.hasChildren ? (
@@ -164,12 +164,12 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
               message="Esta acción no puede revertirse. Esto borrara permanentemente la cuenta"
             />
           </div>
-          <span>
-            {account.code}: {account.description}{" "}
+          <div>
+            <span className="font-bold">{account.code}:</span> {account.description}{" "}
             {account.isMotion && <Badge>Movimiento</Badge>}
             {account.isBudgetable && <Badge>Presupuestable</Badge>}
             {account.isCost && <Badge>Costo</Badge>}
-          </span>
+          </div>
         </div>
       </div>
     ),
