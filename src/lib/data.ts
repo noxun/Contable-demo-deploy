@@ -24,6 +24,7 @@ import {
   NewConfigValues,
   PostModelSeat,
   RegisterVoucherByDocumentResponse,
+  RelationAccount,
   Role,
   RoleMenu,
   SalariesAndWagesAccounts,
@@ -168,7 +169,7 @@ export async function fetchAllMotionAccountsWithRelations() {
   }
   setAuthToken(token);
   const response = await api.get(`/api/Account/Relations`);
-  return response.data as AccountRelation[];
+  return response.data as RelationAccount[]
 }
 
 export async function fetchAllSiatMotionAccounts() {
