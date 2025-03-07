@@ -1,6 +1,6 @@
 "use client";
 import { Account } from "../types/account";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { Virtuoso } from "react-virtuoso";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,17 +33,35 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
   });
 
   
-  export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
-    const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
-    const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
+export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
+  const [expandedCodes, setExpandedCodes] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
+  const [allExpanded, setAllExpanded] = useState(false);
 
-    const flattenedAccounts = useMemo(
-      () => flattenAccounts(accounts ?? []),
-      [accounts]
-    );
-    
+  const flattenedAccounts = useMemo(
+    () => flattenAccounts(accounts ?? []),
+    [accounts]
+  );
   
+  // Function to collect all account codes that have children
+  const allParentCodes = useMemo(() => {
+    return flattenedAccounts
+      .filter(account => account.hasChildren)
+      .map(account => account.code);
+  }, [flattenedAccounts]);
+  
+  // Function to toggle all expandable accounts
+  const toggleAllAccounts = useCallback(() => {
+    if (allExpanded) {
+      // Collapse all
+      setExpandedCodes(new Set());
+    } else {
+      // Expand all
+      setExpandedCodes(new Set(allParentCodes));
+    }
+    setAllExpanded(!allExpanded);
+  }, [allExpanded, allParentCodes]);
 
   const toggleExpand = useCallback((code: string) => {
     setExpandedCodes((prev) => {
@@ -114,6 +132,14 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     }
   }, [debouncedSearchQuery, filteredFlattenedAccounts, flattenedAccounts]);
   
+  // Update allExpanded state based on whether all parent codes are expanded
+  useEffect(() => {
+    setAllExpanded(
+      allParentCodes.length > 0 && 
+      allParentCodes.every(code => expandedCodes.has(code))
+    );
+  }, [expandedCodes, allParentCodes]);
+  
   // Then the visible accounts memo (without the state updates)
   const visibleAccounts = useMemo(() => {
     return filteredFlattenedAccounts.filter(isVisible);
@@ -180,16 +206,38 @@ const flattenAccounts = (accounts: Account[], depth = 0): FlattenedAccount[] =>
     setSearchQuery(event.target.value)
   }
 
-  console.log(flattenedAccounts)
-
   return (
     <div className="flex flex-col gap-4">
-      <Input type="search" onChange={handleSearch} placeholder="Buscar Cuenta" value={searchQuery}/>
+      <div className="flex items-center gap-2">
+        <Input 
+          type="search" 
+          onChange={handleSearch} 
+          placeholder="Buscar Cuenta" 
+          value={searchQuery}
+          className="flex-1"
+        />
+        <Button 
+          variant="outline" 
+          onClick={toggleAllAccounts}
+          className="flex items-center gap-1"
+        >
+          {allExpanded ? (
+            <>
+              <ChevronUp className="size-4" />
+              Colapsar Todo
+            </>
+          ) : (
+            <>
+              <ChevronDown className="size-4" />
+              Expandir Todo
+            </>
+          )}
+        </Button>
+      </div>
       <Virtuoso
         style={{ height: 400}}
         className="!important border-2"
         data={visibleAccounts}
-        // data={filteredAccounts}
         itemContent={renderAccount}
       />
     </div>
