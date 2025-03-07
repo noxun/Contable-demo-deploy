@@ -34,7 +34,7 @@ const mockup = {
       {
         "amountDetail": 0,
         "account": "122020100000",
-        "description": " BOLETA DE GARANTÍA GESTION 2025 TRADECRUZ SRL",
+        "description": " BOLETA DE GARANTÍA GESTION 2025 NOXUN SRL",
         "amount": 15751.8
       }
     ],
