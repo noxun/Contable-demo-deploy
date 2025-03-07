@@ -246,7 +246,7 @@ export function BiggerBookTemplate({
                       {item?.typeDes ?? index}
                     </Text>
                     <Text style={[styles.col11, styles.tdCell]}>
-                      {format(item.voucherDate, "dd/MM/yyyy")}
+                      {format(item.createdAt, "dd/MM/yyyy")}
                     </Text>
                     <Text style={[styles.col25, styles.tdCell]}>
                       {item.gloss}
