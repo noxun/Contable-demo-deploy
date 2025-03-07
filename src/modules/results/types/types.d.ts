@@ -19,45 +19,69 @@ interface ItemAmounts {
 }
 
 // Balance General
+export interface BalanceItemType {
+  code: string;
+  description: string;
+  sld: number;
+  level: number;
+  itemsChild: BalanceItemType[];
+}
+
 export interface BalanceGeneralType {
-  totalActiveCurrent: number
-  totalActiveNoCurrent: number
-  totalActive: number
-  totalLiabilityCurrent: number
-  totalLiabilityNoCurrent: number
-  totalLiability: number
-  totalEquity: number
-  totalLiabilityEquity: number
-  activeCurrentItems: ItemBalance[]
-  activeNoCurrentItems: ItemBalance[]
-  liabilityCurrentItems: ItemBalance[]
-  liabilityNoCurrentItems: ItemBalance[]
-  equityItems: ItemBalance[]
+  totalActive: number;
+  totalPassive: number;
+  totalHeritage: number;
+  liabilityEquityResult: number;
+  result: number;
+  items: BalanceItemType[];
 }
-interface ItemBalance {
-  account: string,
-  description: string
-  amount: number
-  amountDetail?: number
-}
+
+export type BalanceGeneralResultsType = Omit<BalanceGeneralType, 'items'>
+
 
 // Estado de Restultados
 export interface StatementIncomeType {
-  totalExpense: number;
   totalIncome: number;
+  totalExpense: number;
   periodUtility: number;
   taxOnProfits: number;
   managementResult: number;
-  expenses: StatementIncomeItem[];
-  income: StatementIncomeItem[];
+  items: ItemStatementIncomeType[];
 }
 
-export interface StatementIncomeItem {
+export interface ItemStatementIncomeType {
+  code: string;
+  description: string;
+  sld: number;
+  level: number;
+  itemsChild: ItemStatementIncomeType[];
+}
+
+export type StatementIncomeResultsType = Omit<StatementIncomeType, 'items'>
+
+// Flujo de Efectivo
+// --> Balance General
+export interface CFBalanceGeneralType {
+  totalActiveCurrent: number;
+  totalActiveNoCurrent: number;
+  totalActive: number;
+  totalLiabilityCurrent: number;
+  totalLiabilityNoCurrent: number;
+  totalLiability: number;
+  totalEquity: number;
+  totalLiabilityEquity: number;
+  activeCurrentItems: CFBalanceGeneralItemType[];
+  activeNoCurrentItems: any[];
+  liabilityCurrentItems: CFBalanceGeneralItemType[];
+  liabilityNoCurrentItems: any[];
+  equityItems: CFBalanceGeneralItemType[];
+}
+
+export interface CFBalanceGeneralItemType {
   account: string;
   description: string;
   amount: number;
 }
-
 
 //Ratios financieros
 export interface FinancialRatiosResponse {

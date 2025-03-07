@@ -148,7 +148,7 @@ export function DataTablePayrollsSalaries<TData, TValue>({
         </div>
       </div>
 
-      <div className="relative rounded-md mx-auto border w-[90vw] md:w-[69vw] max-h-[90vh] max-w-full overflow-auto">
+      <div className="relative rounded-md mx-auto border w-[90vw] md:w-[69vw] lg:w-full max-h-[90vh] max-w-full overflow-auto">
         <Table>
           <TableHeader className="sticky inset-0 z-20 bg-[#2563eb] hover:bg-[#2563eb]/90">
             {table.getHeaderGroups().map((headerGroup) => (

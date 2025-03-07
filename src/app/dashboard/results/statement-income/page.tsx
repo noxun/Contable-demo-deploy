@@ -1,30 +1,14 @@
 "use client";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, FileText, Sheet } from "lucide-react";
+import { LoaderIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { es } from "date-fns/locale";
-import { DataTable } from "@/components/ui/data-table";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-
-} from "@/components/ui/dialog";
 import DocViewer, {
   PDFRenderer,
   MSDocRenderer,
@@ -32,20 +16,16 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
-import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
+import { formatNumber } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataReportByType } from "@/lib/data";
+import { getAllDataStatementIncome } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
-import { StatementIncomePreview } from "@/modules/results/components/StatementIncome";
+import { StatementIncomePreview } from "@/modules/results/components/StatementIncomePreview";
+import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -187,20 +167,35 @@ export default function StatementIncomePage() {
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
   const [inSus, setInSus] = useState<boolean>(false);
+  const [inSusSelected, setInSusSelected] = useState<boolean>(inSus);
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
   const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
 
   const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
     queryKey: ["AllStatementIncome"],
-
-    queryFn: () => getAllDataReportByType({
+    queryFn: () => getAllDataStatementIncome({
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
-      typePath: "estadoDeResultado",
-      level: selectedLevel
+      typeFetchBalance: 2,
+      level: pendingLevel,
+      inSus
     }),
+    enabled: false
+  })
+
+  const { refetch: refetchStatementIncomeExcel, isRefetching: isFetchingExcel } = useQuery({
+    queryKey: ["AllStatementIncomeExcel"],
+    queryFn: () => getAllDataStatementIncome({
+      iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
+      eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
+      typeFetchBalance: 1,
+      level: pendingLevel,
+      inSus
+    }),
+    retry: 1,
     enabled: false
   })
 
@@ -227,6 +222,8 @@ export default function StatementIncomePage() {
         <EstadoResultadosTemplate
           dateRange={dateRange}
           records={dataStatementIncome}
+          currentLevel={selectedLevel}
+          inSus={inSusSelected}
         />
       );
       setPdfFile(MyDocument);
@@ -237,6 +234,33 @@ export default function StatementIncomePage() {
       setIsLoadingPDF(false);
     }
   }
+
+  const handleOnGenerateExcel = async () => {
+    toast.info('Generando Excel...')
+
+    try {
+      const { data: linkExcel } = await refetchStatementIncomeExcel()
+      if (!linkExcel) {
+        throw new Error();
+      }
+      const link = document.createElement("a");
+      link.href = linkExcel;
+      toast.success('Archivo generado...')
+      link.click();
+    } catch (error) {
+      console.error("Error al generar el archivo:", error);
+      toast.error('Error al generar el archivo.');
+    }
+  }
+
+  const handleOnRefetch = async () => {
+    setIsLoadingStatementIncome(true)
+    setInSusSelected((_) => inSus)
+    setSelectedLevel(pendingLevel)
+    await refetchStatementIncome()
+    setIsLoadingStatementIncome(false)
+  }
+
 
   type ColumnType = "Ingresos" | "Gastos";
   const createColumns = (type: ColumnType) => [
@@ -256,13 +280,6 @@ export default function StatementIncomePage() {
       cell: ({ row }: any) => formatNumber(row.original.amount),
     },
   ];
-
-
-  const handleOnRefetch = async () => {
-    setIsLoadingStatementIncome(true)
-    await refetchStatementIncome()
-    setIsLoadingStatementIncome(false)
-  }
 
   const columnsIncome = createColumns('Ingresos')
   const columnsExpenses = createColumns('Gastos')
@@ -293,13 +310,13 @@ export default function StatementIncomePage() {
           </div>
           <div className="flex items-center gap-2">
             <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
-            <Label htmlFor="inSus">Devolver el reporte en dolares?</Label>
+            <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
           <Select
-            value={selectedLevel.toString()}
-            onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
+            value={pendingLevel.toString()}
+            onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
           >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Selecciona un nivel" />
@@ -307,12 +324,12 @@ export default function StatementIncomePage() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Jerarquia</SelectLabel>
-                <SelectItem value="6">nivel 1</SelectItem>
-                <SelectItem value="5">nivel 2</SelectItem>
-                <SelectItem value="4">nivel 3</SelectItem>
-                <SelectItem value="3">nivel 4</SelectItem>
-                <SelectItem value="2">nivel 5</SelectItem>
-                <SelectItem value="1">nivel 6</SelectItem>
+                <SelectItem value="1">nivel 1</SelectItem>
+                <SelectItem value="2">nivel 2</SelectItem>
+                <SelectItem value="3">nivel 3</SelectItem>
+                <SelectItem value="4">nivel 4</SelectItem>
+                <SelectItem value="5">nivel 5</SelectItem>
+                <SelectItem value="6">nivel 6</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -329,13 +346,19 @@ export default function StatementIncomePage() {
         >
           {isLoadingPDF ? 'Generando PDF...' : 'Generar PDF'}
         </Button>
-        <ReportExcelGenerate
-          level={selectedLevel}
-          dateRange={dateRange}
-          inSus={inSus}
-          typeFile={ReportPaths.reportExcel}
-          typePathExcel="estadoDeResultado"
-        />
+        <Button
+          className="w-fit flex gap-1 items-center"
+          onClick={handleOnGenerateExcel}
+          title={"Generar Excel"}
+          disabled={isFetchingExcel || !dateRange.to}
+        >
+          {
+            isFetchingExcel
+              ? <><LoaderIcon className="animate-spin" />Cargando...</>
+              : <>Generar Excel</>
+          }
+
+        </Button>
       </div>
 
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -383,13 +406,18 @@ export default function StatementIncomePage() {
 
       {/* Vista Previa */}
       <div className="pb-12" >
+        {isLoadingStatementIncome && (
+          <LoaderIcon className="mx-auto animate-spin size-10 text-[#2563EB]" />
+        )}
         {
-          dataStatementIncome && (
+          dataStatementIncome && !isLoadingStatementIncome && (
             <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] max-h-screen py-3">
-              <div className="flex px-2">
+              <div className="px-2 dark:text-[#bbbbbb]">
                 <StatementIncomePreview
                   data={dataStatementIncome}
                   dateRange={dateRange}
+                  currentLevel={selectedLevel}
+                  inSus={inSusSelected}
                 />
               </div>
             </div>

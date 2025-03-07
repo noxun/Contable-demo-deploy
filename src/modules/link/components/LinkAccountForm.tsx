@@ -14,11 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { AccountRelation } from "@/lib/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchAllSiatMotionAccounts, postConciliation } from "@/lib/data";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { Account } from "@/modules/account/types/account";
+import { RelationAccount } from "@/lib/types";
 
 const linkAccountFormSchema = z.object({
   accountId: z.coerce.number(), //id cuenta empresa
@@ -28,7 +29,7 @@ const linkAccountFormSchema = z.object({
 export type LinkAccountForm = z.infer<typeof linkAccountFormSchema>;
 
 type LinkAccountFormProps = {
-  accountToLink: AccountRelation;
+  accountToLink: RelationAccount;
 };
 
 export default function LinkAccountForm({
@@ -37,7 +38,7 @@ export default function LinkAccountForm({
   const linkAccountForm = useForm<LinkAccountForm>({
     resolver: zodResolver(linkAccountFormSchema),
     defaultValues: {
-      accountId: accountToLink.accountId,
+      accountId: accountToLink.id,
       accountRef: undefined,
     },
   });
@@ -80,8 +81,8 @@ export default function LinkAccountForm({
         className="space-y-8"
       >
         <div>
-          Cuenta Seleccionada: {accountToLink.accountDescription} -{" "}
-          {accountToLink.accountCode}
+          Cuenta Seleccionada: {accountToLink.description} - {" "}
+          {accountToLink.code}
         </div>
         <FormField
           control={linkAccountForm.control}

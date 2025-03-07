@@ -4,50 +4,7 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import { format } from "date-fns";
 import { formatNumber } from "../../utils/validate";
 import { REPORTS_LOGO_URL } from "@/lib/constants";
-
-export interface ReportDiaryBook {
-  report: DiaryBook[];
-  total: {
-    debe: number;
-    haber: number;
-  };
-}
-
-export interface DiaryBook {
-  id: number;
-  type: number;
-  typeDes: string;
-  voucher: null;
-  gloss: string;
-  exchangeRate: number;
-  coin: string;
-  voucherDate: Date;
-  date: Date;
-  voucherItems: VoucherItem[];
-  plusData: PlusData;
-}
-
-export interface PlusData {
-  debe: number;
-  haber: number;
-}
-
-export interface VoucherItem {
-  id: number;
-  debitBs: number;
-  debitSus: number;
-  assetBs: number;
-  assetSus: number;
-  gloss: string;
-  accountId: number;
-  code: string;
-  description: string;
-  typeOfExpense: null;
-  createdAt: Date;
-  voucherId: number;
-  type: number;
-  hojaDeRuta: string;
-}
+import { DiaryBookResponse } from "@/lib/types";
 
 const styles = StyleSheet.create({
   page: {
@@ -122,16 +79,17 @@ export const DiaryBookTemplate = ({
   isSus,
   dateRange,
 }: {
-  records: ReportDiaryBook;
+  records: DiaryBookResponse;
   isSus: Boolean;
   dateRange: DateRange;
 }) => {
   const debitType = isSus ? "debitSus" : "debitBs";
   const assetType = isSus ? "assetSus" : "assetBs";
   const moneyType = isSus ? "Dolares" : "Bolivianos";
+
   const messageDate =
     dateRange.from === dateRange.to
-      ? dateRange.from
+      ? `Del ${dateRange.from}`
       : `${dateRange.from} al ${dateRange.to}`;
 
   return (
@@ -178,7 +136,7 @@ export const DiaryBookTemplate = ({
               <Text style={[styles.tdCell, styles.col15, { borderRightWidth: 1, height: '100%' }]}>
                 {format(asiento.voucherDate, "dd/MM/yyyy")}
               </Text>
-              <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", height: '100%'}]}>
+              <Text style={[styles.tdCell, styles.col40, { borderRightWidth: 1, textAlign: "center", height: '100%' }]}>
                 {asiento.typeDes}
               </Text>
               <Text style={[styles.col15, { borderRightWidth: 1 }]}>{" "}</Text>
@@ -188,23 +146,23 @@ export const DiaryBookTemplate = ({
 
             {(Array.isArray(asiento.voucherItems) ? asiento.voucherItems : []).map((record) => (
               <View style={styles.entry} key={record.id}>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell]}>
                     {record.code}
                   </Text>
                 </View>
-                <View style={styles.col40}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1, paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.paddingHorizontal}`, },]}>
+                <View style={[styles.col40, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell, { paddingLeft: `${record[assetType] > 0 ? "20" : styles.tdCell.paddingHorizontal}`, },]}>
                     {record.description}
                   </Text>
                 </View>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1 },]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell]}>
                     {record.hojaDeRuta ?? ' '}
                   </Text>
                 </View>
-                <View style={styles.col15}>
-                  <Text style={[styles.tdCell, { borderRightWidth: 1, textAlign: "right" }]}>
+                <View style={[styles.col15, { borderRightWidth: 1 }]}>
+                  <Text style={[styles.tdCell, { textAlign: "right" }]}>
                     {formatNumber(record[debitType])}
                   </Text>
                 </View>
@@ -234,14 +192,14 @@ export const DiaryBookTemplate = ({
               <View style={[styles.col15, { paddingBottom: 15, borderRightWidth: 1 }]}>
                 <View style={{ alignSelf: 'flex-end', borderBottomWidth: 2 }}>
                   <Text style={[styles.tdCell, { fontFamily: "Helvetica-Bold" },]}>
-                    {formatNumber(asiento.plusData.debe)}
+                    {formatNumber(isSus ? asiento.plusData.debeSus : asiento.plusData.debe)}
                   </Text>
                 </View>
               </View>
               <View style={[styles.col15, { paddingBottom: 15 }]}>
                 <View style={{ alignSelf: 'flex-end', borderBottomWidth: 2 }}>
                   <Text style={[styles.tdCell, { fontFamily: "Helvetica-Bold" },]}>
-                    {formatNumber(asiento.plusData.haber)}
+                    {formatNumber(isSus ? asiento.plusData.haberSus : asiento.plusData.haber)}
                   </Text>
                 </View>
               </View>
@@ -251,8 +209,8 @@ export const DiaryBookTemplate = ({
         }
         <View style={[styles.trCell, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
           <Text style={[styles.tdCell, styles.col70, { fontFamily: "Helvetica-Bold" }]}>Total</Text>
-          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.debe)}</Text>
-          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(records.total.haber)}</Text>
+          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(isSus ? records.total.debeSus : records.total.debe)}</Text>
+          <Text style={[styles.tdCell, styles.col15, { textAlign: "right", fontFamily: "Helvetica-Bold" }]}>{formatNumber(isSus ? records.total.haberSus : records.total.haber)}</Text>
         </View>
       </Page >
     </Document >

@@ -434,6 +434,8 @@ export default function FormNewVoucher({
     defaultValues: voucherDefaultValues,
   });
 
+  const voucherDate = voucherForm.watch("voucherDate");
+
   const handleModelSeatChange = async (selectedOption: any) => {
     setVoucherItems([]);
     setSelectedModelSeat(selectedOption);
@@ -471,6 +473,25 @@ export default function FormNewVoucher({
     }
   }, [voucherItems]);
 
+  useEffect(() => {
+    if (voucherDate && voucherFromRegisterByDocResponse) {
+      // Get current text value without the date prefix
+      const currentText = voucherForm.watch("gloss");
+      const oldDatePrefix = currentText.match(/^\d{4}-\d{2}-\d{2}: /);
+
+      // Remove old date prefix if it exists
+      const textWithoutDate = oldDatePrefix
+        ? currentText.substring(oldDatePrefix[0].length)
+        : currentText;
+
+      // Add new date prefix
+      voucherForm.setValue(
+        "gloss",
+        formatDateForText(voucherDate) + textWithoutDate
+      );
+    }
+  }, [voucherForm, voucherDate, voucherFromRegisterByDocResponse]);
+
   if (
     branchListQuery.isPending ||
     branchListQuery.data === undefined ||
@@ -487,6 +508,11 @@ export default function FormNewVoucher({
   ) {
     return <Spinner />;
   }
+
+  const formatDateForText = (date: any) => {
+    if (!date) return "";
+    return format(date, "yyyy-MM-dd") + ": ";
+  };
 
   return (
     <div>
@@ -874,12 +900,12 @@ export default function FormNewVoucher({
               <Save size={20} />
             </Button>
             {newVoucherMutation.data ? (
-                <PdfVoucher
-                  id={newVoucherMutation.data.id}
-                  type={newVoucherMutation.data.type.toString() as VoucherType}
-                  triggerTitle="Ver Comprobante del Ultimo Creado"
-                  isButton
-                />
+              <PdfVoucher
+                id={newVoucherMutation.data.id}
+                type={newVoucherMutation.data.type.toString() as VoucherType}
+                triggerTitle="Ver Comprobante del Ultimo Creado"
+                isButton
+              />
             ) : (
               <Button type="button" disabled>
                 Ver Comprobante del Ultimo Creado

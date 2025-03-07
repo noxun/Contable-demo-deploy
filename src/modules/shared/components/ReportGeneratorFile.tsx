@@ -19,11 +19,11 @@ interface ReportGeneratorProps {
   dateRange: DateRange;
   inSus: boolean;
   reportNamePath: string;
-  paramType?: string
+  paramType?: string;
   setGeneratedFiles: React.Dispatch<React.SetStateAction<GeneratedFile[]>>;
   setShowDialog: (show: boolean) => void;
   setFile: (file: JSX.Element | null) => void;
-};
+}
 
 export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   dateRange,
@@ -32,12 +32,13 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   paramType,
   setGeneratedFiles,
   setShowDialog,
-  setFile
+  setFile,
 }) => {
   const FORMAT_DATE = "yyyy/MM/dd";
   const [isLoading, setIsLoading] = useState(false);
   const paramSearchType = `/${paramType}`;
-  const URL_REQUEST = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Report/${reportNamePath}${paramType ? paramSearchType : ""}`;
+  const URL_REQUEST = `${process.env.NEXT_PUBLIC_BACKEND_URL
+    }/api/Report/${reportNamePath}${paramType ? paramSearchType : ""}`;
 
   const handleGenerateReport = async () => {
     const { from, to } = dateRange;
@@ -51,7 +52,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             InitDate: format(from, FORMAT_DATE),
             EndDate: format(to, FORMAT_DATE),
             inSus,
-            type: paramType
+            type: paramType,
           },
           responseType: "json",
         });
@@ -62,8 +63,8 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
           const FORMAT_DATE_TEXT = "dd 'de' MMMM 'del' yyyy";
           const dateText = {
             from: format(from, FORMAT_DATE_TEXT, { locale: es }),
-            to: format(to, FORMAT_DATE_TEXT, { locale: es })
-          }
+            to: format(to, FORMAT_DATE_TEXT, { locale: es }),
+          };
 
           let MyDocument: JSX.Element | null = null;
 
@@ -79,38 +80,12 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
                 />
               );
               break;
-            case "balanceGeneral":
-              MyDocument = (
-                <BalanceGeneralTemplate
-                  dateRange={dateRange}
-                  inSus={inSus}
-                  records={response.data}
-                />
-              );
-              break;
-            case "estadoDeResultado":
-              MyDocument = (
-                <EstadoResultadosTemplate
-                  dateRange={dateRange}
-                  inSus={inSus}
-                  records={response.data}
-                />
-              );
-              break;
             default:
               toast.error("Reporte no encontrado");
               break;
           }
 
           if (MyDocument) {
-            // setGeneratedFiles((prevFiles) => [
-            //   ...prevFiles,
-            //   {
-            //     type: "PDF",
-            //     date: currentDate,
-            //     link: MyDocument,
-            //   },
-            // ]);
             setFile(MyDocument);
             setShowDialog(true);
             toast.success("Reporte generado exitosamente");
@@ -127,8 +102,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
 
   return (
     <Button onClick={handleGenerateReport} disabled={isLoading}>
-      {isLoading ? "Generando Reporte" : "Generar Reporte"}
+      {isLoading ? "Generando PDF..." : "Generar PDF"}
     </Button>
   );
 };
-

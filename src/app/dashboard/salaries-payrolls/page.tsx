@@ -159,7 +159,7 @@ function SalariesPayrollsPage() {
       cell: ({ row }: any) => formatNumber(row.original.totalGanado),
     },
     {
-      header: "AFP",
+      header: "Gestora",//AFP
       accessorKey: "afp",
       cell: ({ row }: any) => formatNumber(row.original.afp),
     },
@@ -214,7 +214,7 @@ function SalariesPayrollsPage() {
             <SalaryDialogEdit idItem={row.original.idItems.toString()} />
             <PaySlipDialog
               idSalaryWages={idPayroll}
-              datePaySlip={(new Date()).toISOString()}
+              datePaySlip={format(new Date(), 'yyyy-MM-dd')}
             />
           </div >
         )
@@ -264,7 +264,7 @@ function SalariesPayrollsPage() {
   ];
 
   return (
-    <section className="px-6">
+    <section className="max-w-7xl">
       <div className="w-full flex justify-between items-center">
         <h2 className="text-lg font-semibold">Planillas y salarios</h2>
         <PayrollsDialogForm />
@@ -292,7 +292,7 @@ function SalariesPayrollsPage() {
       {
         listPayrolls && (
           <>
-            <div className="flex justify-start pb-3">
+            <div className="overflow-x-auto max-w-full w-[90vw] md:w-[70vw]">
               <DataTablePayrollsSalaries
                 filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}
@@ -319,7 +319,7 @@ function SalariesPayrollsPage() {
                 <li>
                   <fieldset className="border-2 rounded-xl p-2">
                     <legend>Deducciones</legend>
-                    <p><span className="font-semibold ">AFP: </span>{formatNumber(listPayrolls.afpTotal)}</p>
+                    <p><span className="font-semibold ">Gestora: </span>{formatNumber(listPayrolls.afpTotal)}</p>
                     <p><span className="font-semibold ">Prestamos: </span>{formatNumber(listPayrolls.loanTotal)}</p>
                     <p><span className="font-semibold ">Cursos de capacitacion: </span>{listPayrolls.exelTrainingCorseTotal}</p>
                     <p><span className="font-semibold ">Multas ANB: </span>{formatNumber(listPayrolls.anbFineSettlementTotal)}</p>

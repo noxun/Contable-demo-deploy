@@ -11,6 +11,7 @@ import { paginatePDFContent } from "@/modules/results/lib/utils";
 interface Props {
   records: BalanceAmountsType,
   dateRange?: DateRange
+  inSus?: boolean
 }
 
 const styles = StyleSheet.create({
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
 });
 
 
-export const BalanceAmountsTemplate = ({ records, dateRange }: Props) => {
+export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Props) => {
 
   const FORMAT_DATE_INITIAL = "dd/MM/yyyy";
   const dateText =
@@ -105,6 +106,8 @@ export const BalanceAmountsTemplate = ({ records, dateRange }: Props) => {
         FORMAT_DATE_INITIAL
       )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
+
+  const moneyType = inSus ? "Dolares" : "Bolivianos"
 
   const paginatedRecords = paginatePDFContent(records.items, {
     firstPageCapacity: 20,
@@ -129,13 +132,13 @@ export const BalanceAmountsTemplate = ({ records, dateRange }: Props) => {
               <View style={{ alignItems: "center" }}>
                 <Text style={[styles.titlePage, { marginTop: 25 }]} >BALANCE DE SUMAS Y SALDOS</Text>
                 <Text style={styles.thCell} >{dateText}</Text>
-                <Text style={[styles.thCell, { marginBottom: 8 }]} >(Expresado en Bolivianos)</Text>
+                <Text style={[styles.thCell, { marginBottom: 8 }]} >(Expresado en {moneyType})</Text>
               </View>
             </>
           )}
 
           {/* Seccion del header*/}
-          <View style={[styles.trCell, { justifyContent: "flex-end", border: 1 }]}>
+          <View style={[styles.trCell, { justifyContent: "flex-end", borderWidth: 1 }]}>
             <View style={[styles.col10, { borderRightWidth: 1 }]}>
               <View><Text>{" "}</Text></View>
               <View style={[styles.thCell]}><Text>Cuenta</Text></View>

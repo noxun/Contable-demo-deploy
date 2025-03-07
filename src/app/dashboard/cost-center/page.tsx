@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCostCenter } from "@/lib/data";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "@/modules/cost-center/components/columns";
+import ListCostCenter from "./ListCostCenter";
 
 const CostCenterPage = () => {
   const {
@@ -23,7 +24,7 @@ const CostCenterPage = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">Centro de Costos</h1>
-      <DataTable data={costCenter} columns={columns} />
+      <ListCostCenter costCenter={costCenter} />
     </div>
   );
 };

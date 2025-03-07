@@ -5,6 +5,7 @@ import { formatNumber } from "../../utils/validate";
 import { REPORTS_LOGO_URL } from "@/lib/constants";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
+import { ItemStatementIncomeType, StatementIncomeResultsType, StatementIncomeType } from "@/modules/results/types/types";
 
 const styles = StyleSheet.create({
   page: {
@@ -13,8 +14,8 @@ const styles = StyleSheet.create({
   },
   pageNumber: {
     position: "absolute",
-    top: 30,
-    right: 30,
+    bottom: 20,
+    right: "50%",
     fontSize: 10,
   },
   header: {
@@ -22,11 +23,24 @@ const styles = StyleSheet.create({
     gap: 2,
     textAlign: "center"
   },
+  txtHeader: {
+    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+    padding: 3,
+  },
   table: {
     display: "flex",
     flexDirection: "row",
     gap: 25,
-    width: "100%"
+    width: "100%",
+  },
+  trHead: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    fontSize: 8
   },
   trCell: {
     flexDirection: "row",
@@ -34,36 +48,40 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  trFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+    justifyContent: "center",
+    width: "100%",
+  },
   thCell: {
-    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+    padding: 3,
+  },
+  tfooter: {
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     padding: 3,
   },
   tdCell: {
-    fontSize: 10,
+    fontSize: 9,
+    paddingVertical: 2,
     padding: 3,
   },
-  entry: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-  },
-  trEntry: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-  },
-  col10: { width: "10%" },
+  border: { borderWidth: 1 },
+  border_l: { borderLeftWidth: 1 },
+  border_r: { borderRightWidth: 1 },
+  border_t: { borderTopWidth: 1 },
+  border_b: { borderBottomWidth: 1 },
+  border_r_td: { borderRightWidth: 1, borderColor: '#F0F0F0' },
+  border_b_td: { borderBottomWidth: 1, borderColor: '#F0F0F0' },
+  txtCenter: { textAlign: "center" },
+  txtRight: { textAlign: "right" },
   col15: { width: "15%" },
   col20: { width: "20%" },
   col25: { width: "25%" },
-  col30: { width: "30%" },
+  col35: { width: "35%" },
   col40: { width: "40%" },
   col50: { width: "50%" },
   col55: { width: "55%" },
@@ -71,43 +89,28 @@ const styles = StyleSheet.create({
   col65: { width: "65%" },
   col70: { width: "70%" },
   col80: { width: "80%" },
+  col85: { width: "85%" },
   col100: { width: "100%" },
   imageOutOfBounds: {
     position: 'absolute',
     top: -15,
     left: -15,
-    height: "1.5cm",
+    height: "1.4cm",
     objectFit: 'cover',
   },
 });
 
-interface Item {
-  account: string,
-  description: string,
-  amount: number,
-  amountSus: number
-}
-
-interface Records {
-  totalExpense: number,
-  totalIncome: number,
-  periodUtility: number,
-  taxOnProfits: number,
-  taxOnProfitsSus: number,
-  managementResult: number,
-  expenses: Item[];
-  income: Item[];
-}
-
 interface Props {
-  inSus?: boolean;
-  records: Records;
-  dateRange?: DateRange;
+  inSus?: boolean
+  records: StatementIncomeType
+  dateRange?: DateRange
+  currentLevel: number
 }
 
-export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) => {
 
-  const FORMAT_DATE_INITIAL = 'dd/MM/yyyy';
+export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, currentLevel }: Props) => {
+  const moneyType = inSus ? "Dolares" : "Bolivianos";
+  const FORMAT_DATE_INITIAL = "dd/MM/yyyy";
   const messageDate =
     dateRange?.from &&
     (dateRange?.to
@@ -117,120 +120,154 @@ export const EstadoResultadosTemplate = ({ records, dateRange, inSus }: Props) =
       )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
 
-  const moneyType = inSus ? "Dolares" : "Bolivianos";
-
-  const gastoType = inSus ? "amountSus" : "amount";
-  const taxOnProfits = inSus ? "taxOnProfitsSus" : "taxOnProfits"
-
 
   return (
     <Document>
-      <Page style={styles.page} orientation="landscape">
+      <Page size="LETTER" style={styles.page}>
+        {/* primera pagina */}
         <View>
-          <Image
-            style={styles.imageOutOfBounds}
-            src={REPORTS_LOGO_URL}
-          />
-        </View>
-
-        <View style={[styles.header, { paddingBottom: 10 }]}>
-          <Text style={[styles.thCell, { fontSize: 18, }]}>Estado de Resultados</Text>
-          <Text style={[styles.thCell]}>{messageDate}</Text>
-          <Text style={[styles.thCell]}>(Expresado en {moneyType})</Text>
-        </View>
-
-        <View style={[styles.table, styles.col100]}>
-          <View style={styles.col50}>
-            <View style={[styles.trCell]}>
-              <Text style={[styles.thCell, styles.col20]}>Cuenta</Text>
-              <Text style={[styles.thCell, styles.col60]}>Gastos</Text>
-              <Text style={[styles.thCell, styles.col20, { textAlign: "center" }]}>Monto</Text>
-            </View>
-            <View style={{ textAlign: "left" }}>
-              {
-                records?.expenses.map((entry, index) => {
-                  return (
-                    <View style={styles.trCell} key={index}>
-                      <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
-                      <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                      <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[gastoType])}</Text>
-                    </View>
-                  )
-                })
-              }
-            </View>
-          </View>
-
-          <View style={styles.col50}>
-            <View style={[styles.trCell]}>
-              <Text style={[styles.thCell, styles.col20]}>Cuenta</Text>
-              <Text style={[styles.thCell, styles.col60]}>Ingresos</Text>
-              <Text style={[styles.thCell, styles.col20, { textAlign: "center" }]}>Monto</Text>
-            </View>
-            <View style={{ textAlign: "left" }}>
-              {
-                records?.income.map((entry, index) => {
-                  return (
-                    <View style={styles.trCell} key={index}>
-                      <Text style={[styles.tdCell, styles.col20]}>{entry.account}</Text>
-                      <Text style={[styles.tdCell, styles.col60]}>{entry.description}</Text>
-                      <Text style={[styles.tdCell, styles.col20, { textAlign: "right" }]}>{formatNumber(entry[gastoType])}</Text>
-                    </View>
-                  )
-                })
-              }
-            </View>
+          <Image style={styles.imageOutOfBounds} src={REPORTS_LOGO_URL} />
+          <View style={{ textAlign: "center" }}>
+            <Text style={[styles.txtHeader, { fontSize: 14, marginTop: 25 }]}>ESTADO DE RESULTADOS</Text>
+            <Text style={styles.txtHeader}>{messageDate}</Text>
+            <Text style={[styles.txtHeader, { marginBottom: 8 }]}>
+              (Expresado en {moneyType})
+            </Text>
           </View>
         </View>
 
-        <View style={[styles.trCell, styles.table, { paddingTop: 4 }]}>
-          <View style={[styles.trCell, styles.col50]}>
-            <Text style={styles.col20} />
-            <Text style={[styles.thCell, styles.col60]}>Total Gastos</Text>
-            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(records.totalExpense)}</Text>
+        {/* Contenido principal paginado */}
+        <View style={styles.border}>
+
+          <View style={[styles.trHead, styles.border_b, { fontSize: 8, backgroundColor: '#E0E0E0' }]}>
+            <View style={[styles.col15, styles.thCell, styles.border_r]}><Text>Cuenta</Text></View>
+            <View style={[styles.col40, styles.thCell, styles.border_r]}><Text>Descripcion</Text></View>
+            <View style={[styles.col15, styles.thCell, styles.border_r, styles.txtCenter]}><Text>Imp. Niv. {currentLevel}</Text></View>
+            <View style={[styles.col15, styles.thCell, styles.border_r, styles.txtCenter]}><Text>{(currentLevel - 1) <= 0 ? " " : `Imp. Niv. ${currentLevel - 1}`}</Text></View>
+            <View style={[styles.col15, styles.thCell, styles.txtCenter]}><Text>{(currentLevel - 2) <= 0 ? " " : `Imp. Niv. ${currentLevel - 2}`}</Text></View>
           </View>
-          <View style={[styles.trCell, styles.col50]}>
-            <Text style={styles.col20} />
-            <Text style={[styles.thCell, styles.col60]}>Total Ingresos</Text>
-            <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(records.totalIncome)}</Text>
+
+          {records.items.map((item, index) => renderItem({
+            managementResult: records.managementResult,
+            periodUtility: records.periodUtility,
+            taxOnProfits: records.taxOnProfits,
+            totalExpense: records.totalExpense,
+            totalIncome: records.totalIncome
+          }, currentLevel, item))}
+
+          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>PERIODO DE UTILIDAD</Text>
+            <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.periodUtility)}</Text>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <View style={styles.col15}><Text>{" "}</Text></View>
+          </View>
+          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>IMPUESTOS SOBRE BENEFICIOS</Text>
+            <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.taxOnProfits)}</Text>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <View style={styles.col15}><Text>{" "}</Text></View>
+          </View>
+          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>RESULTADOS DE LA GESTION</Text>
+            <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.managementResult)}</Text>
+            <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+            <View style={styles.col15}><Text>{" "}</Text></View>
           </View>
         </View>
 
-        <View style={[styles.table, styles.trCell, { paddingTop: 10, justifyContent: "flex-end" }]}>
-          <View style={styles.col50} />
-          <View style={[styles.col50]}>
-            <View style={[styles.trCell]}>
-              <Text style={styles.col20} />
-              <Text style={[styles.thCell, styles.col60]}>Utilidad antes de impuestos</Text>
-              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber((records.periodUtility))}</Text>
-            </View>
-            <View style={[styles.trCell]}>
-              <Text style={styles.col20} />
-              <Text style={[styles.thCell, styles.col60]}>Impuestos a las Utilidades</Text>
-              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>{formatNumber(Number(records[taxOnProfits]))}</Text>
-            </View>
-            <View style={[styles.trCell]}>
-              <Text style={styles.col20} />
-              <Text style={[styles.thCell, styles.col60]}>Resultado de la Gestión</Text>
-              <Text style={[styles.thCell, styles.col20, { textAlign: "right" }]}>
-                {formatNumber(records.managementResult)}
-              </Text>
-            </View>
+
+        {/* seccion de la firma */}
+        <View style={[styles.trFooter]}>
+          <View style={[styles.tfooter, { paddingTop: '2cm', alignItems: "center" }]}>
+            <Text style={{ paddingBottom: 3 }}>_______________________</Text>
+            <Text style={styles.txtCenter}>CONTADOR</Text>
+          </View>
+          <View style={[styles.tfooter, { paddingTop: '2cm', alignItems: "center" }]}>
+            <Text style={{ paddingBottom: 3 }}>_______________________</Text>
+            <Text style={styles.txtCenter}>GERENTE</Text>
           </View>
         </View>
 
-        <View style={[styles.trCell]}>
-          <View style={[styles.thCell, styles.col50, { paddingTop: '2cm', alignItems: "center" }]}>
-            <Text style={{ paddingBottom: 3 }}>___________________________</Text>
-            <Text style={{ textAlign: "center" }}>CONTADOR</Text>
-          </View>
-          <View style={[styles.thCell, styles.col50, { paddingTop: '2cm', alignItems: "center" }]}>
-            <Text style={{ paddingBottom: 3 }}>___________________________</Text>
-            <Text style={{ textAlign: "center" }}>GERENTE</Text>
-          </View>
-        </View>
-
+        {/* Paginación */}
+        <Text
+          style={styles.pageNumber}
+          render={({ pageNumber, totalPages }) => (
+            `Página ${pageNumber} de ${totalPages}`
+          )}
+        />
       </Page>
-    </Document>
+
+    </Document >
   )
 }
+
+
+
+const renderItem = (results: StatementIncomeResultsType, currentLevel: number, item: ItemStatementIncomeType, level = 1) => {
+  const fontWeight = currentLevel === level ? "Helvetica" : "Helvetica-Bold"
+  return (
+    <View key={item.code}>
+      <View style={[styles.trCell, styles.border_b_td]}>
+        <View style={[styles.col15, styles.border_r_td]}>
+          <Text style={[styles.tdCell]}>{item.code}</Text>
+        </View>
+        <View style={[styles.col40, styles.border_r_td]}>
+          <Text style={[styles.tdCell, { paddingLeft: level * 10, fontFamily: fontWeight }]}>{item.description}</Text>
+        </View>
+        <View style={[styles.col15, styles.border_r_td]}>
+          <Text style={[styles.tdCell, styles.txtRight]}>
+            {currentLevel === item.level ? formatNumber(item.sld) : " "}
+          </Text>
+        </View>
+        <View style={[styles.col15, styles.border_r_td]}>
+          <Text style={[styles.tdCell, styles.txtRight, { fontFamily: "Helvetica-Bold" }]}>
+            {currentLevel - 1 === item.level ? formatNumber(item.sld) : " "}
+          </Text>
+        </View>
+        <View style={styles.col15}>
+          <Text style={[styles.tdCell, styles.txtRight, { fontFamily: "Helvetica-Bold" }]}>
+            {currentLevel - 2 === item.level ? formatNumber(item.sld) : " "}
+          </Text>
+        </View>
+      </View>
+
+      {
+        item.itemsChild.length > 0 && (
+          <View>
+            {item.itemsChild.map((child) => renderItem({
+              managementResult: results.managementResult,
+              periodUtility: results.periodUtility,
+              taxOnProfits: results.taxOnProfits,
+              totalExpense: results.totalExpense,
+              totalIncome: results.totalIncome
+            }, currentLevel, child, level + 1))}
+          </View>
+        )
+      }
+
+      {/* Resultados --> INGRESOS */}
+      {level === 1 && item.description === "INGRESOS" && (
+        <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+          <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+          <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>TOTAL INGRESOS</Text>
+          <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(results.totalIncome)}</Text>
+          <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+          <View style={styles.col15}><Text>{" "}</Text></View>
+        </View>
+      )}
+      {/* Resultados --> GASTOS Y COSTOS */}
+      {level === 1 && item.description === "GASTOS Y COSTOS" && (
+        <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+          <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+          <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>TOTAL GASTOS Y COSTOS</Text>
+          <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(results.totalExpense)}</Text>
+          <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
+          <View style={styles.col15}><Text>{" "}</Text></View>
+        </View>
+      )}
+    </View >
+  );
+};

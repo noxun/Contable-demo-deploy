@@ -5,18 +5,26 @@ import { ProcedureDataset } from "@/lib/trazoTypes";
 import { columns } from "./subdata-columns";
 import ButtonRegisterVoucherByDoc from "./ButtonRegisterVoucherByDoc";
 import AddPayrollSubDataForm from "./AddPayrollSubDataForm";
+import SendAllSubDatasButton from "./SendAllSubDatasButton";
 
 type ProcedureTablesListProps = {
   procedureDataset: ProcedureDataset;
+  totalProformaBs: string;
   value: string;
 };
 
 export default function ProcedureTablesList({
   procedureDataset,
-  value,
+  value, //interncode
+  totalProformaBs,
 }: ProcedureTablesListProps) {
   return (
     <div className="space-y-4">
+      <SendAllSubDatasButton
+        totalProformaBs={totalProformaBs}
+        procedureDataset={procedureDataset}
+        internCode={value}
+      />
       <section>
         <AddPayrollSubDataForm
           urlLabel="atributos"
@@ -44,7 +52,7 @@ export default function ProcedureTablesList({
               "b-OtrosGastosDeImportacion/ExportacionSubDatas"
             ] ?? []
           }
-          columns={columns(procedureDataset.procedureId , "botrosgastos")}
+          columns={columns(procedureDataset.procedureId, "botrosgastos")}
         />
       </section>
       <section>
@@ -56,7 +64,10 @@ export default function ProcedureTablesList({
         <div>c|Gastos de Operaciones</div>
         <DataTable
           data={procedureDataset["c-GastosDeOperacionesSubDatas"] ?? []}
-          columns={columns(procedureDataset.procedureId , "cgastosdeoperaciones")}
+          columns={columns(
+            procedureDataset.procedureId,
+            "cgastosdeoperaciones"
+          )}
         />
         {procedureDataset["c-GastosDeOperacionesSubDatas"] !== undefined &&
         procedureDataset["c-GastosDeOperacionesSubDatas"].length > 0 ? (
@@ -79,7 +90,10 @@ export default function ProcedureTablesList({
         <div>d|Honorarios Profesionales</div>
         <DataTable
           data={procedureDataset["d-HonorariosProfesionalesSubDatas"] ?? []}
-          columns={columns(procedureDataset.procedureId , "dhonorariosProfesionales")}
+          columns={columns(
+            procedureDataset.procedureId,
+            "dhonorariosProfesionales"
+          )}
         />
         {procedureDataset["d-HonorariosProfesionalesSubDatas"] !== undefined &&
         procedureDataset["d-HonorariosProfesionalesSubDatas"].length > 0 ? (
