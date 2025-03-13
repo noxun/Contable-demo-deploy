@@ -183,19 +183,30 @@ export default function FormEditVoucher({
 
   useEffect(() => {
     let totalDebitBs = voucherItems.reduce((total, currentItem) => {
-      return total + (currentItem?.debitBs ?? 0);
+      // Convert string to number if it's a string, handle empty values
+      const debitValue = typeof currentItem?.debitBs === 'string' 
+        ? parseFloat(currentItem?.debitBs) || 0 
+        : currentItem?.debitBs ?? 0;
+      
+      return total + debitValue;
     }, 0);
+    
     let totalAssetBs = voucherItems.reduce((total, currentItem) => {
-      return total + (currentItem?.assetBs ?? 0);
+      // Convert string to number if it's a string, handle empty values
+      const assetValue = typeof currentItem?.assetBs === 'string' 
+        ? parseFloat(currentItem?.assetBs) || 0 
+        : currentItem?.assetBs ?? 0;
+      
+      return total + assetValue;
     }, 0);
-
-    console.log(typeof totalDebitBs, typeof totalAssetBs);
+  
+    console.log(typeof totalDebitBs, typeof totalAssetBs); // Should be 'number' for both
     setTotalDebitBs(totalDebitBs);
     setTotalAssetBs(totalAssetBs);
-
+  
+    // Compare with precision to avoid floating point issues
     setEditionEnabled(
-      Number(Number(totalDebitBs).toFixed(2)) ===
-        Number(Number(totalAssetBs).toFixed(2))
+      Number(totalDebitBs.toFixed(2)) === Number(totalAssetBs.toFixed(2))
     );
   }, [voucherItems]);
 
