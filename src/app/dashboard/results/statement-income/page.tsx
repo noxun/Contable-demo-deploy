@@ -171,8 +171,8 @@ export default function StatementIncomePage() {
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
-  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
-  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(1)
 
   const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
     queryKey: ["AllStatementIncome"],

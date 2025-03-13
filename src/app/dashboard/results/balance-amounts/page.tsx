@@ -86,7 +86,7 @@ export default function BalanceAmountsPage() {
 
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
-  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(1)
 
   const [isLoadingBalanceAmounts, setIsLoadingBalanceAmounts] = useState(false)
 

@@ -53,8 +53,8 @@ export default function BalanceGeneralPage() {
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingBalanceGeneral, setIsLoadingBalanceGeneral] = useState(false)
-  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
-  const [selectedLevel, setSelectedLevel] = useState<LevelData>(2);
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
+  const [selectedLevel, setSelectedLevel] = useState<LevelData>(1);
 
 
   const { data: dataBalanceGeneral, refetch: refetchBalanceGeneral } = useQuery({

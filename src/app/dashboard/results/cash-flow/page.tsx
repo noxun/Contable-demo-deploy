@@ -193,7 +193,7 @@ export default function ClashFlowPage() {
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange)
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingCashFlow, setIsLoadingCashFlow] = useState(false)
-  const [pendingLevel, setPendingLevel] = useState<LevelData>(2)
+  const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
     queryKey: ["AllCashFlow"],
