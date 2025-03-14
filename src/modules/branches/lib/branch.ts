@@ -4,8 +4,11 @@ import { branchId } from "@branch/types/branch.d";
 export async function deleteBranchAPI(branchId: branchId, token: string) {
   try {
     const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Sucursal/${branchId.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Sucursal/`,
       {
+        params: {
+          sucursalId: branchId.id,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
