@@ -109,7 +109,7 @@ export type TypeCompany = {
 };
 
 export type Branch = {
-  id: number;
+  id?: number;
   nameSucutsal: string;
   address: string;
   phone: string;
