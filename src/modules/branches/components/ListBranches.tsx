@@ -10,11 +10,9 @@ import { Branch } from "@/lib/types";
 import { useDialogState } from "@branch/hooks/useDialogState";
 import { DeleteBranch } from "./DeleteBranch";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
-import { MoreHorizontal } from "lucide-react"
-
-
+import { MoreHorizontal } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -25,11 +23,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { ColumnDef } from "@tanstack/react-table";
-
+import DialogEditBranch from "./DialogEditBranch";
 
 export default function ListBranches() {
-
-  const { dialogData, closeDialog, openDialog} = useDialogState<Branch>();
+  const { dialogData, closeDialog, openDialog } = useDialogState<Branch>();
 
   const { token } = useToken();
 
@@ -39,8 +36,8 @@ export default function ListBranches() {
       header: "Nombre Sucursal",
     },
     {
-      accessorKey:"address",
-      header: "Direccion"
+      accessorKey: "address",
+      header: "Direccion",
     },
     {
       accessorKey: "email",
@@ -52,38 +49,38 @@ export default function ListBranches() {
     },
     {
       accessorKey: "phone",
-      header: "Telefono"
+      header: "Telefono",
     },
     {
       accessorKey: "status",
-      header: "Estado"
+      header: "Estado",
     },
     {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const branch = row.original
+        const branch = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menú</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => openDialog('edit', branch)}>
-                Editar
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openDialog('delete', branch)}>
-                Eliminar
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      }
-    }
+          <div className="flex items-center justify-end">
+            <DialogEditBranch branch={branch} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menú</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => openDialog("delete", branch)}>
+                  Eliminar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
+    },
   ];
 
   const {
@@ -95,23 +92,19 @@ export default function ListBranches() {
     queryFn: fetchBranches,
   });
 
-
-
   if (branches === undefined || isLoading || isPending)
     return <div>Cargando...</div>;
 
   return (
     <div>
       <DataTable data={branches} columns={columns} />
-      {
-        dialogData.branch && token && (
-          <DeleteBranch
-            branchToDelete={dialogData.branch as Branch}
-            onCloseDialog={closeDialog}
-            token={token as string}
-          />
-        )
-      }
+      {dialogData.branch && token && (
+        <DeleteBranch
+          branchToDelete={dialogData.branch as Branch}
+          onCloseDialog={closeDialog}
+          token={token as string}
+        />
+      )}
     </div>
   );
 }
