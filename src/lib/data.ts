@@ -63,6 +63,7 @@ import {
 } from "@/modules/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
 import { LevelData } from "@/modules/results/types/types";
+import { BranchEditForm } from "@/modules/branches/components/FormEditBranch";
 
 export function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -352,6 +353,16 @@ export async function createNewBranch(data: Branch) {
   }
   setAuthToken(token);
   const response = await api.post(`/api/Sucursal`, data);
+  return response.data;
+}
+
+export async function updateBranch(data:BranchEditForm){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Sucursal`, data);
   return response.data;
 }
 
