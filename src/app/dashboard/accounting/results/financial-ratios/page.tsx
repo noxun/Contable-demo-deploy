@@ -231,7 +231,7 @@ export default function FinancialRatiosPage() {
           items={[
             {
               label: "Panel",
-              href: "/dashboard",
+              href: "/dashboard/accounting",
             },
             {
               label: "Result",
@@ -239,7 +239,7 @@ export default function FinancialRatiosPage() {
             },
             {
               label: "Ratios Financieros",
-              href: "/dashboard/results/financial-ratios",
+              href: "/dashboard/accounting/results/financial-ratios",
             },
           ]}
         />

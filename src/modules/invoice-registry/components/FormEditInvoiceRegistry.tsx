@@ -97,10 +97,10 @@ export default function FormEditInvoiceRegistry({
 
       if(invoiceEditForm.getValues("purchaseType") === "Compras"){
         queryClient.invalidateQueries({queryKey:["invoiceRegistry", 0]})
-        router.push("/dashboard/invoice-registry/purchases")
+        router.push("/dashboard/accounting/invoice-registry/purchases")
       }else{
         queryClient.invalidateQueries({queryKey:["invoiceRegistry", 1]})
-        router.push("/dashboard/invoice-registry/sells")
+        router.push("/dashboard/accounting/invoice-registry/sells")
       }
 
     },

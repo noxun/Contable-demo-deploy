@@ -8,7 +8,7 @@ export default function IncomesPage() {
     <section className="px-6">
       <div className="flex justify-between mb-2">
         <h2 className="text-lg font-semibold">Ingresos</h2>
-        <Link href="/dashboard/income/new">
+        <Link href="/dashboard/accounting/income/new">
           <Button>Nuevo Ingreso</Button>
         </Link>
       </div>

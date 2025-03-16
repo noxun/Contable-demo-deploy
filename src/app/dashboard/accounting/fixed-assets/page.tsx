@@ -133,7 +133,7 @@ function FixedAssetPage() {
               aria-label="Actualizar"
               title="Actualizar"
               onClick={() => {
-                router.push(`/dashboard/fixed-assets/new?IdAsset=${assetId}`);
+                router.push(`/dashboard/accounting/fixed-assets/new?IdAsset=${assetId}`);
               }}
             >
               <FilePenLineIcon />
@@ -154,7 +154,7 @@ function FixedAssetPage() {
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Activos Fijos</h1>
         <Button asChild>
-          <Link href="/dashboard/fixed-assets/new">Nuevo activo fijo</Link>
+          <Link href="/dashboard/accounting/fixed-assets/new">Nuevo activo fijo</Link>
         </Button>
       </div>
       <div className="flex items-end gap-4 mt-3 mb-5">

@@ -78,7 +78,7 @@ export default function HeritageEvaluationPage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard"
+            href: "/dashboard/accounting"
           },
           {
             label: "Reportes",
@@ -86,7 +86,7 @@ export default function HeritageEvaluationPage() {
           },
           {
             label: "Evolucion de patrimonio",
-            href: "/dashboard/results/heritage-evaluation"
+            href: "/dashboard/accounting/results/heritage-evaluation"
           }
         ]}
       />

@@ -230,7 +230,7 @@ export const FormConceptFolder = (props: Props) => {
     onSuccess: () => {
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", "1"] });
-      router.push(`/dashboard/folders/${numRef}`); //de momento, luego pasar el route
+      router.push(`/dashboard/accounting/folders/${numRef}`); //de momento, luego pasar el route
     },
     onError: (error) => {
       console.log(error);

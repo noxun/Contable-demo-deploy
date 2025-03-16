@@ -290,7 +290,7 @@ export default function StatementIncomePage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard"
+            href: "/dashboard/accounting"
           },
           {
             label: "Reportes",
@@ -298,7 +298,7 @@ export default function StatementIncomePage() {
           },
           {
             label: "Estado de resultados",
-            href: "/dashboard/results/statement-income"
+            href: "/dashboard/accounting/results/statement-income"
           }
         ]}
       />

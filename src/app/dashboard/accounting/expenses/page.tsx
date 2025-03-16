@@ -8,7 +8,7 @@ export default function ExpensesPage() {
     <section className="px-6">
       <div className="flex justify-between mb-2">
         <h2 className="text-lg font-semibold">Egresos</h2>
-        <Link href="/dashboard/expenses/new">
+        <Link href="/dashboard/accounting/expenses/new">
           <Button>Nuevo Egreso</Button>
         </Link>
       </div>

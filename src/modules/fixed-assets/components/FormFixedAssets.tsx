@@ -58,7 +58,7 @@ export const FormFixedAssets = ({ defaultValueForm, mode, idAsset }: Props) => {
     },
     onSuccess: () => {
       toast.success("Activo fijo editado correctamente");
-      router.replace("/dashboard/fixed-assets/new");
+      router.replace("/dashboard/accounting/fixed-assets/new");
       queryClient.invalidateQueries({ queryKey: ["fixedAsset"] });
       queryClient.invalidateQueries({ queryKey: ["fixedAssets"] });
     },

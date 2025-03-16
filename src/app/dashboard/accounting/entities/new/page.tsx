@@ -91,7 +91,7 @@ export default function NewEntityPage() {
     onSuccess: () => {
       toast.success("Entidad creada exitosamente");
       queryClient.invalidateQueries({ queryKey: ["Entities"] }); // Actualiza la key según sea necesario
-      router.push("/dashboard/entities"); // Actualiza la ruta según sea necesario
+      router.push("/dashboard/accounting/entities"); // Actualiza la ruta según sea necesario
     },
     onError: (error) => {
       console.log(error);

@@ -10,7 +10,7 @@ export default function InvoiceRegistryPage() {
     <main className="overflow-x-visible">
       {/* <div className="flex gap-6">
         <Button asChild>
-          <Link href="/dashboard/invoice-registry/new">Nueva Registro</Link>
+          <Link href="/dashboard/accounting/invoice-registry/new">Nueva Registro</Link>
         </Button>
         <DownloadMassPurchaseFormButton/>
       </div>

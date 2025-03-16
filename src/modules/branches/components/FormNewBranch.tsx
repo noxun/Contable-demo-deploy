@@ -30,7 +30,7 @@ export default function FormNewBranch() {
     onSuccess: () => {
       toast.success("Sucursal Creada correctamente");
       queryClient.invalidateQueries({ queryKey: ["allBranches"] });
-      router.push(`/dashboard/branches`);
+      router.push(`/dashboard/accounting/branches`);
     },
     onError: (error) => {
       console.log(error);

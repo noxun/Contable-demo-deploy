@@ -118,7 +118,7 @@ export default function FolderPage({ params }: Props) {
               />
             </>
           ) : null}
-          <Link href={`/dashboard/folders/${params.numRef}/register-payment`}>
+          <Link href={`/dashboard/accounting/folders/${params.numRef}/register-payment`}>
             <Button>
               Registrar Pagos{" "}
               <SquareArrowOutUpRight className="ml-2" size={15} />

@@ -72,9 +72,6 @@ export default function LoginForm() {
     },
   });
 
-  
-
-
   return (
     <Form {...loginForm}>
       <form
@@ -111,10 +108,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button
-          disabled={loginMutation.isPending}
-          type="submit"
-        >
+        <Button disabled={loginMutation.isPending} type="submit">
           Ingresar
         </Button>
       </form>

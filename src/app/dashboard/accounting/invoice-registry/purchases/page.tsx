@@ -12,7 +12,7 @@ export default function InvoiceRegistryPurchasesPage() {
       <h1>Registro de Compras</h1>
       <div className="flex gap-6">
         <Button asChild>
-          <Link href="/dashboard/invoice-registry/new">Nuevo Registro</Link>
+          <Link href="/dashboard/accounting/invoice-registry/new">Nuevo Registro</Link>
         </Button>
         <DownloadMassPurchaseFormButton type={purchase}/> 
         <ImportInvoiceRegistryDialog/>

@@ -19,7 +19,7 @@ export default function BanksPage() {
           <Link href="/files/example_extract_bank.xlsx" download prefetch={false}>
             <Button>Descargar Plantilla Extracto</Button>
           </Link>
-          {/* <Link href="/dashboard/banks/new">
+          {/* <Link href="/dashboard/accounting/banks/new">
             <Button>Nuevo Banco</Button>
           </Link> */}
         </div>

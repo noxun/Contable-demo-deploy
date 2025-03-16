@@ -277,7 +277,7 @@ export default function ClashFlowPage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard"
+            href: "/dashboard/accounting"
           },
           {
             label: "Reportes",
@@ -285,7 +285,7 @@ export default function ClashFlowPage() {
           },
           {
             label: "Flujo de efectivo",
-            href: "/dashboard/results/cash-flow"
+            href: "/dashboard/accounting/results/cash-flow"
           }
         ]}
       />

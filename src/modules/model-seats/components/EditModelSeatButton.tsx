@@ -12,7 +12,7 @@ export default function EditModelSeatButton({
 }: EditModelSeatButtonProps) {
   return (
     <Button asChild size="icon" variant="outline">
-      <Link href={`/dashboard/model-seats/${modelSeat.id}/edit`}>
+      <Link href={`/dashboard/accounting/model-seats/${modelSeat.id}/edit`}>
         <Pencil className="size-4" />
       </Link>
     </Button>

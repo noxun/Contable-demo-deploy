@@ -232,7 +232,7 @@ function SalariesPayrollsPage() {
               aria-label="Ver Pagos"
               title="Ver Pagos"
             >
-              <Link href={`/dashboard/salaries-payrolls/${row.original.id}/salaries`}>
+              <Link href={`/dashboard/accounting/salaries-payrolls/${row.original.id}/salaries`}>
                 <EyeIcon />
               </Link>
             </Button> */}

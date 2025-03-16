@@ -91,7 +91,7 @@ export default function NewConceptPage() {
     onSuccess: () => {
       toast.success("Concepto creado exitosamente");
       queryClient.invalidateQueries({queryKey:["Concepts"]});
-      router.push("/dashboard/concepts");
+      router.push("/dashboard/accounting/concepts");
     },
     onError: (error) => {
       console.log(error);

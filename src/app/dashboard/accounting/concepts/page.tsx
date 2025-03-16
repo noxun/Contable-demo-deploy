@@ -6,7 +6,7 @@ export default function ConceptsPage() {
   return (
     <main>
       <Button asChild className="mb-5">
-        <Link href="/dashboard/concepts/new">Nuevo Concepto</Link>
+        <Link href="/dashboard/accounting/concepts/new">Nuevo Concepto</Link>
       </Button>
       <ListConcepts/>
     </main>

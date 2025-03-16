@@ -8,7 +8,7 @@ export default function BranchesPage() {
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Sucursales</h1>
         <Button asChild>
-          <Link href="/dashboard/branches/new">Crear Sucursales</Link>
+          <Link href="/dashboard/accounting/branches/new">Crear Sucursales</Link>
         </Button>
       </div>
       <ListBranches />

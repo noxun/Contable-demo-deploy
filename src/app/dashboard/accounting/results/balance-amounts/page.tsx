@@ -231,7 +231,7 @@ export default function BalanceAmountsPage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard"
+            href: "/dashboard/accounting"
           },
           {
             label: "Reportes",
@@ -239,7 +239,7 @@ export default function BalanceAmountsPage() {
           },
           {
             label: "Balance de sumas y saldos",
-            href: "/dashboard/results/balance-amounts"
+            href: "/dashboard/accounting/results/balance-amounts"
           }
         ]}
       />

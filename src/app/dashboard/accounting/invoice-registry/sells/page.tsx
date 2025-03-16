@@ -12,7 +12,7 @@ export default function InvoiceRegistrySellsPage() {
       <h1>Registro de Ventas</h1>
       <div className="flex gap-6">
         <Button asChild>
-          <Link href="/dashboard/invoice-registry/new">Nueva Registro</Link>
+          <Link href="/dashboard/accounting/invoice-registry/new">Nueva Registro</Link>
         </Button>
         <DownloadMassPurchaseFormButton type={sells}/>
         <ImportInvoiceRegistryDialog/>

@@ -128,7 +128,7 @@ export default function FormEditVoucher({
       });
       toast.success("Voucher Editado Correctamente");
       if (pathname.endsWith("edit")) {
-        router.push("/dashboard/transactions");
+        router.push("/dashboard/accounting/transactions");
       }
     },
     onError: (error) => {

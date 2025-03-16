@@ -34,7 +34,7 @@ function Users() {
   return (
     <section className="flex flex-col justify-between mb-2 gap-2 px-6">
       <h2 className="text-start text-lg font-semibold">Usuarios</h2>
-      <Link href="/dashboard/users/new">
+      <Link href="/dashboard/accounting/users/new">
         <Button>Nuevo Usuario</Button>
       </Link>
       <TableUser data={data?.data!} />

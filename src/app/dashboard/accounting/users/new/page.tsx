@@ -73,7 +73,7 @@ export default function Register() {
     onSuccess: () => {
       toast.success("Usuario registrado correctamente");
       queryClient.invalidateQueries({ queryKey: ["User"] });
-      router.push("/dashboard/users");
+      router.push("/dashboard/accounting/users");
     },
   });
 

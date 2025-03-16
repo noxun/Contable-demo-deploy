@@ -416,7 +416,7 @@ export default function BiggerBookPage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard"
+            href: "/dashboard/accounting"
           },
           {
             label: "Reportes",
@@ -424,7 +424,7 @@ export default function BiggerBookPage() {
           },
           {
             label: "Libro Mayor",
-            href: "/dashboard/results/bigger-book"
+            href: "/dashboard/accounting/results/bigger-book"
           }
         ]}
       />

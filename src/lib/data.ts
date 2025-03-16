@@ -43,7 +43,7 @@ import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
-import { RegisterForm } from "@/app/dashboard/users/new/page";
+import { RegisterForm } from "@/app/dashboard/accounting/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";

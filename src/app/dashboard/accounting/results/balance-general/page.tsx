@@ -153,7 +153,7 @@ export default function BalanceGeneralPage() {
           items={[
             {
               label: "Panel",
-              href: "/dashboard"
+              href: "/dashboard/accounting"
             },
             {
               label: "Reportes",
@@ -161,7 +161,7 @@ export default function BalanceGeneralPage() {
             },
             {
               label: "Balance General",
-              href: "/dashboard/results/balance-general"
+              href: "/dashboard/accounting/results/balance-general"
             }
           ]}
         />

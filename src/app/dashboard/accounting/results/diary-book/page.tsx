@@ -48,7 +48,7 @@ export default function DiaryBookPage() {
         items={[
           {
             label: "Panel",
-            href: "/dashboard",
+            href: "/dashboard/accounting",
           },
           {
             label: "Result",
@@ -56,7 +56,7 @@ export default function DiaryBookPage() {
           },
           {
             label: "Libro Diario",
-            href: "/dashboard/results/diary-book",
+            href: "/dashboard/accounting/results/diary-book",
           },
         ]}
       />

@@ -96,7 +96,7 @@ export default function FormEditConcept({ concept }: FormEditProps) {
     onSuccess: () => {
       toast.success("Concepto Editado Correctamente");
       queryClient.invalidateQueries({ queryKey: ["Concepts"] });
-      router.push("/dashboard/concepts");
+      router.push("/dashboard/accounting/concepts");
     },
   });
 
