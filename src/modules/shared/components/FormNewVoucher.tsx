@@ -371,7 +371,7 @@ export default function FormNewVoucher({
       id: z.number().optional(),
       num: z.number().optional(),
       sucursalId: z.string().optional(),
-      costCenterId: z.string().optional(),
+      costCenterId: z.coerce.number().nullable().optional(),
       voucherDate: z
         .string({
           required_error: "Fecha requerida.",
@@ -404,25 +404,25 @@ export default function FormNewVoucher({
   const defaultValues = {
     exchangeRate: 6.97,
     coin: "BOB" as "USD" | "BOB",
-    checkNum: "",
+    checkNum: "0",
     gloss: gloss ?? "",
     bankId: bankId ?? null,
     bankItemRef: bankExtractId, //ironico
-    costCenterId: "",
-    sucursalId: "",
+    costCenterId: null,
+    sucursalId: "1",
   };
 
   if (voucherFromRegisterByDocResponse) {
     voucherDefaultValues = {
       exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
       coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
-      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "",
-      gloss: voucherFromRegisterByDocResponse.gloss ?? "",
+      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "0",
+      gloss: voucherFromRegisterByDocResponse.gloss ?? "0",
       bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
       costCenterId:
-        voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
-      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "",
+        voucherFromRegisterByDocResponse.costCenterId ?? null,
+      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "1",
       hojaDeRuta: voucherFromRegisterByDocResponse.hojaDeRuta ?? "",
     };
   } else {
@@ -645,7 +645,7 @@ export default function FormNewVoucher({
             />
           </div>
           <div className="flex gap-2 items-center mb-2">
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="checkNum"
               render={({ field }) => (
@@ -657,7 +657,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             {/* <FormField
               control={voucherForm.control}
               name="bankId"
@@ -688,7 +688,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             /> */}
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="sucursalId"
               render={({ field }) => (
@@ -717,8 +717,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
+            /> */}
+            {/* <FormField
               control={voucherForm.control}
               name="costCenterId"
               render={({ field }) => (
@@ -749,8 +749,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <div
+            /> */}
+            {/* <div
               className={`space-y-2 ${
                 voucherFromRegisterByDocResponse ? "hidden" : ""
               }`}
@@ -831,7 +831,7 @@ export default function FormNewVoucher({
                   </FormItem>
                 )}
               />
-            ) : null}
+            ) : null} */}
             {/* <FormField
               control={voucherForm.control}
               name="branch"
