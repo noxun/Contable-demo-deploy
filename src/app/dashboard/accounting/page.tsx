@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 export default function AccountingInitialPage() {
   return (
     <Card>
-      Bienvenido al Sistema Contable TradeCruz
+      Bienvenido al Sistema Contable Noxun
     </Card>
   )
 }
