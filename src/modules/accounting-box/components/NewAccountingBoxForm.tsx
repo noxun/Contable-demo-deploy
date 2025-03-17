@@ -250,7 +250,7 @@ export default function NewAccountingBoxForm({
               name="costCenterId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gestor(opcional)</FormLabel>
+                  <FormLabel>Encargado(opcional)</FormLabel>
                   <CustomSelect
                     options={costCenter}
                     getOptionLabel={(costCenter) => costCenter.name}
@@ -259,7 +259,7 @@ export default function NewAccountingBoxForm({
                       field.onChange(value?.id.toString());
                     }}
                   />
-                  <FormDescription>Gestor del centro de costos</FormDescription>
+                  <FormDescription>Encargado</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
