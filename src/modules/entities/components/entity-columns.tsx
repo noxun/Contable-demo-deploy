@@ -73,7 +73,7 @@ export const columns: ColumnDef<Entity>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
               <DropdownMenuItem asChild>
-                <Link href={`/dashboard/entities/${entity.id}/edit`}>
+                <Link href={`/dashboard/accounting/entities/${entity.id}/edit`}>
                   Editar
                 </Link>
               </DropdownMenuItem>

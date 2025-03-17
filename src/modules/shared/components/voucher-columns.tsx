@@ -71,7 +71,7 @@ export function columns(
               voucherType={voucherType}
             />
             <Button asChild variant="outline" size="icon">
-              <Link href={`/dashboard/${voucherTypeRoute}/${voucher.id}/edit`}>
+              <Link href={`/dashboard/accounting/${voucherTypeRoute}/${voucher.id}/edit`}>
                 <Pencil className="size-4" />
               </Link>
             </Button>

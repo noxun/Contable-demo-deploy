@@ -288,8 +288,8 @@ export default function FormNewVoucher({
       console.log(data);
       toast.success("Voucher Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["Vouchers", type] });
-      //router.push(`/dashboard/${routeType}`); //de momento, luego pasar el route
-      // router.push("/dashboard/transactions/new");
+      //router.push(`/dashboard/accounting/${routeType}`); //de momento, luego pasar el route
+      // router.push("/dashboard/accounting/transactions/new");
 
       if (bankId && bankExtractId) {
         changeBankExtractStatusMutation.mutate(bankExtractId);

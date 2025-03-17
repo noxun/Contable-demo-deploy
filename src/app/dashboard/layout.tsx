@@ -49,7 +49,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <Button asChild variant="outline" size="icon">
-            <Link className="sm:ml-auto" href="/dashboard/config">
+            <Link className="sm:ml-auto" href="/dashboard/accounting/config">
               <Bolt className="size-4" />
             </Link>
           </Button>

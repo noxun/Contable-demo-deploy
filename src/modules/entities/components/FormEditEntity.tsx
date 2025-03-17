@@ -99,7 +99,7 @@ export default function FormEditEntity({ entity }: { entity: Entity }) {
     onSuccess: () => {
       toast.success("Entidad editada exitosamente");
       queryClient.invalidateQueries({ queryKey: ["Entities"] }); // Actualiza la key según sea necesario
-      router.push("/dashboard/entities"); // Actualiza la ruta según sea necesario
+      router.push("/dashboard/accounting/entities"); // Actualiza la ruta según sea necesario
     },
     onError: (error) => {
       console.log(error);

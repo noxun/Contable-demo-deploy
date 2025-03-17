@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
-import { AccountData } from "@/app/dashboard/results/bigger-book/page";
+import { AccountData } from "@/app/dashboard/accounting/results/bigger-book/page";
 import {
   Document,
   Image,

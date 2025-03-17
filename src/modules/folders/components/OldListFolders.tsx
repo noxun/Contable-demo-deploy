@@ -48,13 +48,13 @@ export const ListFolders = () => {
           const procedure = row.original;
           return (
             <div className="flex gap-2">
-              <Link href={`/dashboard/folders/${procedure.numRef}`}>
+              <Link href={`/dashboard/accounting/folders/${procedure.numRef}`}>
                 <Button>
                   Ver Pagos <SquareArrowOutUpRight className="ml-2" size={15} />
                 </Button>
               </Link>
               {/* <Link
-                href={`/dashboard/folders/${procedure.numRef}/register-payment`}
+                href={`/dashboard/accounting/folders/${procedure.numRef}/register-payment`}
               >
                 <Button>
                   Registrar Pagos{" "}
@@ -62,7 +62,7 @@ export const ListFolders = () => {
                 </Button>
               </Link>
               <Link
-                href={`/dashboard/folders/${procedure.numRef}/close-payment`}
+                href={`/dashboard/accounting/folders/${procedure.numRef}/close-payment`}
               >
                 <Button variant="destructive">
                   Planillar <SquareArrowOutUpRight className="ml-2" size={15} />

@@ -78,10 +78,10 @@ export default function InvoiceRegistryForm() {
         parseInt(invoiceRegistryForm.getValues("type")) ===
         compras
       ) {
-        router.push("/dashboard/invoice-registry/purchases");
+        router.push("/dashboard/accounting/invoice-registry/purchases");
         queryClient.invalidateQueries({ queryKey: ["invoiceRegistry", 0] });
       } else {
-        router.push("/dashboard/invoice-registry/sells");
+        router.push("/dashboard/accounting/invoice-registry/sells");
         queryClient.invalidateQueries({ queryKey: ["invoiceRegistry", 1] });
       }
     },

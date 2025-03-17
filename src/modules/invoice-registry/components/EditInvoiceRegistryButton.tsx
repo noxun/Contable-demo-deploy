@@ -10,7 +10,7 @@ export default function EditInvoiceRegistryButton({
 }) {
   return (
     <Button asChild size="icon" variant="outline">
-      <Link href={`/dashboard/invoice-registry/${invoiceRegistryId}/edit`}>
+      <Link href={`/dashboard/accounting/invoice-registry/${invoiceRegistryId}/edit`}>
         <Pencil className="size-4" />
       </Link>
     </Button>

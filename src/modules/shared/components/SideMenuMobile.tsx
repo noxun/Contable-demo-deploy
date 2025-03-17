@@ -81,9 +81,9 @@ const SideMenuMobile = () => {
                       userHasAccess(role.name) && (
                         <Link
                           key={role.name}
-                          href={`/dashboard/${role.name}`}
+                          href={`/dashboard/accounting/${role.name}`}
                           className={`flex items-center gap-3 rounded-lg ${
-                            pathname === `/dashboard/${role.name}`
+                            pathname === `/dashboard/accounting/${role.name}`
                               ? "bg-muted px-3 py-2 text-foreground"
                               : "px-3 py-2 text-muted-foreground"
                           } transition-all hover:text-foreground`}

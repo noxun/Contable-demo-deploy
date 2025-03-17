@@ -87,7 +87,7 @@ export default function FormNewModelSeat() {
     onSuccess: () => {
       toast.success("Asiento Modelo Creado correctamente");
       queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
-      router.push(`/dashboard/model-seats`);
+      router.push(`/dashboard/accounting/model-seats`);
     },
     onError: (error) => {
       toast.error("Error al crear un asiento modelo");

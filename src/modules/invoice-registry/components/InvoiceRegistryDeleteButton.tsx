@@ -31,7 +31,7 @@ export default function InvoiceRegistryDeleteButton({invoiceRegistryId}:{invoice
     onSuccess: () => {
       toast.success("Extracto borrado correctamente");
       queryClient.invalidateQueries({queryKey:["invoiceRegistry"]})
-      router.push("/dashboard/invoice-registry");
+      router.push("/dashboard/accounting/invoice-registry");
     },
   });
 

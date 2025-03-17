@@ -79,7 +79,7 @@ export default function FormEditModelSeat({
     onSuccess: () => {
       toast.success("Asiento Modelo editado correctamente");
       queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
-      router.push("/dashboard/model-seats");
+      router.push("/dashboard/accounting/model-seats");
     },
   });
 

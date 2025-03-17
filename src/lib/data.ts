@@ -43,7 +43,7 @@ import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
 import { Account } from "@/modules/account/types/account";
 import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
-import { RegisterForm } from "@/app/dashboard/users/new/page";
+import { RegisterForm } from "@/app/dashboard/accounting/users/new/page";
 import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
 import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
@@ -63,6 +63,7 @@ import {
 } from "@/modules/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
 import { LevelData } from "@/modules/results/types/types";
+import { BranchEditForm } from "@/modules/branches/components/FormEditBranch";
 
 export function setAuthToken(token: string | undefined | null) {
   if (token) {
@@ -352,6 +353,16 @@ export async function createNewBranch(data: Branch) {
   }
   setAuthToken(token);
   const response = await api.post(`/api/Sucursal`, data);
+  return response.data;
+}
+
+export async function updateBranch(data:BranchEditForm){
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.put(`/api/Sucursal`, data);
   return response.data;
 }
 

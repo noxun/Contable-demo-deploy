@@ -49,7 +49,7 @@ export default function LoginForm() {
         if (!data.ufvRegister) {
           toast.warning("Registro de UFVs requerido");
         }
-        router.push("/dashboard");
+        router.push("/dashboard/accounting");
       }
     },
     onError: (error: AxiosError) => {
@@ -71,9 +71,6 @@ export default function LoginForm() {
       password: "",
     },
   });
-
-  
-
 
   return (
     <Form {...loginForm}>
@@ -111,10 +108,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button
-          disabled={loginMutation.isPending}
-          type="submit"
-        >
+        <Button disabled={loginMutation.isPending} type="submit">
           Ingresar
         </Button>
       </form>
