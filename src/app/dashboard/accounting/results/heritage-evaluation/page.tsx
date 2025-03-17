@@ -10,7 +10,7 @@ import { addDays } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import HeritageEvaluationPreview from "../../../../modules/results/heritage-evaluation/components/HeritageEvaluationPreview";
+import HeritageEvaluationPreview from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPreview";
 import { HeritageEvaluationData } from "@/lib/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import HeritageEvaluationPDF from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPDF";
