@@ -47,7 +47,7 @@ const accountSchema = z.object({
   accountId: z.number(),
   debit: z.boolean(),
   asset: z.boolean(),
-  percentage: z.number().min(0).max(100),
+  percentage: z.coerce.number().min(0).max(100),
 });
 
 const editModelSeatSchema = z.object({
@@ -123,6 +123,8 @@ export default function FormEditModelSeat({
       percentage: 0,
     });
   };
+
+  console.log(totalPercentage);
 
   return (
     <Form {...editModelSeatForm}>
