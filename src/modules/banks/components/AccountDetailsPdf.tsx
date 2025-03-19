@@ -64,7 +64,7 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
               source={REPORTS_LOGO_URL}
               style={{ height: 57, width: 207 }}
             />
-            <Text>NIT 3754820020</Text>
+            <Text>NIT 418769027</Text>
           </View>
         </View>
         {/* Fila Titulo */}
