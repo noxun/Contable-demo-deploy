@@ -59,7 +59,7 @@ export default function SettlementDocument({
                   {isQuotation ? data.nroQuotation : data.codigoDeInterno}
                 </Text>
                 <Text fontSize="10px" padding="0px 3px" textAlign="end">
-                  {format(new Date(), "'Santa Cruz' dd 'de' MMMM 'del' yyyy", {
+                  {format(new Date(), "'La Paz' dd 'de' MMMM 'del' yyyy", {
                     locale: es,
                   })}
                 </Text>

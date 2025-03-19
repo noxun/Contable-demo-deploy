@@ -82,7 +82,7 @@ export default function AccountDetailsDollarsPdf({
         </View>
         {/* Fila fecha */}
         <View style={tw("flex flex-row justify-between")}>
-          <Text>Santa Cruz, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
+          <Text>La Paz, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
           <Text>T/C: {data.exchangeRate}</Text>
         </View>
         {/* Header Tabla */}

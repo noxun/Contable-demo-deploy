@@ -149,7 +149,7 @@ export default function PdfVoucher({
               {/* Fila fecha */}
               <View style={tw("flex flex-row justify-between")}>
                 <Text>
-                  Santa Cruz,{" "}
+                  La Paz,{" "}
                   {format(
                     data?.voucherDate ?? new Date(),
                     "dd 'de' MMMM 'de' yyyy",
