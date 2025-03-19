@@ -196,41 +196,41 @@ export default function FormNewVoucher({
     },
   });
 
-  async function handleCreateCompany(inputValue: string) {
-    setIsCreatingOption(true);
-    try {
-      const dataToSend = {
-        name: inputValue,
-      };
-      const response = await postCompanyOrConcept(dataToSend);
-      queryClient.setQueryData(
-        ["TrazoCompanies"],
-        (oldData: TrazoCompany[]) => [
-          ...oldData,
-          {
-            id: response.id,
-            razonSocial: response.name,
-            ref: "Contable", // Adapt this to your backend response
-          },
-        ]
-      );
+  // async function handleCreateCompany(inputValue: string) {
+  //   setIsCreatingOption(true);
+  //   try {
+  //     const dataToSend = {
+  //       name: inputValue,
+  //     };
+  //     const response = await postCompanyOrConcept(dataToSend);
+  //     queryClient.setQueryData(
+  //       ["TrazoCompanies"],
+  //       (oldData: TrazoCompany[]) => [
+  //         ...oldData,
+  //         {
+  //           id: response.id,
+  //           razonSocial: response.name,
+  //           ref: "Contable", // Adapt this to your backend response
+  //         },
+  //       ]
+  //     );
 
-      const newOption = {
-        value: response.id,
-        label: response.name,
-      };
+  //     const newOption = {
+  //       value: response.id,
+  //       label: response.name,
+  //     };
 
-      setSelectedCompanyOption(newOption);
-      setSelectedCompanyId(response.id);
+  //     setSelectedCompanyOption(newOption);
+  //     setSelectedCompanyId(response.id);
 
-      toast.success("Nueva opcion agregada correctamente");
-    } catch (error) {
-      toast.error("Error al agregar una nueva opcion");
-      console.log(error);
-    } finally {
-      setIsCreatingOption(false);
-    }
-  }
+  //     toast.success("Nueva opcion agregada correctamente");
+  //   } catch (error) {
+  //     toast.error("Error al agregar una nueva opcion");
+  //     console.log(error);
+  //   } finally {
+  //     setIsCreatingOption(false);
+  //   }
+  // }
 
   const {
     data: modelSeats,
@@ -240,16 +240,16 @@ export default function FormNewVoucher({
 
   const accountsQuery = useMotionAccounts();
 
-  const {
-    data: trazoCompanies,
-    isLoading: isLoadingTrazoCompanies,
-    isError: isErrorTrazoCompanies,
-  } = useTrazoCompanies();
-  const {
-    data: trazoInternCodes,
-    isPending: isPendingTrazoInternCodes,
-    isError: isErrorInternCodes,
-  } = useTrazoInternCodesByCompanyId(selectedCompanyId);
+  // const {
+  //   data: trazoCompanies,
+  //   isLoading: isLoadingTrazoCompanies,
+  //   isError: isErrorTrazoCompanies,
+  // } = useTrazoCompanies();
+  // const {
+  //   data: trazoInternCodes,
+  //   isPending: isPendingTrazoInternCodes,
+  //   isError: isErrorInternCodes,
+  // } = useTrazoInternCodesByCompanyId(selectedCompanyId);
 
   const branchListQuery = useQuery({
     queryKey: ["branchList"],
@@ -502,9 +502,9 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined ||
     costCenter === undefined ||
-    isLoadingCostCenter ||
-    isLoadingTrazoCompanies ||
-    trazoCompanies === undefined
+    isLoadingCostCenter
+    // isLoadingTrazoCompanies ||
+    // trazoCompanies === undefined
   ) {
     return <Spinner />;
   }
