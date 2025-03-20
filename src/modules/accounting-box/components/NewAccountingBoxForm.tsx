@@ -51,6 +51,8 @@ const newAccountingBoxFormSchema = z.object({
   hojaDeRuta: z.string().optional(),
   nombre: z.string(),
   detalle: z.string(),
+  invoiceNumber: z.string(),
+  provider: z.string(),
   valorPagado: z.coerce.number().min(0, "El valor pagado debe ser mayor a 0"),
   // .refine(
   //   (value) => value <= (balance?. ?? 0),
@@ -58,13 +60,6 @@ const newAccountingBoxFormSchema = z.object({
   // ),
   //TODO: validar que el valor pagado no sea mayor al saldo actual
 });
-// .refine((data) => {
-//   const parsedDate = parseISO(data.fecha);
-//   const mesAbreviado = format(parsedDate, "LL", { locale: es }).toUpperCase();
-//   const anio = format(parsedDate, "yy");
-//   data.mes = `${mesAbreviado}${anio}`;
-//   return true;
-// });
 
 export type NewAccountingBox = z.infer<typeof newAccountingBoxFormSchema>;
 
@@ -93,6 +88,8 @@ export default function NewAccountingBoxForm({
     defaultValues: {
       accountId: 0,
       detalle: "",
+      provider: "",
+      invoiceNumber: "0",
     },
   });
 
@@ -395,6 +392,34 @@ export default function NewAccountingBoxForm({
                   <Input placeholder="Detalle" {...field} />
                 </FormControl>
                 <FormDescription>Glosa de referencia</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="provider"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Proveedor</FormLabel>
+                <FormControl>
+                  <Input placeholder="Proveedor" {...field} />
+                </FormControl>
+                <FormDescription>Proveedor</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="invoiceNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numero de Factura</FormLabel>
+                <FormControl>
+                  <Input placeholder="num factura" {...field} />
+                </FormControl>
+                <FormDescription>Numero de la factura</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
