@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DeleteAllBankExtractsDialog from "./DeleteAllBankExtractsDialog";
 
 export default function ListBankExcerpts({
   bankId,
@@ -103,6 +104,7 @@ export default function ListBankExcerpts({
             <SelectItem value="registered">Registrado</SelectItem>
           </SelectContent>
         </Select>
+        <DeleteAllBankExtractsDialog bankId={bankId as number}/>
       </div>
 
       <DataTable
