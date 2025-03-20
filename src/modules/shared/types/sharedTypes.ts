@@ -11,6 +11,10 @@ export type Voucher = {
   bankId: number | string | null;
   items?: VoucherItem[];
   hojaDeRuta?: string;
+  provider?: string;
+  nit?: string;
+  invoice?: string;
+  invoiceNumber?: string;
 };
 
 export type VoucherItem = {

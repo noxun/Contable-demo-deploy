@@ -391,6 +391,10 @@ export default function FormNewVoucher({
       items: z.array(voucherItemSchema).optional(),
       bankItemRef: z.number().optional(),
       hojaDeRuta: z.string().optional(),
+      provider: z.string().optional(),
+      invoice: z.string().optional(),
+      invoiceNumber: z.string().optional(),
+      nit: z.string().optional(),
     })
     .superRefine((data, ctx) => {
       return {
@@ -571,7 +575,7 @@ export default function FormNewVoucher({
               name="voucherDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2 justify-around">
-                  <FormLabel>Fecha</FormLabel>
+                  <FormLabel>Fecha*</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -609,25 +613,64 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={voucherForm.control}
-              name="exchangeRate"
+              name="provider"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>T/C</FormLabel>
+                  <FormLabel>Proveedor</FormLabel>
                   <FormControl>
                     <Input placeholder="" type="text" {...field}></Input>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="nit"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>NIT</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="provider"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Factura</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="provider"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Numero de Factura</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={voucherForm.control}
               name="coin"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Moneda</FormLabel>
+                  <FormLabel>Moneda*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -693,7 +736,7 @@ export default function FormNewVoucher({
               name="sucursalId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sucursal</FormLabel>
+                  <FormLabel>Sucursal*</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -723,7 +766,7 @@ export default function FormNewVoucher({
               name="costCenterId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Centro de costos</FormLabel>
+                  <FormLabel>Centro de costos*</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value?.toString()}
