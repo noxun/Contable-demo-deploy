@@ -365,7 +365,7 @@ export default function FormEditVoucher({
             />
             <FormField
               control={voucherForm.control}
-              name="provider"
+              name="invoice"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Factura</FormLabel>
@@ -378,7 +378,7 @@ export default function FormEditVoucher({
             />
             <FormField
               control={voucherForm.control}
-              name="provider"
+              name="invoiceNumber"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Numero de Factura</FormLabel>
