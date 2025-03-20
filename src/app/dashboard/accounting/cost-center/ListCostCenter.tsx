@@ -13,31 +13,31 @@ import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/Bigg
 export default function ListCostCenter({
   costCenter,
 }: {
-  costCenter: CostCenter[];
+  costCenter: (CostCenter | null)[];
 }) {
   return (
     <div className="w-full space-y-2">
       {costCenter.map((center, index) => (
-        <Collapsible
-          key={index}
-          className="border rounded-md overflow-hidden"
-        >
+        <Collapsible key={index} className="border rounded-md overflow-hidden">
           <div className="flex w-full">
             <CollapsibleTrigger className="flex items-center px-4 py-2 bg-gray-50 w-full text-left">
               <div className="flex items-center w-full">
                 <ChevronDown className="h-4 w-4 mr-2 transition-transform ui-open:rotate-180" />
-                <span className="font-medium mr-3">{center.code}</span>
-                <span>{center.name}</span>
+                <span className="font-medium mr-3">{center?.code}</span>
+                <span>{center?.name}</span>
               </div>
             </CollapsibleTrigger>
           </div>
 
           <CollapsibleContent>
             <div className="px-4 py-2 bg-white">
-              <p className="text-sm text-gray-500 mb-3">{center.descripcion}</p>
+              <p className="text-sm text-gray-500 mb-3">{center?.descripcion}</p>
 
               <div className="space-y-2">
-                {center.accountItems.map((item, index) => (
+                {(Array.isArray(center?.accountItems)
+                  ? center.accountItems
+                  : []
+                ).map((item, index) => (
                   <div
                     key={index}
                     className="pl-6 py-1 border-l-2 border-gray-200"
