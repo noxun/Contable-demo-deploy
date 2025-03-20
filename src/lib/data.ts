@@ -1633,3 +1633,15 @@ export async function fetchBudgetExecutionData() {
 
   return response.data as BudgetExecutionResponse;
 }
+
+export async function deleteAllBankExtracts(bankId: number) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const response = await api.delete(`/api/Bank/getextract/${bankId}`);
+
+  return response.data;
+}
