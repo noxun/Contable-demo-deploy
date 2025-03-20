@@ -23,7 +23,7 @@ const CostCenterPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Centro de Costos</h1>
+      <h1 className="text-2xl font-bold">Cuentas Por Cobrar</h1>
       <ListCostCenter costCenter={costCenter} />
     </div>
   );
