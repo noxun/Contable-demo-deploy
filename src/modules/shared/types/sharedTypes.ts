@@ -11,6 +11,10 @@ export type Voucher = {
   bankId: number | string | null;
   items?: VoucherItem[];
   hojaDeRuta?: string;
+  provider?: string;
+  nit?: string;
+  invoice?: string;
+  invoiceNumber?: string;
 };
 
 export type VoucherItem = {
@@ -30,6 +34,7 @@ export type VoucherItem = {
   type?: number;
   canDebit?: boolean //para el uso de inputs en los asientos modelo
   canAsset?: boolean
+  percentage?: number // para el calculo de los porcentajes en los asientos modelo
 };
 
 export enum VoucherType {

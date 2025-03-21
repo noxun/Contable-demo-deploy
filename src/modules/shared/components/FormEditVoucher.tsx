@@ -184,26 +184,28 @@ export default function FormEditVoucher({
   useEffect(() => {
     let totalDebitBs = voucherItems.reduce((total, currentItem) => {
       // Convert string to number if it's a string, handle empty values
-      const debitValue = typeof currentItem?.debitBs === 'string' 
-        ? parseFloat(currentItem?.debitBs) || 0 
-        : currentItem?.debitBs ?? 0;
-      
+      const debitValue =
+        typeof currentItem?.debitBs === "string"
+          ? parseFloat(currentItem?.debitBs) || 0
+          : currentItem?.debitBs ?? 0;
+
       return total + debitValue;
     }, 0);
-    
+
     let totalAssetBs = voucherItems.reduce((total, currentItem) => {
       // Convert string to number if it's a string, handle empty values
-      const assetValue = typeof currentItem?.assetBs === 'string' 
-        ? parseFloat(currentItem?.assetBs) || 0 
-        : currentItem?.assetBs ?? 0;
-      
+      const assetValue =
+        typeof currentItem?.assetBs === "string"
+          ? parseFloat(currentItem?.assetBs) || 0
+          : currentItem?.assetBs ?? 0;
+
       return total + assetValue;
     }, 0);
-  
+
     console.log(typeof totalDebitBs, typeof totalAssetBs); // Should be 'number' for both
     setTotalDebitBs(totalDebitBs);
     setTotalAssetBs(totalAssetBs);
-  
+
     // Compare with precision to avoid floating point issues
     setEditionEnabled(
       Number(totalDebitBs.toFixed(2)) === Number(totalAssetBs.toFixed(2))
@@ -236,6 +238,10 @@ export default function FormEditVoucher({
     gloss: z.string(),
     bankId: z.coerce.string().nullable(),
     hojaDeRuta: z.string().optional(),
+    provider: z.string().optional(),
+    invoice: z.string().optional(),
+    invoiceNumber: z.string().optional(),
+    nit: z.string().optional(),
     items: z.array(voucherItemSchema).optional(),
   });
 
@@ -251,6 +257,10 @@ export default function FormEditVoucher({
       gloss: voucher.gloss,
       bankId: (voucher.bankId as string) ?? null,
       hojaDeRuta: voucher.hojaDeRuta ?? "",
+      provider: voucher.provider ?? "",
+      invoice: voucher.invoice ?? "",
+      invoiceNumber: voucher.invoiceNumber ?? "",
+      nit: voucher.nit ?? "",
     },
   });
 
@@ -320,6 +330,58 @@ export default function FormEditVoucher({
                   <FormLabel>T/C</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="provider"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Proveedor</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="nit"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>NIT</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="invoice"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Factura</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={voucherForm.control}
+              name="invoiceNumber"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Numero de Factura</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="text" {...field}></Input>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
