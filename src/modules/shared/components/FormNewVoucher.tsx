@@ -444,6 +444,7 @@ export default function FormNewVoucher({
     setVoucherItems([]);
     setSelectedModelSeat(selectedOption);
     const modelSeatDetails = await fetchModelSeatsItems(selectedOption.value);
+    console.log("asiento",modelSeatDetails)
     const updatedVoucherItems = modelSeatDetails.accounts.map((item) => ({
       // ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
       accountId: item.accountId,
@@ -454,6 +455,7 @@ export default function FormNewVoucher({
       debitSus: 0,
       assetSus: 0,
       gloss: "",
+      percentage: item.percentage,
     }));
 
     setVoucherItems(updatedVoucherItems);
