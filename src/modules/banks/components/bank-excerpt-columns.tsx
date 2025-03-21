@@ -16,13 +16,7 @@ import DialogFormNewVoucher from "./DialogFormNewVoucher";
 import { memo } from "react";
 
 interface MemoizedBankRowProps {
-  bankExtract: {
-    id: number;
-    type: number | undefined;
-    accountId: number;
-    accountingEntry: boolean;
-    accountDetail: string;
-  };
+  bankExtract: BankExcerpt
   bankId: string | number;
   selectedAccounts: {
     [key: number]: number | null;
@@ -44,6 +38,7 @@ const MemoizedBankRow = memo(function MemoizedBankRow({
 }: MemoizedBankRowProps) {
   return (
     <RegisterSeat
+      bankExtract={bankExtract}
       registeredType={bankExtract.type}
       bankExtractId={bankExtract.id}
       accountDetail={bankExtract.accountDetail}

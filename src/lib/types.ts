@@ -130,6 +130,8 @@ export type BankExcerpt = {
   accountingEntry: boolean;
   accountDetail: string;
   type: number;
+  accountCode: string; //estos campos solo se rellenan si se sube desde el excel
+  typeTransacction: string; //estos campos solo se rellenan si se sube desde el excel
 };
 
 export type BankExcerptData = {

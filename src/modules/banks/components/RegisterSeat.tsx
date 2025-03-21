@@ -15,8 +15,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { BankExcerpt } from "@/lib/types";
 
 export type RegisterSeatProps = {
+  bankExtract: BankExcerpt;
   bankExtractId: number;
   bankId: string | number;
   registeredType: number | undefined; //egreso, traspaso, ingreso
@@ -43,6 +45,7 @@ const getTypeLabel = (type: number) => {
 };
 
 export default function RegisterSeat({
+  bankExtract,
   registeredType,
   bankExtractId,
   bankId,
@@ -106,7 +109,11 @@ export default function RegisterSeat({
           onChange={(option) => {
             onSelectChange(bankExtractId, option ? option.id : null);
           }}
-          value={accounts?.find((account) => account.id === selectedAccountId)}
+          value={
+            accounts?.find(
+              (account) => account.code === bankExtract.accountCode
+            ) ?? accounts?.find((account) => account.id === selectedAccountId)
+          }
           options={accounts}
           getOptionValue={(account) => account.id.toString()}
           getOptionLabel={(account) => `${account.code}-${account.description}`}
@@ -116,7 +123,9 @@ export default function RegisterSeat({
         <div className="min-w-[180px]">{getTypeLabel(registeredType)}</div>
       ) : (
         <Select
-          value={selectedType?.toString() ?? ""}
+          value={
+            bankExtract?.typeTransacction ?? selectedType?.toString() ?? ""
+          }
           onValueChange={(value) => {
             onTypeSelectChange(bankExtractId, parseInt(value));
           }}
