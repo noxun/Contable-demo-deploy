@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   const [currentDay, setCurrentDay] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-  const handleDateChange = () => {
+  const handleDateChange = useCallback( () => {
     if (currentDay) {
       const today = new Date();
       onDateChange(today, today);
@@ -40,12 +40,12 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
     } else {
       onDateChange(null, null);
     }
-  };
+  }, [currentDay, date, onDateChange, selectedMonth]);
 
   useEffect(() => {
     //se ejecuta cuando cambian las fechas(dia, mes o rango de fechas)
     handleDateChange();
-  }, [date, currentDay, selectedMonth]);
+  }, [date, currentDay, selectedMonth, handleDateChange]);
 
   return (
     <>
