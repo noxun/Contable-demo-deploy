@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import { env } from "@/env";
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  baseURL: env.NEXT_PUBLIC_BACKEND_URL,
   headers: {
     "Content-Type": "application/json",
   },

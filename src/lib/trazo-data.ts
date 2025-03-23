@@ -1,7 +1,8 @@
 import axios from "axios";
 import { DropdownOption, PaymentRoll, ProcedureDataset } from "./trazoTypes";
+import { env } from "@/env";
 
-const trazoUrl = process.env.NEXT_PUBLIC_TRAZO_URL;
+const trazoUrl = env.NEXT_PUBLIC_TRAZO_URL;
 
 export async function generatePayroll(procedureId: number) {
   const response = await axios.get(
