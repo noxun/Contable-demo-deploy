@@ -56,6 +56,7 @@ const MemoizedBankRow = memo(function MemoizedBankRow({
 });
 
 export function columns(
+  bankAccountId: string | null,
   bankId: string | number,
   selectedAccounts: BankSelectionState,
   selectedTypes: TypeSelectionState,
@@ -108,6 +109,8 @@ export function columns(
         return (
           <div className="flex items-center gap-2">
             <DialogFormNewVoucher
+              bankAccountId={bankAccountId!}
+              amountFromExtract={bankExtract.amount}
               bankId={bankId as string}
               bankExtractId={bankExtract.id}
               disabled={bankExtract.accountingEntry}

@@ -80,6 +80,8 @@ type FormNewVoucherProps = {
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
   voucherFromRegisterByDocResponse?: RegisterVoucherByDocumentResponse;
+  bankAccountId?: string;
+  amountFromExtract?: number;
 };
 
 export default function FormNewVoucher({
@@ -90,6 +92,8 @@ export default function FormNewVoucher({
   gloss,
   voucherItemsFromExtractedPDF,
   voucherFromRegisterByDocResponse,
+  bankAccountId,
+  amountFromExtract,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -127,6 +131,8 @@ export default function FormNewVoucher({
       canAsset: true,
     },
   ]);
+
+
 
   if (voucherItemsFromExtractedPDF) {
     voucherItemsFromExtractedPDF.forEach((item) => {
@@ -167,6 +173,36 @@ export default function FormNewVoucher({
       setVoucherItems(newItems);
     }
   }, [voucherFromRegisterByDocResponse]);
+
+  useEffect(()=> {
+    if(bankAccountId && amountFromExtract){
+      if(amountFromExtract > 0) {
+        setVoucherItems([{
+          debitBs: 0,
+          debitSus: 0,
+          assetBs: amountFromExtract,
+          assetSus: 0,
+          gloss: gloss ?? "",
+          accountId: bankAccountId,
+          voucherId: "",
+          canDebit: true,
+          canAsset: true,
+        },])
+      }else{
+        setVoucherItems([{
+          debitBs: amountFromExtract,
+          debitSus: 0,
+          assetBs: 0,
+          assetSus: 0,
+          gloss: gloss ?? "",
+          accountId: bankAccountId,
+          voucherId: "",
+          canDebit: true,
+          canAsset: true,
+        },])
+      }
+    }
+  }, [amountFromExtract, bankAccountId, gloss])
 
   const banksQuery = useQuery({
     queryKey: ["banks"],

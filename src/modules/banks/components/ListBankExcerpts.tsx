@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DeleteAllBankExtractsDialog from "./DeleteAllBankExtractsDialog";
+import { useSearchParams } from "next/navigation";
 
 export default function ListBankExcerpts({
   bankId,
@@ -34,6 +35,9 @@ export default function ListBankExcerpts({
   const [filterByAccountId, setFilterByAccountId] = useState<
     "all" | "registered" | "unregistered"
   >("unregistered");
+
+  const searchParams = useSearchParams();
+  const bankAccountId = searchParams.get("bankAccountId");
 
   const handleSelectChange = useCallback(
     (bankExtractId: number, accountId: number | null) => {
@@ -73,13 +77,14 @@ export default function ListBankExcerpts({
 
   const memoizedColumns = useMemo(
     () => columns(
+      bankAccountId,
       bankId,
       selectedAccounts,
       selectedTypes,
       handleSelectChange,
       handleTypeSelectChange
     ),
-    [bankId, selectedAccounts, selectedTypes, handleSelectChange, handleTypeSelectChange]
+    [bankAccountId, bankId, selectedAccounts, selectedTypes, handleSelectChange, handleTypeSelectChange]
   );
 
   if (isLoading || isPending || data === undefined) return <Spinner />;

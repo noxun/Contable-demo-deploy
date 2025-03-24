@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { RegisterVoucherByDocumentResponse, VoucherItemFromExtractedPDF } from "@/lib/types";
 
 type FormNewVoucherWithTypeSelectProps = {
+  bankAccountId?: string;
+  amountFromExtract?: number;
   bankId?: string;
   bankExtractId?: number;
   gloss?: string;
@@ -21,6 +23,8 @@ type FormNewVoucherWithTypeSelectProps = {
 };
 
 export default function FormNewVoucherWithTypeSelect({
+  bankAccountId,
+  amountFromExtract,
   bankId,
   bankExtractId,
   gloss,
@@ -64,6 +68,8 @@ export default function FormNewVoucherWithTypeSelect({
         gloss={gloss}
         voucherItemsFromExtractedPDF={validVoucherItemsPDF}
         voucherFromRegisterByDocResponse={voucher}
+        bankAccountId={bankAccountId}
+        amountFromExtract={amountFromExtract}
       />
     </>
   );
