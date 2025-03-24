@@ -64,8 +64,8 @@ export default function ListBankExcerpts({
 
   const filteredBankExtracts = useMemo(
     () => (Array.isArray(data) ? data : []).filter((bankExcerpt) => {
-      if (filterByAccountId === "unregistered") return bankExcerpt.accountId === 0;
-      if (filterByAccountId === "registered") return bankExcerpt.accountId !== 0;
+      if (filterByAccountId === "unregistered") return bankExcerpt.accountingEntry === false;
+      if (filterByAccountId === "registered") return bankExcerpt.accountingEntry === true;
       return true;
     }),
     [data, filterByAccountId]
