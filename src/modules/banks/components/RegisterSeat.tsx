@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BankExcerpt } from "@/lib/types";
 
 export type RegisterSeatProps = {
@@ -59,8 +59,6 @@ export default function RegisterSeat({
 }: RegisterSeatProps) {
   const queryClient = useQueryClient();
   const { data: accounts, isPending } = useAccounts();
-  // const [type, setType] = useState<string>("0");
-
   // console.log(accounts);
 
   const registerSeatMutation = useMutation({
@@ -87,25 +85,18 @@ export default function RegisterSeat({
     }
   }
 
-  // const selectedAccountOption =
-  //   (Array.isArray(accounts) ? accounts : []).find(
-  //     (account) => account.id === selectedAccountId
-  //   ) ??
-  //   (extractAccountId !== 0
-  //     ? accounts?.find((account) => account.id === extractAccountId)
-  //     : null);
-
   if (isPending || accounts === undefined) {
     return <Spinner />;
   }
 
   return (
     <div className="flex items-center justify-between gap-2">
-      {accountDetail ? (
+      {accountDetail && bankExtract.accountingEntry ? (
         <div className="min-w-[300px]">{accountDetail}</div>
       ) : (
         <CustomSelect
-          isDisabled={hasBeenRegisteredToAccount}
+          className="w-[280px]"
+          isDisabled={bankExtract.accountingEntry}
           onChange={(option) => {
             onSelectChange(bankExtractId, option ? option.id : null);
           }}
@@ -119,17 +110,17 @@ export default function RegisterSeat({
           getOptionLabel={(account) => `${account.code}-${account.description}`}
         />
       )}
-      {registeredType !== undefined && hasBeenRegisteredToAccount ? (
-        <div className="min-w-[180px]">{getTypeLabel(registeredType)}</div>
+      {registeredType !== undefined && bankExtract.accountingEntry ? (
+        <div className="min-w-[180px]">{bankExtract.typeTransacction}</div>
       ) : (
         <Select
           value={
-            bankExtract?.typeTransacction ?? selectedType?.toString() ?? ""
+            selectedType?.toString() ?? bankExtract?.type?.toString() ?? ""
           }
           onValueChange={(value) => {
             onTypeSelectChange(bankExtractId, parseInt(value));
           }}
-          disabled={hasBeenRegisteredToAccount}
+          disabled={bankExtract.accountingEntry}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Tipo de registro" />
@@ -143,7 +134,7 @@ export default function RegisterSeat({
       )}
 
       <Button
-        disabled={hasBeenRegisteredToAccount}
+        disabled={bankExtract.accountingEntry}
         title="Registrar Asiento Contable"
         onClick={handleRegister}
       >
