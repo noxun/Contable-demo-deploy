@@ -4,7 +4,7 @@ import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon, LoaderIcon, Sheet } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { DataTable } from "@/components/ui/data-table";
 import { toast } from "sonner";
@@ -73,7 +73,7 @@ export default function BalanceAmountsPage() {
   }
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange)
 
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null)
       setDateRange({
@@ -81,7 +81,7 @@ export default function BalanceAmountsPage() {
         to: endDate
       })
     }
-  };
+  },[]);
   const handleChangeIsSus = () => setInSus(!inSus)
 
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)

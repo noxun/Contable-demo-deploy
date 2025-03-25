@@ -26,26 +26,25 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   const [currentDay, setCurrentDay] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-  const handleDateChange = useCallback( () => {
-    if (currentDay) {
-      const today = new Date();
-      onDateChange(today, today);
-    } else if (selectedMonth) {
-      const [year, month] = selectedMonth.split("-").map(Number);
-      const initDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
-      onDateChange(initDate, endDate);
-    } else if (date?.from && date?.to) {
-      onDateChange(date.from, date.to);
-    } else {
-      onDateChange(null, null);
-    }
-  }, [currentDay, date, onDateChange, selectedMonth]);
-
   useEffect(() => {
+    const handleDateChange = () => {
+      if (currentDay) {
+        const today = new Date();
+        onDateChange(today, today);
+      } else if (selectedMonth) {
+        const [year, month] = selectedMonth.split("-").map(Number);
+        const initDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
+        onDateChange(initDate, endDate);
+      } else if (date?.from && date?.to) {
+        onDateChange(date.from, date.to);
+      } else {
+        onDateChange(null, null);
+      }
+    }
     //se ejecuta cuando cambian las fechas(dia, mes o rango de fechas)
     handleDateChange();
-  }, [date, currentDay, selectedMonth, handleDateChange]);
+  }, [date, currentDay, selectedMonth, onDateChange]);
 
   return (
     <>

@@ -3,7 +3,7 @@
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -82,7 +82,7 @@ export default function BalanceGeneralPage() {
     enabled: false
   })
 
-  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleOnDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null)
       setDateRange({
@@ -90,7 +90,7 @@ export default function BalanceGeneralPage() {
         to: endDate
       })
     }
-  };
+  }, []);
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
