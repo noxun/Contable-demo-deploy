@@ -35,41 +35,41 @@ export default function FormNewVoucherItems({
   totalDebitValue,
   totalAssetValue,
 }: FormNewVoucherItemsProps) {
-  // Function to distribute values based on percentages
   const distributeValuesByPercentage = (
+    currentItems: VoucherItem[],
     value: number,
     isDebitField: boolean,
     sourceIndex: number
-  ) => {
+  ): VoucherItem[] => {
     // Check if all voucher items have percentage and canAsset/canDebit properties
-    const hasRequiredProperties = voucherItems.every(
+    const hasRequiredProperties = currentItems.every(
       (item) => item.percentage !== undefined && 
                 (item.canAsset !== undefined && item.canDebit !== undefined)
     );
     
     if (!hasRequiredProperties) {
-      return; // Don't perform calculation if any item is missing required properties
+      return currentItems; // Return unchanged if any item is missing required properties
     }
     
     // Find the 100% item 
-    const hundredPercentItemIndex = voucherItems.findIndex(
+    const hundredPercentItemIndex = currentItems.findIndex(
       (item) => item.percentage === 100
     );
     
     if (hundredPercentItemIndex === -1) {
-      return; // No 100% item found
+      return currentItems; // No 100% item found
     }
     
-    const hundredPercentItem = voucherItems[hundredPercentItemIndex];
+    const hundredPercentItem = currentItems[hundredPercentItemIndex];
     
     // Check if 100% item has both canAsset and canDebit set to true
     if (hundredPercentItem.canAsset && hundredPercentItem.canDebit) {
-      return; // Skip calculation if both flags are true
+      return currentItems; // Skip calculation if both flags are true
     }
     
     // Check if the field being changed belongs to the 100% item
     if (sourceIndex !== hundredPercentItemIndex) {
-      return; // Only trigger distribution when changing the 100% item
+      return currentItems; // Only trigger distribution when changing the 100% item
     }
     
     // Determine if we're working with debit or asset field
@@ -78,37 +78,37 @@ export default function FormNewVoucherItems({
     
     // Only proceed if the field type matches the allowed field for the 100% item
     if ((isDebitField && !isHundredPercentDebit) || (!isDebitField && !isHundredPercentAsset)) {
-      return;
+      return currentItems;
     }
     
     // Check if other items have complementary permissions
-    const otherItemsHaveComplementaryPermissions = voucherItems.every((item, index) => {
+    const otherItemsHaveComplementaryPermissions = currentItems.every((item, index) => {
       if (index === hundredPercentItemIndex) return true; // Skip the 100% item
       return isHundredPercentDebit ? item.canAsset : item.canDebit;
     });
     
     if (!otherItemsHaveComplementaryPermissions) {
-      return; // Other items don't have complementary permissions
+      return currentItems; // Other items don't have complementary permissions
     }
     
     // Check if the sum of percentages for other items equals 100
-    const otherItemsPercentageSum = voucherItems.reduce((sum, item, index) => {
+    const otherItemsPercentageSum = currentItems.reduce((sum, item, index) => {
       if (index === hundredPercentItemIndex) return sum;
       return sum + (item.percentage || 0);
     }, 0);
     
     if (Math.abs(otherItemsPercentageSum - 100) > 0.01) {
-      return; // Sum of other percentages doesn't equal 100
+      return currentItems; // Sum of other percentages doesn't equal 100
     }
     
     // Update the values for other items based on their percentages
-    const updatedItems = voucherItems.map((item, index) => {
+    return currentItems.map((item, index) => {
       if (index === hundredPercentItemIndex) {
         // The 100% item keeps the original value
         return {
           ...item,
-          debitBs: isHundredPercentDebit ? value : null,
-          assetBs: isHundredPercentAsset ? value : null,
+          debitBs: isHundredPercentDebit ? value : item.debitBs,
+          assetBs: isHundredPercentAsset ? value : item.assetBs,
         };
       } else {
         // Calculate proportional value for other items
@@ -117,48 +117,53 @@ export default function FormNewVoucherItems({
         // Update the opposite field of what the 100% item has
         return {
           ...item,
-          debitBs: isHundredPercentAsset ? proportionalValue : null,
-          assetBs: isHundredPercentDebit ? proportionalValue : null,
+          debitBs: isHundredPercentAsset ? proportionalValue : item.debitBs,
+          assetBs: isHundredPercentDebit ? proportionalValue : item.assetBs,
         };
       }
     });
-    
-    setVoucherItems(updatedItems);
   };
 
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
     
-    let listVoucherItem = [...voucherItems];
+    const listVoucherItem = [...voucherItems];
     
-    if (name === "debitBs" || name === "assetBs") {
+    // Handle numeric inputs (debitBs, assetBs, percentage)
+    if (["debitBs", "assetBs", "percentage"].includes(name)) {
       const numValue = parseFloat(value) || 0;
       listVoucherItem[index] = {
         ...listVoucherItem[index],
         [name]: numValue,
       };
       
-      // Call distribute function if applicable
-      if (numValue > 0) {
-        distributeValuesByPercentage(numValue, name === "debitBs", index);
-        return; // The distributeValuesByPercentage function will update the state if needed
+      // Attempt distribution if it's debitBs or assetBs and value is greater than 0
+      if ((name === "debitBs" || name === "assetBs") && numValue > 0) {
+        const distributedItems = distributeValuesByPercentage(
+          listVoucherItem, 
+          numValue, 
+          name === "debitBs", 
+          index
+        );
+        setVoucherItems(distributedItems);
+        return;
       }
-    } else {
-      listVoucherItem[index] = {
-        ...listVoucherItem[index],
-        [name]: value,
-      };
+    } 
+    // Handle gloss input
+    else if (name === "gloss") {
+      if (applyGlossToAll) {
+        listVoucherItem.forEach((item, i) => {
+          item.gloss = i === index ? value : value;
+        });
+      } else {
+        listVoucherItem[index].gloss = value;
+      }
     }
     
-    if (applyGlossToAll && name === "gloss") {
-      listVoucherItem = listVoucherItem.map((item, i) =>
-        i === index ? { ...item, [name]: value } : { ...item, gloss: value }
-      );
-    }
-    
-    setVoucherItems([...listVoucherItem]);
+    // Always call setVoucherItems at the end
+    setVoucherItems(listVoucherItem);
   }
-
+  
   function onSelectChange(
     option: SingleValue<{ value: string; label: string }> | null,
     index: number
