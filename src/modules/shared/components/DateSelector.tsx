@@ -18,6 +18,26 @@ type DateSelectorProps = {
   onDateChange: (initDate: Date | null, endDate: Date | null) => void;
 };
 
+/**
+ * @description 
+ *  Componente para seleccionar fechas por (Mes, Rango de fechas, Día).
+ * 
+ * @param {(initDate: Date | null, endDate: Date | null) => void} onDateChange - 
+ * se ejecuta cuando cambian las fechas.
+ * 
+ * @example
+ * // Uso básico con rango de fechas
+ * const handleDateChange = (startDate, endDate) => {
+ *   if (startDate && endDate) {
+ *     console.log("Rango seleccionado:", startDate.toISOString(), endDate.toISOString());
+ *   } else if (startDate) {
+ *     console.log("Día/mes seleccionado:", startDate.toISOString());
+ *   }
+ * };
+ * 
+ * <DateSelector onDateChange={handleDateChange} />
+ */
+
 export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().getFullYear(), 0, 1),
@@ -26,7 +46,7 @@ export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   const [currentDay, setCurrentDay] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-  const handleDateChange = useCallback( () => {
+  const handleDateChange = useCallback(() => {
     if (currentDay) {
       const today = new Date();
       onDateChange(today, today);
