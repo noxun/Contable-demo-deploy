@@ -49,3 +49,5 @@ export enum VoucherTypeRoute {
   EXPENSE = "expenses",
   INCOME = "income",
 }
+
+export type StableCallback<T extends (...args: any[]) => any> = T & { __stable?: true };
