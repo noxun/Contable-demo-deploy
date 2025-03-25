@@ -6,7 +6,7 @@ import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import DocViewer, {
@@ -200,7 +200,7 @@ export default function StatementIncomePage() {
   })
 
 
-  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleOnDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null)
       setDateRange({
@@ -208,7 +208,7 @@ export default function StatementIncomePage() {
         to: endDate
       })
     }
-  };
+  },[]);
 
   const handleChangeIsSus = () => setInSus(!inSus)
 

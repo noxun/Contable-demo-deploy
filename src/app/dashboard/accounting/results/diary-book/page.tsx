@@ -1,7 +1,7 @@
 "use client";
 
 import { DateRange } from "react-day-picker";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { DataTable } from "@/components/ui/data-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,7 +32,7 @@ export default function DiaryBookPage() {
 
   const handleChangeIsSus = () => setInSus(!inSus);
 
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null);
       setDateRange({
@@ -40,7 +40,7 @@ export default function DiaryBookPage() {
         to: endDate,
       });
     }
-  };
+  },[]);
 
   return (
     <>

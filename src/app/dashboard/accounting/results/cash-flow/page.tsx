@@ -4,7 +4,7 @@ import { addDays, format } from "date-fns";
 import { LoaderIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -216,7 +216,7 @@ export default function ClashFlowPage() {
     enabled: false
   })
 
-  const handleOnDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleOnDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setPdfFile(null)
       setDateRange({
@@ -224,7 +224,7 @@ export default function ClashFlowPage() {
         to: endDate
       })
     }
-  };
+  },[]);
 
   const handleOnGeneratePDF = async () => {
     setPdfFile(null)
