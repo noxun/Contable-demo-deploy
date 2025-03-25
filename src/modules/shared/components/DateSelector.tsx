@@ -13,17 +13,18 @@ import {
 } from "@/components/ui/popover";
 import { DateRange } from "react-day-picker";
 import { es } from "date-fns/locale";
+import { StableCallback } from "../types/sharedTypes";
 
 type DateSelectorProps = {
-  onDateChange: (initDate: Date | null, endDate: Date | null) => void;
+  onDateChange: StableCallback<(initDate: Date | null, endDate: Date | null) => void>;
 };
 
 /**
  * @description 
- *  Componente para seleccionar fechas por (Mes, Rango de fechas, Día).
- * 
- * @param {(initDate: Date | null, endDate: Date | null) => void} onDateChange - 
- * se ejecuta cuando cambian las fechas.
+ *  Componente para seleccionar fechas mediante 3 opciones: .
+ *  1. Seleccionar rango de fechas
+ *  2. Seleccionar mes
+ *  3. Seleccionar un día
  * 
  * @example
  * // Uso básico con rango de fechas
