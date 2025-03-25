@@ -35,6 +35,7 @@ export type VoucherItem = {
   canDebit?: boolean //para el uso de inputs en los asientos modelo
   canAsset?: boolean
   percentage?: number // para el calculo de los porcentajes en los asientos modelo
+  accountDescription?: string
 };
 
 export enum VoucherType {
