@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { REPORTS_LOGO_URL } from "@/lib/constants";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 

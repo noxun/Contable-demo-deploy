@@ -16,13 +16,7 @@ import DialogFormNewVoucher from "./DialogFormNewVoucher";
 import { memo } from "react";
 
 interface MemoizedBankRowProps {
-  bankExtract: {
-    id: number;
-    type: number | undefined;
-    accountId: number;
-    accountingEntry: boolean;
-    accountDetail: string;
-  };
+  bankExtract: BankExcerpt
   bankId: string | number;
   selectedAccounts: {
     [key: number]: number | null;
@@ -44,6 +38,7 @@ const MemoizedBankRow = memo(function MemoizedBankRow({
 }: MemoizedBankRowProps) {
   return (
     <RegisterSeat
+      bankExtract={bankExtract}
       registeredType={bankExtract.type}
       bankExtractId={bankExtract.id}
       accountDetail={bankExtract.accountDetail}
@@ -61,6 +56,7 @@ const MemoizedBankRow = memo(function MemoizedBankRow({
 });
 
 export function columns(
+  bankAccountId: string | null,
   bankId: string | number,
   selectedAccounts: BankSelectionState,
   selectedTypes: TypeSelectionState,
@@ -113,6 +109,8 @@ export function columns(
         return (
           <div className="flex items-center gap-2">
             <DialogFormNewVoucher
+              bankAccountId={bankAccountId!}
+              amountFromExtract={bankExtract.amount}
               bankId={bankId as string}
               bankExtractId={bankExtract.id}
               disabled={bankExtract.accountingEntry}

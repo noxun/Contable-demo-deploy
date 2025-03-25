@@ -453,7 +453,7 @@ const AccountInfo = ({
   const [filteredAccounts, setFilteredAccounts] = useState<AccountData[] | []>([])
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOnSearch = async () => {
+  const handleOnSearch = useCallback( async () => {
     setIsLoading(true)
     await new Promise((resolve) => setTimeout(resolve, 300));
     const filteredItems = currentAccounts.filter((account) => {
@@ -461,11 +461,11 @@ const AccountInfo = ({
     })
     setFilteredAccounts(filteredItems)
     setIsLoading(false)
-  }
+  },[currentAccounts, searchTerm])
 
   useEffect(() => {
     handleOnSearch()
-  }, [debouncedValue]);
+  }, [debouncedValue, handleOnSearch]);
 
 
   return (

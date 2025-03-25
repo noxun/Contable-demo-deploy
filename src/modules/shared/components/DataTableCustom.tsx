@@ -95,7 +95,7 @@ export function DataTableCustom<TData, TValue>({
       });
     });
     return sums;
-  }, [columns, visibleRows]);
+  }, [columns, table]);
 
   return (
     <div>

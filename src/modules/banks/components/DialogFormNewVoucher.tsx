@@ -15,6 +15,8 @@ import { ReceiptText } from "lucide-react";
 import { useState } from "react";
 
 type DialogFormNewVoucherProps = {
+  bankAccountId?: string;
+  amountFromExtract?: number;
   bankId: string;
   bankExtractId: number;
   disabled?: boolean;
@@ -22,6 +24,8 @@ type DialogFormNewVoucherProps = {
 };
 
 export default function DialogFormNewVoucher({
+  bankAccountId,
+  amountFromExtract,
   bankId,
   bankExtractId,
   disabled,
@@ -38,7 +42,7 @@ export default function DialogFormNewVoucher({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" disabled={disabled}>
+        <Button variant="outline" size="icon" disabled={disabled} title="Registro Avanzado">
           <ReceiptText className="size-4" />
         </Button>
       </DialogTrigger>
@@ -52,6 +56,8 @@ export default function DialogFormNewVoucher({
           <div>Cargando items...</div>
         ) : (
           <FormNewVoucherWithTypeSelect
+            bankAccountId={bankAccountId}
+            amountFromExtract={amountFromExtract}
             bankId={bankId}
             bankExtractId={bankExtractId}
             gloss={gloss}

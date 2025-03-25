@@ -72,7 +72,7 @@ export const TableBank = (props: { data: Bank[] }) => {
             {/* <DialogExcerptTable bankId={bank.id}/> */}
             <BiggerBookByAccountCodeDialog accountCode={bank.code}/>
             <Button asChild>
-              <Link href={`/dashboard/accounting/banks/${bank.id}/${bank.name}/extracts`}>
+              <Link href={`/dashboard/accounting/banks/${bank.id}/${bank.name}/extracts?bankAccountId=${bank.accountId}`}>
                 Ver Extractos
               </Link>
             </Button>

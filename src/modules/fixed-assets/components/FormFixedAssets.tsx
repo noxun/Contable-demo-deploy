@@ -70,7 +70,7 @@ export const FormFixedAssets = ({ defaultValueForm, mode, idAsset }: Props) => {
 
   useEffect(() => {
     fixedAssetForm.reset(defaultValueForm);
-  }, [defaultValueForm]);
+  }, [defaultValueForm, fixedAssetForm]);
 
   //logica para enviar el fomulario
   const onSumbit = (data: SchemaFixedAsset) => {
