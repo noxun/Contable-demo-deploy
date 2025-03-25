@@ -21,10 +21,13 @@ type DateSelectorProps = {
 
 /**
  * @description 
- *  Componente para seleccionar fechas mediante 3 opciones: .
- *  1. Seleccionar rango de fechas
- *  2. Seleccionar mes
- *  3. Seleccionar un día
+ *  Componente para seleccionar fechas por mediante selectores de calendarios por 
+ *  dia, Mes y Rango de fechas.
+ * 
+ * @props
+ * - `onDateChange`: se ejecuta al cambiar las fechas.
+ * - Esta función debe tener una referencia estable (StableCallback).
+ * - Debe aceptar dos parámetros: `initDate` (fecha de inicio) y `endDate` (fecha de fin), am
  * 
  * @example
  * // Uso básico con rango de fechas
