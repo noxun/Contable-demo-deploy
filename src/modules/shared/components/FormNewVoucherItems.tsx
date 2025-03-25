@@ -172,6 +172,7 @@ export default function FormNewVoucherItems({
     listVoucherItem[index] = {
       ...listVoucherItem[index],
       accountId: option ? option.value : "",
+      accountDescription: option ? option.label : "",
     };
     setVoucherItems(listVoucherItem);
   }
