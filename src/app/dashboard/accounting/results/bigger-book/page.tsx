@@ -244,7 +244,7 @@ const AccountSection = () => {
     },
   ];
   //metodo para cambiar la fecha
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleDateChange = useCallback((startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setCurrentSearchType("date")
       setCurrentAccountIndex(0)
@@ -255,8 +255,7 @@ const AccountSection = () => {
         to: endDate
       })
     }
-  };
-
+  },[])
   const handleSelect = (value: any) => {
     setResetSearch(false)
     setActiveFile(null)

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash"
 import { DateSelector } from "@/modules/shared/components/DateSelector"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { DateRange } from "react-day-picker"
 import { FinancialRatiosBarChart } from "@/modules/results/components/FinancialRatiosBarChar";
 import { Button } from "@/components/ui/button";
@@ -161,14 +161,14 @@ export default function FinancialRatiosPage() {
   );
 
 
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+  const handleDateChange = useCallback( (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       setDateRange({
         from: startDate,
         to: endDate,
       });
     }
-  };
+  },[]);
 
   const handleOnGenerateExcel = async () => {
     toast('generando excel...')
