@@ -74,16 +74,24 @@ export default function RegisterSeat({
   });
 
   function handleRegister() {
-    console.log(selectedAccountId, selectedType);
-    if (selectedAccountId && (selectedType || selectedType === 0)) {
+    const accountToRegister = selectedAccountId ?? 
+      (accounts?.find(account => account.code === bankExtract.accountCode)?.id ?? null);
+    
+    const typeToRegister = selectedType ?? bankExtract.type;
+  
+    if (accountToRegister && (typeToRegister || typeToRegister === 0)) {
       const values = {
         bankExtractId,
-        accountId: selectedAccountId,
-        type: selectedType.toString(),
+        accountId: accountToRegister,
+        type: typeToRegister.toString(),
       };
+      console.log("registering", bankExtractId, accountToRegister, typeToRegister);
       registerSeatMutation.mutate(values);
+    } else {
+      toast.error("Por favor seleccione una cuenta y un tipo de registro");
     }
   }
+
 
   if (isPending || accounts === undefined) {
     return <Spinner />;
