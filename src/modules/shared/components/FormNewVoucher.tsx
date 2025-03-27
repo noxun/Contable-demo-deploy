@@ -686,39 +686,11 @@ export default function FormNewVoucher({
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2 justify-around">
                   <FormLabel>Fecha*</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "dd 'de' MMMM 'de' yyyy", {
-                              locale: es,
-                            })
-                          ) : (
-                            <span>Seleccione la fecha</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={new Date(field.value!)}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                        locale={es}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                    <Input
+                      type="date"
+                      {...field}
+                      value={field.value instanceof Date ? field.value.toISOString().split("T")[0] : field.value}
+                    />
                   <FormMessage />
                 </FormItem>
               )}
