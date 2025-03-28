@@ -13,10 +13,34 @@ import {
 } from "@/components/ui/popover";
 import { DateRange } from "react-day-picker";
 import { es } from "date-fns/locale";
+import { StableCallback } from "../types/sharedTypes";
 
 type DateSelectorProps = {
-  onDateChange: (initDate: Date | null, endDate: Date | null) => void;
+  onDateChange: StableCallback<(initDate: Date | null, endDate: Date | null) => void>;
 };
+
+/**
+ * @description 
+ *  Componente para seleccionar fechas por mediante selectores de calendarios por 
+ *  dia, Mes y Rango de fechas.
+ * 
+ * @props
+ * - `onDateChange`: se ejecuta al cambiar las fechas.
+ * - Esta función debe tener una referencia estable (StableCallback).
+ * - Debe aceptar dos parámetros: `initDate` (fecha de inicio) y `endDate` (fecha de fin), am
+ * 
+ * @example
+ * // Uso básico con rango de fechas
+ * const handleDateChange = (startDate, endDate) => {
+ *   if (startDate && endDate) {
+ *     console.log("Rango seleccionado:", startDate.toISOString(), endDate.toISOString());
+ *   } else if (startDate) {
+ *     console.log("Día/mes seleccionado:", startDate.toISOString());
+ *   }
+ * };
+ * 
+ * <DateSelector onDateChange={handleDateChange} />
+ */
 
 export const DateSelector: React.FC<DateSelectorProps> = ({ onDateChange }) => {
   const [date, setDate] = useState<DateRange | undefined>({

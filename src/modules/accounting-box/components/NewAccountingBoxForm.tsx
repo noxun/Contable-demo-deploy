@@ -51,8 +51,10 @@ const newAccountingBoxFormSchema = z.object({
   hojaDeRuta: z.string().optional(),
   nombre: z.string(),
   detalle: z.string(),
-  invoiceNumber: z.string(),
-  provider: z.string(),
+  invoice: z.string().optional(),
+  nit: z.string().optional(),
+  invoiceNumber: z.string().optional(),
+  provider: z.string().optional(),
   valorPagado: z.coerce.number().min(0, "El valor pagado debe ser mayor a 0"),
   // .refine(
   //   (value) => value <= (balance?. ?? 0),
@@ -90,6 +92,8 @@ export default function NewAccountingBoxForm({
       detalle: "",
       provider: "",
       invoiceNumber: "0",
+      invoice: "",
+      nit: "",
     },
   });
 
@@ -406,6 +410,34 @@ export default function NewAccountingBoxForm({
                   <Input placeholder="Proveedor" {...field} />
                 </FormControl>
                 <FormDescription>Proveedor</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>NIT</FormLabel>
+                <FormControl>
+                  <Input placeholder="nit" {...field} />
+                </FormControl>
+                <FormDescription>NIT</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="invoice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Valor Factura</FormLabel>
+                <FormControl>
+                  <Input placeholder="valor factura" {...field} />
+                </FormControl>
+                <FormDescription>Valor de la factura</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
