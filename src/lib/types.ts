@@ -134,6 +134,14 @@ export type BankExcerpt = {
   typeTransacction: string; //estos campos solo se rellenan si se sube desde el excel
 };
 
+export type BankExcerptResponse = {
+  items: BankExcerpt[];
+  totalCount: number;
+  pageSize : number;
+  currentPage: number;
+  totalPages: number;
+}
+
 export type BankExcerptData = {
   id: number;
   date: string;

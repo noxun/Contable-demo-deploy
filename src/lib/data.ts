@@ -5,6 +5,7 @@ import {
   AccountRelation,
   Bank,
   BankExcerpt,
+  BankExcerptResponse,
   BankExtractPaymentFile,
   BookBiggerData,
   Branch,
@@ -386,14 +387,19 @@ export async function fetchUserRoles(userId: number) {
   return response.data as Role[];
 }
 
-export async function fetchBankExcerpt(bankId: string) {
+export async function fetchBankExcerpt(bankId: string, page:number, pageSize:number) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/bank/getextract/${bankId}`);
-  return response.data as BankExcerpt[];
+  const response = await api.get(`/api/bank/getextract/${bankId}`, {
+    params: {
+      pageNumber: page,
+      pageSize: pageSize,
+    },
+  });
+  return response.data as BankExcerptResponse;
 }
 
 // export async function fetchBankExcerptData(bankExcerptId: string) {
