@@ -53,9 +53,9 @@ export default function ButtonRegisterVoucherByDoc({
   });
 
   const handleClick = async () => {
-    const itemsToRegister = items.filter(
-      (subData) => !subData.recibo && subData.description2
-    );
+    // const itemsToRegister = items.filter(
+    //   (subData) => !subData.recibo && subData.description2
+    // );
     // solo subdatas con recibo false
     const finalData = {
       sucursal,
@@ -63,7 +63,7 @@ export default function ButtonRegisterVoucherByDoc({
       internCode,
       companyRazonSocial,
       userId,
-      items: itemsToRegister,
+      items: items,
     };
 
     const returnedData = await registerVoucherByDocumentMutation.mutateAsync({

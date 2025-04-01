@@ -390,8 +390,8 @@ export default function FormNewVoucher({
       voucherForm.reset();
       setSelectedCompanyOption(null);
       setSelectedCompanyId(null);
-      setSelectedModelSeat(null);
-      setSelectedModelSeatType(undefined);
+      //setSelectedModelSeat(null);
+      //setSelectedModelSeatType(undefined);
       setApplyGlossToAll(false);
     },
     onError: (error) => {
