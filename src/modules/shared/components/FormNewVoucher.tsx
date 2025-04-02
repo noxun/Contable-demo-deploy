@@ -232,7 +232,7 @@ export default function FormNewVoucher({
           {
             debitBs: 0,
             debitSus: 0,
-            assetBs: amountFromExtract,
+            assetBs: Math.abs(amountFromExtract),
             assetSus: 0,
             gloss: gloss ?? "",
             accountId: bankAccountId,
@@ -244,7 +244,7 @@ export default function FormNewVoucher({
       } else {
         setVoucherItems([
           {
-            debitBs: amountFromExtract,
+            debitBs: Math.abs(amountFromExtract),
             debitSus: 0,
             assetBs: 0,
             assetSus: 0,
