@@ -223,12 +223,10 @@ export default function PdfVoucher({
                 <Text style={tw("w-[20%]")}>DESCRIPCIÓN:</Text>
                 <Text style={tw("flex-1 text-right pr-2")}>TOTALES:</Text>
                 <Text style={tw("w-[15%]")}>
-                  {/* {numberWithDecimals(totalDebitBs)} */}
-                  123456789012345
+                  {numberWithDecimals(totalDebitBs)}
                 </Text>
                 <Text style={tw("w-[15%]")}>
-                  {/* {numberWithDecimals(totalAssetBs)} */}
-                  123456789012345
+                  {numberWithDecimals(totalAssetBs)}
                 </Text>
                 {/* <Text style={tw("w-[10%]")}>
                   {numberWithDecimals(totalDebitSus)}
