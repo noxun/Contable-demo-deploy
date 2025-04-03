@@ -166,13 +166,13 @@ export default function PdfVoucher({
                 <Text style={tw("flex-1 text-center border-r py-4")}>
                   CUENTAS
                 </Text>
-                <Text style={tw("w-[20%] text-center border-r py-4")}>
+                <Text style={tw("w-[15%] text-center border-r py-4")}>
                   HOJA RUTA
                 </Text>
-                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                <Text style={tw("w-[15%] text-center border-r py-4")}>
                   DEBE Bs.
                 </Text>
-                <Text style={tw("w-[10%] text-center border-r py-4")}>
+                <Text style={tw("w-[15%] text-center border-r py-4")}>
                   HABER Bs.
                 </Text>
                 {/* <Text style={tw("w-[10%] text-center border-r py-4")}>
@@ -192,13 +192,13 @@ export default function PdfVoucher({
                   <Text style={tw("border-r flex-1")}>
                     {item?.description ?? "desc"}
                   </Text>
-                  <Text style={tw("w-[20%] border-r text-right")}>
+                  <Text style={tw("w-[15%] border-r text-right")}>
                     {item.hojaDeRuta ?? " "}
                   </Text>
-                  <Text style={tw("w-[10%] border-r text-right")}>
+                  <Text style={tw("w-[15%] border-r text-right")}>
                     {numberWithDecimals(item.debitBs ?? 0)}
                   </Text>
-                  <Text style={tw("w-[10%] border-r text-right")}>
+                  <Text style={tw("w-[15%] border-r text-right")}>
                     {numberWithDecimals(item.assetBs ?? 0)}
                   </Text>
                   {/* <Text style={tw("w-[10%] border-r text-right")}>
@@ -213,20 +213,22 @@ export default function PdfVoucher({
               <View style={tw("w-full flex flex-row border flex-1")}>
                 <Text style={tw("w-[20%] border-r")}></Text>
                 <Text style={tw("border-r flex-1")}></Text>
-                <Text style={tw("w-[20%] border-r text-right")}></Text>
-                <Text style={tw("w-[10%] border-r text-right")}></Text>
-                <Text style={tw("w-[10%] border-r text-right")}></Text>
+                <Text style={tw("w-[15%] border-r text-right")}></Text>
+                <Text style={tw("w-[15%] border-r text-right")}></Text>
+                <Text style={tw("w-[15%] border-r text-right")}></Text>
                 {/* <Text style={tw("w-[10%] border-r text-right")}></Text> */}
               </View>
               {/* Footer tabla */}
               <View style={tw("w-full flex flex-row")}>
                 <Text style={tw("w-[20%]")}>DESCRIPCIÓN:</Text>
-                <Text style={tw("flex-1 text-right")}>TOTALES</Text>
-                <Text style={tw("w-[10%]")}>
-                  {numberWithDecimals(totalDebitBs)}
+                <Text style={tw("flex-1 text-right pr-2")}>TOTALES:</Text>
+                <Text style={tw("w-[15%]")}>
+                  {/* {numberWithDecimals(totalDebitBs)} */}
+                  123456789012345
                 </Text>
-                <Text style={tw("w-[10%]")}>
-                  {numberWithDecimals(totalAssetBs)}
+                <Text style={tw("w-[15%]")}>
+                  {/* {numberWithDecimals(totalAssetBs)} */}
+                  123456789012345
                 </Text>
                 {/* <Text style={tw("w-[10%]")}>
                   {numberWithDecimals(totalDebitSus)}
@@ -235,13 +237,13 @@ export default function PdfVoucher({
                   {numberWithDecimals(totalAssetSus)}
                 </Text> */}
               </View>
-              {/* LITERAL */}
-              <View style={tw("w-full flex")}>
-                <Text>Son: {totalLiteral}</Text>
-              </View>
               {/* DESCRIPCIÓN */}
-              <View style={tw("w-full flex border-b")}>
+              <View style={tw("w-full flex")}>
                 <Text>{data?.gloss ?? "DESCRIPCIÓN"}</Text>
+              </View>
+              {/* LITERAL */}
+              <View style={tw("w-full flex border-b")}>
+                <Text>Son: {totalLiteral}</Text>
               </View>
               <View style={tw("w-full flex flex-row gap-8")}>
                 <View style={tw("h-20 flex-1 flex")}>
