@@ -37,7 +37,7 @@ export default function ListFolders() {
     return <div>Hubo un error al obtener las carpetas</div>;
   }
 
-  if (isLoading && !internCodes && !pagination) {
+  if (isLoading || !internCodes || !pagination) {
     return <div>Cargando datos...</div>;
   }
 
@@ -120,7 +120,7 @@ export default function ListFolders() {
   };
 
   return (
-    <>
+    <main className="flex flex-col gap-4">
       <Input
         type="search"
         value={searchQuery}
@@ -183,6 +183,6 @@ export default function ListFolders() {
           </div>
         </div>
       )}
-    </>
+    </main>
   );
 }
