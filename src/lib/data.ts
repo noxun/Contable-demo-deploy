@@ -1351,12 +1351,14 @@ export async function getAllDataReportByType({
   typePath,
   level,
   inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typePath: PathReport;
   level?: LevelData;
   inSus?: boolean;
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1369,7 +1371,8 @@ export async function getAllDataReportByType({
       InitDate: iDate,
       EndDate: eDate,
       Level: level,
-      InSus: inSus
+      InSus: inSus,
+      sucursalId
     },
   });
   return response.data;
