@@ -357,7 +357,7 @@ export async function createNewBranch(data: Branch) {
   return response.data;
 }
 
-export async function updateBranch(data:BranchEditForm){
+export async function updateBranch(data: BranchEditForm) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -834,11 +834,13 @@ export async function getBigguerBookinExcel({
   endDate,
   search,
   inSus = false,
+  sucursalId
 }: {
   initDate?: string;
   endDate?: string;
   search?: string;
   inSus?: boolean;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -852,6 +854,7 @@ export async function getBigguerBookinExcel({
       initDate: initDate,
       endDate: endDate,
       search: search,
+      sucursalId
     },
   });
   return response.data;
@@ -1272,10 +1275,10 @@ export async function fetchPaySlipData(
   setAuthToken(token);
   const response = await api.get(
     `/api/SalariesAndWages/payment-slip/${idSalaryWages}`, {
-      params: {
-        datePaySlip
-      }
+    params: {
+      datePaySlip
     }
+  }
   );
   return response.data;
 }
@@ -1319,7 +1322,8 @@ export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
 export async function fetchDiaryBookData(
   InitDate: string,
   EndDate: string,
-  inSus: boolean
+  inSus: boolean,
+  sucursalId?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1332,6 +1336,7 @@ export async function fetchDiaryBookData(
       InitDate,
       EndDate,
       inSus,
+      sucursalId
     },
   });
   return response.data as DiaryBookResponse;
@@ -1346,12 +1351,14 @@ export async function getAllDataReportByType({
   typePath,
   level,
   inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typePath: PathReport;
   level?: LevelData;
   inSus?: boolean;
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1364,7 +1371,8 @@ export async function getAllDataReportByType({
       InitDate: iDate,
       EndDate: eDate,
       Level: level,
-      InSus: inSus
+      InSus: inSus,
+      sucursalId
     },
   });
   return response.data;
@@ -1377,13 +1385,15 @@ export async function getAllDataBalanceGeneral({
   eDate,
   typeFetchBalance,
   level,
-  inSus = false
+  inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
-  inSus?: boolean
+  inSus?: boolean;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1397,7 +1407,8 @@ export async function getAllDataBalanceGeneral({
         InitDate: iDate,
         EndDate: eDate,
         Type: typeFetchBalance,
-        inSus
+        inSus,
+        sucursalId
       },
     });
     return response.data;
@@ -1411,13 +1422,15 @@ export async function getAllDataStatementIncome({
   eDate,
   typeFetchBalance,
   level,
-  inSus = false
+  inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
   inSus?: boolean
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1431,7 +1444,8 @@ export async function getAllDataStatementIncome({
         InitDate: iDate,
         EndDate: eDate,
         Type: typeFetchBalance,
-        InSus: inSus
+        InSus: inSus,
+        sucursalId
       },
     });
     return response.data;
@@ -1445,11 +1459,13 @@ export async function getAllDataCashFlow({
   eDate,
   typeFetchBalance,
   level,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1462,7 +1478,8 @@ export async function getAllDataCashFlow({
         Level: level,
         InitDate: iDate,
         EndDate: eDate,
-        Type: typeFetchBalance
+        Type: typeFetchBalance,
+        sucursalId
       },
     });
     return response.data;
@@ -1475,14 +1492,15 @@ export async function getAllDataCashFlowTemporal({
   iDate,
   eDate,
   level,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   level?: LevelData;
+  sucursalId?: string
 }) {
-  const datos = {}
-  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level })
-  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level })
+  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level, sucursalId })
+  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level, sucursalId })
   console.log('tenemos los datos de: ', balanceGeneral, estadoResultados)
   return {
     balanceSheet: balanceGeneral,
@@ -1493,7 +1511,8 @@ export async function getAllDataCashFlowTemporal({
 export async function generateDiaryBookExcel(
   InitDate: string,
   endDate: string,
-  inSus: boolean
+  inSus: boolean,
+  sucursalId?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1507,6 +1526,7 @@ export async function generateDiaryBookExcel(
       InitDate,
       endDate,
       inSus,
+      sucursalId
     },
   });
   return response.data as string;

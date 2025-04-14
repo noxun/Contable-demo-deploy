@@ -10,9 +10,11 @@ import { toast } from "sonner";
 export default function DiaryBookExcelButton({
   dateRange,
   inSus,
+  sucursalId
 }: {
   dateRange: DateRange;
   inSus: boolean;
+  sucursalId?: string;
 }) {
   const initDate = format(dateRange.from!, "yyyy/MM/dd");
   const endDate = format(dateRange.to!, "yyyy/MM/dd");
@@ -21,7 +23,7 @@ export default function DiaryBookExcelButton({
     refetch,
     isLoading,
     isError,
-  } = useDiaryBookExcel(initDate, endDate, inSus, false);
+  } = useDiaryBookExcel(initDate, endDate, inSus, false, sucursalId);
 
   if (isError) return <Button disabled>Error</Button>;
   const handleOnClick = async () => {
