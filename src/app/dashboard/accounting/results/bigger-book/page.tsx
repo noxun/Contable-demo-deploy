@@ -38,7 +38,7 @@ import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButt
 import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { getApiReportExcel, getBigguerBookinExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
+import { fetchBranches, getApiReportExcel, getBigguerBookinExcel, numberToLiteral, searchByAccountBigguerBook } from "@/lib/data";
 import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { useDebounce } from "use-debounce";
@@ -49,6 +49,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { ColumnDef } from "@tanstack/react-table";
 import { BookBiggerData, BookBiggerDataVoucherItem } from "@/lib/types";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 // Types
 type VoucherItem = {
@@ -136,15 +137,20 @@ const AccountSection = () => {
   const [currentAccountIndex, setCurrentAccountIndex] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [inSus, setInSus] = useState(false)
+  const [branch, setBrach] = useState<string | undefined>(undefined)
   const [activeFile, setActiveFile] = useState<JSX.Element | null>(null)
   const [editData, setEditData] = useState<{
     id: string;
     type: VoucherType;
   } | null>(null);
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
 
   // hook para obtener los datos apartir de un rango de fechas
   const { data: accountsData, isLoading: isLoadingAccounts } = useQuery({
-    queryKey: ["bookBiggerData", JSON.stringify(accountDate)], //stringify para que react query compare el valor de la cadena, ya que no puede comparar objetos
+    queryKey: ["bookBiggerData", JSON.stringify(accountDate), branch], //stringify para que react query compare el valor de la cadena, ya que no puede comparar objetos
     queryFn: async () => {
       if (!accountDate?.from || !accountDate?.to) return null;
 
@@ -154,9 +160,9 @@ const AccountSection = () => {
           params: {
             InitDate: format(accountDate.from, "yyyy/MM/dd"),
             EndDate: format(accountDate.to, "yyyy/MM/dd"),
-
             type: "json",
             businessId: 0,
+            ...(branch ? { sucursalId: branch } : {})
           },
         }
       );
@@ -255,7 +261,7 @@ const AccountSection = () => {
         to: endDate
       })
     }
-  },[])
+  }, [])
   const handleSelect = (value: any) => {
     setResetSearch(false)
     setActiveFile(null)
@@ -288,6 +294,18 @@ const AccountSection = () => {
               <Checkbox id="inSus" checked={inSus} onCheckedChange={handleChangeIsSus} />
               <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
             </div>
+          </div>
+
+          <div>
+            <SelectAsync
+              options={branches || []}
+              label="Seleccione una sucursal..."
+              nameGroup="Sucursales"
+              labelKey={"nameSucutsal"}
+              valueKey={"id"}
+              value={branch}
+              onChange={setBrach}
+            />
           </div>
 
           <Button disabled={isLoadingAccounts}>
@@ -452,7 +470,7 @@ const AccountInfo = ({
   const [filteredAccounts, setFilteredAccounts] = useState<AccountData[] | []>([])
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOnSearch = useCallback( async () => {
+  const handleOnSearch = useCallback(async () => {
     setIsLoading(true)
     await new Promise((resolve) => setTimeout(resolve, 300));
     const filteredItems = currentAccounts.filter((account) => {
@@ -460,7 +478,7 @@ const AccountInfo = ({
     })
     setFilteredAccounts(filteredItems)
     setIsLoading(false)
-  },[currentAccounts, searchTerm])
+  }, [currentAccounts, searchTerm])
 
   useEffect(() => {
     handleOnSearch()
@@ -580,9 +598,10 @@ interface Props {
   dateRange: DateRange,
   inSus: boolean,
   search: string,
+  sucursalId?: string
 }
 
-const BiggerBookExcelGenerate = ({ dateRange, search, inSus }: Props) => {
+const BiggerBookExcelGenerate = ({ dateRange, search, inSus, sucursalId }: Props) => {
 
 
   const initialDate = dateRange.from && format(dateRange.from, "yyyy-MM-dd")
@@ -590,12 +609,13 @@ const BiggerBookExcelGenerate = ({ dateRange, search, inSus }: Props) => {
 
 
   const { refetch, isLoading } = useQuery({
-    queryKey: [dateRange, search],
+    queryKey: [dateRange, search, sucursalId],
     queryFn: () => getBigguerBookinExcel({
       initDate: initialDate,
       endDate: finallyDate,
       search: search,
-      inSus
+      inSus,
+      sucursalId
     }),
     enabled: false
   })

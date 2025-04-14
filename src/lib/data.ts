@@ -834,11 +834,13 @@ export async function getBigguerBookinExcel({
   endDate,
   search,
   inSus = false,
+  sucursalId
 }: {
   initDate?: string;
   endDate?: string;
   search?: string;
   inSus?: boolean;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -852,6 +854,7 @@ export async function getBigguerBookinExcel({
       initDate: initDate,
       endDate: endDate,
       search: search,
+      sucursalId
     },
   });
   return response.data;
