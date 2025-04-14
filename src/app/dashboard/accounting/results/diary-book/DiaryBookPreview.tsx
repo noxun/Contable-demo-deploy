@@ -9,11 +9,13 @@ import { Virtuoso } from "react-virtuoso";
 type DiaryBookPreviewProps = {
   dateRange: DateRange;
   inSus: boolean;
+  sucursalID?: string;
 };
 
 export default function DiaryBookPreview({
   dateRange,
   inSus,
+  sucursalID
 }: DiaryBookPreviewProps) {
   const initDate = format(dateRange.from!, "yyyy/MM/dd");
   const endDate = format(dateRange.to!, "yyyy/MM/dd");
@@ -25,7 +27,7 @@ export default function DiaryBookPreview({
     data: diaryBookData,
     isLoading,
     isError,
-  } = useDiaryBookData(initDate, endDate, inSus, true);
+  } = useDiaryBookData(initDate, endDate, inSus, true, sucursalID);
 
   //tal vez agregar barra de busqueda luego
 

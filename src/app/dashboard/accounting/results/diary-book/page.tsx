@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import useDiaryBookExcel from "@/modules/shared/hooks/useDiaryBookExcel";
 import DiaryBookExcelButton from "./DiaryBookExcelButton";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { fetchBranches } from "@/lib/data";
+import { useQuery } from "@tanstack/react-query";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -23,12 +26,17 @@ export default function DiaryBookPage() {
   const initialDateRange: DateRange = {
     from: new Date(Date.now()),
   };
+  const [branch, setBrach] = useState<string | undefined>(undefined);
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [pdfFile, setPdfFile] = useState<React.JSX.Element | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange>(initialDateRange);
   const [inSus, setInSus] = useState(false);
   const [excelEnabled, setExcelEnabled] = useState(false);
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
 
   const handleChangeIsSus = () => setInSus(!inSus);
 
@@ -40,7 +48,7 @@ export default function DiaryBookPage() {
         to: endDate,
       });
     }
-  },[]);
+  }, []);
 
   return (
     <>
@@ -74,18 +82,31 @@ export default function DiaryBookPage() {
             <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
           </div>
         </div>
+        <div>
+          <SelectAsync
+            options={branches || []}
+            label="Seleccione una sucursal..."
+            nameGroup="Sucursales"
+            labelKey={"nameSucutsal"}
+            valueKey={"id"}
+            value={branch}
+            onChange={setBrach}
+          />
+        </div>
+
         {/* seccion para generar el reporte y descargar */}
         <div className="flex gap-4 py-3 flex-row justify-end w-full md:flex-col md:w-auto sm:justify-start">
           <ReportGeneratorFile
             dateRange={dateRange!}
             inSus={inSus}
+            sucursalId={branch}
             reportNamePath="diarybook"
             setGeneratedFiles={setGeneratedFiles}
             setShowDialog={setShowDialog}
             setFile={setPdfFile}
           />
           {dateRange.from && dateRange.to && (
-            <DiaryBookExcelButton dateRange={dateRange} inSus={inSus} />
+            <DiaryBookExcelButton dateRange={dateRange} inSus={inSus} sucursalId={branch} />
           )}
         </div>
       </div>
@@ -99,7 +120,7 @@ export default function DiaryBookPage() {
 
       <div>
         {dateRange.from && dateRange.to && (
-          <DiaryBookPreview dateRange={dateRange} inSus={inSus} />
+          <DiaryBookPreview dateRange={dateRange} inSus={inSus} sucursalID={branch} />
         )}
       </div>
       {/* alternativa para descargar  */}

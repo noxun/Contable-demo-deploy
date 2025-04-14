@@ -357,7 +357,7 @@ export async function createNewBranch(data: Branch) {
   return response.data;
 }
 
-export async function updateBranch(data:BranchEditForm){
+export async function updateBranch(data: BranchEditForm) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -1272,10 +1272,10 @@ export async function fetchPaySlipData(
   setAuthToken(token);
   const response = await api.get(
     `/api/SalariesAndWages/payment-slip/${idSalaryWages}`, {
-      params: {
-        datePaySlip
-      }
+    params: {
+      datePaySlip
     }
+  }
   );
   return response.data;
 }
@@ -1319,7 +1319,8 @@ export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
 export async function fetchDiaryBookData(
   InitDate: string,
   EndDate: string,
-  inSus: boolean
+  inSus: boolean,
+  sucursalId?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1332,6 +1333,7 @@ export async function fetchDiaryBookData(
       InitDate,
       EndDate,
       inSus,
+      sucursalId
     },
   });
   return response.data as DiaryBookResponse;
@@ -1493,7 +1495,8 @@ export async function getAllDataCashFlowTemporal({
 export async function generateDiaryBookExcel(
   InitDate: string,
   endDate: string,
-  inSus: boolean
+  inSus: boolean,
+  sucursalId?: string
 ) {
   let token;
   if (typeof window !== "undefined") {
@@ -1507,6 +1510,7 @@ export async function generateDiaryBookExcel(
       InitDate,
       endDate,
       inSus,
+      sucursalId
     },
   });
   return response.data as string;

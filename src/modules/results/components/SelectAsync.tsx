@@ -20,7 +20,7 @@ export function SelectAsync<T>({
   labelKey = "nombre" as keyof T,
 }: Props<T>) {
   return (
-    <Select value={value ?? ""} onValueChange={(val) => onChange(val === "" ? undefined : val)}>
+    <Select value={value ?? ""} onValueChange={(val) => onChange(val === "all" ? undefined : val)}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={label} />
       </SelectTrigger>
@@ -35,7 +35,7 @@ export function SelectAsync<T>({
               {String(opt[labelKey])}
             </SelectItem>
           ))}
-          <SelectItem value="">Todos</SelectItem>
+          <SelectItem value="all">Todos</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

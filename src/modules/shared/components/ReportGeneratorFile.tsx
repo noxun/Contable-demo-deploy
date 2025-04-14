@@ -18,6 +18,7 @@ interface GeneratedFile {
 interface ReportGeneratorProps {
   dateRange: DateRange;
   inSus: boolean;
+  sucursalId?: string
   reportNamePath: string;
   paramType?: string;
   setGeneratedFiles: React.Dispatch<React.SetStateAction<GeneratedFile[]>>;
@@ -28,6 +29,7 @@ interface ReportGeneratorProps {
 export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   dateRange,
   inSus,
+  sucursalId,
   reportNamePath,
   paramType,
   setGeneratedFiles,
@@ -52,6 +54,7 @@ export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
             InitDate: format(from, FORMAT_DATE),
             EndDate: format(to, FORMAT_DATE),
             inSus,
+            sucursalId,
             type: paramType,
           },
           responseType: "json",
