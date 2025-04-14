@@ -1459,11 +1459,13 @@ export async function getAllDataCashFlow({
   eDate,
   typeFetchBalance,
   level,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1476,7 +1478,8 @@ export async function getAllDataCashFlow({
         Level: level,
         InitDate: iDate,
         EndDate: eDate,
-        Type: typeFetchBalance
+        Type: typeFetchBalance,
+        sucursalId
       },
     });
     return response.data;
@@ -1489,14 +1492,15 @@ export async function getAllDataCashFlowTemporal({
   iDate,
   eDate,
   level,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   level?: LevelData;
+  sucursalId?: string
 }) {
-  const datos = {}
-  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level })
-  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level })
+  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level, sucursalId })
+  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level, sucursalId })
   console.log('tenemos los datos de: ', balanceGeneral, estadoResultados)
   return {
     balanceSheet: balanceGeneral,
