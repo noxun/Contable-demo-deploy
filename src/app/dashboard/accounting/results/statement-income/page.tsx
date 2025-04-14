@@ -20,12 +20,13 @@ import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataStatementIncome } from "@/lib/data";
+import { fetchBranches, getAllDataStatementIncome } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
 import { StatementIncomePreview } from "@/modules/results/components/StatementIncomePreview";
 import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---
@@ -173,6 +174,12 @@ export default function StatementIncomePage() {
   const [isLoadingStatementIncome, setIsLoadingStatementIncome] = useState(false)
   const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
   const [selectedLevel, setSelectedLevel] = useState<LevelData>(1)
+  const [branch, setBranch] = useState<string | undefined>(undefined)
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
+
 
   const { data: dataStatementIncome, refetch: refetchStatementIncome } = useQuery({
     queryKey: ["AllStatementIncome"],
@@ -181,7 +188,8 @@ export default function StatementIncomePage() {
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 2,
       level: pendingLevel,
-      inSus
+      inSus,
+      sucursalId: branch
     }),
     enabled: false
   })
@@ -193,7 +201,8 @@ export default function StatementIncomePage() {
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 1,
       level: pendingLevel,
-      inSus
+      inSus,
+      ...(branch ? { sucursalId: branch } : {}),
     }),
     retry: 1,
     enabled: false
@@ -208,7 +217,7 @@ export default function StatementIncomePage() {
         to: endDate
       })
     }
-  },[]);
+  }, []);
 
   const handleChangeIsSus = () => setInSus(!inSus)
 
@@ -314,11 +323,20 @@ export default function StatementIncomePage() {
           </div>
         </div>
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
+          <SelectAsync
+            options={branches || []}
+            label="Seleccione una sucursal..."
+            nameGroup="Sucursales"
+            labelKey={"nameSucutsal"}
+            valueKey={"id"}
+            value={branch}
+            onChange={setBranch}
+          />
           <Select
             value={pendingLevel.toString()}
             onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Selecciona un nivel" />
             </SelectTrigger>
             <SelectContent>

@@ -1422,13 +1422,15 @@ export async function getAllDataStatementIncome({
   eDate,
   typeFetchBalance,
   level,
-  inSus = false
+  inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
   inSus?: boolean
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1442,7 +1444,8 @@ export async function getAllDataStatementIncome({
         InitDate: iDate,
         EndDate: eDate,
         Type: typeFetchBalance,
-        InSus: inSus
+        InSus: inSus,
+        sucursalId
       },
     });
     return response.data;
