@@ -1385,13 +1385,15 @@ export async function getAllDataBalanceGeneral({
   eDate,
   typeFetchBalance,
   level,
-  inSus = false
+  inSus = false,
+  sucursalId
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
-  inSus?: boolean
+  inSus?: boolean;
+  sucursalId?: string
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1405,7 +1407,8 @@ export async function getAllDataBalanceGeneral({
         InitDate: iDate,
         EndDate: eDate,
         Type: typeFetchBalance,
-        inSus
+        inSus,
+        sucursalId
       },
     });
     return response.data;

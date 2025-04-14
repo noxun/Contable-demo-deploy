@@ -13,13 +13,14 @@ import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGene
 import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataBalanceGeneral, getAllDataReportByType } from "@/lib/data";
+import { fetchBranches, getAllDataBalanceGeneral, getAllDataReportByType } from "@/lib/data";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
 import { LoaderIcon } from "lucide-react";
 import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 export default function BalanceGeneralPage() {
 
@@ -55,6 +56,11 @@ export default function BalanceGeneralPage() {
   const [isLoadingBalanceGeneral, setIsLoadingBalanceGeneral] = useState(false)
   const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
   const [selectedLevel, setSelectedLevel] = useState<LevelData>(1);
+  const [branch, setBrach] = useState<string | undefined>(undefined);
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
 
 
   const { data: dataBalanceGeneral, refetch: refetchBalanceGeneral } = useQuery({
@@ -64,7 +70,8 @@ export default function BalanceGeneralPage() {
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 2,
       level: pendingLevel,
-      inSus
+      inSus,
+      sucursalId: branch
     }),
     enabled: false
   })
@@ -76,7 +83,8 @@ export default function BalanceGeneralPage() {
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 1,
       level: pendingLevel,
-      inSus
+      inSus,
+      ...(branch ? { sucursalId: branch } : {})
     }),
     retry: 1,
     enabled: false
@@ -175,11 +183,20 @@ export default function BalanceGeneralPage() {
             </div>
           </div>
           <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
+            <SelectAsync
+              options={branches || []}
+              label="Seleccione una sucursal..."
+              nameGroup="Sucursales"
+              labelKey={"nameSucutsal"}
+              valueKey={"id"}
+              value={branch}
+              onChange={setBrach}
+            />
             <Select
               value={pendingLevel.toString()}
               onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
             >
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[100px]">
                 <SelectValue placeholder="Selecciona un nivel" />
               </SelectTrigger>
               <SelectContent>
