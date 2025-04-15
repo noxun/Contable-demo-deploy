@@ -108,6 +108,9 @@ export async function fetchVouchers(
   voucherType: VoucherType,
   page: number = 1,
   pageSize: number = 10,
+  initDate?: string,
+  endDate?: string,
+  gloss?: string,
   siat: "" | "siat" = ""
 ) {
   let token;
@@ -120,6 +123,9 @@ export async function fetchVouchers(
       type: voucherType,
       PageNumber: page,
       PageSize: pageSize,
+      initDate,
+      endDate,
+      gloss: gloss !== "" ? gloss : undefined,
     },
   });
 
