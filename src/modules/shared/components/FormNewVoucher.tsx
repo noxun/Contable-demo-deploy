@@ -633,14 +633,13 @@ export default function FormNewVoucher({
     // Only process if there are items and invoice value exists
     if (voucherItems.length > 0 && invoiceValue) {
       const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue);
-      console.log("EL TOTAL DEL DEBE: ", totalDebitValue)
 
       // Only update if there's an actual change
       if (JSON.stringify(processedItems) !== JSON.stringify(voucherItems)) {
         setVoucherItems(processedItems);
       }
     }
-  }, [invoiceValue, voucherItems, setVoucherItems]);
+  }, [invoiceValue, voucherItems, setVoucherItems, totalDebitValue]);
 
   if (
     branchListQuery.isPending ||
