@@ -88,49 +88,84 @@ const iva = 0.13;
 const it = 0.03;
 const fact = 0.16;
 
-const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact:number, it:number, iva: number) => {
-  // Create a copy of the voucher items to avoid direct mutation
+const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact: number, it: number, iva: number, totalDebit: number) => {
+
+  if (!invoiceValue || isNaN(Number(invoiceValue)) && !invoiceValue) return voucherItems;
+
   const updatedItems = [...voucherItems];
 
-  const factVoucherItem = voucherItems.findIndex((item) =>
-    item.accountDescription?.startsWith("FACT.")
+  const factVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("FACT.")
   );
 
-  const itVoucherItem = voucherItems.findIndex((item) =>
-    item.accountDescription?.startsWith("IT POR PAGAR")
+  const itVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("IT POR PAGAR")
   );
 
-  const ivaVoucherItem = voucherItems.findIndex((item) =>
-    item.accountDescription?.startsWith("IVA") || item.accountDescription?.startsWith("DEBITO FISCAL IVA")
+  const ivaVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("IVA") || accountDescription?.startsWith("DEBITO FISCAL IVA")
   );
 
-  if (invoiceValue && invoiceValue !== "" && factVoucherItem !== -1) {
-    const factValue = Number(invoiceValue) * fact;
-    
-    // Update the specific item without creating a new array reference
+  const utVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("UT ENCARGAD")
+  );
+
+  const iaTransaccionesItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("IMPUESTOS A LAS TRANSACCIONES")
+  );
+
+  const htVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
+    accountDescription?.startsWith("HT ")
+  );
+
+  const values = {
+    factVal: Number(invoiceValue) * fact,
+    itVal: Number(invoiceValue) * it,
+    ivaVal: Number(invoiceValue) * iva,
+    utVal: totalDebit - (Number(invoiceValue) * fact),
+    iatVal: Number(invoiceValue) * it,
+    htVal: totalDebit - (Number(invoiceValue) * iva) - (Number(invoiceValue) * it)
+  }
+
+  if (factVoucherItem !== -1) {
     updatedItems[factVoucherItem] = {
       ...updatedItems[factVoucherItem],
-      assetBs: factValue,
+      assetBs: values.factVal,
     };
   }
 
-  if (invoiceValue && invoiceValue !== "" && itVoucherItem !== -1) {
-    const itValue = Number(invoiceValue) * it;
-    
-    // Update the specific item without creating a new array reference
+  if (itVoucherItem !== -1) {
     updatedItems[itVoucherItem] = {
       ...updatedItems[itVoucherItem],
-      assetBs: itValue,
+      assetBs: values.itVal,
     };
   }
 
-  if (invoiceValue && invoiceValue !== "" && ivaVoucherItem !== -1) {
-    const ivaValue = Number(invoiceValue) * iva;
-    
-    // Update the specific item without creating a new array reference
+  if (ivaVoucherItem !== -1) {
     updatedItems[ivaVoucherItem] = {
       ...updatedItems[ivaVoucherItem],
-      assetBs: ivaValue,
+      assetBs: values.ivaVal,
+    };
+  }
+
+  if (utVoucherItem !== -1) {
+    updatedItems[utVoucherItem] = {
+      ...updatedItems[utVoucherItem],
+      assetBs: values.utVal,
+    };
+  }
+
+  if (iaTransaccionesItem !== -1) {
+    updatedItems[iaTransaccionesItem] = {
+      ...updatedItems[iaTransaccionesItem],
+      debitBs: values.iatVal,
+    };
+  }
+
+  if (htVoucherItem !== -1 && ivaVoucherItem !== -1 && itVoucherItem !== -1) {
+    updatedItems[htVoucherItem] = {
+      ...updatedItems[htVoucherItem],
+      assetBs: values.htVal,
     };
   }
 
@@ -597,8 +632,9 @@ export default function FormNewVoucher({
   useEffect(() => {
     // Only process if there are items and invoice value exists
     if (voucherItems.length > 0 && invoiceValue) {
-      const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva);
-      
+      const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue);
+      console.log("EL TOTAL DEL DEBE: ", totalDebitValue)
+
       // Only update if there's an actual change
       if (JSON.stringify(processedItems) !== JSON.stringify(voucherItems)) {
         setVoucherItems(processedItems);
@@ -686,11 +722,11 @@ export default function FormNewVoucher({
               render={({ field }) => (
                 <FormItem className="flex flex-col mt-2 justify-around">
                   <FormLabel>Fecha*</FormLabel>
-                    <Input
-                      type="date"
-                      {...field}
-                      value={field.value instanceof Date ? field.value.toISOString().split("T")[0] : field.value}
-                    />
+                  <Input
+                    type="date"
+                    {...field}
+                    value={field.value instanceof Date ? field.value.toISOString().split("T")[0] : field.value}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -876,9 +912,8 @@ export default function FormNewVoucher({
               )}
             />
             <div
-              className={`space-y-2 ${
-                voucherFromRegisterByDocResponse ? "hidden" : ""
-              }`}
+              className={`space-y-2 ${voucherFromRegisterByDocResponse ? "hidden" : ""
+                }`}
             >
               <Label>Cliente</Label>
               <CreatableSelect
@@ -905,9 +940,8 @@ export default function FormNewVoucher({
             </div>
             {isPendingTrazoInternCodes ? (
               <div
-                className={`${
-                  voucherFromRegisterByDocResponse ? "hidden" : ""
-                }`}
+                className={`${voucherFromRegisterByDocResponse ? "hidden" : ""
+                  }`}
               >
                 Cargando, Seleccione un cliente para mostrar sus hojas de
                 ruta...
