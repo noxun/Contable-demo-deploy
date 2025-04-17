@@ -14,7 +14,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <SideMenu />
-      <main className="flex flex-col gap-2">
+      <main className="w-full flex flex-col gap-2">
         <div className="w-full px-4 py-1 sticky top-0 z-50 bg-sidebar flex items-center justify-between max-w-full">
           <SidebarTrigger className="size-10 p-[10px] text-black dark:text-white bg-white dark:bg-black border-[1px] border-black/10 dark:border-white/10" />
           <div className="flex items-center gap-2">
@@ -26,7 +26,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </div>
-        <div className="pl-5 max-w-full min-h-screen overflow-x-auto">
+        <div className="px-4 max-w-full min-h-screen w-full overflow-x-auto">
           {children}
         </div>
       </main>
