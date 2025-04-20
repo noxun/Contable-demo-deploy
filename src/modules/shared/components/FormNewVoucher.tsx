@@ -84,11 +84,13 @@ type FormNewVoucherProps = {
   amountFromExtract?: number;
 };
 
+type ModelBloque = "C" | "D" | "";
+
 const iva = 0.13;
 const it = 0.03;
 const fact = 0.16;
 
-const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact: number, it: number, iva: number, totalDebit: number) => {
+const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact: number, it: number, iva: number, totalDebit: number, bloque: ModelBloque) => {
 
   if (!invoiceValue || isNaN(Number(invoiceValue)) && !invoiceValue) return voucherItems;
 
@@ -127,42 +129,42 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     htVal: totalDebit - (Number(invoiceValue) * iva) - (Number(invoiceValue) * it)
   }
 
-  if (factVoucherItem !== -1) {
+  if (factVoucherItem !== -1 && bloque === "C") {
     updatedItems[factVoucherItem] = {
       ...updatedItems[factVoucherItem],
       assetBs: values.factVal,
     };
   }
 
-  if (itVoucherItem !== -1) {
+  if (itVoucherItem !== -1 && bloque === "D") {
     updatedItems[itVoucherItem] = {
       ...updatedItems[itVoucherItem],
       assetBs: values.itVal,
     };
   }
 
-  if (ivaVoucherItem !== -1) {
+  if (ivaVoucherItem !== -1 && bloque === "D") {
     updatedItems[ivaVoucherItem] = {
       ...updatedItems[ivaVoucherItem],
       assetBs: values.ivaVal,
     };
   }
 
-  if (utVoucherItem !== -1) {
+  if (utVoucherItem !== -1 && bloque === "C") {
     updatedItems[utVoucherItem] = {
       ...updatedItems[utVoucherItem],
       assetBs: values.utVal,
     };
   }
 
-  if (iaTransaccionesItem !== -1) {
+  if (iaTransaccionesItem !== -1 && bloque === "D") {
     updatedItems[iaTransaccionesItem] = {
       ...updatedItems[iaTransaccionesItem],
       debitBs: values.iatVal,
     };
   }
 
-  if (htVoucherItem !== -1 && ivaVoucherItem !== -1 && itVoucherItem !== -1) {
+  if (htVoucherItem !== -1 && ivaVoucherItem !== -1 && itVoucherItem !== -1 && bloque === "D") {
     updatedItems[htVoucherItem] = {
       ...updatedItems[htVoucherItem],
       assetBs: values.htVal,
@@ -200,6 +202,7 @@ export default function FormNewVoucher({
   const [selectedModelSeatType, setSelectedModelSeatType] = useState<
     number | undefined
   >();
+  const [selectedBloque, setSelectedBloque] = useState<ModelBloque>("");
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -575,10 +578,32 @@ export default function FormNewVoucher({
     setVoucherItems([]);
     setSelectedModelSeat(selectedOption);
     const modelSeatDetails = await fetchModelSeatsItems(selectedOption.value);
-    console.log("asiento", modelSeatDetails);
-    const updatedVoucherItems = modelSeatDetails.accounts.map((item) => ({
-      // ...voucherItems[0], // Usar el primer item como base o adaptar según sea necesario
+
+    if (modelSeatDetails.description.toUpperCase().includes("BLOQUE - C")) {
+      setSelectedBloque("C")
+    }
+    if (modelSeatDetails.description.toUpperCase().includes("BLOQUE - D")) {
+      setSelectedBloque("D")
+    }
+
+    const flatAccounts = accountsQuery?.data?.flat() ?? [];
+
+    const accountMap = new Map(flatAccounts.map((acc) => [acc.id, acc]));
+
+    const enrichedAccounts = modelSeatDetails.accounts.map((acc) => {
+      const matched = acc.accountId && accountMap.get(Number(acc.accountId));
+      if (matched === undefined || matched === 0) return
+      return {
+        ...acc,
+        accountDescription: matched?.description ?? undefined,
+      };
+    });
+
+
+    const updatedVoucherItems = modelSeatDetails.accounts.map((item, index) => ({
+      // ...voucherItems[0],
       accountId: item.accountId,
+      accountDescription: enrichedAccounts[index]?.accountDescription,
       canDebit: item.debit,
       canAsset: item.asset,
       debitBs: null,
@@ -631,15 +656,16 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     // Only process if there are items and invoice value exists
+
     if (voucherItems.length > 0 && invoiceValue) {
-      const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue);
+      const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue, selectedBloque);
 
       // Only update if there's an actual change
       if (JSON.stringify(processedItems) !== JSON.stringify(voucherItems)) {
         setVoucherItems(processedItems);
       }
     }
-  }, [invoiceValue, voucherItems, setVoucherItems, totalDebitValue]);
+  }, [invoiceValue, voucherItems, setVoucherItems, totalDebitValue, selectedBloque]);
 
   if (
     branchListQuery.isPending ||
