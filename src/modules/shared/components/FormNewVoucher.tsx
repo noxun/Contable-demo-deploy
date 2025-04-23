@@ -82,15 +82,19 @@ type FormNewVoucherProps = {
   voucherFromRegisterByDocResponse?: RegisterVoucherByDocumentResponse;
   bankAccountId?: string;
   amountFromExtract?: number;
+  seatBlockType?: ModelBloque;
 };
 
-type ModelBloque = "C" | "D" | "";
+export type ModelBloque = "C" | "D" | "";
 
 const iva = 0.13;
 const it = 0.03;
 const fact = 0.16;
 
 const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact: number, it: number, iva: number, totalDebit: number, bloque: ModelBloque) => {
+
+  console.log("Called!")
+  console.log(voucherItems);
 
   if (!invoiceValue || isNaN(Number(invoiceValue)) && !invoiceValue) return voucherItems;
 
@@ -120,6 +124,8 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     accountDescription?.startsWith("HT ")
   );
 
+  console.log(factVoucherItem, itVoucherItem, ivaVoucherItem, utVoucherItem, iaTransaccionesItem, htVoucherItem)
+
   const values = {
     factVal: Number(invoiceValue) * fact,
     itVal: Number(invoiceValue) * it,
@@ -128,6 +134,7 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     iatVal: Number(invoiceValue) * it,
     htVal: totalDebit - (Number(invoiceValue) * iva) - (Number(invoiceValue) * it)
   }
+  console.log("values", values)
 
   if (factVoucherItem !== -1 && bloque === "C") {
     updatedItems[factVoucherItem] = {
@@ -171,6 +178,8 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     };
   }
 
+  console.log(updatedItems)
+
   return updatedItems;
 };
 
@@ -184,6 +193,7 @@ export default function FormNewVoucher({
   voucherFromRegisterByDocResponse,
   bankAccountId,
   amountFromExtract,
+  seatBlockType,
 }: FormNewVoucherProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -202,7 +212,7 @@ export default function FormNewVoucher({
   const [selectedModelSeatType, setSelectedModelSeatType] = useState<
     number | undefined
   >();
-  const [selectedBloque, setSelectedBloque] = useState<ModelBloque>("");
+  const [selectedBloque, setSelectedBloque] = useState<ModelBloque>(seatBlockType ?? "");
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -247,7 +257,7 @@ export default function FormNewVoucher({
       voucherFromRegisterByDocResponse &&
       voucherFromRegisterByDocResponse.items
     ) {
-      const newItems = voucherFromRegisterByDocResponse.items.map((item) => ({
+      const newItems: VoucherItem[] = voucherFromRegisterByDocResponse.items.map((item) => ({
         debitBs: item.debitBs,
         debitSus: item.debitSus,
         assetBs: item.assetBs,
@@ -257,6 +267,7 @@ export default function FormNewVoucher({
         voucherId: item.voucherId,
         canDebit: true,
         canAsset: true,
+        accountDescription: item.description,
       }));
 
       setVoucherItems(newItems);
@@ -659,6 +670,8 @@ export default function FormNewVoucher({
 
     if (voucherItems.length > 0 && invoiceValue) {
       const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue, selectedBloque);
+
+      console.log(processedItems)
 
       // Only update if there's an actual change
       if (JSON.stringify(processedItems) !== JSON.stringify(voucherItems)) {
