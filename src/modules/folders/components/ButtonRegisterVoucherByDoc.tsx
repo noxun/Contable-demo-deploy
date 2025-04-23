@@ -90,7 +90,7 @@ export default function ButtonRegisterVoucherByDoc({
         {registerVoucherByDocumentMutation.isPending || !returnedData ? (
           <div>Cargando...</div>
         ) : (
-          <FormNewVoucherWithTypeSelect voucher={returnedData} />
+          <FormNewVoucherWithTypeSelect voucher={returnedData} seatBlockType={type.toUpperCase() as "C" | "D"} />
         )}
       </DialogContent>
     </Dialog>
