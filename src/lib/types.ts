@@ -529,6 +529,7 @@ export type RegisterVoucherByDocumentResponse = {
     assetSus: number;
     gloss: string;
     accountId: number;
+    description: string;
     voucherId: number;
     createdAt: string;
     conceptExpenseId: any;
