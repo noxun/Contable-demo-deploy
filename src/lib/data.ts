@@ -1677,3 +1677,27 @@ export async function deleteAllBankExtracts(bankId: number) {
 
   return response.data;
 }
+
+export async function exportSingleAccountDataToExcel(params: {account: any, initDate: string, endDate: string, inSus: boolean}) {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+
+  const { account, initDate, endDate, inSus } = params;
+
+  const response = await api.post(
+    `/api/Report/BookBigguerDataExelUnit`,
+    account, {
+      responseType: "text",
+      params: {
+        InitDate: initDate,
+        endDate,
+        inSus,
+      }
+    }
+  );
+ 
+  return response.data as string;
+}
