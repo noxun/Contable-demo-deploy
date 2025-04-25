@@ -40,6 +40,7 @@ import useTrazoInternCodesByCompanyId from "@/modules/shared/hooks/useTrazoInter
 import useTrazoCompanies from "@/modules/shared/hooks/useTrazoCompanies";
 import useModelSeatsByType from "@/modules/shared/hooks/useModelSeatsByType";
 import { TrazoCompany } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const newAccountingBoxFormSchema = z.object({
   fecha: z.date().transform((value) => formatISO(value)),
@@ -76,6 +77,10 @@ export default function NewAccountingBoxForm({
   const [accountingBoxId, setAccountingBoxId] = useState<
     number | null | undefined
   >(null);
+
+  const [isShowingInvoiceFields, setIsShowingInvoiceFields] = useState<
+    boolean | "indeterminate"
+  >(false);
 
   const [isCreatingOption, setIsCreatingOption] = useState(false);
   const [selectedOption, setSelectedOption] = useState<null | {
@@ -370,7 +375,6 @@ export default function NewAccountingBoxForm({
                       options={trazoCompaniesOptions}
                       onCreateOption={handleCreate}
                       onChange={(value) => {
-                        console.log(value, 'hmmm')
                         setSelectedOption(value);
                         setSelectedCompanyId(value?.value as number);
                         field.onChange(value?.label);
@@ -382,7 +386,7 @@ export default function NewAccountingBoxForm({
                   </FormControl>
                   <FormDescription>A quien se paga</FormDescription>
                   <FormMessage />
-                </FormItem> 
+                </FormItem>
               )}
             />
           )}
@@ -414,48 +418,52 @@ export default function NewAccountingBoxForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="nit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>NIT</FormLabel>
-                <FormControl>
-                  <Input placeholder="nit" {...field} />
-                </FormControl>
-                <FormDescription>NIT</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="invoice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Valor Factura</FormLabel>
-                <FormControl>
-                  <Input placeholder="valor factura" {...field} />
-                </FormControl>
-                <FormDescription>Valor de la factura</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="invoiceNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Numero de Factura</FormLabel>
-                <FormControl>
-                  <Input placeholder="num factura" {...field} />
-                </FormControl>
-                <FormDescription>Numero de la factura</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {isShowingInvoiceFields ? (
+            <>
+              <FormField
+                control={form.control}
+                name="nit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>NIT</FormLabel>
+                    <FormControl>
+                      <Input placeholder="nit" {...field} />
+                    </FormControl>
+                    <FormDescription>NIT</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="invoice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Valor Factura</FormLabel>
+                    <FormControl>
+                      <Input placeholder="valor factura" {...field} />
+                    </FormControl>
+                    <FormDescription>Valor de la factura</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="invoiceNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Numero de Factura</FormLabel>
+                    <FormControl>
+                      <Input placeholder="num factura" {...field} />
+                    </FormControl>
+                    <FormDescription>Numero de la factura</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          ) : null}
           <FormField
             control={form.control}
             name="valorPagado"
@@ -502,6 +510,13 @@ export default function NewAccountingBoxForm({
               : "Cargando saldo actual, seleccione un tipo de caja para mostrar el saldo correspondiente"}
           </div>
         </div>
+        <Label className="flex items-center gap-2">
+          Factura?
+          <Checkbox
+            checked={isShowingInvoiceFields}
+            onCheckedChange={setIsShowingInvoiceFields}
+          />
+        </Label>
         <div className="flex justify-end">
           <Button className="mt-5" type="submit">
             Guardar

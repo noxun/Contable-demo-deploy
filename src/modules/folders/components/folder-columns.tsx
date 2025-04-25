@@ -7,16 +7,24 @@ import SheetDataset from "./SheetDataset";
 
 export const columns: ColumnDef<TrazoInternCode>[] = [
   {
+    accessorKey: "companyName",
+    header: "Cliente",
+  },
+  {
     accessorKey: "value",
-    header: "Valor",
+    header: "Hoja de Ruta",
   },
   {
-    accessorKey: "procedureId",
-    header: "Id del proceso",
+    accessorKey: "nEmbarque",
+    header: "N° Embarque",
   },
   {
-    accessorKey: "fieldId",
-    header: "Id del campo",
+    accessorKey: "empresaDeTransporte",
+    header: "Transporte",
+  },
+  {
+    accessorKey: "encargado",
+    header: "Encargado",
   },
   {
     header: "Acciones",

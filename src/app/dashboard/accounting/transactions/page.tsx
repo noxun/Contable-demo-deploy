@@ -1,4 +1,4 @@
-"use client"; // Esto convierte el componente en un Client Component
+"use client";
 
 import {
   Select,
@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getVoucherType, getVoucherTypeRoute } from "@/lib/utils";
 import ListVouchers from "@/modules/shared/components/ListVouchers";
 import {
   VoucherType,
@@ -14,26 +15,15 @@ import {
 } from "@/modules/shared/types/sharedTypes";
 import { useState } from "react";
 
-type VoucherInfo = {
-  label?: string;
-  voucherType: string;
-  voucherTypeRoute: string;
-};
-
-const voucherOptions: VoucherInfo[] = [
-  { label: "Traspaso", voucherType: "0", voucherTypeRoute: "diary" },
-  { label: "Egresos", voucherType: "1", voucherTypeRoute: "expenses" },
-  { label: "Ingresos", voucherType: "2", voucherTypeRoute: "income" },
-];
+const voucherOptions = ["0", "1", "2"];
 
 export default function TransactionsPage() {
-  const [selectedOption, setSelectedOption] = useState<null | VoucherInfo>(
+  const [selectedOption, setSelectedOption] = useState(
     voucherOptions[0]
   );
 
   const handleSelectChange = (value: string) => {
-    const newValue: VoucherInfo = JSON.parse(value);
-    setSelectedOption(newValue);
+    setSelectedOption(value);
   };
 
   return (
@@ -42,20 +32,20 @@ export default function TransactionsPage() {
         <h2 className="text-lg font-semibold">Transacciones</h2>
         <div>
           <Select
-            // value={selectedOption}
+            value={selectedOption}
             onValueChange={handleSelectChange}
           >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Seleccione el tipo de transaccion" />
+            <SelectTrigger className="w-80">
+              <SelectValue placeholder="Seleccione el tipo de transacción" />
             </SelectTrigger>
             <SelectContent>
               <SelectContent>
-                {voucherOptions.map((option) => (
+                {voucherOptions.map((option, index) => (
                   <SelectItem
-                    key={option.voucherType}
-                    value={JSON.stringify(option)}
+                    key={index}
+                    value={option}
                   >
-                    {option.label}
+                    {getVoucherType(option)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -64,8 +54,8 @@ export default function TransactionsPage() {
         </div>
       </div>
       <ListVouchers
-        voucherType={selectedOption?.voucherType as VoucherType}
-        voucherTypeRoute={selectedOption?.voucherTypeRoute as VoucherTypeRoute}
+        voucherType={selectedOption as VoucherType}
+        voucherTypeRoute={getVoucherTypeRoute(selectedOption) as VoucherTypeRoute}
       />
     </section>
   );

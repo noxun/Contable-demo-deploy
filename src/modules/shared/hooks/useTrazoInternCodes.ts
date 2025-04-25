@@ -10,5 +10,6 @@ export default function useTrazoInternCodes(
     queryKey: ["trazoInternCodes", page, pageSize, searchQuery],
     queryFn: () => fetchTrazoInternCodes(page, pageSize, searchQuery),
     placeholderData: keepPreviousData,
+    retryDelay: 5000,
   });
 }

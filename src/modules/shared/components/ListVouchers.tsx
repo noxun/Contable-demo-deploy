@@ -14,6 +14,11 @@ import {
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+import { useDebounce } from "use-debounce";
+import { Label } from "@/components/ui/label";
 
 type ListVouchersProps = {
   voucherType: VoucherType;
@@ -21,23 +26,52 @@ type ListVouchersProps = {
   siat?: "siat" | "";
 };
 
+const firstDayOfYear = format(
+  new Date(new Date().getFullYear(), 0, 1),
+  "yyyy-MM-dd"
+);
+const today = format(new Date(), "yyyy-MM-dd");
+
 export default function ListVouchers({
   voucherType,
   voucherTypeRoute,
   siat = "",
 }: ListVouchersProps) {
   const [page, setPage] = useState(1);
-  const [inputPage, setInputPage] = useState('');
+  const [inputPage, setInputPage] = useState("");
   const pageSize = 10;
 
+  const [initDate, setInitDate] = useState(firstDayOfYear);
+  const [endDate, setEndDate] = useState(today);
+  const [glossQuery, setGlossQuery] = useState("");
+  const [debouncedGlossQuery] = useDebounce(glossQuery, 800);
+
   const { data, isLoading, isPending, error } = useQuery({
-    queryKey: ["Vouchers", voucherType, page, pageSize, siat],
-    queryFn: () => fetchVouchers(voucherType, page, pageSize, siat),
+    queryKey: [
+      "Vouchers",
+      voucherType,
+      page,
+      pageSize,
+      initDate,
+      endDate,
+      debouncedGlossQuery,
+      siat,
+    ],
+    queryFn: () =>
+      fetchVouchers(
+        voucherType,
+        page,
+        pageSize,
+        initDate,
+        endDate,
+        debouncedGlossQuery,
+        siat
+      ),
     placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
-    setPage(1)
+    setPage(1);
   }, [voucherType]);
 
   if (isLoading || isPending) return <div>Cargando...</div>;
@@ -62,8 +96,33 @@ export default function ListVouchers({
 
   const handlePageInput = () => {
     const pageNum = parseInt(inputPage);
-    if (pagination && !isNaN(pageNum) && pageNum >= 1 && pageNum <= pagination.TotalPages) {
+    if (
+      pagination &&
+      !isNaN(pageNum) &&
+      pageNum >= 1 &&
+      pageNum <= pagination.TotalPages
+    ) {
       setPage(pageNum);
+    }
+  };
+
+  const handleGlossSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGlossQuery(e.target.value);
+  };
+
+  const handleDateRangeChange = (values: {
+    range: DateRange;
+    rangeCompare?: DateRange;
+  }) => {
+    console.log(values);
+
+    if (values?.range?.from && values?.range?.to) {
+      setInitDate(format(values.range.from, "yyyy-MM-dd"));
+      setEndDate(format(values.range.to, "yyyy-MM-dd"));
+      setPage(1);
+    } else {
+      setInitDate("");
+      setEndDate("");
     }
   };
 
@@ -112,6 +171,22 @@ export default function ListVouchers({
 
   return (
     <section className="flex flex-col gap-4">
+      <div className="flex items-center gap-4">
+        <Label className="flex-1 flex flex-col gap-2">
+          Rango de Fechas
+        <DateRangePicker
+          showCompare={false}
+          locale="es"
+          onUpdate={handleDateRangeChange}
+          initialDateFrom={firstDayOfYear}
+          initialDateTo={today}
+        />
+        </Label>
+        <Label className="flex-1 flex flex-col gap-2">          
+          Buscar
+          <Input placeholder="Buscar por glosa" type="search" value={glossQuery} onChange={handleGlossSearch} />
+        </Label>
+      </div>
       <VoucherTable
         voucherType={voucherType}
         voucherTypeRoute={voucherTypeRoute}
@@ -127,7 +202,7 @@ export default function ListVouchers({
                   className={page === 1 ? "pointer-events-none opacity-50" : ""}
                 />
               </PaginationItem>
-              {generatePageNumbers().map((pageNum, index) => (
+              {generatePageNumbers().map((pageNum, index) =>
                 pageNum === -1 ? (
                   <PaginationItem key={`ellipsis-${index}`}>
                     <span className="px-2">...</span>
@@ -142,7 +217,7 @@ export default function ListVouchers({
                     </PaginationLink>
                   </PaginationItem>
                 )
-              ))}
+              )}
               <PaginationItem>
                 <PaginationNext
                   onClick={handleNext}

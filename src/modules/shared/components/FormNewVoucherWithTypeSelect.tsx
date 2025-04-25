@@ -1,5 +1,5 @@
 "use client";
-import FormNewVoucher from "@/modules/shared/components/FormNewVoucher";
+import FormNewVoucher, { ModelBloque } from "@/modules/shared/components/FormNewVoucher";
 import {
   Select,
   SelectContent,
@@ -20,6 +20,7 @@ type FormNewVoucherWithTypeSelectProps = {
   gloss?: string;
   voucherItemsFromExtractedPDF?: VoucherItemFromExtractedPDF[];
   voucher?: RegisterVoucherByDocumentResponse;
+  seatBlockType?: ModelBloque;
 };
 
 export default function FormNewVoucherWithTypeSelect({
@@ -30,6 +31,7 @@ export default function FormNewVoucherWithTypeSelect({
   gloss,
   voucherItemsFromExtractedPDF,
   voucher,
+  seatBlockType,
 }: FormNewVoucherWithTypeSelectProps) {
   const [selectedType, setSelectedType] = useState("0");
 
@@ -70,6 +72,7 @@ export default function FormNewVoucherWithTypeSelect({
         voucherFromRegisterByDocResponse={voucher}
         bankAccountId={bankAccountId}
         amountFromExtract={amountFromExtract}
+        seatBlockType={seatBlockType}
       />
     </>
   );

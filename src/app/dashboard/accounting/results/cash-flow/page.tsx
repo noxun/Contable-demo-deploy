@@ -12,11 +12,12 @@ import { CashFlowTemplate } from "@/modules/shared/components/templatePDF/CashFl
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataCashFlow, getAllDataCashFlowTemporal } from "@/lib/data";
+import { fetchBranches, getAllDataCashFlow, getAllDataCashFlowTemporal } from "@/lib/data";
 import { formatNumber } from "@/modules/shared/utils/validate";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
 import { CashFlowPreview } from "@/modules/results/components/CashFlowPreview";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 const mockup = {
   "balanceSheet": {
@@ -194,6 +195,12 @@ export default function ClashFlowPage() {
   const [isLoadingPDF, setIsLoadingPDF] = useState(false)
   const [isLoadingCashFlow, setIsLoadingCashFlow] = useState(false)
   const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
+  const [branch, setBranch] = useState<string | undefined>(undefined);
+
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
     queryKey: ["AllCashFlow"],
@@ -201,6 +208,7 @@ export default function ClashFlowPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       level: pendingLevel,
+      sucursalId: branch
     }),
     enabled: false
   })
@@ -212,6 +220,7 @@ export default function ClashFlowPage() {
       iDate: format(dateRange.from || new Date(), 'yyyy-MM-dd'),
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typeFetchBalance: 1,
+      sucursalId: branch
     }),
     enabled: false
   })
@@ -224,7 +233,7 @@ export default function ClashFlowPage() {
         to: endDate
       })
     }
-  },[]);
+  }, []);
 
   const handleOnGeneratePDF = async () => {
     setPdfFile(null)
@@ -289,30 +298,41 @@ export default function ClashFlowPage() {
           }
         ]}
       />
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex items-center flex-col md:flex-row justify-center gap-6">
         <DateSelector onDateChange={handleOnDateChange} />
-        <Select
-          value={pendingLevel.toString()}
-          onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
-        >
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Selecciona un nivel" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Jerarquia</SelectLabel>
-              <SelectItem value="6">nivel 1</SelectItem>
-              <SelectItem value="5">nivel 2</SelectItem>
-              <SelectItem value="4">nivel 3</SelectItem>
-              <SelectItem value="3">nivel 4</SelectItem>
-              <SelectItem value="2">nivel 5</SelectItem>
-              <SelectItem value="1">nivel 6</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button onClick={handleOnRefetch} disabled={isLoadingCashFlow}>
-          {isLoadingCashFlow ? "Cargando..." : "Ver Resultados"}
-        </Button>
+        <div className="flex items-center flex-wrap gap-4">
+          <SelectAsync
+            options={branches || []}
+            label="Seleccione una sucursal..."
+            nameGroup="Sucursales"
+            labelKey={"nameSucutsal"}
+            valueKey={"id"}
+            value={branch}
+            onChange={setBranch}
+          />
+          <Select
+            value={pendingLevel.toString()}
+            onValueChange={(value) => setPendingLevel(Number(value) as LevelData)}
+          >
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Selecciona un nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Jerarquia</SelectLabel>
+                <SelectItem value="6">nivel 1</SelectItem>
+                <SelectItem value="5">nivel 2</SelectItem>
+                <SelectItem value="4">nivel 3</SelectItem>
+                <SelectItem value="3">nivel 4</SelectItem>
+                <SelectItem value="2">nivel 5</SelectItem>
+                <SelectItem value="1">nivel 6</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleOnRefetch} disabled={isLoadingCashFlow}>
+            {isLoadingCashFlow ? "Cargando..." : "Ver Resultados"}
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

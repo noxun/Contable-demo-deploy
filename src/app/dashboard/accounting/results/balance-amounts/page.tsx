@@ -19,7 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataReportByType } from "@/lib/data";
+import { fetchBranches, getAllDataReportByType } from "@/lib/data";
 import { DateSelector } from "@/modules/shared/components/DateSelector";
 import { BalanceAmountsTemplate } from "@/modules/shared/components/templatePDF/BalanceAmounts";
 import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
@@ -27,11 +27,13 @@ import { formatNumber } from "@/modules/shared/utils/validate";
 import { DataTableCustom } from "@/modules/shared/components/DataTableCustom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LevelData } from "@/modules/results/types/types";
+import { SelectAsync } from "@/modules/results/components/SelectAsync";
 
 
 export default function BalanceAmountsPage() {
   const [inSus, setInSus] = useState<boolean>(false);
   const [inSusSelected, setInSusSelected] = useState<boolean>(false);
+  const [branch, setBranch] = useState<string | undefined>(undefined);
   // --- Estados de los links ---
   const [excelLink, setExcelLink] = useState<string | null>(null);
   // const [pdfLink, setPdfLink] = useState<string | null>(null);
@@ -45,6 +47,10 @@ export default function BalanceAmountsPage() {
   const [generatedFiles, setGeneratedFiles] = useState<
     { type: string; date: string; link: string }[]
   >([]);
+  const { data: branches } = useQuery({
+    queryKey: ["branches"],
+    queryFn: fetchBranches,
+  });
 
   /*
     Estos estados controlan la llave y el documento activo actual del visor
@@ -81,7 +87,7 @@ export default function BalanceAmountsPage() {
         to: endDate
       })
     }
-  },[]);
+  }, []);
   const handleChangeIsSus = () => setInSus(!inSus)
 
   const [pdfFile, setPdfFile] = useState<JSX.Element | null>(null)
@@ -98,7 +104,8 @@ export default function BalanceAmountsPage() {
       eDate: format(dateRange.to || new Date(), 'yyyy-MM-dd'),
       typePath: "balanceDeSumas",
       level: selectedLevel,
-      inSus: inSus
+      inSus: inSus,
+      sucursalId: branch
     }),
     enabled: false
   })
@@ -120,6 +127,7 @@ export default function BalanceAmountsPage() {
             EndDate: format(dateRange.to, "yyyy/MM/dd"),
             Level: selectedLevel,
             inSus: inSus,
+            ...(branch ? { sucursalId: branch } : {})
           },
           responseType: "text",
         }
@@ -251,12 +259,22 @@ export default function BalanceAmountsPage() {
             <Label htmlFor="inSus">Generar el reporte en dolares?</Label>
           </div>
         </div>
+
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
+          <SelectAsync
+            options={branches || []}
+            label="Seleccione una sucursal..."
+            nameGroup="Sucursales"
+            labelKey={"nameSucutsal"}
+            valueKey={"id"}
+            value={branch}
+            onChange={setBranch}
+          />
           <Select
             value={selectedLevel.toString()}
             onValueChange={(value) => setSelectedLevel(Number(value) as LevelData)}
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Selecciona un nivel" />
             </SelectTrigger>
             <SelectContent>

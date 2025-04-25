@@ -218,6 +218,10 @@ export type TrazoInternCode = {
   value: string;
   procedureId: number;
   fieldId: number;
+  companyName: string;
+  nEmbarque: string;
+  empresaDeTransporte: string;
+  encargado:string;
 };
 
 export type AccountingBoxItems = {
@@ -525,6 +529,7 @@ export type RegisterVoucherByDocumentResponse = {
     assetSus: number;
     gloss: string;
     accountId: number;
+    description: string;
     voucherId: number;
     createdAt: string;
     conceptExpenseId: any;
