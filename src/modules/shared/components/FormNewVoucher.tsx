@@ -769,7 +769,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="provider"
               render={({ field }) => (
@@ -820,7 +820,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={voucherForm.control}
               name="coin"
