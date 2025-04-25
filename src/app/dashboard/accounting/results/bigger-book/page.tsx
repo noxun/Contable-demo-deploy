@@ -131,7 +131,7 @@ const ReportGenerateBiggerBook = ({
       setIsLoading(true);
       toast("Generando reporte...");
       const MyDocument = (
-        <Big  gerBookTemplate
+        <BiggerBookTemplate
           inSus={inSus}
           dateRange={dateRange}
           records={data}
@@ -446,7 +446,7 @@ const AccountSection = () => {
               }}
             />
 
-            <ExportSingleAccountToExcelButton account={currentAccount} initDate={format(accountDate.from!, "yyyy/MM/dd" )} endDate={format(accountDate.to, "yyyy/MM/dd")} inSus={inSus}/>
+            <ExportSingleAccountToExcelButton account={currentAccount} initDate={format(accountDate.from!, "yyyy/MM/dd" )} endDate={format(accountDate.to!, "yyyy/MM/dd")} inSus={inSus}/>
           </div>
 
           <DataTable columns={columnsBook} data={currentAccount.voucherItems} />
