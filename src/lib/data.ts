@@ -177,7 +177,7 @@ export async function fetchAllMotionAccountsWithRelations() {
   }
   setAuthToken(token);
   const response = await api.get(`/api/Account/Relations`);
-  return response.data as RelationAccount[]
+  return response.data as RelationAccount[];
 }
 
 export async function fetchAllSiatMotionAccounts() {
@@ -333,13 +333,13 @@ export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   return response.data as AccountingBox[];
 }
 
-export async function fetchCostCenter(): Promise<CostCenter[]> {
+export async function fetchCostCenter(data: Role[]): Promise<CostCenter[]> {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.get(`/api/CostCenter`);
+  const response = await api.post(`/api/CostCenter`, data);
   return response.data as CostCenter[];
 }
 
@@ -393,7 +393,11 @@ export async function fetchUserRoles(userId: number) {
   return response.data as Role[];
 }
 
-export async function fetchBankExcerpt(bankId: string, page:number, pageSize:number) {
+export async function fetchBankExcerpt(
+  bankId: string,
+  page: number,
+  pageSize: number
+) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -840,13 +844,13 @@ export async function getBigguerBookinExcel({
   endDate,
   search,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   initDate?: string;
   endDate?: string;
   search?: string;
   inSus?: boolean;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -860,7 +864,7 @@ export async function getBigguerBookinExcel({
       initDate: initDate,
       endDate: endDate,
       search: search,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data;
@@ -1280,11 +1284,12 @@ export async function fetchPaySlipData(
 
   setAuthToken(token);
   const response = await api.get(
-    `/api/SalariesAndWages/payment-slip/${idSalaryWages}`, {
-    params: {
-      datePaySlip
+    `/api/SalariesAndWages/payment-slip/${idSalaryWages}`,
+    {
+      params: {
+        datePaySlip,
+      },
     }
-  }
   );
   return response.data;
 }
@@ -1342,7 +1347,7 @@ export async function fetchDiaryBookData(
       InitDate,
       EndDate,
       inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data as DiaryBookResponse;
@@ -1357,7 +1362,7 @@ export async function getAllDataReportByType({
   typePath,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
@@ -1378,28 +1383,28 @@ export async function getAllDataReportByType({
       EndDate: eDate,
       Level: level,
       InSus: inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data;
 }
 
-// 1 --> excel  2 --> data 
-type TypeFetchBalance = 1 | 2
+// 1 --> excel  2 --> data
+type TypeFetchBalance = 1 | 2;
 export async function getAllDataBalanceGeneral({
   iDate,
   eDate,
   typeFetchBalance,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
   inSus?: boolean;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1414,7 +1419,7 @@ export async function getAllDataBalanceGeneral({
         EndDate: eDate,
         Type: typeFetchBalance,
         inSus,
-        sucursalId
+        sucursalId,
       },
     });
     return response.data;
@@ -1429,14 +1434,14 @@ export async function getAllDataStatementIncome({
   typeFetchBalance,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
-  inSus?: boolean
-  sucursalId?: string
+  inSus?: boolean;
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1451,7 +1456,7 @@ export async function getAllDataStatementIncome({
         EndDate: eDate,
         Type: typeFetchBalance,
         InSus: inSus,
-        sucursalId
+        sucursalId,
       },
     });
     return response.data;
@@ -1465,13 +1470,13 @@ export async function getAllDataCashFlow({
   eDate,
   typeFetchBalance,
   level,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
   let token;
   if (typeof window !== "undefined") {
@@ -1485,7 +1490,7 @@ export async function getAllDataCashFlow({
         InitDate: iDate,
         EndDate: eDate,
         Type: typeFetchBalance,
-        sucursalId
+        sucursalId,
       },
     });
     return response.data;
@@ -1498,20 +1503,32 @@ export async function getAllDataCashFlowTemporal({
   iDate,
   eDate,
   level,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   level?: LevelData;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
-  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level, sucursalId })
-  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level, sucursalId })
-  console.log('tenemos los datos de: ', balanceGeneral, estadoResultados)
+  const balanceGeneral = await getAllDataReportByType({
+    eDate,
+    iDate,
+    typePath: "balanceGeneral",
+    level,
+    sucursalId,
+  });
+  const estadoResultados = await getAllDataReportByType({
+    eDate,
+    iDate,
+    typePath: "estadoDeResultado",
+    level,
+    sucursalId,
+  });
+  console.log("tenemos los datos de: ", balanceGeneral, estadoResultados);
   return {
     balanceSheet: balanceGeneral,
-    statementIncome: estadoResultados
-  }
+    statementIncome: estadoResultados,
+  };
 }
 
 export async function generateDiaryBookExcel(
@@ -1532,7 +1549,7 @@ export async function generateDiaryBookExcel(
       InitDate,
       endDate,
       inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data as string;
@@ -1678,7 +1695,12 @@ export async function deleteAllBankExtracts(bankId: number) {
   return response.data;
 }
 
-export async function exportSingleAccountDataToExcel(params: {account: any, initDate: string, endDate: string, inSus: boolean}) {
+export async function exportSingleAccountDataToExcel(params: {
+  account: any;
+  initDate: string;
+  endDate: string;
+  inSus: boolean;
+}) {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
@@ -1689,15 +1711,16 @@ export async function exportSingleAccountDataToExcel(params: {account: any, init
 
   const response = await api.post(
     `/api/Report/BookBigguerDataExelUnit`,
-    account, {
+    account,
+    {
       responseType: "text",
       params: {
         InitDate: initDate,
         endDate,
         inSus,
-      }
+      },
     }
   );
- 
+
   return response.data as string;
 }

@@ -8,10 +8,16 @@ import { columns } from "@/modules/cost-center/components/columns";
 import ListCostCenter from "./ListCostCenter";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "use-debounce";
+import useUserStore from "@/lib/userStore";
 
 const CostCenterPage = () => {
+  const loginData = useUserStore((state) => state.loginData);
+  const filteredCostCenterClients = loginData?.rols.filter(
+    (item) => !item.isMenu
+  ) ?? [];
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery] =useDebounce(searchQuery, 300);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   const {
     data: costCenter,
@@ -19,8 +25,8 @@ const CostCenterPage = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["costCenter"],
-    queryFn: fetchCostCenter,
+    queryKey: ["costCenter", filteredCostCenterClients],
+    queryFn: () => fetchCostCenter(filteredCostCenterClients),
   });
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -30,19 +36,25 @@ const CostCenterPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredCostCenter = costCenter
-  .map(({ accountItems, ...rest }) => {
-    const filteredItems = accountItems.filter(({ description }) =>
-      description.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-    );
-    return filteredItems.length > 0 ? { ...rest, accountItems: filteredItems } : null;
-  })
-  .filter(Boolean);
+  const filteredCostCenter = (Array.isArray(costCenter) ? costCenter : [])
+    .map(({ accountItems, ...rest }) => {
+      const filteredItems = accountItems.filter(({ description }) =>
+        description.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+      return filteredItems.length > 0
+        ? { ...rest, accountItems: filteredItems }
+        : null;
+    })
+    .filter(Boolean);
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Cuentas Por Cobrar</h1>
-      <Input type="search" placeholder="Buscar por nombre" onChange={handleSearch} />
+      <Input
+        type="search"
+        placeholder="Buscar por nombre"
+        onChange={handleSearch}
+      />
       <ListCostCenter costCenter={filteredCostCenter ?? []} />
     </div>
   );

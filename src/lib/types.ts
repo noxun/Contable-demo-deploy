@@ -12,6 +12,7 @@ export type Role = {
   nameRef: number;
   icon: string;
   title?: string;
+  isMenu: boolean;
 };
 
 export type RoleMenu = {
