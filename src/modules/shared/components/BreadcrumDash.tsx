@@ -5,6 +5,21 @@ interface Item {
   href: string
 }
 
+
+/**
+ * Componente para mostrar un breadcrumb con enlaces de navegación.
+ * Este componente genera una lista de enlaces que representan la jerarquía de navegación,
+ *
+ * @example
+ * <BreadcrumbDashboard
+ *   items={[
+ *     { label: 'Home', href: '/' },
+ *     { label: 'Settings', href: '/settings' },
+ *     { label: 'Account', href: '/settings/account' },
+ *   ]}
+ * />
+ */
+
 export const BreadcrumbDashboard = ({ items }: { items: Item[] }) => {
 
   return (

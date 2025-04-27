@@ -10,6 +10,37 @@ interface Props<T> {
   labelKey?: keyof T;
 }
 
+/**
+ * Componente Select asíncrono genérico para seleccionar una opción de una lista.
+ *
+ * @props
+ * - `options`: Lista de opciones a mostrar en el select.
+ * - `value`: Valor seleccionado en el select.
+ * - `label`: Texto que se muestra como marcador de posición o etiqueta del select.
+ * - `nameGroup`: Nombre del grupo para la etiqueta del select.
+ * - `onChange`: Función de callback que se ejecuta cuando cambia el valor seleccionado.
+ * - `valueKey`: Clave del valor que se utiliza para cada opción. Por defecto es "id".
+ * - `labelKey`: Clave que se utiliza para mostrar el texto de cada opción. Por defecto es "nombre".
+ * 
+ * @example
+ * const options = [
+ 
+ *   { id: "3", nombre: "Opción 3" },
+ * ];
+ * 
+ * 
+ * <SelectAsync
+ *   options={[
+ *     { id: "1", nombre: "Opción 1" },
+ *     { id: "2", nombre: "Opción 2" },
+ *   ]}
+ *   value="1"
+ *   label="Selecciona una opción"
+ *   nameGroup="Grupo de opciones"
+ *   onChange={(value) => console.log(value)}
+ * />
+ */
+
 export function SelectAsync<T>({
   options = [],
   value,

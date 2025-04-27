@@ -7,6 +7,29 @@ interface Props {
   nameFile?: string
 }
 
+/**
+ * Componente para generar y descargar un archivo PDF o abrirlo en una nueva pestaña.
+ * Usa `BlobProvider` para crear el PDF a partir del JSX pasado como `pdfFile`. 
+ * Muestra un enlace para descargar o abrir el archivo, con un nombre opcional (`nameFile`), 
+ * y un mensaje de carga mientras el archivo se genera.
+ *
+ * @props
+ * - `pdfFile`: El archivo PDF generado que será pasado como documento.
+ * - `nameFile`: Nombre opcional del archivo que se usará al descargar el PDF. Si no se proporciona, se generará automáticamente.
+ *
+ * @example
+ * const MyPdfDocument = () => (
+ *   <Document>
+ *     <Page>
+ *       <Text>Este es un ejemplo de documento PDF.</Text>
+ *     </Page>
+ *   </Document>
+ * );
+ * 
+ * <ButtonLinkPDF pdfFile={MyPdfDocument} nameFile="documento_ejemplo" />
+ */
+
+
 export const ButtonLinkPDF = ({ pdfFile, nameFile }: Props) => {
   return (
     <BlobProvider document={pdfFile}>
