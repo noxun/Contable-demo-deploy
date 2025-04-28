@@ -5,6 +5,29 @@ interface CustomTooltipProps extends TooltipProps<number, string> {
   payload?: { payload: { name: string; value: number }; }[];
 }
 
+/**
+ * Componente de Tooltip personalizado para los gráficos de `recharts`.
+ *
+ * Muestra información adicional sobre el dato seleccionado en el gráfico,
+ * incluyendo nombre, valor y porcentaje. 
+ *
+ * @props
+ * - `payload`: Un arreglo de objetos que contienen la información del tooltip, como el nombre y el valor.
+ * - `active`: Indica si el tooltip está activo y debe renderizarse.
+ * 
+ * @example
+ * const samplePayload = [
+ *   {
+ *     payload: { name: 'Opción A', value: 50 },
+ *   },
+ * ];
+ * 
+ * <ToolTipChartCustom payload={samplePayload} active={true} />
+ * 
+ * @param {CustomTooltipProps} props Propiedades del componente.
+ * @returns {JSX.Element | null} El componente de tooltip renderizado o null si no está activo.
+ */
+
 export const ToolTipChartCustom = ({ payload, active }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;

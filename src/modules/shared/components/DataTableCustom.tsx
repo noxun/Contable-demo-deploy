@@ -49,6 +49,33 @@ interface DataTableProps<TData, TValue> {
   filter?: FilterProps
 }
 
+/**
+ * Componente de tabla personalizada con paginación, filtrado y sumas de columnas.
+ *
+ * @description
+ * Este componente muestra una tabla interactiva que permite:
+ * - Filtrar los datos por columnas.
+ * - Realizar paginación para ver diferentes conjuntos de datos.
+ * - Mostrar los totales de las columnas que tienen el atributo `sum` activado.
+ * - Modificar la visibilidad de las columnas.
+ *
+ * @props
+ * - `columns`: Definición de las columnas, incluye columnas con el atributo `sum` para mostrar los totales.
+ * - `data`: Datos a mostrar en la tabla.
+ * - `filter`: (opcional) Filtro para una columna específica (por ejemplo, texto, número, mes o fecha).
+ *
+ * @example
+ * <DataTableCustom
+ *   columns={[
+ *     { accessorKey: "id", header: "ID" },
+ *     { accessorKey: "name", header: "Nombre" },
+ *     { accessorKey: "amount", header: "Cantidad", sum: true }
+ *   ]}
+ *   data={data}
+ *   filter={{ columnName: "amount", type: "number" }}
+ * />
+ */
+
 export function DataTableCustom<TData, TValue>({
   columns,
   data,

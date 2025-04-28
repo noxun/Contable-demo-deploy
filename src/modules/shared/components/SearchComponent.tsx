@@ -16,6 +16,34 @@ interface Props {
   resetSearch?: boolean
 }
 
+/**
+ * Componente de búsqueda con sugerencias automáticas.
+ *
+ * @description
+ * Este componente permite realizar búsquedas con sugerencias automáticas que se actualizan mientras el usuario escribe. 
+ * La búsqueda es desacoplada, es decir, las sugerencias se obtienen de manera asincrónica a través de una función que se pasa como `queryFn`.
+ *
+ * @props
+ * - `onSelect`: Función que se ejecuta cuando el usuario selecciona una sugerencia. Recibe como argumento el valor de la sugerencia seleccionada.
+ * - `queryFn`: Función que se ejecuta para obtener las sugerencias de búsqueda. Recibe como argumento el texto de búsqueda.
+ * - `placeholder`: Texto que se muestra cuando el campo de búsqueda está vacío. Por defecto es "Buscar...".
+ * - `buttonLabel`: Texto que se muestra en el botón cuando no hay texto de búsqueda. Por defecto es "Buscar".
+ * - `debounceTime`: Tiempo en milisegundos para el debounce, que evita hacer consultas al servidor en cada pulsación de tecla. El valor por defecto es 500 ms.
+ * - `suggestionKey`: Clave de la propiedad del objeto que se usará para mostrar la sugerencia en la lista. Por defecto es "description".
+ * - `resetSearch`: Si es verdadero, el campo de búsqueda se limpiará cuando cambie el valor de esta propiedad.
+ *
+ * @example
+ * <SearchComponent
+ *   onSelect={(selectedItem) => console.log(selectedItem)}
+ *   queryFn={async (search) => fetchSuggestions(search)}
+ *   placeholder="Buscar algo..."
+ *   buttonLabel="Buscar"
+ *   debounceTime={500}
+ *   suggestionKey="name"
+ *   resetSearch={false}
+ * />
+ */
+
 export const SearchComponent = ({
   onSelect,
   queryFn,

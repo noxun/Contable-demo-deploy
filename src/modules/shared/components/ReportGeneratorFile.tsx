@@ -26,6 +26,35 @@ interface ReportGeneratorProps {
   setFile: (file: JSX.Element | null) => void;
 }
 
+/**
+ * Componente para generar un reporte en formato PDF.
+ * Permite seleccionar un rango de fechas, especificar si el reporte está en dólares (Sus),
+ * y generar un reporte en formato PDF basado en los parámetros proporcionados.
+ * 
+* @props
+ * - `dateRange`: Rango de fechas para el reporte. 
+ * - `inSus`: Indica si el reporte debe ser generado en dólares (true) o en otra moneda (false).
+ * - `sucursalId`: Identificador de la sucursal para la cual se genera el reporte (opcional).
+ * - `reportNamePath`: El nombre del reporte a generar, que corresponde al path de la API.
+ * - `paramType`: Tipo de parámetro adicional que se puede agregar a la ruta del reporte (opcional).
+ * - `setGeneratedFiles`: Función para actualizar el estado con los archivos generados.
+ * - `setShowDialog`: Función para mostrar u ocultar el diálogo que contiene el reporte.
+ * - `setFile`: Función para actualizar el archivo generado y mostrarlo en el diálogo.
+ *
+ * 
+ * @returns {JSX.Element} - Un botón que, al ser presionado, genera el reporte en PDF.
+ * 
+ * @example
+ * <ReportGeneratorFile
+ *   dateRange={dateRange} //rango de fechas
+ *   inSus={inSus} //en dólares?
+ *   reportNamePath={reportNamePath} //nombre del reporte
+ *   paramType={paramType} //tipo de parámetro adicional (opcional)
+ *   setGeneratedFiles={setGeneratedFiles} //actualiza los archivos generados
+ *   setShowDialog={setShowDialog} //mostrar u ocultar diálogo
+ *   setFile={setFile} //establece el archivo generado
+ * />
+ */
 export const ReportGeneratorFile: React.FC<ReportGeneratorProps> = ({
   dateRange,
   inSus,
