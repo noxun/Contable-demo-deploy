@@ -349,7 +349,7 @@ export async function fetchAllCostCenter(): Promise<CostCenter[]> {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
-  const response = await api.post(`/api/CostCenter`);
+  const response = await api.get(`/api/CostCenter`);
   return response.data as CostCenter[];
 }
 
