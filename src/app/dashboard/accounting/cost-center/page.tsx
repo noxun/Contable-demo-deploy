@@ -2,9 +2,7 @@
 
 import React, { ChangeEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCostCenter } from "@/lib/data";
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/modules/cost-center/components/columns";
+import { fetchCostCenterByRoleData } from "@/lib/data";
 import ListCostCenter from "./ListCostCenter";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "use-debounce";
@@ -26,7 +24,7 @@ const CostCenterPage = () => {
     error,
   } = useQuery({
     queryKey: ["costCenter", filteredCostCenterClients],
-    queryFn: () => fetchCostCenter(filteredCostCenterClients),
+    queryFn: () => fetchCostCenterByRoleData(filteredCostCenterClients),
   });
 
   if (isError) return <div>Error: {error.message}</div>;

@@ -333,13 +333,23 @@ export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   return response.data as AccountingBox[];
 }
 
-export async function fetchCostCenter(data: Role[]): Promise<CostCenter[]> {
+export async function fetchCostCenterByRoleData(data: Role[]): Promise<CostCenter[]> {
   let token;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
   }
   setAuthToken(token);
   const response = await api.post(`/api/CostCenter`, data);
+  return response.data as CostCenter[];
+}
+
+export async function fetchAllCostCenter(): Promise<CostCenter[]> {
+  let token;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+  setAuthToken(token);
+  const response = await api.post(`/api/CostCenter`);
   return response.data as CostCenter[];
 }
 
