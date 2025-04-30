@@ -17,6 +17,7 @@ import { useState } from "react";
 type DialogFormNewVoucherProps = {
   bankAccountId?: string;
   amountFromExtract?: number;
+  dateFromExtract?: string;
   bankId: string;
   bankExtractId: number;
   disabled?: boolean;
@@ -26,6 +27,7 @@ type DialogFormNewVoucherProps = {
 export default function DialogFormNewVoucher({
   bankAccountId,
   amountFromExtract,
+  dateFromExtract,
   bankId,
   bankExtractId,
   disabled,
@@ -58,6 +60,7 @@ export default function DialogFormNewVoucher({
           <FormNewVoucherWithTypeSelect
             bankAccountId={bankAccountId}
             amountFromExtract={amountFromExtract}
+            dateFromExtract={dateFromExtract}
             bankId={bankId}
             bankExtractId={bankExtractId}
             gloss={gloss}

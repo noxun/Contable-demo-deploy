@@ -15,6 +15,7 @@ import { RegisterVoucherByDocumentResponse, VoucherItemFromExtractedPDF } from "
 type FormNewVoucherWithTypeSelectProps = {
   bankAccountId?: string;
   amountFromExtract?: number;
+  dateFromExtract?: string;
   bankId?: string;
   bankExtractId?: number;
   gloss?: string;
@@ -26,6 +27,7 @@ type FormNewVoucherWithTypeSelectProps = {
 export default function FormNewVoucherWithTypeSelect({
   bankAccountId,
   amountFromExtract,
+  dateFromExtract,
   bankId,
   bankExtractId,
   gloss,
@@ -72,6 +74,7 @@ export default function FormNewVoucherWithTypeSelect({
         voucherFromRegisterByDocResponse={voucher}
         bankAccountId={bankAccountId}
         amountFromExtract={amountFromExtract}
+        dateFromExtract={dateFromExtract}
         seatBlockType={seatBlockType}
       />
     </>

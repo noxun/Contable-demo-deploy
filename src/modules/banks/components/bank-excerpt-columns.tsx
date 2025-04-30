@@ -111,6 +111,7 @@ export function columns(
             <DialogFormNewVoucher
               bankAccountId={bankAccountId!}
               amountFromExtract={bankExtract.amount}
+              dateFromExtract={bankExtract.date}
               bankId={bankId as string}
               bankExtractId={bankExtract.id}
               disabled={bankExtract.accountingEntry}
