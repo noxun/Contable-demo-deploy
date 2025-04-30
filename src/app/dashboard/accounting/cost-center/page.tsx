@@ -11,7 +11,7 @@ import useUserStore from "@/lib/userStore";
 const CostCenterPage = () => {
   const loginData = useUserStore((state) => state.loginData);
   const filteredCostCenterClients = loginData?.rols.filter(
-    (item) => !item.isMenu
+    (item) => !item.isMenu && !item.main
   ) ?? [];
 
   const [searchQuery, setSearchQuery] = useState("");
