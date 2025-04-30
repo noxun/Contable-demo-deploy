@@ -1,11 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { z } from "zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -26,8 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Spinner from "@/components/ui/spinner";
-import useMotionAccounts from "@/modules/shared/hooks/useMotionAccounts";
-import { postModelSeat } from "@/lib/data";
 import {
   Table,
   TableBody,
@@ -38,275 +30,270 @@ import {
 } from "@/components/ui/table";
 import NoMenuSelect from "@/components/custom/no-menu-select";
 import { Checkbox } from "@/components/ui/checkbox";
-
-const modelSeatItemSchema = z.object({
-  debit: z.boolean(),
-  asset: z.boolean(),
-  percentage: z.coerce.number().min(0).max(100),
-  accountId: z.coerce.number(),
-});
-
-const modelSeatFormSchema = z.object({
-  description: z.string(),
-  typeTransaction: z.enum(["ingresos", "egresos", "diarios"]).optional(),
-  type: z.coerce.number(),
-  accounts: z.array(modelSeatItemSchema).min(1),
-});
-
-export type ModelSeatForm = z.infer<typeof modelSeatFormSchema>;
+import useFormNewModelSeat from "../hooks/useFormNewModelSeat";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function FormNewModelSeat() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
   const {
-    data: motionAccounts,
-    isLoading: isLoadingAccounts,
-    isPending: isPendingAccounts,
-  } = useMotionAccounts();
+    modelSeatForm,
+    fields,
+    isLoading,
+    isPending,
+    motionAccounts,
+    totalPercentage,
+    isPercentageValid,
+    handleAddAccount,
+    handleToggleDebitAsset,
+    removeAccount,
+    onSubmit,
+  } = useFormNewModelSeat();
 
-  const modelSeatForm = useForm<ModelSeatForm>({
-    resolver: zodResolver(modelSeatFormSchema),
-    defaultValues: {
-      description: "",
-      type: 0
-    },
-  });
-
-  const accounts = modelSeatForm.watch("accounts") || [];
-
-  let totalPercentage = 0;
-  if (modelSeatForm.watch("type") == 3) {
-    accounts.forEach((account) => {
-      totalPercentage += Number(account.percentage) || 0;
-    });
-  }
-
-  const newModelSeatMutation = useMutation({
-    mutationFn: postModelSeat,
-    onSuccess: () => {
-      toast.success("Asiento Modelo Creado correctamente");
-      queryClient.invalidateQueries({ queryKey: ["AllModelSeats"] });
-      router.push(`/dashboard/accounting/model-seats`);
-    },
-    onError: (error) => {
-      toast.error("Error al crear un asiento modelo");
-      console.error(error);
-    },
-  });
-
-  function onSubmit(values: ModelSeatForm) {
-    newModelSeatMutation.mutate(values);
-  }
-
-  const { fields, append, remove } = useFieldArray({
-    control: modelSeatForm.control,
-    name: "accounts",
-  });
-
-  const handleAdd = () => {
-    append({
-      accountId: 0,
-      debit: false,
-      asset: false,
-      percentage: 0,
-    });
-  };
-
-  if (motionAccounts === undefined || isLoadingAccounts || isPendingAccounts) {
+  if (isLoading || !motionAccounts) {
     return <Spinner />;
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       <Form {...modelSeatForm}>
-        <form onSubmit={modelSeatForm.handleSubmit(onSubmit)}>
-          <div className="flex flex-col sm:flex-row gap-5 mb-5">
-            <div className="w-full">
-              <FormField
-                control={modelSeatForm.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
+        <form
+          onSubmit={modelSeatForm.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          {/* Form header fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <FormField
+              control={modelSeatForm.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descripción</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Descripción" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    La descripción del asiento a guardar
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={modelSeatForm.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de Transacción</FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    value={field.value.toString()}
+                  >
                     <FormControl>
-                      <Input placeholder="Descripción" {...field}></Input>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione el tipo de transacción" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormDescription>
-                      La descripción del asiento a guardar
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-full">
-              <FormField
-                control={modelSeatForm.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Transacción</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccione el tipo de transacción" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">Traspasos</SelectItem>
-                        <SelectItem value="1">Egresos</SelectItem>
-                        <SelectItem value="2">Ingresos</SelectItem>
-                        <SelectItem value="3">Caja</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Seleccione el tipo de transacción para este asiento modelo
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    <SelectContent>
+                      <SelectItem value="0">Traspasos</SelectItem>
+                      <SelectItem value="1">Egresos</SelectItem>
+                      <SelectItem value="2">Ingresos</SelectItem>
+                      <SelectItem value="3">Caja</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Seleccione el tipo de transacción para este asiento modelo
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-medium">Asiento Modelo</h2>
-              <Button type="button" onClick={handleAdd}>
-                <span className="mr-2">Adicionar Item</span>
-                <Plus size={18} />
+
+          {/* Accounts table section */}
+          <div className="border rounded-md p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium">
+                Cuentas del Asiento Modelo
+              </h2>
+              <Button
+                type="button"
+                onClick={handleAddAccount}
+                variant="outline"
+                size="sm"
+              >
+                <Plus size={16} className="mr-2" />
+                Adicionar Cuenta
               </Button>
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Cuenta</TableHead>
-                  <TableHead>Es Debe</TableHead>
-                  <TableHead>Es Haber</TableHead>
-                  <TableHead>Porcentaje</TableHead>
-                  <TableHead>Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {fields.map((parentField, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="h-fit w-72">
-                      <FormField
-                        name={`accounts.${index}.accountId`}
-                        control={modelSeatForm.control}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <NoMenuSelect
-                                placeholder="Selecciona una Cuenta.."
-                                options={motionAccounts}
-                                getOptionLabel={(motionAccount) =>
-                                  `${motionAccount.code} - ${motionAccount.description}`
-                                }
-                                getOptionValue={(motionAccount) =>
-                                  motionAccount.id.toString()
-                                }
-                                onChange={(option) => {
-                                  field.onChange(option?.id);
-                                }}
-                                value={(Array.isArray(motionAccounts)
-                                  ? motionAccounts
-                                  : []
-                                ).find(
-                                  (motionAccount) =>
-                                    motionAccount.id === parentField.accountId
-                                )}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormField
-                        control={modelSeatForm.control}
-                        name={`accounts.${index}.debit`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={(checked) => {
-                                  field.onChange(checked);
-                                  modelSeatForm.setValue(`accounts.${index}.asset`, !checked)
-                                }}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormField
-                        control={modelSeatForm.control}
-                        name={`accounts.${index}.asset`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={(checked) => {
-                                  field.onChange(checked);
-                                  modelSeatForm.setValue(`accounts.${index}.debit`, !checked)
-                                }}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormField
-                        name={`accounts.${index}.percentage`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        type="button"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-          {
-            totalPercentage > 100 && (
-              <p className="text-red-500">La suma de los porcentajes no deben ser mayor a 100</p>
-            )
-          }
-          {
-            totalPercentage < 0 && (
-              <p className="text-red-500">La suma de los porcentajes no debe ser menor a 0</p>
-            )
-          }
 
+            {fields.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No hay cuentas añadidas. Haga clic en &quot;Adicionar
+                Cuenta&quot; para comenzar.
+              </div>
+            ) : (
+              <div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Cuenta</TableHead>
+                      <TableHead className="w-24">Es Debe</TableHead>
+                      <TableHead className="w-24">Es Haber</TableHead>
+                      <TableHead className="w-32">Porcentaje</TableHead>
+                      <TableHead className="w-24">Acciones</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fields.map((field, index) => (
+                      <TableRow key={field.id}>
+                        <TableCell>
+                          <FormField
+                            name={`accounts.${index}.accountId`}
+                            control={modelSeatForm.control}
+                            render={({ field: accountField }) => (
+                              <FormItem className="space-y-0">
+                                <FormControl>
+                                  <NoMenuSelect
+                                    placeholder="Selecciona una Cuenta..."
+                                    options={motionAccounts}
+                                    getOptionLabel={(account) =>
+                                      `${account.code} - ${account.description}`
+                                    }
+                                    getOptionValue={(account) =>
+                                      account.id.toString()
+                                    }
+                                    onChange={(option) => {
+                                      accountField.onChange(option?.id);
+                                    }}
+                                    value={motionAccounts.find(
+                                      (account) =>
+                                        account.id === accountField.value
+                                    )}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormField
+                            control={modelSeatForm.control}
+                            name={`accounts.${index}.debit`}
+                            render={({ field: debitField }) => (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={debitField.value}
+                                    onCheckedChange={(checked) => {
+                                      handleToggleDebitAsset(
+                                        index,
+                                        "debit",
+                                        checked as boolean
+                                      );
+                                    }}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormField
+                            control={modelSeatForm.control}
+                            name={`accounts.${index}.asset`}
+                            render={({ field: assetField }) => (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={assetField.value}
+                                    onCheckedChange={(checked) => {
+                                      handleToggleDebitAsset(
+                                        index,
+                                        "asset",
+                                        checked as boolean
+                                      );
+                                    }}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormField
+                            control={modelSeatForm.control}
+                            name={`accounts.${index}.percentage`}
+                            render={({ field: percentageField }) => (
+                              <FormItem className="space-y-0">
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    {...percentageField}
+                                    onChange={(e) =>
+                                      percentageField.onChange(
+                                        Number(e.target.value)
+                                      )
+                                    }
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            type="button"
+                            onClick={() => removeAccount(index)}
+                            className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Percentage validation alerts */}
+            {modelSeatForm.watch("type") === 3 && (
+              <div className="mt-4">
+                <div className="text-sm font-medium">
+                  Porcentaje total: {totalPercentage}%
+                </div>
+                {totalPercentage > 100 && (
+                  <Alert variant="destructive" className="mt-2">
+                    <AlertDescription>
+                      La suma de los porcentajes no debe ser mayor a 100
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {totalPercentage < 0 && (
+                  <Alert variant="destructive" className="mt-2">
+                    <AlertDescription>
+                      La suma de los porcentajes no debe ser menor a 0
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Submit button */}
           <Button
             type="submit"
-            disabled={newModelSeatMutation.isPending || totalPercentage < 0 || totalPercentage > 100}
+            disabled={isPending || !isPercentageValid || fields.length === 0}
+            className="w-full sm:w-auto"
           >
-            <span className="mr-2">Guardar Registro</span>
-            <Save size={20} />
+            {isPending ? <Spinner /> : <Save size={18} className="mr-2" />}
+            Guardar Asiento Modelo
           </Button>
         </form>
       </Form>
