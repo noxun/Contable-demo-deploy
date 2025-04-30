@@ -150,7 +150,7 @@ function FixedAssetPage() {
   ];
 
   return (
-    <main className="max-w-xl">
+    <main className="w-full">
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Activos Fijos</h1>
         <Button asChild>
