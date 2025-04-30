@@ -43,7 +43,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { es } from "date-fns/locale";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Save } from "lucide-react";
+import { Copy, Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
 import { editVoucher, postCompanyOrConcept } from "@/lib/data";
@@ -52,6 +52,7 @@ import useBanks from "../hooks/useBanks";
 import { DateRange } from "react-day-picker";
 import { usePathname, useRouter } from "next/navigation";
 import CustomSelect from "@/components/custom/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type FormEditVoucherProps = {
   type: VoucherType;
@@ -70,6 +71,7 @@ export default function FormEditVoucher({
     voucher?.items ?? []
   );
 
+  const [mainGloss, setMainGloss] = useState(voucher.gloss || "");
   const [totalDebitBs, setTotalDebitBs] = useState(0);
   const [totalAssetBs, setTotalAssetBs] = useState(0);
 
@@ -517,12 +519,42 @@ export default function FormEditVoucher({
               <FormItem>
                 <FormLabel>Glosa</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="" className="resize-none" {...field} />
+                  <Textarea
+                    placeholder=""
+                    className="resize-none"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setMainGloss(e.target.value);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <div className="flex items-center space-x-2 mt-2">
+        <Button 
+          type="button"
+          variant="outline" 
+          size="sm"
+          onClick={() => {
+            if (voucherItems.length > 0 && mainGloss) {
+              const updatedItems = voucherItems.map(item => ({
+                ...item,
+                gloss: mainGloss
+              }));
+              setVoucherItems(updatedItems);
+              toast.success("Glosa aplicada a todos los items");
+            } else {
+              toast.warning("No hay items para actualizar o la glosa está vacía");
+            }
+          }}
+        >
+          <Copy className="h-4 w-4 mr-2" />
+          Aplicar glosa a todos los items
+        </Button>
+      </div>
           <br />
           <Button type="submit" disabled={!editionEnabled}>
             <span className="mr-2">Guardar Edicion de Registro {}</span>
