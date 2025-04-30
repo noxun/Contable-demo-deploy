@@ -82,6 +82,7 @@ type FormNewVoucherProps = {
   voucherFromRegisterByDocResponse?: RegisterVoucherByDocumentResponse;
   bankAccountId?: string;
   amountFromExtract?: number;
+  dateFromExtract?: string;
   seatBlockType?: ModelBloque;
 };
 
@@ -193,6 +194,7 @@ export default function FormNewVoucher({
   voucherFromRegisterByDocResponse,
   bankAccountId,
   amountFromExtract,
+  dateFromExtract,
   seatBlockType,
 }: FormNewVoucherProps) {
   const router = useRouter();
@@ -273,40 +275,6 @@ export default function FormNewVoucher({
       setVoucherItems(newItems);
     }
   }, [voucherFromRegisterByDocResponse]);
-
-  useEffect(() => {
-    if (bankAccountId && amountFromExtract) {
-      if (amountFromExtract > 0) {
-        setVoucherItems([
-          {
-            debitBs: 0,
-            debitSus: 0,
-            assetBs: Math.abs(amountFromExtract),
-            assetSus: 0,
-            gloss: gloss ?? "",
-            accountId: bankAccountId,
-            voucherId: "",
-            canDebit: true,
-            canAsset: true,
-          },
-        ]);
-      } else {
-        setVoucherItems([
-          {
-            debitBs: Math.abs(amountFromExtract),
-            debitSus: 0,
-            assetBs: 0,
-            assetSus: 0,
-            gloss: gloss ?? "",
-            accountId: bankAccountId,
-            voucherId: "",
-            canDebit: true,
-            canAsset: true,
-          },
-        ]);
-      }
-    }
-  }, [amountFromExtract, bankAccountId, gloss]);
 
   const banksQuery = useQuery({
     queryKey: ["banks"],
@@ -548,7 +516,7 @@ export default function FormNewVoucher({
   const defaultValues = {
     exchangeRate: 6.97,
     coin: "BOB" as "USD" | "BOB",
-    checkNum: "",
+    checkNum: "0",
     gloss: gloss ?? "",
     bankId: bankId ?? null,
     bankItemRef: bankExtractId, //ironico
@@ -564,7 +532,7 @@ export default function FormNewVoucher({
     voucherDefaultValues = {
       exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
       coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
-      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "",
+      checkNum: voucherFromRegisterByDocResponse.checkNum ?? "0",
       gloss: voucherFromRegisterByDocResponse.gloss ?? "",
       bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
@@ -581,6 +549,46 @@ export default function FormNewVoucher({
     resolver: zodResolver(voucherFormSchema),
     defaultValues: voucherDefaultValues,
   });
+
+  useEffect(() => {
+    if (bankAccountId && amountFromExtract) {
+
+      if(dateFromExtract!== undefined){
+        const date = format(dateFromExtract, "yyyy-MM-dd");
+        voucherForm.setValue("voucherDate", date);
+      }
+
+      if (amountFromExtract > 0) {
+        setVoucherItems([
+          {
+            debitBs: 0,
+            debitSus: 0,
+            assetBs: Math.abs(amountFromExtract),
+            assetSus: 0,
+            gloss: gloss ?? "",
+            accountId: bankAccountId,
+            voucherId: "",
+            canDebit: true,
+            canAsset: true,
+          },
+        ]);
+      } else {
+        setVoucherItems([
+          {
+            debitBs: Math.abs(amountFromExtract),
+            debitSus: 0,
+            assetBs: 0,
+            assetSus: 0,
+            gloss: gloss ?? "",
+            accountId: bankAccountId,
+            voucherId: "",
+            canDebit: true,
+            canAsset: true,
+          },
+        ]);
+      }
+    }
+  }, [amountFromExtract,dateFromExtract,voucherForm, bankAccountId, gloss]);
 
   const voucherDate = voucherForm.watch("voucherDate");
   const invoiceValue = voucherForm.watch("invoice");
