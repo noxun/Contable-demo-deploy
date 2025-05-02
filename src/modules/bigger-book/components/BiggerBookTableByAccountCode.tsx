@@ -32,6 +32,7 @@ import useBiggerBookDataByAccountCode from "@/modules/shared/hooks/useBiggerBook
 import EditVoucherDialog from "@/modules/shared/components/EditVoucherDialog";
 import { useState } from "react";
 import useUserStore from "@/lib/userStore";
+import { usePathname } from "next/navigation";
 
 type BookBiggerData = {
   accountCode: string;
@@ -72,7 +73,7 @@ interface BiggerBookTableProps {
 
 export const BiggerBookTable = ({ accountCode }: BiggerBookTableProps) => {
   const loginData = useUserStore((state) => state.loginData);
-
+  const pathName = usePathname();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -226,11 +227,13 @@ export const BiggerBookTable = ({ accountCode }: BiggerBookTableProps) => {
           })}{" "}
           Bs
           <br />
+          { !(pathName === "/dashboard/accounting/accounting-box") && <>
           Saldo:{" "}
           {bookData[0].totalSaldoNum.toLocaleString("es-BO", {
             minimumFractionDigits: 2,
           })}{" "}
           Bs
+          </>}
         </div>
       </div>
 
