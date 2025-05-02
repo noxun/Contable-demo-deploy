@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_MAIN_CITY, REPORTS_LOGO_URL } from "@/lib/constants";
 import { numberWithDecimals } from "@/modules/shared/utils/validate";
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
@@ -82,7 +82,7 @@ export default function AccountDetailsDollarsPdf({
         </View>
         {/* Fila fecha */}
         <View style={tw("flex flex-row justify-between")}>
-          <Text>Santa Cruz, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
+          <Text>{COMPANY_MAIN_CITY}, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
           <Text>T/C: {data.exchangeRate}</Text>
         </View>
         {/* Header Tabla */}

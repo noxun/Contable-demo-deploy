@@ -27,7 +27,7 @@ import { es, is, tr } from "date-fns/locale";
 import { numberWithDecimals } from "../utils/validate";
 import useNumberToLiteral from "../hooks/useNumberToLiteral";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_MAIN_CITY, REPORTS_LOGO_URL } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
 const tw = createTw({
@@ -149,7 +149,7 @@ export default function PdfVoucher({
               {/* Fila fecha */}
               <View style={tw("flex flex-row justify-between")}>
                 <Text>
-                  Santa Cruz,{" "}
+                  {COMPANY_MAIN_CITY},{" "}
                   {format(
                     data?.voucherDate ?? new Date(),
                     "dd 'de' MMMM 'de' yyyy",

@@ -5,7 +5,7 @@ import Text from "@/components/generatePdf/Text";
 import { PaymentRoll } from "@/lib/trazoTypes";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_MAIN_CITY, COMPANY_NAME, COMPANY_PHONES, REPORTS_LOGO_URL } from "@/lib/constants";
 import { User } from "@/lib/types";
 
 const isQuotation = false;
@@ -59,7 +59,7 @@ export default function SettlementDocument({
                   {isQuotation ? data.nroQuotation : data.codigoDeInterno}
                 </Text>
                 <Text fontSize="10px" padding="0px 3px" textAlign="end">
-                  {format(new Date(), "'Santa Cruz' dd 'de' MMMM 'del' yyyy", {
+                  {format(new Date(), `'${COMPANY_MAIN_CITY}' dd 'de' MMMM 'del' yyyy`, {
                     locale: es,
                   })}
                 </Text>
@@ -503,7 +503,7 @@ export default function SettlementDocument({
                   BANCO UNION S.A. (Cta. Corriente)
                 </Text>
                 <Text padding="2px 3px">Cuenta En Bs.: {accountNumber}</Text>
-                <Text padding="2px 3px">TRADECRUZ S.R.L</Text>
+                <Text padding="2px 3px">{COMPANY_NAME}</Text>
               </View>
               <View width="50%" flexDirection="column">
                 <Text padding="2px 3px">
@@ -516,7 +516,7 @@ export default function SettlementDocument({
             </View>
             <Text padding="2px 3px" fontSize="7px">
               Nota.: La presente Proforma esta sujeta a Cambio dentro del plazo
-              requerido por Tradecruz SRL por variacion en el T./C.
+              requerido por {COMPANY_NAME} por variacion en el T./C.
             </Text>
           </View>
           <View
@@ -527,11 +527,10 @@ export default function SettlementDocument({
             style={{ backgroundColor: "#002747" }}
           >
             <Text padding="2px 3px" color="white">
-              4to. Anillo entre Av. Banzer y Beni Calle Tristan
-              Languidey Nro. 19
+              {COMPANY_ADDRESS}
             </Text>
             <Text padding="2px 3px" color="white">
-              Teléfono: (591)3-3406135 Teléfono: (591)3-385332 - (591)3-3852168
+              Teléfonos: {COMPANY_PHONES.map((phone) => phone).join(", ")}
             </Text>
           </View>
         </View>
@@ -571,7 +570,7 @@ export default function SettlementDocument({
                 "• El presente documento es emitido conforme solicitud del comitente o consignatario a partir de la presentación de documentación soporte suficiente para determinar lo estipulado según Art. 20 del Reglamento a la Ley General de Aduanas D.S. 25870.",
                 "• La validez del presente documento tiene una duración de 7 días calendario a partir de la fecha de emisión, siempre y cuando los valores finales de la documentación soporte no sufran ningún cambio en relación a la cotización de monedas vigente emitida por el Banco Central de Bolivia y exigida por Aduana Nacional.",
                 "• La presente proforma/cotización en ninguno de los casos ampara transporte de mercadería antes y después de las gestiones dentro del Recinto Aduanero de turno, siendo esta responsabilidad exclusiva del comitente, consignatario y/o agente de carga contratado directamente por el comitente o consignatario.",
-                "• El presente documento queda sujeto a modificación sin previo aviso por parte de la Agencia Despachante de Aduana TRADECRUZ SRL, estableciendo que los valores que cite el mismo son temporales y/o aproximados.",
+                `• El presente documento queda sujeto a modificación sin previo aviso por parte de la Agencia Despachante de Aduana ${COMPANY_NAME}, estableciendo que los valores que cite el mismo son temporales y/o aproximados.`,
                 "• Las proformas/cotizaciones están expresadas en dólares al tipo de cambio a la fecha de la emisión del documento; en caso que este cambiara, la deuda se actualizará en moneda extranjera dólares.",
                 "• El pago de la siguiente cotización/proforma por transferencia, efectivo, depósito, cheque o cualquier otro medio genera la aceptación de la misma, sujetándose el comitente, consignatario o intermediario a las condiciones antes estipuladas sin derecho a reclamos posteriores.",
                 "• El valor final del presente documento debe ser cancelado a las siguientes cuentas habilitadas:",
@@ -582,7 +581,7 @@ export default function SettlementDocument({
                   color={index === 2 ? "#ff0000" : undefined}
                 />
               ))}
-              <TextSubTitle text="CUENTAS TRADECRUZ SRL BANCO UNION S.A. MONEDA NACIONAL (Bolivianos)" />
+              <TextSubTitle text={`CUENTAS ${COMPANY_NAME} BANCO UNION S.A. MONEDA NACIONAL (Bolivianos)`} />
               {[
                 "a)	10000030319095",
                 "b)	10000030108464",
