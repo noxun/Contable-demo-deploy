@@ -235,7 +235,7 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
         </Button>
       </div>
       <Virtuoso
-        style={{ height: 400}}
+        style={{ height: 700}}
         className="!important border-2"
         data={visibleAccounts}
         itemContent={renderAccount}
