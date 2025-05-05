@@ -78,7 +78,7 @@ export function DataTablePayrollsSalaries<TData, TValue>({
   })
 
   return (
-    <div>
+    <div className="max-w-full overflow-hidden">
       <div className="grid grid-cols-2 lg:grid-cols-3 py-4 items-center justify-center">
         <div className="order-1 flex justify-start">
           {filter && filter.columnName && (
@@ -148,8 +148,8 @@ export function DataTablePayrollsSalaries<TData, TValue>({
         </div>
       </div>
 
-      <div className="relative rounded-md mx-auto border w-[90vw] md:w-[69vw] lg:w-full max-h-[90vh] max-w-full overflow-auto">
-        <Table>
+      <div className="relative rounded-md mx-auto border w-auto max-h-[90vh] overflow-auto">
+        <Table >
           <TableHeader className="sticky inset-0 z-20 bg-[#2563eb] hover:bg-[#2563eb]/90">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
