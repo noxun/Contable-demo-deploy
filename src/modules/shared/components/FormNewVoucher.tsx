@@ -44,7 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import FormNewVoucherItems from "./FormNewVoucherItems";
-import { format, set } from "date-fns";
+import { format, isValid, parse, set } from "date-fns";
 import { es } from "date-fns/locale";
 import Spinner from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -554,8 +554,17 @@ export default function FormNewVoucher({
     if (bankAccountId && amountFromExtract) {
 
       if(dateFromExtract!== undefined){
-        const date = format(dateFromExtract, "yyyy-MM-dd");
-        voucherForm.setValue("voucherDate", date);
+
+        //ESTO PROBABLEMENTE SEA DIFERENTE EN JETSTAR O LOGAL
+        const parsedDate = parse(dateFromExtract, 'd/M/yyyy HH:mm:ss', new Date());
+
+        if(isValid(parsedDate)){
+          const formattedDate = format(parsedDate, "yyyy-MM-dd",);
+          voucherForm.setValue("voucherDate", formattedDate);
+        }else {
+          console.log("Fecha no valida")
+        }
+
       }
 
       if (amountFromExtract > 0) {
