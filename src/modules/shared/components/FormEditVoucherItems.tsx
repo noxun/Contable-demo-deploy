@@ -350,6 +350,8 @@ export default function FormEditVoucherItems({
             <TableHead>Cuenta</TableHead>
             <TableHead>Debe Bs.</TableHead>
             <TableHead>Haber Bs.</TableHead>
+            <TableHead>Debe Sus.</TableHead>
+            <TableHead>Haber Sus.</TableHead>
             <TableHead>Glosa</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
@@ -388,6 +390,20 @@ export default function FormEditVoucherItems({
                   name="assetBs"
                   onChange={(e) => onChange(e, index)}
                   value={item?.assetBs ?? ""}
+                />
+              </TableCell>
+              <TableCell>
+                <Input
+                  name="debitSus"
+                  onChange={(e) => onChange(e, index)}
+                  value={item?.debitSus ?? ""}
+                />
+              </TableCell>
+              <TableCell>
+                <Input
+                  name="assetSus"
+                  onChange={(e) => onChange(e, index)}
+                  value={item?.assetSus ?? ""}
                 />
               </TableCell>
               <TableCell className="w-[30%]">
