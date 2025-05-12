@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { SingleValue } from "react-select";
 import { Plus, Trash2 } from "lucide-react";
@@ -24,6 +24,10 @@ type FormNewVoucherItemsProps = {
   glossValue?: string;
   totalDebitValue: number;
   totalAssetValue: number;
+  isDollarEditionActive?: boolean; //feature flag
+  automaticRateConversionEnabled?: boolean;
+  exchangeRate?: number;
+  coin?: "BOB" | "USD";
 };
 
 export default function FormNewVoucherItems({
@@ -34,6 +38,10 @@ export default function FormNewVoucherItems({
   glossValue,
   totalDebitValue,
   totalAssetValue,
+  isDollarEditionActive,
+  automaticRateConversionEnabled,
+  exchangeRate,
+  coin,
 }: FormNewVoucherItemsProps) {
   const distributeValuesByPercentage = (
     currentItems: VoucherItem[],
@@ -43,64 +51,73 @@ export default function FormNewVoucherItems({
   ): VoucherItem[] => {
     // Check if all voucher items have percentage and canAsset/canDebit properties
     const hasRequiredProperties = currentItems.every(
-      (item) => item.percentage !== undefined && 
-                (item.canAsset !== undefined && item.canDebit !== undefined)
+      (item) =>
+        item.percentage !== undefined &&
+        item.canAsset !== undefined &&
+        item.canDebit !== undefined
     );
-    
+
     if (!hasRequiredProperties) {
       return currentItems; // Return unchanged if any item is missing required properties
     }
-    
-    // Find the 100% item 
+
+    // Find the 100% item
     const hundredPercentItemIndex = currentItems.findIndex(
       (item) => item.percentage === 100
     );
-    
+
     if (hundredPercentItemIndex === -1) {
       return currentItems; // No 100% item found
     }
-    
+
     const hundredPercentItem = currentItems[hundredPercentItemIndex];
-    
+
     // Check if 100% item has both canAsset and canDebit set to true
     if (hundredPercentItem.canAsset && hundredPercentItem.canDebit) {
       return currentItems; // Skip calculation if both flags are true
     }
-    
+
     // Check if the field being changed belongs to the 100% item
     if (sourceIndex !== hundredPercentItemIndex) {
       return currentItems; // Only trigger distribution when changing the 100% item
     }
-    
+
     // Determine if we're working with debit or asset field
-    const isHundredPercentDebit = hundredPercentItem.canDebit && !hundredPercentItem.canAsset;
-    const isHundredPercentAsset = hundredPercentItem.canAsset && !hundredPercentItem.canDebit;
-    
+    const isHundredPercentDebit =
+      hundredPercentItem.canDebit && !hundredPercentItem.canAsset;
+    const isHundredPercentAsset =
+      hundredPercentItem.canAsset && !hundredPercentItem.canDebit;
+
     // Only proceed if the field type matches the allowed field for the 100% item
-    if ((isDebitField && !isHundredPercentDebit) || (!isDebitField && !isHundredPercentAsset)) {
+    if (
+      (isDebitField && !isHundredPercentDebit) ||
+      (!isDebitField && !isHundredPercentAsset)
+    ) {
       return currentItems;
     }
-    
+
     // Check if other items have complementary permissions
-    const otherItemsHaveComplementaryPermissions = currentItems.every((item, index) => {
-      if (index === hundredPercentItemIndex) return true; // Skip the 100% item
-      return isHundredPercentDebit ? item.canAsset : item.canDebit;
-    });
-    
+    const otherItemsHaveComplementaryPermissions = currentItems.every(
+      (item, index) => {
+        if (index === hundredPercentItemIndex) return true; // Skip the 100% item
+        return isHundredPercentDebit ? item.canAsset : item.canDebit;
+      }
+    );
+
     if (!otherItemsHaveComplementaryPermissions) {
       return currentItems; // Other items don't have complementary permissions
     }
-    
+
     // Check if the sum of percentages for other items equals 100
     const otherItemsPercentageSum = currentItems.reduce((sum, item, index) => {
       if (index === hundredPercentItemIndex) return sum;
       return sum + (item.percentage || 0);
     }, 0);
-    
+
     if (Math.abs(otherItemsPercentageSum - 100) > 0.01) {
       return currentItems; // Sum of other percentages doesn't equal 100
     }
-    
+
     // Update the values for other items based on their percentages
     return currentItems.map((item, index) => {
       if (index === hundredPercentItemIndex) {
@@ -113,7 +130,7 @@ export default function FormNewVoucherItems({
       } else {
         // Calculate proportional value for other items
         const proportionalValue = (value * (item.percentage || 0)) / 100;
-        
+
         // Update the opposite field of what the 100% item has
         return {
           ...item,
@@ -126,29 +143,55 @@ export default function FormNewVoucherItems({
 
   function onChange(e: ChangeEvent<HTMLInputElement>, index: number) {
     const { name, value } = e.target;
-    
+
     const listVoucherItem = [...voucherItems];
-    
+
     // Handle numeric inputs (debitBs, assetBs, percentage)
-    if (["debitBs", "assetBs", "percentage"].includes(name)) {
+    if (
+      ["debitBs", "assetBs", "debitSus", "assetSus", "percentage"].includes(
+        name
+      )
+    ) {
       const numValue = parseFloat(value) || 0;
+
+      if (
+        isDollarEditionActive &&
+        automaticRateConversionEnabled &&
+        exchangeRate &&
+        coin
+      ) {
+        if (coin === "BOB") {
+          if (name === "debitBs") {
+            listVoucherItem[index].debitSus = numValue / exchangeRate; // BOB to USD
+          } else if (name === "assetBs") {
+            listVoucherItem[index].assetSus = numValue / exchangeRate; // BOB to USD
+          }
+        } else if (coin === "USD") {
+          if (name === "debitSus") {
+            listVoucherItem[index].debitBs = numValue * exchangeRate; // USD to BOB
+          } else if (name === "assetSus") {
+            listVoucherItem[index].assetBs = numValue * exchangeRate; // USD to BOB
+          }
+        }
+      }
+
       listVoucherItem[index] = {
         ...listVoucherItem[index],
         [name]: numValue,
       };
-      
+
       // Attempt distribution if it's debitBs or assetBs and value is greater than 0
       if ((name === "debitBs" || name === "assetBs") && numValue > 0) {
         const distributedItems = distributeValuesByPercentage(
-          listVoucherItem, 
-          numValue, 
-          name === "debitBs", 
+          listVoucherItem,
+          numValue,
+          name === "debitBs",
           index
         );
         setVoucherItems(distributedItems);
         return;
       }
-    } 
+    }
     // Handle gloss input
     else if (name === "gloss") {
       if (applyGlossToAll) {
@@ -159,11 +202,11 @@ export default function FormNewVoucherItems({
         listVoucherItem[index].gloss = value;
       }
     }
-    
+
     // Always call setVoucherItems at the end
     setVoucherItems(listVoucherItem);
   }
-  
+
   function onSelectChange(
     option: SingleValue<{ value: string; label: string }> | null,
     index: number
@@ -187,6 +230,15 @@ export default function FormNewVoucherItems({
     label: item.description,
   }));
 
+  const totalDebitSus = voucherItems.reduce(
+    (total, item) => total + (item.debitSus || 0),
+    0
+  );
+  const totalAssetSus = voucherItems.reduce(
+    (total, item) => total + (item.assetSus || 0),
+    0
+  );
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -206,7 +258,7 @@ export default function FormNewVoucherItems({
                 voucherId: "",
                 canAsset: true,
                 canDebit: true,
-                percentage: 0
+                percentage: 0,
               },
             ]);
           }}
@@ -221,6 +273,12 @@ export default function FormNewVoucherItems({
             <TableHead>Cuenta</TableHead>
             <TableHead>Debe Bs.</TableHead>
             <TableHead>Haber Bs.</TableHead>
+            {isDollarEditionActive && (
+              <>
+                <TableHead>Debe $us</TableHead>
+                <TableHead>Haber $us</TableHead>
+              </>
+            )}
             <TableHead>Glosa</TableHead>
             <TableHead>Porcentaje</TableHead>
             <TableHead>Acciones</TableHead>
@@ -284,6 +342,48 @@ export default function FormNewVoucherItems({
                   decimalScale={2}
                 />
               </TableCell>
+              {isDollarEditionActive && (
+                <>
+                  <TableCell>
+                    <NumericFormat
+                      disabled={!item.canDebit}
+                      name="debitSus"
+                      value={item.debitSus}
+                      onValueChange={(values) => {
+                        const event = {
+                          target: {
+                            name: "debitSus",
+                            value: values.floatValue?.toString() || "0",
+                          },
+                        } as ChangeEvent<HTMLInputElement>;
+                        onChange(event, index);
+                      }}
+                      customInput={Input}
+                      thousandSeparator
+                      decimalScale={2}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <NumericFormat
+                      disabled={!item.canAsset}
+                      name="assetSus"
+                      value={item.assetSus}
+                      onValueChange={(values) => {
+                        const event = {
+                          target: {
+                            name: "assetSus",
+                            value: values.floatValue?.toString() || "0",
+                          },
+                        } as ChangeEvent<HTMLInputElement>;
+                        onChange(event, index);
+                      }}
+                      customInput={Input}
+                      thousandSeparator
+                      decimalScale={2}
+                    />
+                  </TableCell>
+                </>
+              )}
               <TableCell className="w-[25%]">
                 <Input
                   name="gloss"
@@ -326,6 +426,12 @@ export default function FormNewVoucherItems({
             <TableCell>Total</TableCell>
             <TableCell>{totalDebitValue.toFixed(2)}</TableCell>
             <TableCell>{totalAssetValue.toFixed(2)}</TableCell>
+            {isDollarEditionActive && (
+              <>
+                <TableCell>{totalDebitSus.toFixed(2)}</TableCell>
+                <TableCell>{totalAssetSus.toFixed(2)}</TableCell>
+              </>
+            )}
           </TableRow>
         </TableBody>
       </Table>

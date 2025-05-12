@@ -71,6 +71,7 @@ import {
 } from "@/lib/types";
 import { Label } from "@/components/ui/label";
 import PdfVoucher from "./PdfVoucher";
+import { Switch } from "@/components/ui/switch";
 
 type FormNewVoucherProps = {
   type: VoucherType;
@@ -92,12 +93,20 @@ const iva = 0.13;
 const it = 0.03;
 const fact = 0.16;
 
-const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, fact: number, it: number, iva: number, totalDebit: number, bloque: ModelBloque) => {
-
-  console.log("Called!")
+const processVoucherItems = (
+  voucherItems: VoucherItem[],
+  invoiceValue: string,
+  fact: number,
+  it: number,
+  iva: number,
+  totalDebit: number,
+  bloque: ModelBloque
+) => {
+  console.log("Called!");
   console.log(voucherItems);
 
-  if (!invoiceValue || isNaN(Number(invoiceValue)) && !invoiceValue) return voucherItems;
+  if (!invoiceValue || (isNaN(Number(invoiceValue)) && !invoiceValue))
+    return voucherItems;
 
   const updatedItems = [...voucherItems];
 
@@ -109,8 +118,10 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     accountDescription?.startsWith("IT POR PAGAR")
   );
 
-  const ivaVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
-    accountDescription?.startsWith("IVA") || accountDescription?.startsWith("DEBITO FISCAL IVA")
+  const ivaVoucherItem = voucherItems.findIndex(
+    ({ accountDescription }) =>
+      accountDescription?.startsWith("IVA") ||
+      accountDescription?.startsWith("DEBITO FISCAL IVA")
   );
 
   const utVoucherItem = voucherItems.findIndex(({ accountDescription }) =>
@@ -125,17 +136,24 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     accountDescription?.startsWith("HT ")
   );
 
-  console.log(factVoucherItem, itVoucherItem, ivaVoucherItem, utVoucherItem, iaTransaccionesItem, htVoucherItem)
+  console.log(
+    factVoucherItem,
+    itVoucherItem,
+    ivaVoucherItem,
+    utVoucherItem,
+    iaTransaccionesItem,
+    htVoucherItem
+  );
 
   const values = {
     factVal: Number(invoiceValue) * fact,
     itVal: Number(invoiceValue) * it,
     ivaVal: Number(invoiceValue) * iva,
-    utVal: totalDebit - (Number(invoiceValue) * fact),
+    utVal: totalDebit - Number(invoiceValue) * fact,
     iatVal: Number(invoiceValue) * it,
-    htVal: totalDebit - (Number(invoiceValue) * iva) - (Number(invoiceValue) * it)
-  }
-  console.log("values", values)
+    htVal: totalDebit - Number(invoiceValue) * iva - Number(invoiceValue) * it,
+  };
+  console.log("values", values);
 
   if (factVoucherItem !== -1 && bloque === "C") {
     updatedItems[factVoucherItem] = {
@@ -172,14 +190,19 @@ const processVoucherItems = (voucherItems: VoucherItem[], invoiceValue: string, 
     };
   }
 
-  if (htVoucherItem !== -1 && ivaVoucherItem !== -1 && itVoucherItem !== -1 && bloque === "D") {
+  if (
+    htVoucherItem !== -1 &&
+    ivaVoucherItem !== -1 &&
+    itVoucherItem !== -1 &&
+    bloque === "D"
+  ) {
     updatedItems[htVoucherItem] = {
       ...updatedItems[htVoucherItem],
       assetBs: values.htVal,
     };
   }
 
-  console.log(updatedItems)
+  console.log(updatedItems);
 
   return updatedItems;
 };
@@ -214,12 +237,19 @@ export default function FormNewVoucher({
   const [selectedModelSeatType, setSelectedModelSeatType] = useState<
     number | undefined
   >();
-  const [selectedBloque, setSelectedBloque] = useState<ModelBloque>(seatBlockType ?? "");
+  const [selectedBloque, setSelectedBloque] = useState<ModelBloque>(
+    seatBlockType ?? ""
+  );
 
   const [applyGlossToAll, setApplyGlossToAll] = useState(false);
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [totalDebitValue, setTotalDebitValue] = useState(0);
   const [totalAssetValue, setTotalAssetValue] = useState(0);
+
+  const [automaticRateConversionEnabled, setAutomaticRateConversionEnabled] =
+    useState(true);
+
+  const [isDollarEditionActive, setIsDollarEditionActive] = useState(false);
 
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
@@ -259,18 +289,19 @@ export default function FormNewVoucher({
       voucherFromRegisterByDocResponse &&
       voucherFromRegisterByDocResponse.items
     ) {
-      const newItems: VoucherItem[] = voucherFromRegisterByDocResponse.items.map((item) => ({
-        debitBs: item.debitBs,
-        debitSus: item.debitSus,
-        assetBs: item.assetBs,
-        assetSus: item.assetSus,
-        gloss: item.gloss,
-        accountId: item.accountId.toString(),
-        voucherId: item.voucherId,
-        canDebit: true,
-        canAsset: true,
-        accountDescription: item.description,
-      }));
+      const newItems: VoucherItem[] =
+        voucherFromRegisterByDocResponse.items.map((item) => ({
+          debitBs: item.debitBs,
+          debitSus: item.debitSus,
+          assetBs: item.assetBs,
+          assetSus: item.assetSus,
+          gloss: item.gloss,
+          accountId: item.accountId.toString(),
+          voucherId: item.voucherId,
+          canDebit: true,
+          canAsset: true,
+          accountDescription: item.description,
+        }));
 
       setVoucherItems(newItems);
     }
@@ -449,9 +480,13 @@ export default function FormNewVoucher({
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
       debitBs: Number(item.debitBs),
-      debitSus: Number(item?.debitBs ?? 0 / values.exchangeRate),
+      debitSus: Number(
+        item.debitSus ?? (item.debitBs ?? 0) / values.exchangeRate
+      ),
       assetBs: Number(item.assetBs),
-      assetSus: Number(item?.assetBs ?? 0 / values.exchangeRate),
+      assetSus: Number(
+        item.assetSus ?? (item.assetBs ?? 0) / values.exchangeRate
+      ),
       gloss: item.gloss,
     }));
     let newValues = {
@@ -552,19 +587,20 @@ export default function FormNewVoucher({
 
   useEffect(() => {
     if (bankAccountId && amountFromExtract) {
-
-      if(dateFromExtract!== undefined){
-
+      if (dateFromExtract !== undefined) {
         //ESTO PROBABLEMENTE SEA DIFERENTE EN JETSTAR O LOGAL
-        const parsedDate = parse(dateFromExtract, 'd/M/yyyy HH:mm:ss', new Date());
+        const parsedDate = parse(
+          dateFromExtract,
+          "d/M/yyyy HH:mm:ss",
+          new Date()
+        );
 
-        if(isValid(parsedDate)){
-          const formattedDate = format(parsedDate, "yyyy-MM-dd",);
+        if (isValid(parsedDate)) {
+          const formattedDate = format(parsedDate, "yyyy-MM-dd");
           voucherForm.setValue("voucherDate", formattedDate);
-        }else {
-          console.log("Fecha no valida")
+        } else {
+          console.log("Fecha no valida");
         }
-
       }
 
       if (amountFromExtract > 0) {
@@ -597,10 +633,12 @@ export default function FormNewVoucher({
         ]);
       }
     }
-  }, [amountFromExtract,dateFromExtract,voucherForm, bankAccountId, gloss]);
+  }, [amountFromExtract, dateFromExtract, voucherForm, bankAccountId, gloss]);
 
   const voucherDate = voucherForm.watch("voucherDate");
   const invoiceValue = voucherForm.watch("invoice");
+  const exchangeRate = voucherForm.watch("exchangeRate");
+  const coin = voucherForm.watch("coin");
 
   const handleModelSeatChange = async (selectedOption: any) => {
     setVoucherItems([]);
@@ -608,10 +646,10 @@ export default function FormNewVoucher({
     const modelSeatDetails = await fetchModelSeatsItems(selectedOption.value);
 
     if (modelSeatDetails.description.toUpperCase().includes("BLOQUE - C")) {
-      setSelectedBloque("C")
+      setSelectedBloque("C");
     }
     if (modelSeatDetails.description.toUpperCase().includes("BLOQUE - D")) {
-      setSelectedBloque("D")
+      setSelectedBloque("D");
     }
 
     const flatAccounts = accountsQuery?.data?.flat() ?? [];
@@ -620,27 +658,28 @@ export default function FormNewVoucher({
 
     const enrichedAccounts = modelSeatDetails.accounts.map((acc) => {
       const matched = acc.accountId && accountMap.get(Number(acc.accountId));
-      if (matched === undefined || matched === 0) return
+      if (matched === undefined || matched === 0) return;
       return {
         ...acc,
         accountDescription: matched?.description ?? undefined,
       };
     });
 
-
-    const updatedVoucherItems = modelSeatDetails.accounts.map((item, index) => ({
-      // ...voucherItems[0],
-      accountId: item.accountId,
-      accountDescription: enrichedAccounts[index]?.accountDescription,
-      canDebit: item.debit,
-      canAsset: item.asset,
-      debitBs: null,
-      assetBs: null,
-      debitSus: 0,
-      assetSus: 0,
-      gloss: "",
-      percentage: item.percentage,
-    }));
+    const updatedVoucherItems = modelSeatDetails.accounts.map(
+      (item, index) => ({
+        // ...voucherItems[0],
+        accountId: item.accountId,
+        accountDescription: enrichedAccounts[index]?.accountDescription,
+        canDebit: item.debit,
+        canAsset: item.asset,
+        debitBs: null,
+        assetBs: null,
+        debitSus: 0,
+        assetSus: 0,
+        gloss: "",
+        percentage: item.percentage,
+      })
+    );
 
     setVoucherItems(updatedVoucherItems);
   };
@@ -686,16 +725,30 @@ export default function FormNewVoucher({
     // Only process if there are items and invoice value exists
 
     if (voucherItems.length > 0 && invoiceValue) {
-      const processedItems = processVoucherItems(voucherItems, invoiceValue, fact, it, iva, totalDebitValue, selectedBloque);
+      const processedItems = processVoucherItems(
+        voucherItems,
+        invoiceValue,
+        fact,
+        it,
+        iva,
+        totalDebitValue,
+        selectedBloque
+      );
 
-      console.log(processedItems)
+      console.log(processedItems);
 
       // Only update if there's an actual change
       if (JSON.stringify(processedItems) !== JSON.stringify(voucherItems)) {
         setVoucherItems(processedItems);
       }
     }
-  }, [invoiceValue, voucherItems, setVoucherItems, totalDebitValue, selectedBloque]);
+  }, [
+    invoiceValue,
+    voucherItems,
+    setVoucherItems,
+    totalDebitValue,
+    selectedBloque,
+  ]);
 
   if (
     branchListQuery.isPending ||
@@ -780,7 +833,11 @@ export default function FormNewVoucher({
                   <Input
                     type="date"
                     {...field}
-                    value={field.value instanceof Date ? field.value.toISOString().split("T")[0] : field.value}
+                    value={
+                      field.value instanceof Date
+                        ? field.value.toISOString().split("T")[0]
+                        : field.value
+                    }
                   />
                   <FormMessage />
                 </FormItem>
@@ -967,8 +1024,9 @@ export default function FormNewVoucher({
               )}
             />
             <div
-              className={`space-y-2 ${voucherFromRegisterByDocResponse ? "hidden" : ""
-                }`}
+              className={`space-y-2 ${
+                voucherFromRegisterByDocResponse ? "hidden" : ""
+              }`}
             >
               <Label>Cliente</Label>
               <CreatableSelect
@@ -995,8 +1053,9 @@ export default function FormNewVoucher({
             </div>
             {isPendingTrazoInternCodes ? (
               <div
-                className={`${voucherFromRegisterByDocResponse ? "hidden" : ""
-                  }`}
+                className={`${
+                  voucherFromRegisterByDocResponse ? "hidden" : ""
+                }`}
               >
                 Cargando, Seleccione un cliente para mostrar sus hojas de
                 ruta...
@@ -1085,7 +1144,17 @@ export default function FormNewVoucher({
               </FormItem>
             )}
           />
-          <div className="flex items-center mb-2">
+          <div className="flex items-center my-2 space-x-2">
+            <Switch
+              id="dollar-edition"
+              checked={isDollarEditionActive}
+              onCheckedChange={() => {
+                setIsDollarEditionActive(!isDollarEditionActive);
+              }}
+            />
+            <Label htmlFor="dollar-edition">Edición de dolares</Label>
+          </div>
+          <div className="flex items-center mb-2 gap-2">
             <label className="flex items-center">
               <Checkbox
                 checked={applyGlossToAll}
@@ -1094,6 +1163,20 @@ export default function FormNewVoucher({
               />
               Aplicar glosa a todos los ítems
             </label>
+            {isDollarEditionActive && (
+              <label className="flex items-center">
+                <Checkbox
+                  checked={automaticRateConversionEnabled}
+                  onCheckedChange={() =>
+                    setAutomaticRateConversionEnabled(
+                      !automaticRateConversionEnabled
+                    )
+                  }
+                  className="mr-2"
+                />
+                Activar conversion automatica de tasas
+              </label>
+            )}
           </div>
           <br />
           <FormNewVoucherItems
@@ -1104,6 +1187,10 @@ export default function FormNewVoucher({
             glossValue={voucherForm.getValues("gloss")}
             totalDebitValue={totalDebitValue}
             totalAssetValue={totalAssetValue}
+            automaticRateConversionEnabled={automaticRateConversionEnabled}
+            coin={coin}
+            exchangeRate={exchangeRate}
+            isDollarEditionActive={isDollarEditionActive} // this time for testing
           />
           <div className="flex gap-4">
             <Button
