@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/ui/nested-header-data-table";
 import { fetchBudgetExecutionData } from "@/lib/data";
 import { BudgetExecutionData } from "@/lib/types";
-import { numberWithDecimals } from "@/modules/shared/utils/validate";
+import { numberWithDecimals } from "@/features/accounting/shared/utils/validate";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 

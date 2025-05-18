@@ -1,13 +1,13 @@
 "use client"
-import FormNewVoucher from "@/modules/shared/components/FormNewVoucher";
+import FormNewVoucher from "@/features/accounting/shared/components/FormNewVoucher";
 import {
   VoucherType,
   VoucherTypeRoute,
-} from "@/modules/shared/types/sharedTypes";
+} from "@/features/accounting/shared/types/sharedTypes";
 
 import dynamic from "next/dynamic";
 
-const DynamicFormNewVoucher = dynamic(()=> import('@/modules/shared/components/FormNewVoucher'), {
+const DynamicFormNewVoucher = dynamic(()=> import('@/features/accounting/shared/components/FormNewVoucher'), {
   loading: ()=> <div>Cargando...</div>,
   ssr: false,
 })

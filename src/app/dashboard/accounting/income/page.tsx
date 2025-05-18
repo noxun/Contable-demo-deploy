@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import ListVouchers from "@/modules/shared/components/ListVouchers";
-import { VoucherType, VoucherTypeRoute } from "@/modules/shared/types/sharedTypes";
+import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
+import { VoucherType, VoucherTypeRoute } from "@/features/accounting/shared/types/sharedTypes";
 import Link from "next/link";
 
 export default function IncomesPage() {

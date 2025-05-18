@@ -1,21 +1,21 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash"
-import { DateSelector } from "@/modules/shared/components/DateSelector"
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash"
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector"
 import { useCallback, useState } from "react"
 import { DateRange } from "react-day-picker"
-import { FinancialRatiosBarChart } from "@/modules/results/components/FinancialRatiosBarChar";
+import { FinancialRatiosBarChart } from "@/features/accounting/results/components/FinancialRatiosBarChar";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFinancialRateExcelByDate, getFinancialRatiosByDate } from "@/modules/results/lib/data_results";
+import { getFinancialRateExcelByDate, getFinancialRatiosByDate } from "@/features/accounting/results/lib/data_results";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { LoaderIcon } from "lucide-react";
-import { FinancialRatiosTemplate } from "@/modules/shared/components/templatePDF/FinancialRatios";
-import { FinancialRatiosCard } from "@/modules/results/components/FinancialRatioCard";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
-import { getMessageProfitability, getMessageROA, getMessageROE, getMessageROI } from "@/modules/results/lib/utils";
+import { FinancialRatiosTemplate } from "@/features/accounting/shared/components/templatePDF/FinancialRatios";
+import { FinancialRatiosCard } from "@/features/accounting/results/components/FinancialRatioCard";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
+import { getMessageProfitability, getMessageROA, getMessageROE, getMessageROI } from "@/features/accounting/results/lib/utils";
 
 
 export default function FinancialRatiosPage() {

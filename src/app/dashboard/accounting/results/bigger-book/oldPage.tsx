@@ -30,8 +30,8 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import EditVoucher from "@/modules/shared/components/EditVoucher";
-import { VoucherType } from "@/modules/shared/types/sharedTypes";
+import EditVoucher from "@/features/accounting/shared/components/EditVoucher";
+import { VoucherType } from "@/features/accounting/shared/types/sharedTypes";
 
 export default function BiggerBookPage() {
   // --- Estados del formulario ---

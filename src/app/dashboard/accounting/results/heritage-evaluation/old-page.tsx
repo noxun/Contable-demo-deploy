@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 
 export default function HeritageEvaluationPage() {
   const [gestionInit, setGestionInit] = useState<number | "">(2022);

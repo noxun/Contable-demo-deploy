@@ -1,8 +1,8 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import DownloadMassPurchaseFormButton from "@/modules/invoice-registry/components/DownloadMassTransactionFormButton";
-import ImportInvoiceRegistryDialog from "@/modules/invoice-registry/components/ImportInvoiceRegistryDialog";
-import ListInvoiceRegistry from "@/modules/invoice-registry/components/ListInvoiceRegistry";
+import DownloadMassPurchaseFormButton from "@/features/accounting/invoice-registry/components/DownloadMassTransactionFormButton";
+import ImportInvoiceRegistryDialog from "@/features/accounting/invoice-registry/components/ImportInvoiceRegistryDialog";
+import ListInvoiceRegistry from "@/features/accounting/invoice-registry/components/ListInvoiceRegistry";
 import Link from "next/link";
 
 export default function InvoiceRegistryPurchasesPage() {

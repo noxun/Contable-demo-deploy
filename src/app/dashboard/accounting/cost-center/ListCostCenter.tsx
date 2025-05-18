@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/BiggerBookByAccountCodeDialog";
+import BiggerBookByAccountCodeDialog from "@/features/accounting/bigger-book/components/BiggerBookByAccountCodeDialog";
 
 export default function ListCostCenter({
   costCenter,

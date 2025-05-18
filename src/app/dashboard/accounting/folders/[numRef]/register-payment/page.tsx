@@ -1,4 +1,4 @@
-import { ListConceptExpense } from "@/modules/folders/components/ListConceptExpense";
+import { ListConceptExpense } from "@/features/accounting/folders/components/ListConceptExpense";
 
 interface Props {
   params: { numRef: string };

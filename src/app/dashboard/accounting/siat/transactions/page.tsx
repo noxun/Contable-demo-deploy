@@ -7,12 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SyncAccountsButton from "@/modules/link/components/SyncAccountsButton";
-import ListVouchers from "@/modules/shared/components/ListVouchers";
+import SyncAccountsButton from "@/features/accounting/link/components/SyncAccountsButton";
+import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
 import {
   VoucherType,
   VoucherTypeRoute,
-} from "@/modules/shared/types/sharedTypes";
+} from "@/features/accounting/shared/types/sharedTypes";
 import { useState } from "react";
 
 type VoucherInfo = {

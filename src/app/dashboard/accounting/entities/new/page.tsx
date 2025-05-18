@@ -14,8 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useToken from "@/modules/shared/hooks/useToken";
-import { Account } from "@/modules/account/types/account";
+import useToken from "@/features/accounting/shared/hooks/useToken";
+import { Account } from "@/features/accounting/account/types/account";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";

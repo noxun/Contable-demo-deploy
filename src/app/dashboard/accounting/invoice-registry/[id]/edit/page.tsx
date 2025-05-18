@@ -1,6 +1,6 @@
 "use client";
 import { fetchSingleInvoiceRegistryById } from "@/lib/data";
-import FormEditInvoiceRegistry from "@/modules/invoice-registry/components/FormEditInvoiceRegistry";
+import FormEditInvoiceRegistry from "@/features/accounting/invoice-registry/components/FormEditInvoiceRegistry";
 import { useQuery } from "@tanstack/react-query";
 
 export default function EditInvoiceRegistryPage({

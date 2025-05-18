@@ -4,17 +4,17 @@ import React, { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchAccountingBoxItemsById } from "@/lib/data";
 import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/modules/accounting-box/components/columns";
-import NewAccountingBoxDialog from "@/modules/accounting-box/components/NewAccountingBoxDialog";
-import useAccountingBox from "@/modules/shared/hooks/useAccountingBox";
+import { columns } from "@/features/accounting/accounting-box/components/columns";
+import NewAccountingBoxDialog from "@/features/accounting/accounting-box/components/NewAccountingBoxDialog";
+import useAccountingBox from "@/features/accounting/shared/hooks/useAccountingBox";
 import CustomSelect from "@/components/custom/select";
-import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
+import useAccountingBoxBalance from "@/features/accounting/shared/hooks/useAccountingBoxBalance";
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { numberWithDecimals } from "@/modules/shared/utils/validate";
+import { numberWithDecimals } from "@/features/accounting/shared/utils/validate";
 import { AccountingBox } from "@/lib/types";
-import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/BiggerBookByAccountCodeDialog";
-import BiggerBookTable from "@/modules/bigger-book/components/BiggerBookTableByAccountCode";
+import BiggerBookByAccountCodeDialog from "@/features/accounting/bigger-book/components/BiggerBookByAccountCodeDialog";
+import BiggerBookTable from "@/features/accounting/bigger-book/components/BiggerBookTableByAccountCode";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<

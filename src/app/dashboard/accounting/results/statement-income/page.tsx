@@ -16,17 +16,17 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { formatNumber } from "@/modules/shared/utils/validate";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
+import { formatNumber } from "@/features/accounting/shared/utils/validate";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, getAllDataStatementIncome } from "@/lib/data";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LevelData } from "@/modules/results/types/types";
-import { StatementIncomePreview } from "@/modules/results/components/StatementIncomePreview";
-import { EstadoResultadosTemplate } from "@/modules/shared/components/templatePDF/EstadoResultados";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { LevelData } from "@/features/accounting/results/types/types";
+import { StatementIncomePreview } from "@/features/accounting/results/components/StatementIncomePreview";
+import { EstadoResultadosTemplate } from "@/features/accounting/shared/components/templatePDF/EstadoResultados";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 export default function StatementIncomePage() {
   // --- Estados del formulario ---

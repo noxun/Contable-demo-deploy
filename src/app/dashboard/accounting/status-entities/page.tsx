@@ -1,7 +1,7 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table";
-import useToken from "@/modules/shared/hooks/useToken";
-import { IResponseStatus } from "@/modules/status-entities/interface/status-entities";
+import useToken from "@/features/accounting/shared/hooks/useToken";
+import { IResponseStatus } from "@/features/accounting/status-entities/interface/status-entities";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";

@@ -38,13 +38,13 @@ import DocViewer, {
 } from "@cyntler/react-doc-viewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import EditVoucher from "@/modules/shared/components/EditVoucher";
-import { VoucherType } from "@/modules/shared/types/sharedTypes";
+import EditVoucher from "@/features/accounting/shared/components/EditVoucher";
+import { VoucherType } from "@/features/accounting/shared/types/sharedTypes";
 import { useQuery } from "@tanstack/react-query";
 import DownloadSingleAccountReportButton from "./DownloadSingleAccountReportButton";
-import { BiggerBookTemplate } from "@/modules/shared/components/templatePDF/BiggerBook";
+import { BiggerBookTemplate } from "@/features/accounting/shared/components/templatePDF/BiggerBook";
 import { PDFViewer } from "@react-pdf/renderer";
-import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
 import {
   fetchBranches,
   getApiReportExcel,
@@ -52,8 +52,8 @@ import {
   numberToLiteral,
   searchByAccountBigguerBook,
 } from "@/lib/data";
-import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
+import { ReportExcelGenerate } from "@/features/accounting/shared/components/ReportExcelGenerator";
+import { formatNumber, ReportPaths } from "@/features/accounting/shared/utils/validate";
 import { useDebounce } from "use-debounce";
 import {
   Command,
@@ -63,14 +63,14 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { SearchComponent } from "@/modules/shared/components/SearchComponent";
+import { SearchComponent } from "@/features/accounting/shared/components/SearchComponent";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { ColumnDef } from "@tanstack/react-table";
 import { BookBiggerData, BookBiggerDataVoucherItem } from "@/lib/types";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
-import ExportSingleAccountToExcelButton from "@/modules/bigger-book/components/ExportSingleAccountToExcelButton";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
+import ExportSingleAccountToExcelButton from "@/features/accounting/bigger-book/components/ExportSingleAccountToExcelButton";
 
 // Types
 type VoucherItem = {

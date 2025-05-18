@@ -1,9 +1,9 @@
 "use client"
-import FormNewVoucher from "@/modules/shared/components/FormNewVoucher";
+import FormNewVoucher from "@/features/accounting/shared/components/FormNewVoucher";
 import {
   VoucherType,
   VoucherTypeRoute,
-} from "@/modules/shared/types/sharedTypes";
+} from "@/features/accounting/shared/types/sharedTypes";
 
 export default function NewIncomePage() {
   return (

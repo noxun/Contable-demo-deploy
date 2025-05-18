@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import DownloadMassPurchaseFormButton from "@/modules/invoice-registry/components/DownloadMassTransactionFormButton";
-import ListInvoiceRegistry from "@/modules/invoice-registry/components/ListInvoiceRegistry";
+import DownloadMassPurchaseFormButton from "@/features/accounting/invoice-registry/components/DownloadMassTransactionFormButton";
+import ListInvoiceRegistry from "@/features/accounting/invoice-registry/components/ListInvoiceRegistry";
 import Link from "next/link";
 
 //this is the old default page

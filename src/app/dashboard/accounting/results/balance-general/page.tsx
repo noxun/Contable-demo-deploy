@@ -8,19 +8,19 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
+import { ReportExcelGenerate } from "@/features/accounting/shared/components/ReportExcelGenerator";
+import { formatNumber, ReportPaths } from "@/features/accounting/shared/utils/validate";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, getAllDataBalanceGeneral, getAllDataReportByType } from "@/lib/data";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
-import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
+import { BalanceGeneralPreview } from "@/features/accounting/results/components/BalanceGeneralPreview";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LevelData } from "@/modules/results/types/types";
+import { LevelData } from "@/features/accounting/results/types/types";
 import { LoaderIcon } from "lucide-react";
-import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { BalanceGeneralTemplate } from "@/features/accounting/shared/components/templatePDF/BalanceGeneral";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 export default function BalanceGeneralPage() {
 

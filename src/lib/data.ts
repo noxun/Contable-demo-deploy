@@ -39,20 +39,20 @@ import {
   VoucherItemFromExtractedPDF,
 } from "./types";
 import { api } from "./api";
-import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
-import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
-import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
-import { Account } from "@/modules/account/types/account";
-import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
+import { UfvRegister } from "@/features/accounting/ufv/components/UfvRegisterForm";
+import { Voucher, VoucherType } from "@/features/accounting/shared/types/sharedTypes";
+import { LinkAccountForm } from "@/features/accounting/link/components/LinkAccountForm";
+import { Account } from "@/features/accounting/account/types/account";
+import { NewAccountingBox } from "@/features/accounting/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/accounting/users/new/page";
-import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
-import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
-import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
+import { EditModelSeat } from "@/features/accounting/model-seats/components/FormEditModelSeat";
+import { NewInvoiceForm } from "@/features/accounting/invoice-registry/components/FormNewInvoiceRegistry";
+import { VoucherDeleteVariables } from "@/features/accounting/shared/components/DeleteVoucherDialog";
 import {
   FixedAsset,
   FixedAssetsAll,
   SchemaFixedAsset,
-} from "@/modules/fixed-assets/types/types";
+} from "@/features/accounting/fixed-assets/types/types";
 import {
   ItemPayment,
   Payroll,
@@ -61,10 +61,10 @@ import {
   Salaries,
   SchemaPayrollType,
   SchemaSalaryType,
-} from "@/modules/salaries-payrolls/types/types";
+} from "@/features/accounting/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
-import { LevelData } from "@/modules/results/types/types";
-import { BranchEditForm } from "@/modules/branches/components/FormEditBranch";
+import { LevelData } from "@/features/accounting/results/types/types";
+import { BranchEditForm } from "@/features/accounting/branches/components/FormEditBranch";
 
 export function setAuthToken(token: string | undefined | null) {
   if (token) {

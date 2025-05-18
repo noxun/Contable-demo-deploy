@@ -1,4 +1,4 @@
-import EditConcept from "@/modules/concepts/components/EditConcept";
+import EditConcept from "@/features/accounting/concepts/components/EditConcept";
 
 export default function ConceptEditPage({
   params,

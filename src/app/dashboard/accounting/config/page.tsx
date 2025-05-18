@@ -8,7 +8,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import ConfigForm from "@/modules/config/components/ConfigForm";
+import ConfigForm from "@/features/accounting/config/components/ConfigForm";
 
 export default function ConfigPage() {
   return (

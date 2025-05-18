@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Label } from "@/components/ui/label";
-import useHeritageEvaluation from "@/modules/shared/hooks/useHeritageEvaluation";
+import useHeritageEvaluation from "@/features/accounting/shared/hooks/useHeritageEvaluation";
 import { addDays } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import HeritageEvaluationPreview from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPreview";
+import HeritageEvaluationPreview from "@/features/accounting/results/heritage-evaluation/components/HeritageEvaluationPreview";
 import { HeritageEvaluationData } from "@/lib/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import HeritageEvaluationPDF from "@/modules/results/heritage-evaluation/components/HeritageEvaluationPDF";
+import HeritageEvaluationPDF from "@/features/accounting/results/heritage-evaluation/components/HeritageEvaluationPDF";
 
 const options = [
   // { value: "1", label: "Excel" },

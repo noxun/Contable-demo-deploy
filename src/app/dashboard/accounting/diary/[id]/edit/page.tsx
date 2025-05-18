@@ -1,5 +1,5 @@
-import EditVoucher from "@/modules/shared/components/EditVoucher";
-import { VoucherType } from "@/modules/shared/types/sharedTypes";
+import EditVoucher from "@/features/accounting/shared/components/EditVoucher";
+import { VoucherType } from "@/features/accounting/shared/types/sharedTypes";
 
 export default function EditDiaryPage({
   params,

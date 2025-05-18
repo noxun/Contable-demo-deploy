@@ -8,11 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getVoucherType, getVoucherTypeRoute } from "@/lib/utils";
-import ListVouchers from "@/modules/shared/components/ListVouchers";
+import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
 import {
   VoucherType,
   VoucherTypeRoute,
-} from "@/modules/shared/types/sharedTypes";
+} from "@/features/accounting/shared/types/sharedTypes";
 import { useState } from "react";
 
 const voucherOptions = ["0", "1", "2"];

@@ -1,7 +1,7 @@
 "use client";
 import { getFixedAsset } from "@/lib/data";
-import { FormFixedAssets } from "@/modules/fixed-assets/components/FormFixedAssets";
-import { SchemaFixedAsset } from "@/modules/fixed-assets/types/types";
+import { FormFixedAssets } from "@/features/accounting/fixed-assets/components/FormFixedAssets";
+import { SchemaFixedAsset } from "@/features/accounting/fixed-assets/types/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";

@@ -1,4 +1,4 @@
-import FormNewBranch from "@/modules/branches/components/FormNewBranch";
+import FormNewBranch from "@/features/accounting/branches/components/FormNewBranch";
 
 export default function NewBranchPage() {
   return (

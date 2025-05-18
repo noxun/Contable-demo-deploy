@@ -6,18 +6,18 @@ import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CashFlowTemplate } from "@/modules/shared/components/templatePDF/CashFlow";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
-import { DateSelector } from "@/modules/shared/components/DateSelector";
+import { CashFlowTemplate } from "@/features/accounting/shared/components/templatePDF/CashFlow";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, getAllDataCashFlow, getAllDataCashFlowTemporal } from "@/lib/data";
-import { formatNumber } from "@/modules/shared/utils/validate";
+import { formatNumber } from "@/features/accounting/shared/utils/validate";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LevelData } from "@/modules/results/types/types";
-import { CashFlowPreview } from "@/modules/results/components/CashFlowPreview";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { LevelData } from "@/features/accounting/results/types/types";
+import { CashFlowPreview } from "@/features/accounting/results/components/CashFlowPreview";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 const mockup = {
   "balanceSheet": {

@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SideMenu } from "@/modules/shared/components/SideMenu";
+import { SideMenu } from "@/features/accounting/shared/components/SideMenu";
 import { Bolt, } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
-import UfvRegistrationDialog from "@/modules/ufv/components/UfvRegistrationDialog";
-import { useInitializeUserStore } from "@/modules/shared/hooks/useInitializeUserStore";
+import UfvRegistrationDialog from "@/features/accounting/ufv/components/UfvRegistrationDialog";
+import { useInitializeUserStore } from "@/features/accounting/shared/hooks/useInitializeUserStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {

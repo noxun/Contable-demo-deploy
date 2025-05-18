@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import ListVouchers from "@/modules/shared/components/ListVouchers";
-import { VoucherType, VoucherTypeRoute } from "@/modules/shared/types/sharedTypes";
+import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
+import { VoucherType, VoucherTypeRoute } from "@/features/accounting/shared/types/sharedTypes";
 import Link from "next/link";
 
 import dynamic from "next/dynamic";
 
-const DynamicListVouchers = dynamic(()=> import("@/modules/shared/components/ListVouchers"), {
+const DynamicListVouchers = dynamic(()=> import("@/features/accounting/shared/components/ListVouchers"), {
   loading: () => <div>Cargando...</div>,
   ssr: false
 })

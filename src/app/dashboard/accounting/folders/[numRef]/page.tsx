@@ -1,19 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ButtonFacturaPdf } from "@/modules/folders/components/ButtonFacturaPdf";
-import { ButtonPlanillaPdf } from "@/modules/folders/components/ButtonPlanillaPdf";
-import { TableConceptExpense } from "@/modules/folders/components/TableConceptExpense";
+import { ButtonFacturaPdf } from "@/features/accounting/folders/components/ButtonFacturaPdf";
+import { ButtonPlanillaPdf } from "@/features/accounting/folders/components/ButtonPlanillaPdf";
+import { TableConceptExpense } from "@/features/accounting/folders/components/TableConceptExpense";
 import {
   IResponseConceptFolder,
   IResponseDispatchDocument,
   IResponseFolder,
-} from "@/modules/folders/interface/folders";
+} from "@/features/accounting/folders/interface/folders";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Link from "next/link";
-import useToken from "@/modules/shared/hooks/useToken";
-import { ButtonSendEmail } from "@/modules/folders/components/ButtonSendEmail";
+import useToken from "@/features/accounting/shared/hooks/useToken";
+import { ButtonSendEmail } from "@/features/accounting/folders/components/ButtonSendEmail";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import AccountAccordion from "@/modules/account/components/AccountAccordion";
+import AccountAccordion from "@/features/accounting/account/components/AccountAccordion";
 import Link from "next/link";
 
 export default function AccountsPage() {

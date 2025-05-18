@@ -20,8 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@user/*": ["./src/modules/users/*"],
-      "@branch/*": ["./src/modules/branches/*"]
+      "@user/*": ["./src/features/accounting/users/*"],
+      "@branch/*": ["./src/features/accounting/branches/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
