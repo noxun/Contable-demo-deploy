@@ -39,3 +39,10 @@ next-env.d.ts
 # pnpm
 package-lock.json
 commit_messages.txt
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
