@@ -41,9 +41,9 @@ import {
 import Image from "next/image";
 import { APP_LOGO_URL } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { logout } from "@/lib/auth";
 
 export const SideMenu = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const getLoginData = useUserStore((state) => state.getLoginData);
   const loginData = getLoginData();
@@ -79,12 +79,7 @@ export const SideMenu = () => {
     return userRoles?.some((role) => role.name === roleName && role.isMenu);
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("loginResponse");
-    router.push("/auth/login");
-  };
+
 
   return (
     <Sidebar>
