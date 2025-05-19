@@ -1,5 +1,4 @@
 import { api } from "@/lib/api";
-import { setAuthToken } from "@/lib/data";
 import { FinancialRatiosResponse } from "../types/types";
 
 interface DateRangeType {
@@ -8,14 +7,7 @@ interface DateRangeType {
 }
 
 export async function getFinancialRateExcelByDate(dateRante: DateRangeType) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/Ratios/Xlsx`;
-
-  setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
       initDate: dateRante.initDate,
@@ -26,14 +18,7 @@ export async function getFinancialRateExcelByDate(dateRante: DateRangeType) {
 }
 
 export async function getFinancialRatiosByDate(dateRante: DateRangeType) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/Ratios`;
-
-  setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
       initDate: dateRante.initDate,

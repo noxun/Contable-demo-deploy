@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import { setAuthToken } from "@/lib/data";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -45,11 +44,6 @@ export function DialogNewFixedAssetItem() {
   // Mutation for creating fixed assets
   const createFixedAssetMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
-      let token;
-      if (typeof window !== "undefined") {
-        token = localStorage.getItem("token");
-      }
-      setAuthToken(token);
       const response = await api.post("/FixedAssets/FixedAseets", data);
       return response.data;
     },
