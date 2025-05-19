@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { postUfvValues } from "@/lib/data";
 import useConfigValues from "@/features/accounting/shared/hooks/useConfigValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { postUfvValues } from "../../ufv/service/ufvService";
 
 const configFormSchema = z.object({
   ufvValue: z.coerce.number(),

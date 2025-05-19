@@ -9,33 +9,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { postUfvValues } from "@/lib/data";
 import { Ufv } from "@/lib/types";
-import useUserStore from "@/lib/userStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { UfvRegister, ufvRegisterFormSchema } from "../schemas/ufvSchema";
+import { useRegisterUfv } from "../hooks/useRegisterUfv";
 
-const ufvRegisterFormSchema = z.object({
-  ufvValue: z.coerce.number(),
-  dollarValue: z.coerce.number(),
-});
-
-export type UfvRegister = z.infer<typeof ufvRegisterFormSchema>;
-
-export default function UfvRegisterForm({
-  ufv,
-  setIsOpen,
-}: {
+type Props = {
   ufv: Ufv;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-}) {
-  const { setUfvRegister } = useUserStore();
-  //const setUfvRegister = useStore(useUserStore, (state) => state.setUfvRegister!)
+};
 
+export default function UfvRegisterForm({ ufv, setIsOpen }: Props) {
   const ufvRegisterForm = useForm<UfvRegister>({
     resolver: zodResolver(ufvRegisterFormSchema),
     defaultValues: {
@@ -47,21 +33,13 @@ export default function UfvRegisterForm({
   //FORMATEAR LOS VALORES DE ESTE ENDPOINT EN EL BACKEND, PARA QUE SE ALINIEN
   //CON LOS VALORES DECIMALES EN JAVASCRIPT
 
-  const registerUfvMutation = useMutation({
-    mutationFn: postUfvValues,
-    onError: (error) => {
-      toast.error("Hubo un error al registrar los datos");
-      console.log(error);
-    },
-    onSuccess: () => {
-      setIsOpen(false);
-        setUfvRegister(true);
-      toast.success("Valores Registrados correctamente!");
-    },
-  });
+  const registerUfvMutation = useRegisterUfv();
 
   function onSubmit(values: UfvRegister) {
     registerUfvMutation.mutate(values);
+    if (registerUfvMutation.isSuccess) {
+      setIsOpen(false);
+    }
   }
 
   return (

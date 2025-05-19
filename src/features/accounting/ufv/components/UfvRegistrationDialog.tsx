@@ -14,13 +14,27 @@ import UfvRegisterForm from "./UfvRegisterForm";
 export default function UfvRegistrationDialog() {
   const [isOpen, setIsOpen] = useState(true);
   const loginData = useUserStore((state) => state.loginData);
-  // const loginData = useStore(useUserStore, (state) => state.loginData);
   const {
     data: ufv,
     isLoading,
     isPending,
     isError,
   } = useUfv(!loginData?.ufvRegister);
+
+  if (isError) {
+    return (
+      <AlertDialog open={isOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hubo un error al obtener los datos de la UFV
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  }
 
   if (!loginData || loginData.ufvRegister) {
     return null;

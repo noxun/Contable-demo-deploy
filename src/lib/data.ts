@@ -39,7 +39,6 @@ import {
   VoucherItemFromExtractedPDF,
 } from "./types";
 import { api } from "./api";
-import { UfvRegister } from "@/features/accounting/ufv/components/UfvRegisterForm";
 import { Voucher, VoucherType } from "@/features/accounting/shared/types/sharedTypes";
 import { LinkAccountForm } from "@/features/accounting/link/components/LinkAccountForm";
 import { Account } from "@/features/accounting/account/types/account";
@@ -72,26 +71,6 @@ export function setAuthToken(token: string | undefined | null) {
   } else {
     delete api.defaults.headers.common["Authorization"];
   }
-}
-
-export async function fetchUfvValues(): Promise<Ufv> {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.get(`/api/Ufv/get`);
-  return response.data;
-}
-
-export async function postUfvValues(data: UfvRegister | NewConfigValues) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.post(`/api/Ufv/registerUfvDollar`, data);
-  return response.data;
 }
 
 export async function fetchConfigValues() {
