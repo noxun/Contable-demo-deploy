@@ -1,5 +1,4 @@
 "use client";
-
 import { addDays, format } from "date-fns";
 import { LoaderIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
@@ -18,6 +17,22 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { LevelData } from "@/features/accounting/results/types/types";
 import { CashFlowPreview } from "@/features/accounting/results/components/CashFlowPreview";
 import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 
 const mockup = {
   "balanceSheet": {
@@ -184,6 +199,8 @@ const mockup = {
   }
 }
 
+
+
 export default function ClashFlowPage() {
 
   const initialDateRange: DateRange = {
@@ -196,11 +213,13 @@ export default function ClashFlowPage() {
   const [isLoadingCashFlow, setIsLoadingCashFlow] = useState(false)
   const [pendingLevel, setPendingLevel] = useState<LevelData>(1)
   const [branch, setBranch] = useState<string | undefined>(undefined);
-
   const { data: branches } = useQuery({
     queryKey: ["branches"],
     queryFn: fetchBranches,
   });
+
+  const templateBalanceGeneral = '/files/BalanceGeneralFormat.xlsx';
+  const templateResultado = '/files/EstadoResultadoFormat.xlsx';
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
     queryKey: ["AllCashFlow"],
@@ -356,7 +375,61 @@ export default function ClashFlowPage() {
               : <>Generar Excel</>
           }
         </Button>
-      </div>
+        <Button
+          className="w-fit flex gap-1 items-center"
+            onClick={() => {
+              const link1 = document.createElement('a');
+              link1.href = templateBalanceGeneral;
+              link1.download = 'BalanceGeneralFormat.xlsx';
+              link1.click();
+
+              const link2 = document.createElement('a');
+              link2.href = templateResultado;
+              link2.download = 'EstadoResultadoFormat.xlsx';
+              link2.click();
+            }}
+          title={"Descargar Plantillas"}
+        >
+          Descargar plantillas
+        </Button>
+        <Dialog>
+          <form>
+            <DialogTrigger asChild>
+              <Button>Subir Archivos</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Subir Archivos</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <div className="grid w-full max-w-sm items-center gap-3">
+                  <Label htmlFor="file1">Ultimo estado de gestión de ingresos</Label>
+                  <Input 
+                    id="file1" 
+                    type="file" 
+                    accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                  />
+                </div>
+                <div className="grid w-full max-w-sm items-center gap-3">
+                  <Label htmlFor="file2">Ultimo balance de gestión</Label>
+                  <Input 
+                    id="file2" 
+                    type="file" 
+                    accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button type="submit">Subir</Button>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Dialog>
+    </div>
+
 
       {/* <div>
         {
