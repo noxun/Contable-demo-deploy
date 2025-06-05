@@ -183,6 +183,10 @@ export default function FoldableFlatAccounts({ accounts }: ChildAccountsProps) {
                 isMotion: account.isMotion,
                 isCost: account.isCost,
                 accountChild: account.accountChild || [],
+                isFinancing: account.isFinancing,
+                isInitialBalance: account.isInitialBalance,
+                isInvestment: account.isInvestment,
+                isOperation: account.isOperation,
               }}
             />
             <AccountDeleteButton

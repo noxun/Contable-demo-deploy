@@ -45,6 +45,10 @@ export default function AccountEditButton({
     isBudgetable: z.boolean().default(false),
     isMotion: z.boolean().default(false),
     isCost: z.boolean().default(false),
+    isOperation: z.boolean().default(false),
+    isInitialBalance: z.boolean().default(false),
+    isInvestment: z.boolean().default(false),
+    isFinancing: z.boolean().default(false),
   });
 
   const [open, setOpen] = useState(false);
@@ -80,7 +84,7 @@ export default function AccountEditButton({
     }
   }, [open, account, accountEditForm]);
 
-  //console.log(accountCreateForm.formState.errors);
+  //console.log(accountEditForm.formState.errors);
   const token = localStorage.getItem("token");
 
   const queryClient = useQueryClient();
@@ -162,9 +166,7 @@ export default function AccountEditButton({
                     <FormControl>
                       <Input placeholder="código" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      El código de la cuenta
-                    </FormDescription>
+                    <FormDescription>El código de la cuenta</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -245,6 +247,66 @@ export default function AccountEditButton({
                         />
                       </FormControl>
                       <FormLabel className="h-5">Costos</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountEditForm.control}
+                  name="isOperation"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Operaciones</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountEditForm.control}
+                  name="isInvestment"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Inversion</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountEditForm.control}
+                  name="isFinancing"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Financiamiento</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountEditForm.control}
+                  name="isInitialBalance"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Flujo de Efectivo</FormLabel>
                     </FormItem>
                   )}
                 />

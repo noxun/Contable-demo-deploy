@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { PlusCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function AccountCreateButton({
   fatherId,
@@ -42,6 +43,10 @@ export default function AccountCreateButton({
     isBudgetable: z.boolean().default(false),
     isMotion: z.boolean().default(false),
     isCost: z.boolean().default(false),
+    isOperation: z.boolean().default(false),
+    isInitialBalance: z.boolean().default(false),
+    isInvestment: z.boolean().default(false),
+    isFinancing: z.boolean().default(false),
   });
 
   const [open, setOpen] = useState(false);
@@ -171,6 +176,7 @@ export default function AccountCreateButton({
                 )}
               />
               <div className="flex gap-5 mb-5">
+                <Label className="font-bold text-lg">Propiedades</Label>
                 <FormField
                   control={accountCreateForm.control}
                   name="isMotion"
@@ -213,6 +219,66 @@ export default function AccountCreateButton({
                         />
                       </FormControl>
                       <FormLabel className="h-5">Costos</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isOperation"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Operaciones</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isInvestment"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Inversion</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isFinancing"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Financiamiento</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={accountCreateForm.control}
+                  name="isInitialBalance"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="h-5">Flujo de Efectivo</FormLabel>
                     </FormItem>
                   )}
                 />
