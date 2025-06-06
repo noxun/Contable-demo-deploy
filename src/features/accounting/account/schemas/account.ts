@@ -9,6 +9,10 @@ export const accountsSchema = z.object({
   isBudgetable: z.boolean(),
   isMotion: z.boolean(),
   isCost: z.boolean(),
+  isOperation: z.boolean(),
+  isInitialBalance: z.boolean(),
+  isInvestment: z.boolean(),
+  isFinancing: z.boolean(),
   accountChild: z
     .array(
       z.object({
@@ -20,6 +24,10 @@ export const accountsSchema = z.object({
         isBudgetable: z.boolean(),
         isMotion: z.boolean(),
         isCost: z.boolean(),
+        isOperation: z.boolean(),
+        isInitialBalance: z.boolean(),
+        isInvestment: z.boolean(),
+        isFinancing: z.boolean(),
       })
     )
     .optional(),
