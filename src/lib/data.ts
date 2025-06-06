@@ -1005,6 +1005,54 @@ export async function getAllDataCashFlow({
   }
 }
 
+export async function exportBalanceSheetXlsx() {
+  try {
+    const response = await api.get('/api/FinancialState/ClashFlow/FormatBalanceSheetXlsx', {
+      responseType: 'blob' 
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function exportStatementIncomeXlsx() {
+  try {
+    const response = await api.get('/api/FinancialState/ClashFlow/FormatStatementIncomeXlsx', {
+      responseType: 'blob' 
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+
+export async function uploadFinancialStateFiles({
+  incomeStatementFile,
+  balanceSheetFile,
+}: {
+  incomeStatementFile: File;
+  balanceSheetFile: File;
+}) {
+  try {
+    const formData = new FormData();
+    formData.append('GestionLastStateIncome', incomeStatementFile);
+    formData.append('GestionLastBalanceSheet', balanceSheetFile);
+
+    const response = await api.post('/api/FinancialState/ClashFlow', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+
 export async function getAllDataCashFlowTemporal({
   iDate,
   eDate,
