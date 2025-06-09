@@ -27,7 +27,7 @@ import { es, is, tr } from "date-fns/locale";
 import { numberWithDecimals } from "../utils/validate";
 import useNumberToLiteral from "../hooks/useNumberToLiteral";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { COMPANY_MAIN_CITY, REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_MAIN_CITY, COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
 const tw = createTw({
@@ -129,7 +129,7 @@ export default function PdfVoucher({
                     source={REPORTS_LOGO_URL}
                     style={{ height: 57, width: 207 }}
                   />
-                  <Text>NIT 3754820020</Text>
+                  <Text>NIT {COMPANY_NIT}</Text>
                 </View>
               </View>
               {/* Fila Titulo */}

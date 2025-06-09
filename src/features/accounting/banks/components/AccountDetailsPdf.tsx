@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { COMPANY_MAIN_CITY, REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_MAIN_CITY, COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
 import { numberWithDecimals } from "@/features/accounting/shared/utils/validate";
 import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import { format } from "date-fns";
@@ -64,7 +64,7 @@ export default function AccountDetailsPdf({ data }: AccountDetailsPdfProps) {
               source={REPORTS_LOGO_URL}
               style={{ height: 57, width: 207 }}
             />
-            <Text>NIT 3754820020</Text>
+            <Text>NIT {COMPANY_NIT}</Text>
           </View>
         </View>
         {/* Fila Titulo */}

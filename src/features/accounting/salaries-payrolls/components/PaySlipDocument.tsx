@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
 import { PaySlip } from "@/lib/types";
 import { formatNumber } from "@/features/accounting/shared/utils/validate";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
@@ -30,7 +30,7 @@ export default function PaySlipDocument({ data }: PaySlipDocumentProps) {
         </View>
         {/* Fila datos header */}
         <View>
-          <Text>NIT 375482020</Text>
+          <Text>NIT {COMPANY_NIT}</Text>
           <Text style={{ fontFamily: "Helvetica-Bold" }}>BOLETA DE PAGO</Text>
           <Text>En bolivianos</Text>
         </View>
