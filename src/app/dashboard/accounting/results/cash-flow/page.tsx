@@ -52,7 +52,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { UploadFinancialFilesDialog } from "@/components/upload-files.tsx/UploadFinancialFilesDialog";
+import { UploadFinancialFilesDialog } from "@/components/upload-files/UploadFinancialFilesDialog";
+import { DownloadTemplatesButton } from "@/components/download-templates/download-templates";
 
 const mockup = {
   balanceSheet: {
@@ -249,63 +250,20 @@ export default function ClashFlowPage() {
   const [pendingLevel, setPendingLevel] = useState<LevelData>(1);
   const [branch, setBranch] = useState<string | undefined>(undefined);
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    incomeFile: File | null;
+    balanceFile: File | null;
+  }>({ incomeFile: null, balanceFile: null });
   const { data: branches } = useQuery({
     queryKey: ["branches"],
     queryFn: fetchBranches,
   });
 
-  const { data: BalanceSheetXlsx, refetch: refetchBalanceSheetXlsx } = useQuery(
-    {
-      queryKey: ["BalanceSheetXlsx"],
-      queryFn: () => exportBalanceSheetXlsx(),
-      enabled: false,
-    }
-  );
-  const { data: StatementIncomeXlsx, refetch: refetchStatementIncomeXlsx } =
-    useQuery({
-      queryKey: ["StatementIncomeXlsx"],
-      queryFn: () => exportStatementIncomeXlsx(),
-      enabled: false,
-    });
-  function downloadBlobFile(data: Blob, filename: string) {
-    const url = window.URL.createObjectURL(data);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  }
-  const handleDownloadBalance = async () => {
-    const { data } = await refetchBalanceSheetXlsx();
-    if (data) {
-      downloadBlobFile(data, "Balance-Sheet.xlsx");
-    }
-  };
-
-  const handleDownloadStatement = async () => {
-    const { data } = await refetchStatementIncomeXlsx();
-    if (data) {
-      downloadBlobFile(data, "Income-Statement.xlsx");
-    }
-  };
-  const handleDownloadTemplates = async () => {
-    setIsLoadingTemplates(true);
-    try {
-      await Promise.all([
-        refetchBalanceSheetXlsx().then(({ data }) => {
-          if (data) downloadBlobFile(data, "Balance-Sheet.xlsx");
-        }),
-        refetchStatementIncomeXlsx().then(({ data }) => {
-          if (data) downloadBlobFile(data, "Income-Statement.xlsx");
-        }),
-      ]);
-    } catch (error) {
-      console.error("Error al descargar plantillas:", error);
-    } finally {
-      setIsLoadingTemplates(false);
-    }
+  const handleFilesSelected = (files: {
+    incomeFile: File | null;
+    balanceFile: File | null;
+  }) => {
+    setUploadedFiles(files);
   };
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
@@ -473,15 +431,8 @@ export default function ClashFlowPage() {
             <>Generar Excel</>
           )}
         </Button>
-        <Button
-          className="w-fit flex gap-1 items-center"
-          onClick={handleDownloadTemplates}
-          title="Descargar Plantillas"
-          disabled={isLoadingTemplates}
-        >
-          {isLoadingTemplates ? "Descargando..." : "Descargar plantillas"}
-        </Button>
-        <UploadFinancialFilesDialog />
+        <DownloadTemplatesButton />
+        <UploadFinancialFilesDialog onFilesSelected={handleFilesSelected} />
       </div>
 
       {/* <div>
