@@ -15,39 +15,59 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { uploadFinancialStateFiles } from "@/lib/data";
 
-export function UploadFinancialFilesDialog() {
+interface UploadFinancialFilesDialogProps {
+  onFilesSelected: (files: {
+    incomeFile: File | null;
+    balanceFile: File | null;
+  }) => void;
+}
+
+export function UploadFinancialFilesDialog({
+  onFilesSelected,
+}: UploadFinancialFilesDialogProps) {
   const [incomeFile, setIncomeFile] = useState<File | null>(null);
   const [balanceFile, setBalanceFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-const handleFileUpload = async (e: React.FormEvent) => {
-  e.preventDefault()
-  console.log("Botón 'Subir Archivos' presionado")
-  setIsUploading(true)
+  const handleFileChange = (type: "income" | "balance", file: File | null) => {
+    if (type === "income") {
+      setIncomeFile(file);
+    } else {
+      setBalanceFile(file);
+    }
+    onFilesSelected({
+      incomeFile: type === "income" ? file : incomeFile,
+      balanceFile: type === "balance" ? file : balanceFile,
+    });
+  };
 
-  if (!incomeFile || !balanceFile) {
-    alert("Por favor selecciona ambos archivos.")
-    setIsUploading(false)
-    return
-  }
+  const handleFileUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUploading(true);
 
-  try {
-    const result = await uploadFinancialStateFiles({
-      incomeStatementFile: incomeFile,
-      balanceSheetFile: balanceFile,
-    })
-    console.log('Upload successful:', result)
-    alert('Archivos subidos correctamente')
-  } catch (error) {
-    console.error('Upload failed:', error)
-    alert('Error al subir los archivos')
-  } finally {
-    setIsUploading(false)
-    setIncomeFile(null)
-    setBalanceFile(null)
-  }
-}
+    if (!incomeFile || !balanceFile) {
+      alert("Por favor selecciona ambos archivos.");
+      setIsUploading(false);
+      return;
+    }
 
+    try {
+      const result = await uploadFinancialStateFiles({
+        incomeStatementFile: incomeFile,
+        balanceSheetFile: balanceFile,
+      });
+      console.log('Upload successful:', result);
+      alert('Archivos subidos correctamente');
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Error al subir los archivos');
+    } finally {
+      setIsUploading(false);
+      setIncomeFile(null);
+      setBalanceFile(null);
+      onFilesSelected({ incomeFile: null, balanceFile: null });
+    }
+  };
 
   return (
     <Dialog>
@@ -66,7 +86,7 @@ const handleFileUpload = async (e: React.FormEvent) => {
                 id="incomeFile"
                 type="file"
                 accept=".xls,.xlsx"
-                onChange={(e) => setIncomeFile(e.target.files?.[0] || null)}
+                onChange={(e) => handleFileChange("income", e.target.files?.[0] || null)}
                 required
               />
             </div>
@@ -76,7 +96,7 @@ const handleFileUpload = async (e: React.FormEvent) => {
                 id="balanceFile"
                 type="file"
                 accept=".xls,.xlsx"
-                onChange={(e) => setBalanceFile(e.target.files?.[0] || null)}
+                onChange={(e) => handleFileChange("balance", e.target.files?.[0] || null)}
                 required
               />
             </div>
