@@ -2,17 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import AccountAccordion from "@/features/accounting/account/components/AccountAccordion";
+import { AccountExportToExcelButton } from "@/features/accounting/account/components/AccountExportToExcelButton";
 import Link from "next/link";
 
 export default function AccountsPage() {
   return (
-    <>
+    <main className="flex flex-col gap-4">
       <Button asChild>
-        <Link prefetch={false} download href="/files/plan_cuentas_tradecruz.xlsx">
+        <Link
+          prefetch={false}
+          download
+          href="/files/plan_cuentas_tradecruz.xlsx"
+        >
           Descargar Plantilla
         </Link>
       </Button>
+      <AccountExportToExcelButton />
       <AccountAccordion />
-    </>
+    </main>
   );
 }
