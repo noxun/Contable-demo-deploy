@@ -175,8 +175,8 @@ export default function AccountCreateButton({
                   </FormItem>
                 )}
               />
-              <div className="flex gap-5 mb-5">
-                <Label className="font-bold text-lg">Propiedades</Label>
+              <Label className="font-bold text-lg">Propiedades</Label>
+              <div className="grid grid-cols-4 gap-5 mb-5">
                 <FormField
                   control={accountCreateForm.control}
                   name="isMotion"

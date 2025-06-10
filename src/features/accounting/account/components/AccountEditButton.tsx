@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Account } from "../types/account";
 import { Pencil } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function AccountEditButton({
   account,
@@ -66,6 +67,10 @@ export default function AccountEditButton({
       isBudgetable: account.isBudgetable,
       isMotion: account.isMotion,
       isCost: account.isCost,
+      isOperation: account.isOperation,
+      isInitialBalance: account.isInitialBalance,
+      isInvestment: account.isInvestment,
+      isFinancing: account.isFinancing,
     },
   });
 
@@ -80,6 +85,10 @@ export default function AccountEditButton({
         isBudgetable: account.isBudgetable,
         isMotion: account.isMotion,
         isCost: account.isCost,
+        isOperation: account.isOperation,
+        isInitialBalance: account.isInitialBalance,
+        isInvestment: account.isInvestment,
+        isFinancing: account.isFinancing,
       });
     }
   }, [open, account, accountEditForm]);
@@ -204,7 +213,8 @@ export default function AccountEditButton({
                   </FormItem>
                 )}
               />
-              <div className="flex gap-5 mb-5">
+              <Label className="font-bold text-lg">Propiedades</Label>
+              <div className="grid grid-cols-4 gap-5 mb-5">
                 <FormField
                   control={accountEditForm.control}
                   name="isMotion"
