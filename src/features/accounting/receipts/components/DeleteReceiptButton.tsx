@@ -38,7 +38,7 @@ export function DeleteReceiptButton({ receiptId }: DeleteReceiptButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+        <Button variant="outline" size="icon" className="text-red-600 hover:text-red-700">
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>

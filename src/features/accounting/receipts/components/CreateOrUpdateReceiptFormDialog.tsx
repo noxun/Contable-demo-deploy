@@ -6,10 +6,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { CreateOrUpdateReceiptForm } from "./CreateOrUpdateReceiptForm";
 import { Receipt } from "../schemas/receiptSchema";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Pencil, Plus } from "lucide-react";
 
 interface CreateOrUpdateReceiptFormDialogProps {
   receipt?: Receipt;
@@ -28,6 +31,15 @@ export function CreateOrUpdateReceiptFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="outline">
+          {mode === "edit" ? (
+            <Pencil className="size-4" />
+          ) : (
+            <Plus className="size-4" />
+          )}
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
