@@ -50,8 +50,10 @@ export function CreateOrUpdateReceiptForm({
   const onSubmit = (data: StoreReceipt) => {
     if (mode === "edit" && receipt) {
       updateReceiptMutation.mutate({ id: receipt.id, receipt: data });
+      onSuccess?.();
     } else {
       createReceiptMutation.mutate(data);
+      onSuccess?.();
     }
   };
 
@@ -141,7 +143,7 @@ export function CreateOrUpdateReceiptForm({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="receiverId"
           render={({ field }) => (
@@ -163,7 +165,7 @@ export function CreateOrUpdateReceiptForm({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -178,7 +180,7 @@ export function CreateOrUpdateReceiptForm({
             </FormItem>
           )}
         />
-
+{/* 
         <FormField
           control={form.control}
           name="payerId"
@@ -201,7 +203,7 @@ export function CreateOrUpdateReceiptForm({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading
