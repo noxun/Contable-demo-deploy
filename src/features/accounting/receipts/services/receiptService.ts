@@ -3,7 +3,7 @@ import { Receipt, StoreReceipt } from "../schemas/receiptSchema"
 
 export const receiptService = {
   async fetchReceipts() {
-    const response = await api.get('/api/Receipt')
+    const response = await api.get('/api/Receipt/list')
     return response.data as Receipt[]
   },
 
