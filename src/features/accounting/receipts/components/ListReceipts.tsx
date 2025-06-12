@@ -12,14 +12,5 @@ export function ListReceipts() {
     return <div>Cargando recibos...</div>;
   }
 
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Recibos</h1>
-        <CreateOrUpdateReceiptFormDialog mode="create" />
-      </div>
-
-      <DataTable columns={columns} data={receipts} />
-    </div>
-  );
+  return <DataTable columns={columns} data={receipts} />;
 }
