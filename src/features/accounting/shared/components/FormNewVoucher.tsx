@@ -476,6 +476,11 @@ export default function FormNewVoucher({
       return;
     }
 
+    if(values.items?.some(item => item.gloss === "")) {
+      toast.error("Todos los items deben tener una glosa");
+      return;
+    }
+
     // values["voucherDate"] = format(values.voucherDate, "yyyy/MM/dd");
     let validatedVoucherItems = voucherItems.map((item) => ({
       accountId: Number(item.accountId),
@@ -529,7 +534,11 @@ export default function FormNewVoucher({
         })
         .or(z.date())
         .optional(),
-      gloss: z.string(),
+      gloss: z
+        .string()
+        .min(5, {
+          message: "El campo glosa debe tener al menos 5 caracteres.",
+        }),
       bankId: z.coerce.string().nullable(),
       items: z.array(voucherItemSchema).optional(),
       bankItemRef: z.number().optional(),
