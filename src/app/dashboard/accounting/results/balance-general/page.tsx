@@ -154,6 +154,8 @@ export default function BalanceGeneralPage() {
     setIsLoadingBalanceGeneral(false)
   }
 
+  console.log(isLoadingBalanceGeneral, dataBalanceGeneral)
+
   return (
     <>
       <div className="flex flex-col gap-6 h-full">
@@ -247,26 +249,27 @@ export default function BalanceGeneralPage() {
               nameFile="R_balance_general"
             />
           )}
-        </div>
-        {/* Vista Previa */}
-      </div>
-      {isLoadingBalanceGeneral && (
-        <LoaderIcon className="mx-auto animate-spin size-10 text-[#2563EB]" />
-      )}
-      {
-        dataBalanceGeneral && !isLoadingBalanceGeneral && (
-          <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] min-h-screen py-3">
-            <div className="dark:text-[#bbbbbb] px-2">
-              <BalanceGeneralPreview
-                dateRange={dateRange}
-                data={dataBalanceGeneral}
-                currentLevel={selectedLevel}
-                inSus={inSusSelected}
-              />
-            </div>
+        </div>        {/* Vista Previa */}
+        {isLoadingBalanceGeneral && (
+          <div className="flex justify-center">
+            <LoaderIcon className="animate-spin size-10 text-[#2563EB]" />
           </div>
-        )
-      }
+        )}
+        {
+          dataBalanceGeneral && !isLoadingBalanceGeneral && (
+            <div className="w-full py-3 flex justify-center">
+              <div className="dark:text-[#bbbbbb] px-2 w-full max-w-5xl">
+                <BalanceGeneralPreview
+                  dateRange={dateRange}
+                  data={dataBalanceGeneral}
+                  currentLevel={selectedLevel}
+                  inSus={inSusSelected}
+                />
+              </div>
+            </div>
+          )
+        }
+      </div>
     </>
   );
 }
