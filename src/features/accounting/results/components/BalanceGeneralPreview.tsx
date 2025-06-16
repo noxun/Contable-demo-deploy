@@ -2,6 +2,7 @@ import { DateRange } from "react-day-picker";
 import { formatNumber } from "@/features/accounting/shared/utils/validate";
 import { format } from "date-fns";
 import { BalanceGeneralType, BalanceItemType } from "../types/types";
+import { Fragment } from "react";
 
 interface Props {
   data: BalanceGeneralType
@@ -23,7 +24,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
 
   const renderItem = (item: BalanceItemType, level = 1): JSX.Element => {
     return (
-      <>
+      <Fragment key={item.code}>
         <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40" >
           <td>{item.code}</td>
           <td style={{ paddingLeft: `${level * 10}px` }} className={`${currentLevel === level ? "font-normal" : "font-semibold"}`}>
@@ -92,7 +93,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
             )}
           </>
         )}
-      </>)
+      </Fragment>)
   }
 
   if (data?.items.length <= 0) return <div>Sin Resultados</div>
