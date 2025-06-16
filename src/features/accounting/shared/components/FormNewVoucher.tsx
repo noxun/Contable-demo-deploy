@@ -476,7 +476,7 @@ export default function FormNewVoucher({
       return;
     }
 
-    if(values.items?.some(item => item.gloss === "")) {
+    if(voucherItems?.some(item => typeof item.gloss !== "string" || item.gloss.trim() === "")) {
       toast.error("Todos los items deben tener una glosa");
       return;
     }
