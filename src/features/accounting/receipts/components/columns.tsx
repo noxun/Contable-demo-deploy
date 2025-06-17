@@ -3,6 +3,18 @@ import { Receipt } from "../schemas/receiptSchema";
 import { DeleteReceiptButton } from "./DeleteReceiptButton";
 import { CreateOrUpdateReceiptFormDialog } from "./CreateOrUpdateReceiptFormDialog";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import PdfReceipt from "./PdfReceipts";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+
 export const columns: ColumnDef<Receipt>[] = [
   {
     accessorKey: "num",
@@ -61,6 +73,24 @@ export const columns: ColumnDef<Receipt>[] = [
         <div className="flex items-center gap-2">
           <CreateOrUpdateReceiptFormDialog mode="edit" receipt={receipt} />
           <DeleteReceiptButton receiptId={receipt.id} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <PdfReceipt id={receipt.id}  />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     },

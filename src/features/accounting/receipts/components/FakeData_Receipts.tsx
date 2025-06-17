@@ -1,0 +1,40 @@
+import { Receipt } from "../schemas/receiptSchema";
+
+export const fakeReceipts: Receipt[] = [
+  {
+    id: 1,
+    num: 117742,
+    concept: "Pago mensualidad",
+    amountBs: 700.5,
+    amountSus: 100.0,
+    receiverName: "Juan Pérez",
+    receiverId: 101,
+    payerName: "Empresa XYZ",
+    payerId: 201,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    num: 527742,
+    concept: "Servicio técnico - reparacion de computadoras",
+    amountBs: 1200,
+    amountSus: 170,
+    receiverName: "María López",
+    receiverId: 102,
+    payerName: "Negocio ABC",
+    payerId: 202,
+    createdAt: new Date("2024-06-01").toISOString(),
+  },
+  {
+    id: 3,
+    num: 737742,
+    concept: "Compra de productos",
+    amountBs: 950.75,
+    amountSus: 135.5,
+    receiverName: "Carlos Méndez",
+    receiverId: 103,
+    payerName: "Cliente Final",
+    payerId: 203,
+    createdAt: new Date("2024-05-20").toISOString(),
+  },
+];
