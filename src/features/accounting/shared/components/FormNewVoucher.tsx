@@ -555,9 +555,9 @@ export default function FormNewVoucher({
         costCenterId: data.costCenterId ? Number(data.costCenterId) : null,
       };
     });
-
   let voucherDefaultValues = null;
   const defaultValues = {
+    voucherDate: format(new Date(), "yyyy-MM-dd"),
     exchangeRate: 6.97,
     coin: "BOB" as "USD" | "BOB",
     checkNum: "0",
@@ -571,9 +571,11 @@ export default function FormNewVoucher({
     provider: "",
     nit: "",
   };
-
   if (voucherFromRegisterByDocResponse) {
     voucherDefaultValues = {
+      voucherDate: voucherFromRegisterByDocResponse.voucherDate 
+        ? format(new Date(voucherFromRegisterByDocResponse.voucherDate), "yyyy-MM-dd")
+        : format(new Date(), "yyyy-MM-dd"),
       exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
       coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
       checkNum: voucherFromRegisterByDocResponse.checkNum ?? "0",
