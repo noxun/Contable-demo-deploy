@@ -11,31 +11,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Button } from "@/components/ui/button";
-import { fakeReceipts } from "./FakeData_Receipts";
 import { numberToLiteral } from "@/lib/data";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { Receipt } from "../schemas/receiptSchema";
 
 const tw = createTw({});
 
-export default function PdfReceipt({
-  id,
-  triggerTitle,
-  isButton,
-}: {
-  id: number;
-  triggerTitle?: string;
-  isButton?: boolean;
-}) {
+interface PdfReceiptProps {
+  receipt: Receipt;
+  trigger: ReactNode;
+}
 
-  //Recibos falsos
-  const receipt = fakeReceipts.find((r) => r.id === id);
+export default function PdfReceipt({receipt, trigger  }:PdfReceiptProps) {
 
   if (!receipt) {
     return <div>Error: Recibo no encontrado</div>;
   }
 
-  // Calcula el texto cuando se monta el componente
+  // Convertir numero a Texto Literal
   const [textoLiteral, setTextoLiteral] = useState<string>('');
   useEffect(() => {
     if (receipt?.amountBs) {
@@ -56,12 +49,8 @@ export default function PdfReceipt({
 
   return (
     <Dialog>
-      <DialogTrigger asChild={isButton}>
-        {isButton ? (
-          <Button>{triggerTitle ?? "Ver Recibo"}</Button>
-        ) : (
-          triggerTitle ?? "Ver Recibo"
-        )}
+      <DialogTrigger asChild>
+        {trigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] h-[600px] w-full flex items-center justify-center">
         <VisuallyHidden.Root>
