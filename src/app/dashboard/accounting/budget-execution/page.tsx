@@ -28,7 +28,8 @@ export default function BudgetExecutionPage() {
   return (
     <main className="flex flex-col w-full gap-8">
       <h1 className="font-bold text-4xl">Ejecución Presupuestaria</h1>
-      <DataTable data={budgetExecution.list} columns={columns} />
+      {JSON.stringify(budgetExecution)}
+      {/* <DataTable data={budgetExecution.list} columns={columns} />
       <div className="grid grid-cols-10 border-t border-gray-300 text-xs">
         <div className="col-span-2 font-bold text-center border-r border-gray-300 p-2">
           TOTALES
@@ -38,7 +39,7 @@ export default function BudgetExecutionPage() {
             {numberWithDecimals(total)}
           </div>
         ))}
-      </div>
+      </div> */}
     </main>
   );
 }
