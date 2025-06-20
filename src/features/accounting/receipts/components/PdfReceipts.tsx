@@ -23,13 +23,10 @@ interface PdfReceiptProps {
 }
 
 export default function PdfReceipt({receipt, trigger  }:PdfReceiptProps) {
-
-  if (!receipt) {
-    return <div>Error: Recibo no encontrado</div>;
-  }
-
-  // Convertir numero a Texto Literal
   const [textoLiteral, setTextoLiteral] = useState<string>('');
+
+  
+  // Convertir numero a Texto Literal
   useEffect(() => {
     if (receipt?.amountBs) {
       const calcularTexto = async () => {
@@ -39,7 +36,10 @@ export default function PdfReceipt({receipt, trigger  }:PdfReceiptProps) {
       calcularTexto();
     }
   }, [receipt?.amountBs]);
-
+  
+  if (!receipt) {
+    return <div>Error: Recibo no encontrado</div>;
+  }
   //Convertir Fechas
   const date = new Date(receipt.createdAt);
   const day = date.getDate();
