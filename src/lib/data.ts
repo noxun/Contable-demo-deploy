@@ -557,7 +557,7 @@ export async function getBigguerBookinExcel({
 }
 
 //obtener el listado de activos
-interface Assets {
+export interface Assets {
   id: number;
   typeActive: string;
 }
