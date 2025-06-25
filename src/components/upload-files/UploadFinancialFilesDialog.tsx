@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { uploadFinancialStateFiles } from "@/features/accounting/cash-flow/services/service";
 
 interface UploadFinancialFilesDialogProps {
   onFilesSelected: (files: {
@@ -28,7 +27,6 @@ export function UploadFinancialFilesDialog({
 }: UploadFinancialFilesDialogProps) {
   const [incomeFile, setIncomeFile] = useState<File | null>(null);
   const [balanceFile, setBalanceFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
 
   const resetFiles = () => {
     setIncomeFile(null);
@@ -50,27 +48,17 @@ export function UploadFinancialFilesDialog({
 
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsUploading(true);
 
     if (!incomeFile || !balanceFile) {
       toast.error("Por favor selecciona ambos archivos.");
-      setIsUploading(false);
       return;
     }
 
-    try {
-      const result = await uploadFinancialStateFiles({
-        incomeStatementFile: incomeFile,
-        balanceSheetFile: balanceFile,
-      });
-      console.log('Upload successful:', result);
-      toast.success('Archivos subidos correctamente');
-    } catch (error) {
-      console.error('Upload failed:', error);
-      toast.error('Error al subir los archivos');
-    } finally {
-      setIsUploading(false);
-      // Don't reset files on successful upload, keep them for cash flow generation
+    toast.success('Archivos seleccionados correctamente');
+    // Close the dialog after selecting files
+    const closeButton = document.querySelector('[data-dialog-close]') as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
     }
   };
 
@@ -78,14 +66,14 @@ export function UploadFinancialFilesDialog({
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          {incomeFile && balanceFile ? "Archivos Subidos ✓" : "Subir Archivos"}
+          {incomeFile && balanceFile ? "Archivos Seleccionados ✓" : "Seleccionar Archivos"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleFileUpload}>
           <DialogHeader>
             <DialogTitle>
-              {incomeFile && balanceFile ? "Gestionar Archivos Financieros" : "Subir Archivos Financieros"}
+              {incomeFile && balanceFile ? "Gestionar Archivos Financieros" : "Seleccionar Archivos Financieros"}
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -132,12 +120,12 @@ export function UploadFinancialFilesDialog({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" type="button">
+              <Button variant="outline" type="button" data-dialog-close>
                 Cancelar
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isUploading}>
-              {isUploading ? "Subiendo..." : "Subir Archivos"}
+            <Button type="submit">
+              Confirmar Selección
             </Button>
           </DialogFooter>
         </form>
