@@ -24,6 +24,7 @@ type ListVouchersProps = {
   voucherType: VoucherType;
   voucherTypeRoute: VoucherTypeRoute;
   siat?: "siat" | "";
+  glossSuffix?: string;
 };
 
 const firstDayOfYear = format(
@@ -36,6 +37,7 @@ export default function ListVouchers({
   voucherType,
   voucherTypeRoute,
   siat = "",
+  glossSuffix = "",
 }: ListVouchersProps) {
   const [page, setPage] = useState(1);
   const [inputPage, setInputPage] = useState("");
@@ -56,6 +58,7 @@ export default function ListVouchers({
       endDate,
       debouncedGlossQuery,
       siat,
+      glossSuffix,
     ],
     queryFn: () =>
       fetchVouchers(
@@ -64,7 +67,7 @@ export default function ListVouchers({
         pageSize,
         initDate,
         endDate,
-        debouncedGlossQuery,
+        debouncedGlossQuery + (glossSuffix ? `${glossSuffix}` : ""),
         siat
       ),
     placeholderData: keepPreviousData,
