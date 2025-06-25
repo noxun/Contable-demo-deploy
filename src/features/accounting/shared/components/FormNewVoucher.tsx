@@ -251,6 +251,10 @@ export default function FormNewVoucher({
 
   const [isDollarEditionActive, setIsDollarEditionActive] = useState(false);
 
+  // New state for gloss prefix checkboxes
+  const [isCompraChecked, setIsCompraChecked] = useState(false);
+  const [isVentaChecked, setIsVentaChecked] = useState(false);
+
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([
     {
       debitBs: null,
@@ -456,6 +460,99 @@ export default function FormNewVoucher({
     } else {
       const gloss = voucherForm.getValues("gloss");
       setVoucherItems((items) => items.map((item) => ({ ...item, gloss: "" })));
+    }
+  }
+
+  function handleCompraCheckboxChange() {
+    const currentGloss = voucherForm.getValues("gloss");
+
+    if (!isCompraChecked) {
+      // Adding "por la compra" prefix
+      setIsCompraChecked(true);
+      setIsVentaChecked(false); // Ensure only one can be active
+
+      // Remove "por la venta" if it exists, then add "por la compra"
+      const cleanGloss = currentGloss.replace(/^por la venta\s*/i, "");
+      voucherForm.setValue("gloss", `por la compra ${cleanGloss}`);
+    } else {
+      // Removing "por la compra" prefix
+      setIsCompraChecked(false);
+      const cleanGloss = currentGloss.replace(/^por la compra\s*/i, "");
+      voucherForm.setValue("gloss", cleanGloss);
+    }
+  }
+
+  function handleVentaCheckboxChange() {
+    const currentGloss = voucherForm.getValues("gloss");
+
+    if (!isVentaChecked) {
+      // Adding "por la venta" prefix
+      setIsVentaChecked(true);
+      setIsCompraChecked(false); // Ensure only one can be active
+
+      // Remove "por la compra" if it exists, then add "por la venta"
+      const cleanGloss = currentGloss.replace(/^por la compra\s*/i, "");
+      voucherForm.setValue("gloss", `por la venta ${cleanGloss}`);
+    } else {
+      // Removing "por la venta" prefix
+      setIsVentaChecked(false);
+      const cleanGloss = currentGloss.replace(/^por la venta\s*/i, "");
+      voucherForm.setValue("gloss", cleanGloss);
+    }
+  }
+
+  function handleGlossChange(value: string) {
+    // This function is now just for the checkbox changes
+    return value;
+  }
+
+  function handleGlossKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    const textarea = e.currentTarget;
+    const { selectionStart, selectionEnd, value } = textarea;
+    
+    // Check if we're trying to delete protected prefix
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      const protectedPrefix = isCompraChecked ? 'por la compra ' : 
+                            isVentaChecked ? 'por la venta ' : '';
+      
+      if (protectedPrefix) {
+        const prefixLength = protectedPrefix.length;
+        
+        // Prevent deletion if cursor is within the protected prefix
+        if (e.key === 'Backspace' && selectionStart <= prefixLength) {
+          e.preventDefault();
+          return;
+        }
+        
+        if (e.key === 'Delete' && selectionStart < prefixLength) {
+          e.preventDefault();
+          return;
+        }
+        
+        // Prevent selection that includes the protected prefix
+        if (selectionStart < prefixLength && selectionEnd > selectionStart) {
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+  }
+
+  function handleGlossBeforeInput(e: React.FormEvent<HTMLTextAreaElement>) {
+    const textarea = e.currentTarget;
+    const { selectionStart, selectionEnd } = textarea;
+    
+    const protectedPrefix = isCompraChecked ? 'por la compra ' : 
+                          isVentaChecked ? 'por la venta ' : '';
+    
+    if (protectedPrefix) {
+      const prefixLength = protectedPrefix.length;
+      
+      // Prevent input that would overwrite the protected prefix
+      if (selectionStart < prefixLength) {
+        e.preventDefault();
+        return;
+      }
     }
   }
 
@@ -1149,7 +1246,13 @@ export default function FormNewVoucher({
               <FormItem>
                 <FormLabel>Glosa</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="" className="resize-none" {...field} />
+                  <Textarea 
+                    placeholder="" 
+                    className="resize-none" 
+                    {...field}
+                    onKeyDown={handleGlossKeyDown}
+                    onBeforeInput={handleGlossBeforeInput}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -1188,6 +1291,24 @@ export default function FormNewVoucher({
                 Activar conversion automatica de tasas
               </label>
             )}
+          </div>
+          <div className="flex items-center mb-2 gap-4">
+            <label className="flex items-center">
+              <Checkbox
+                checked={isCompraChecked}
+                onCheckedChange={handleCompraCheckboxChange}
+                className="mr-2"
+              />
+              Por la compra
+            </label>
+            <label className="flex items-center">
+              <Checkbox
+                checked={isVentaChecked}
+                onCheckedChange={handleVentaCheckboxChange}
+                className="mr-2"
+              />
+              Por la venta
+            </label>
           </div>
           <br />
           <FormNewVoucherItems
