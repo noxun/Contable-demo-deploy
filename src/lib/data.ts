@@ -911,7 +911,7 @@ export async function getAllDataReportByType({
 }
 
 // 1 --> excel  2 --> data
-type TypeFetchBalance = 1 | 2;
+export type TypeFetchBalance = 1 | 2;
 export async function getAllDataBalanceGeneral({
   iDate,
   eDate,
@@ -970,82 +970,6 @@ export async function getAllDataStatementIncome({
         sucursalId,
       },
     });
-    return response.data;
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : String(e));
-  }
-}
-
-export async function getAllDataCashFlow({
-  iDate,
-  eDate,
-  typeFetchBalance,
-  level,
-  sucursalId,
-}: {
-  iDate: string;
-  eDate: string;
-  typeFetchBalance: TypeFetchBalance;
-  level?: LevelData;
-  sucursalId?: string;
-}) {
-  try {
-    const response = await api.get(`/api/FinancialState/ClashFlow`, {
-      params: {
-        Level: level,
-        InitDate: iDate,
-        EndDate: eDate,
-        Type: typeFetchBalance,
-        sucursalId,
-      },
-    });
-    return response.data;
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : String(e));
-  }
-}
-
-export async function exportBalanceSheetXlsx() {
-  try {
-    const response = await api.get('/api/FinancialState/ClashFlow/FormatBalanceSheetXlsx', {
-      responseType: 'blob' 
-    });
-    return response.data;
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : String(e));
-  }
-}
-
-export async function exportStatementIncomeXlsx() {
-  try {
-    const response = await api.get('/api/FinancialState/ClashFlow/FormatStatementIncomeXlsx', {
-      responseType: 'blob' 
-    });
-    return response.data;
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : String(e));
-  }
-}
-
-
-export async function uploadFinancialStateFiles({
-  incomeStatementFile,
-  balanceSheetFile,
-}: {
-  incomeStatementFile: File;
-  balanceSheetFile: File;
-}) {
-  try {
-    const formData = new FormData();
-    formData.append('GestionLastStateIncome', incomeStatementFile);
-    formData.append('GestionLastBalanceSheet', balanceSheetFile);
-
-    const response = await api.post('/api/FinancialState/ClashFlow', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
     return response.data;
   } catch (e) {
     throw new Error(e instanceof Error ? e.message : String(e));

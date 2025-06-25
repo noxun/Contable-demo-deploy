@@ -4,12 +4,9 @@
 import { Button } from "@/components/ui/button";
 import { LoaderIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  exportStatementIncomeXlsx,
-  exportBalanceSheetXlsx,
-} from "@/lib/data";
 import { useState } from "react";
 import { toast } from "sonner";
+import { exportBalanceSheetXlsx, exportStatementIncomeXlsx } from "@/features/accounting/cash-flow/services/service";
 
 export function DownloadTemplatesButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,15 +23,14 @@ export function DownloadTemplatesButton() {
     enabled: false,
   });
 
-  function downloadBlobFile(data: Blob, filename: string) {
-    const url = window.URL.createObjectURL(data);
+  function downloadFromUrl(url: string, filename: string) {
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", filename);
+    link.setAttribute("target", "_blank");
     document.body.appendChild(link);
     link.click();
     link.remove();
-    window.URL.revokeObjectURL(url);
   }
 
   const handleDownloadTemplates = async () => {
@@ -45,10 +41,10 @@ export function DownloadTemplatesButton() {
       // Descargar ambas plantillas en paralelo
       await Promise.all([
         refetchBalanceSheetXlsx().then(({ data }) => {
-          if (data) downloadBlobFile(data, "Balance-Sheet.xlsx");
+          if (data) downloadFromUrl(data, "Balance-Sheet.xlsx");
         }),
         refetchStatementIncomeXlsx().then(({ data }) => {
-          if (data) downloadBlobFile(data, "Income-Statement.xlsx");
+          if (data) downloadFromUrl(data, "Income-Statement.xlsx");
         }),
       ]);
       

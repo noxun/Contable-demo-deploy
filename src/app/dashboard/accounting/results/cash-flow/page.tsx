@@ -18,10 +18,7 @@ import { DateSelector } from "@/features/accounting/shared/components/DateSelect
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchBranches,
-  getAllDataCashFlow,
   getAllDataCashFlowTemporal,
-  exportStatementIncomeXlsx,
-  exportBalanceSheetXlsx,
 } from "@/lib/data";
 import { formatNumber } from "@/features/accounting/shared/utils/validate";
 import {
@@ -54,6 +51,7 @@ import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { UploadFinancialFilesDialog } from "@/components/upload-files/UploadFinancialFilesDialog";
 import { DownloadTemplatesButton } from "@/components/download-templates/download-templates";
+import { getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
 
 const mockup = {
   balanceSheet: {
@@ -266,14 +264,26 @@ export default function ClashFlowPage() {
     setUploadedFiles(files);
   };
 
+  // Validation function for files
+  const validateFiles = () => {
+    if (!uploadedFiles.incomeFile || !uploadedFiles.balanceFile) {
+      toast.error("Por favor sube ambos archivos antes de generar el reporte");
+      return false;
+    }
+    return true;
+  };
+
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
-    queryKey: ["AllCashFlow"],
+    queryKey: ["AllCashFlow", uploadedFiles.incomeFile?.name, uploadedFiles.balanceFile?.name],
     queryFn: () =>
-      getAllDataCashFlowTemporal({
+      getAllDataCashFlow({
         iDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
         eDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
         level: pendingLevel,
+        typeFetchBalance: 2,
         sucursalId: branch,
+        incomeFile: uploadedFiles.incomeFile,
+        balanceFile: uploadedFiles.balanceFile,
       }),
     enabled: false,
   });
@@ -283,13 +293,15 @@ export default function ClashFlowPage() {
     refetch: refetchCashFlowExcel,
     isRefetching: isRefetchingExcel,
   } = useQuery({
-    queryKey: ["AllCashFlowExcel"],
+    queryKey: ["AllCashFlowExcel", uploadedFiles.incomeFile?.name, uploadedFiles.balanceFile?.name],
     queryFn: () =>
       getAllDataCashFlow({
         iDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
         eDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
         typeFetchBalance: 1,
         sucursalId: branch,
+        incomeFile: uploadedFiles.incomeFile,
+        balanceFile: uploadedFiles.balanceFile,
       }),
     enabled: false,
   });
@@ -322,31 +334,42 @@ export default function ClashFlowPage() {
     }
   };
 
-  const handleOnGenerateExcel = async () => {
-    toast.info("Generando Excel...");
+  // const handleOnGenerateExcel = async () => {
+  //   toast.info("Generando Excel...");
 
-    try {
-      const { data: linkExcel } = await refetchCashFlowExcel();
+  //   try {
+  //     const { data: linkExcel } = await refetchCashFlowExcel();
 
-      if (!linkExcel) {
-        throw new Error();
-      }
+  //     if (!linkExcel) {
+  //       throw new Error();
+  //     }
 
-      const link = document.createElement("a");
-      link.href = linkExcel;
-      toast.success("Archivo generado...");
-      link.click();
-    } catch (error) {
-      console.error("Error al generar el archivo:", error);
-      toast.error("Error al generar el archivo.");
-    }
-  };
+  //     const link = document.createElement("a");
+  //     link.href = linkExcel;
+  //     toast.success("Archivo generado...");
+  //     link.click();
+  //   } catch (error) {
+  //     console.error("Error al generar el archivo:", error);
+  //     toast.error("Error al generar el archivo.");
+  //   }
+  // };
 
   const handleOnRefetch = async () => {
+    if (!validateFiles()) {
+      return;
+    }
+    
     setIsLoadingCashFlow(true);
-    await refetchCashFlow();
-    console.log("tenemos los datos de: ", dataCashFlow);
-    setIsLoadingCashFlow(false);
+    try {
+      await refetchCashFlow();
+      console.log("tenemos los datos de: ", dataCashFlow);
+      toast.success("Reporte de flujo de efectivo generado exitosamente");
+    } catch (error) {
+      console.error("Error al generar el reporte:", error);
+      toast.error("Error al generar el reporte de flujo de efectivo");
+    } finally {
+      setIsLoadingCashFlow(false);
+    }
   };
   const messageDate = "Del 2024/01/01";
 
@@ -416,7 +439,7 @@ export default function ClashFlowPage() {
             ? (<><LoaderIcon className="animate-spin" /> Generando PDF</>)
             : 'Generar PDF'}
         </Button> */}
-        <Button
+        {/* <Button
           className="w-fit flex gap-1 items-center"
           onClick={handleOnGenerateExcel}
           title={"Generar Excel"}
@@ -430,7 +453,7 @@ export default function ClashFlowPage() {
           ) : (
             <>Generar Excel</>
           )}
-        </Button>
+        </Button> */}
         <DownloadTemplatesButton />
         <UploadFinancialFilesDialog onFilesSelected={handleFilesSelected} />
       </div>
@@ -449,10 +472,7 @@ export default function ClashFlowPage() {
       {dataCashFlow && (
         <CashFlowPreview
           dateRange={dateRange}
-          data={{
-            balanceSheet: dataCashFlow?.balanceSheet,
-            statementIncome: dataCashFlow?.statementIncome,
-          }}
+          data={dataCashFlow}
         />
       )}
     </div>
