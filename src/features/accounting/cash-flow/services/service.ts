@@ -2,6 +2,7 @@ import { TypeFetchBalance } from "@/lib/data";
 import { LevelData } from "../../results/types/types";
 import { api } from "@/lib/api";
 import { CashFlowResponseData } from "../types/types";
+import { WorkSheetResponse } from "../schemas/cashFlowSchema";
 
 export async function getAllDataCashFlow({
   iDate,
@@ -82,4 +83,45 @@ export async function exportStatementIncomeXlsx() {
   } catch (e) {
     throw new Error(e instanceof Error ? e.message : String(e));
   }
+}
+
+export async function uploadBalanceSheetFile(file: File) {
+  try {
+    const formData = new FormData();
+    formData.append("balanceSheet", file);
+    const response = await api.post(
+      "/api/ClashFlow/config/balance-sheet",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data as string;
+  } catch (e) {
+    throw new Error("Error uploading balance sheet file");}
+}
+
+export async function uploadStatementIncomeFile(file: File) {
+  try {
+    const formData = new FormData();
+    formData.append("balanceSheet", file);
+    const response = await api.post(
+      "/api/ClashFlow/config/statement-income",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data as string;
+  } catch (e) {
+    throw new Error("Error uploading statement income file");}
+}
+
+export async function getWorkSheetCashFlowData(){
+  const response = await api.get('/api/ClashFlow')
+  return response.data as WorkSheetResponse;
 }
