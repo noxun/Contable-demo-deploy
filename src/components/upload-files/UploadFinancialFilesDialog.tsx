@@ -14,24 +14,46 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { uploadBalanceSheetFile, uploadStatementIncomeFile } from "@/features/accounting/cash-flow/services/service";
+import { LoaderIcon } from "lucide-react";
 
 interface UploadFinancialFilesDialogProps {
-  onFilesSelected: (files: {
-    incomeFile: File | null;
-    balanceFile: File | null;
-  }) => void;
+  onUploadSuccess?: () => void;
 }
 
 export function UploadFinancialFilesDialog({
-  onFilesSelected,
+  onUploadSuccess,
 }: UploadFinancialFilesDialogProps) {
   const [incomeFile, setIncomeFile] = useState<File | null>(null);
   const [balanceFile, setBalanceFile] = useState<File | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const uploadBalanceSheetMutation = useMutation({
+    mutationFn: uploadBalanceSheetFile,
+    onSuccess: () => {
+      toast.success("Balance de gestión subido exitosamente");
+    },
+    onError: (error) => {
+      console.error("Error uploading balance sheet:", error);
+      toast.error("Error al subir el balance de gestión");
+    },
+  });
+
+  const uploadStatementIncomeMutation = useMutation({
+    mutationFn: uploadStatementIncomeFile,
+    onSuccess: () => {
+      toast.success("Estado de gestión de ingresos subido exitosamente");
+    },
+    onError: (error) => {
+      console.error("Error uploading statement income:", error);
+      toast.error("Error al subir el estado de gestión de ingresos");
+    },
+  });
 
   const resetFiles = () => {
     setIncomeFile(null);
     setBalanceFile(null);
-    onFilesSelected({ incomeFile: null, balanceFile: null });
   };
 
   const handleFileChange = (type: "income" | "balance", file: File | null) => {
@@ -40,10 +62,6 @@ export function UploadFinancialFilesDialog({
     } else {
       setBalanceFile(file);
     }
-    onFilesSelected({
-      incomeFile: type === "income" ? file : incomeFile,
-      balanceFile: type === "balance" ? file : balanceFile,
-    });
   };
 
   const handleFileUpload = async (e: React.FormEvent) => {
@@ -54,27 +72,44 @@ export function UploadFinancialFilesDialog({
       return;
     }
 
-    toast.success('Archivos seleccionados correctamente');
-    // Close the dialog after selecting files
-    const closeButton = document.querySelector('[data-dialog-close]') as HTMLButtonElement;
-    if (closeButton) {
-      closeButton.click();
+    try {
+      // Upload both files concurrently
+      const uploadPromises = [
+        uploadStatementIncomeMutation.mutateAsync(incomeFile),
+        uploadBalanceSheetMutation.mutateAsync(balanceFile)
+      ];
+
+      await Promise.all(uploadPromises);
+      
+      toast.success('Ambos archivos subidos exitosamente');
+      
+      // Reset form and close dialog
+      resetFiles();
+      setIsOpen(false);
+      
+      // Notify parent component that upload was successful
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      toast.error("Error al subir los archivos");
     }
   };
 
+  const isUploading = uploadBalanceSheetMutation.isPending || uploadStatementIncomeMutation.isPending;
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          {incomeFile && balanceFile ? "Archivos Seleccionados ✓" : "Seleccionar Archivos"}
+          Subir Archivos Financieros
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleFileUpload}>
           <DialogHeader>
-            <DialogTitle>
-              {incomeFile && balanceFile ? "Gestionar Archivos Financieros" : "Seleccionar Archivos Financieros"}
-            </DialogTitle>
+            <DialogTitle>Subir Archivos Financieros</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid w-full items-center gap-3">
@@ -85,6 +120,7 @@ export function UploadFinancialFilesDialog({
                 accept=".xls,.xlsx"
                 onChange={(e) => handleFileChange("income", e.target.files?.[0] || null)}
                 required
+                disabled={isUploading}
               />
               {incomeFile && (
                 <p className="text-sm text-green-600 dark:text-green-400">
@@ -100,6 +136,7 @@ export function UploadFinancialFilesDialog({
                 accept=".xls,.xlsx"
                 onChange={(e) => handleFileChange("balance", e.target.files?.[0] || null)}
                 required
+                disabled={isUploading}
               />
               {balanceFile && (
                 <p className="text-sm text-green-600 dark:text-green-400">
@@ -107,7 +144,7 @@ export function UploadFinancialFilesDialog({
                 </p>
               )}
             </div>
-            {(incomeFile || balanceFile) && (
+            {(incomeFile || balanceFile) && !isUploading && (
               <Button 
                 type="button" 
                 variant="outline" 
@@ -120,12 +157,19 @@ export function UploadFinancialFilesDialog({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" type="button" data-dialog-close>
+              <Button variant="outline" type="button" disabled={isUploading}>
                 Cancelar
               </Button>
             </DialogClose>
-            <Button type="submit">
-              Confirmar Selección
+            <Button type="submit" disabled={isUploading}>
+              {isUploading ? (
+                <>
+                  <LoaderIcon className="animate-spin mr-2 h-4 w-4" />
+                  Subiendo...
+                </>
+              ) : (
+                "Subir Archivos"
+              )}
             </Button>
           </DialogFooter>
         </form>
