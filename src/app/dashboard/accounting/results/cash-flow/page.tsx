@@ -35,6 +35,7 @@ import { SelectAsync } from "@/features/accounting/results/components/SelectAsyn
 import { DownloadTemplatesButton } from "@/components/download-templates/download-templates";
 import { getWorkSheetCashFlowData, getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
 import { UploadFinancialFilesDialog } from "@/components/upload-files/UploadFinancialFilesDialog";
+import { DialogWorkSheet } from "@/features/accounting/cash-flow/components/DialogWorkSheet";
 
 
 export default function ClashFlowPage() {
@@ -228,6 +229,7 @@ export default function ClashFlowPage() {
           )}
         </Button> */}
         <DownloadTemplatesButton />
+        <DialogWorkSheet/>
         <UploadFinancialFilesDialog />
       </div>
 
