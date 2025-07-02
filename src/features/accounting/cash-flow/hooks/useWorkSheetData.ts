@@ -2,10 +2,10 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getWorkSheetCashFlowData } from "../services/service";
 
 export function useWorkSheetData() {
-  return useQuery(useWorkSheetDataQueryOptions())
+  return useQuery(workSheetDataQueryOptions())
 }
 
-export function useWorkSheetDataQueryOptions() {
+export function workSheetDataQueryOptions() {
   return queryOptions({
     queryKey: ["WorkSheetData"],
     queryFn: getWorkSheetCashFlowData,
