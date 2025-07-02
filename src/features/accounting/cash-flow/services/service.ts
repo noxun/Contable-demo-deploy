@@ -2,7 +2,10 @@ import { TypeFetchBalance } from "@/lib/data";
 import { LevelData } from "../../results/types/types";
 import { api } from "@/lib/api";
 import { CashFlowResponseData } from "../types/types";
-import { WorkSheetResponse } from "../schemas/cashFlowSchema";
+import {
+  UpdateWorkSheetCashFlowItem,
+  WorkSheetResponse,
+} from "../schemas/cashFlowSchema";
 
 export async function getAllDataCashFlow({
   iDate,
@@ -100,7 +103,8 @@ export async function uploadBalanceSheetFile(file: File) {
     );
     return response.data as string;
   } catch (e) {
-    throw new Error("Error uploading balance sheet file");}
+    throw new Error("Error uploading balance sheet file");
+  }
 }
 
 export async function uploadStatementIncomeFile(file: File) {
@@ -118,10 +122,22 @@ export async function uploadStatementIncomeFile(file: File) {
     );
     return response.data as string;
   } catch (e) {
-    throw new Error("Error uploading statement income file");}
+    throw new Error("Error uploading statement income file");
+  }
 }
 
-export async function getWorkSheetCashFlowData(){
-  const response = await api.get('/api/ClashFlow')
+export async function getWorkSheetCashFlowData() {
+  const response = await api.get("/api/ClashFlow/worksheet-job");
   return response.data as WorkSheetResponse;
+}
+
+export async function updateWorkSheetCashFlowDataItem({
+  id,
+  data,
+}: {
+  id: number;
+  data: UpdateWorkSheetCashFlowItem;
+}) {
+  const response = await api.put(`/api/ClashFlow/${id}`, data);
+  return response.data;
 }
