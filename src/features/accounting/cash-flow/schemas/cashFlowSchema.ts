@@ -47,8 +47,21 @@ export const workSheetCashFlowSchema = z.object({
   items: z.array(workSheetCashFlowItemSchema).nullable(),
 });
 
-export const workSheetResponse = z.array(workSheetCashFlowSchema);
+export const workSheetResponse = workSheetCashFlowSchema
+
+export const updateWorkSheetCashFlowItemSchema = workSheetCashFlowItemSchema.omit({
+  id: true,
+  nameAccount: true,
+  codeAccount: true,
+  balanceSheetBack: true,
+  balanceSheetPresent: true,
+  difference: true,
+  diference: true,
+  clasification: true,
+})
+
 
 export type WorkSheetCashFlowItem = z.infer<typeof workSheetCashFlowItemSchema>;
 export type WorkSheetCashFlow = z.infer<typeof workSheetCashFlowSchema>;
 export type WorkSheetResponse = z.infer<typeof workSheetResponse>;
+export type UpdateWorkSheetCashFlowItem = z.infer<typeof updateWorkSheetCashFlowItemSchema>;
