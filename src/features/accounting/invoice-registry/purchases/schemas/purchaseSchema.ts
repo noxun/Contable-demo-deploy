@@ -33,12 +33,14 @@ export const purchaseSchema = z.object({
   vatCredit: z.number(),
   purchaseType: z.number(),
   controlCode: z.string().nullable(),
+  applyVoucher: z.boolean(),
   accountAsset: accountSchema,
   accountDebit: accountSchema,
 });
 
 
 export const createPurchaseSchema = purchaseSchema.omit({
+  applyVoucher: true,
   id: true,
   accountAsset: true,
   accountDebit: true,
