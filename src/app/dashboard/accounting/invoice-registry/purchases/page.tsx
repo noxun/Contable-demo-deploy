@@ -1,23 +1,20 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import DownloadMassPurchaseFormButton from "@/features/accounting/invoice-registry/components/DownloadMassTransactionFormButton";
-import ImportInvoiceRegistryDialog from "@/features/accounting/invoice-registry/components/ImportInvoiceRegistryDialog";
-import ListInvoiceRegistry from "@/features/accounting/invoice-registry/components/ListInvoiceRegistry";
-import Link from "next/link";
+"use client";
 
-export default function InvoiceRegistryPurchasesPage() {
-  const purchase = 0;
+import { DownloadPurchasesOrSellsTemplateButton } from "@/features/accounting/invoice-registry/components/DownloadPurchasesOrSellsTemplateButton";
+import { DialogCreateOrUpdatePurchaseForm } from "@/features/accounting/invoice-registry/purchases/components/DialogCreateOrUpdatePurchaseForm";
+import ListPurchases from "@/features/accounting/invoice-registry/purchases/components/ListPurchases";
+
+export default function PurchasesPage() {
   return (
-    <main className="overflow-x-visible space-y-4">
-      <h1>Registro de Compras</h1>
-      <div className="flex gap-6">
-        <Button asChild>
-          <Link href="/dashboard/accounting/invoice-registry/new">Nuevo Registro</Link>
-        </Button>
-        <DownloadMassPurchaseFormButton type={purchase}/> 
-        <ImportInvoiceRegistryDialog/>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Registro de Compras</h1>
+      <div className="flex flex-col gap-4 p-4">
+        <DownloadPurchasesOrSellsTemplateButton />
+        <DialogCreateOrUpdatePurchaseForm mode="create" />
       </div>
-      <ListInvoiceRegistry type={purchase}/>
-    </main>
-  )
+      <div className="overflow-x-auto">
+        <ListPurchases />
+      </div>
+    </div>
+  );
 }
