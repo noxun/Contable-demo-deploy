@@ -48,7 +48,6 @@ import { Account } from "@/features/accounting/account/types/account";
 import { NewAccountingBox } from "@/features/accounting/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/accounting/users/new/page";
 import { EditModelSeat } from "@/features/accounting/model-seats/components/FormEditModelSeat";
-import { NewInvoiceForm } from "@/features/accounting/invoice-registry/components/FormNewInvoiceRegistry";
 import { VoucherDeleteVariables } from "@/features/accounting/shared/components/DeleteVoucherDialog";
 import {
   FixedAsset,
@@ -431,10 +430,10 @@ export async function fetchInvoiceRegistryList() {
   return response.data as InvoiceRegistry[];
 }
 
-export async function postInvoiceRegistry(data: NewInvoiceForm) {
-  const response = await api.post(`/api/Invoice/`, data);
-  return response.data;
-}
+// export async function postInvoiceRegistry(data: NewInvoiceForm) {
+//   const response = await api.post(`/api/Invoice/`, data);
+//   return response.data;
+// }
 
 export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
   const response = await api.get(`/GenerateInvoice/${type}`, {
