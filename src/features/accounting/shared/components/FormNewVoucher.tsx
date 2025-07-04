@@ -810,6 +810,12 @@ export default function FormNewVoucher({
     }
   }, [voucherItems]);
 
+  // Move this function up so it's defined before useEffect
+  const formatDateForText = (date: any) => {
+    if (!date) return "";
+    return format(date, "yyyy-MM-dd") + ": ";
+  };
+
   useEffect(() => {
     if (voucherDate && voucherFromRegisterByDocResponse) {
       // Get current text value without the date prefix
@@ -874,11 +880,6 @@ export default function FormNewVoucher({
   ) {
     return <Spinner />;
   }
-
-  const formatDateForText = (date: any) => {
-    if (!date) return "";
-    return format(date, "yyyy-MM-dd") + ": ";
-  };
 
   return (
     <div>
