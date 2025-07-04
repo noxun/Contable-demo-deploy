@@ -44,7 +44,9 @@ export function UploadPurchaseTemplateDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button></Button>
+        <Button>
+          Subir Plantilla de Compras
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-[90%] overflow-y-auto h-[90%]">
         <DialogHeader>
