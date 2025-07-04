@@ -5,3 +5,5 @@ export const COMPANY_ADDRESS = "4to. Anillo entre Av. Banzer y Beni Calle Trista
 export const COMPANY_MAIN_CITY = "Santa Cruz";
 export const COMPANY_PHONES = ["(591)3-3406135","(591)3-385332","(591)3-3852168"];
 export const COMPANY_NIT = "3754820020";
+
+export const SIAT_TEMPLATE_LINK = "https://siatinfo.impuestos.gob.bo/index.php/registro-de-compras-y-ventas/descarga-de-formatos"
