@@ -5,6 +5,7 @@ import {
   UpdatePurchase,
 } from "../schemas/purchaseSchema";
 import { UploadPurchaseTemplateSchema } from "../schemas/uploadPurchaseTemplateSchema";
+import { ApplyAccountSchema } from "../schemas/applyAccountSchema";
 
 export const purchasesService = {
   async fetchPurchasesList() {
@@ -27,6 +28,22 @@ export const purchasesService = {
         "Content-Type": "multipart/form-data",
       },
     });
+    return response.data;
+  },
+  async applyPurchaseAccount(data: ApplyAccountSchema) {
+    const response = await api.post("/api/Book/buy/apply-account", data);
+    return response.data;
+  },
+  async generatePurchaseSeats(type: number) {
+    const response = await api.post(
+      "/api/Book/buy/generate-seats",
+      {},
+      {
+        params: {
+          type,
+        },
+      }
+    );
     return response.data;
   },
 };
