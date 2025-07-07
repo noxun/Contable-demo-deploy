@@ -67,10 +67,6 @@ import { RegisterVoucherByDocuments } from "./trazoTypes";
 import { LevelData } from "@/features/accounting/results/types/types";
 import { BranchEditForm } from "@/features/accounting/branches/components/FormEditBranch";
 
-export async function fetchConfigValues() {
-  const response = await api.get("/api/Ufv/getConfigValues");
-  return response.data as ConfigValues;
-}
 
 export async function fetchVouchers(
   voucherType: VoucherType,

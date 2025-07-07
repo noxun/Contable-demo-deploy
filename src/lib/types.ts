@@ -290,6 +290,11 @@ export type ConfigValues = {
   tributosAduaneros: number;
   ufvDate: string;
   minimumWage: number;
+  accountImpId: number;
+  accountSaleId: number;
+  accountDebitIvaId: number;
+  accountImpByPayId: number;
+  accountCreditIvaId: number;
 };
 
 export type NewConfigValues = Omit<ConfigValues, "id">;
