@@ -12,31 +12,39 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  ApplyAccountSchema,
-  applyAccountSchema,
+  ApplyAccountFormSchema,
+  applyAccountFormSchema,
 } from "../schemas/applyAccountSchema";
 import { AccountSelect } from "@/features/accounting/account/components/AccountSelect";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { transformForApiApplyAccount } from "../utils/transformForApiApplyAccount";
+import { useApplyPurchaseAccount } from "../hooks/useApplyPurchaseAccount";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   purchaseId: number;
+  nit: number;
 };
 
-export function ApplyAccountForm({ purchaseId }: Props) {
-  const form = useForm<ApplyAccountSchema>({
-    resolver: zodResolver(applyAccountSchema),
+export function ApplyAccountForm({ purchaseId, nit }: Props) {
+  const form = useForm<ApplyAccountFormSchema>({
+    resolver: zodResolver(applyAccountFormSchema),
     defaultValues: {
+      mode: "one",
       accountDebitId: 0,
       accountAssetId: 0,
       id: purchaseId,
-      nit: null,
+      nit: nit,
       all: false,
     },
   });
 
-  function onSubmit(data: ApplyAccountSchema) {
+  const applyAccountMutation = useApplyPurchaseAccount();
+
+  function onSubmit(data: ApplyAccountFormSchema) {
     console.log("Form submitted with data:", data);
+    const apiPayload = transformForApiApplyAccount(data);
+    applyAccountMutation.mutate(apiPayload);
   }
 
   return (
@@ -84,45 +92,53 @@ export function ApplyAccountForm({ purchaseId }: Props) {
         />
         <FormField
           control={form.control}
-          name="nit"
+          name="mode"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>NIT</FormLabel>
+            <FormItem className="space-y-3">
+              <FormLabel>Alcance de la aplicación</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  placeholder="NIT del proveedor"
-                  {...field}
-                  value={field.value || ""}
-                />
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex flex-col"
+                >
+                  <FormItem className="flex items-center gap-3">
+                    <FormControl>
+                      <RadioGroupItem value="one" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Asignar cambios solo a esta factura
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center gap-3">
+                    <FormControl>
+                      <RadioGroupItem value="nit" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Asignar cambios a todas las facturas con el mismo NIT
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center gap-3">
+                    <FormControl>
+                      <RadioGroupItem value="all" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Asignar cambios a todas las facturas
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
-              <FormDescription>
-                Ingresa el NIT del proveedor si es necesario.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="all"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Todos</FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormDescription>
-                Marca esta opción si deseas aplicar el asiento a todas las
-                compras.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Button
+          type="submit"
+          disabled={applyAccountMutation.isPending}
+          className="w-full"
+        >
+          {applyAccountMutation.isPending ? "Aplicando..." : "Aplicar Cuentas"}
+        </Button>
       </form>
     </Form>
   );

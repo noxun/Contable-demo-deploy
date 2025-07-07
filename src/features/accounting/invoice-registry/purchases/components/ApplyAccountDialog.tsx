@@ -11,9 +11,10 @@ import { ApplyAccountForm } from "./ApplyAccountForm";
 
 type Props = {
   purchaseId: number;
+  nit: number;
 };
 
-export function ApplyAccountDialog({ purchaseId }: Props) {
+export function ApplyAccountDialog({ purchaseId, nit }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -21,14 +22,14 @@ export function ApplyAccountDialog({ purchaseId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Aplicar Asiento Contable</DialogTitle>
+          <DialogTitle>Asignar Asientos Contables</DialogTitle>
           <DialogDescription>
             Esta funcionalidad te permite aplicar un asiento contable a una
             compra específica. Asegúrate de seleccionar las cuentas correctas
             para el débito y el haber.
           </DialogDescription>
         </DialogHeader>
-        <ApplyAccountForm purchaseId={purchaseId} />
+        <ApplyAccountForm purchaseId={purchaseId} nit={nit} />
       </DialogContent>
     </Dialog>
   );
