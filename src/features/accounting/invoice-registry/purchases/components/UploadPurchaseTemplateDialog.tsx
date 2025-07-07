@@ -44,11 +44,9 @@ export function UploadPurchaseTemplateDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
-          Subir Plantilla de Compras
-        </Button>
+        <Button>Subir Plantilla de Compras</Button>
       </DialogTrigger>
-      <DialogContent className="min-w-[90%] overflow-y-auto h-[90%]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Subir Plantilla de Compras</DialogTitle>
           <DialogDescription>
@@ -84,6 +82,14 @@ export function UploadPurchaseTemplateDialog() {
                     </FormItem>
                   )}
                 />
+                <Button
+                  type="submit"
+                  disabled={uploadPurchaseTemplateMutation.isPending}
+                >
+                  {uploadPurchaseTemplateMutation.isPending
+                    ? "Subiendo..."
+                    : "Subir Plantilla"}
+                </Button>
               </form>
             </Form>
           </DialogDescription>
