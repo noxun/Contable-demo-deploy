@@ -34,7 +34,7 @@ import { CashFlowPreview } from "@/features/accounting/results/components/CashFl
 import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 import { DownloadTemplatesButton } from "@/components/download-templates/download-templates";
 import { getWorkSheetCashFlowData, getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
-import { UploadFinancialFilesDialog } from "@/components/upload-files/UploadFinancialFilesDialog";
+import { UploadFinancialFilesDialog } from "@/features/accounting/cash-flow/components/UploadFinancialFilesDialog";
 import { DialogWorkSheet } from "@/features/accounting/cash-flow/components/DialogWorkSheet";
 
 
