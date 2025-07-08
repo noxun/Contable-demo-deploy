@@ -88,10 +88,12 @@ export async function exportStatementIncomeXlsx() {
   }
 }
 
-export async function uploadBalanceSheetFile(file: File) {
+export async function uploadBalanceSheetFile(file: File, inSus: boolean) {
   try {
     const formData = new FormData();
-    formData.append("balanceSheet", file);
+    formData.append("FileConfig", file);
+    formData.append("InSus", inSus.toString());
+    formData.append("BusinessId", "1")
     const response = await api.post(
       "/api/ClashFlow/config/balance-sheet",
       formData,
@@ -107,10 +109,12 @@ export async function uploadBalanceSheetFile(file: File) {
   }
 }
 
-export async function uploadStatementIncomeFile(file: File) {
+export async function uploadStatementIncomeFile(file: File, inSus: boolean) {
   try {
     const formData = new FormData();
-    formData.append("balanceSheet", file);
+    formData.append("FileConfig", file);
+    formData.append("InSus", inSus.toString());
+    formData.append("BusinessId", "1")
     const response = await api.post(
       "/api/ClashFlow/config/statement-income",
       formData,

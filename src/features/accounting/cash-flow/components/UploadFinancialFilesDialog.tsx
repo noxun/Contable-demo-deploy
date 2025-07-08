@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { uploadBalanceSheetFile, uploadStatementIncomeFile } from "@/features/accounting/cash-flow/services/service";
@@ -28,9 +29,11 @@ export function UploadFinancialFilesDialog({
   const [incomeFile, setIncomeFile] = useState<File | null>(null);
   const [balanceFile, setBalanceFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [inSus, setInSus] = useState<boolean>(false);
 
   const uploadBalanceSheetMutation = useMutation({
-    mutationFn: uploadBalanceSheetFile,
+    mutationFn: (data: { file: File; inSus: boolean }) => 
+      uploadBalanceSheetFile(data.file, data.inSus),
     onSuccess: () => {
       toast.success("Balance de gestión subido exitosamente");
     },
@@ -41,7 +44,8 @@ export function UploadFinancialFilesDialog({
   });
 
   const uploadStatementIncomeMutation = useMutation({
-    mutationFn: uploadStatementIncomeFile,
+    mutationFn: (data: { file: File; inSus: boolean }) => 
+      uploadStatementIncomeFile(data.file, data.inSus),
     onSuccess: () => {
       toast.success("Estado de gestión de ingresos subido exitosamente");
     },
@@ -75,8 +79,14 @@ export function UploadFinancialFilesDialog({
     try {
       // Upload both files concurrently
       const uploadPromises = [
-        uploadStatementIncomeMutation.mutateAsync(incomeFile),
-        uploadBalanceSheetMutation.mutateAsync(balanceFile)
+        uploadStatementIncomeMutation.mutateAsync({ 
+          file: incomeFile, 
+          inSus 
+        }),
+        uploadBalanceSheetMutation.mutateAsync({ 
+          file: balanceFile, 
+          inSus 
+        })
       ];
 
       await Promise.all(uploadPromises);
@@ -112,6 +122,17 @@ export function UploadFinancialFilesDialog({
             <DialogTitle>Subir Archivos Financieros</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid w-full items-center gap-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="inSus" 
+                  checked={inSus}
+                  onCheckedChange={(checked) => setInSus(checked === true)}
+                  disabled={isUploading}
+                />
+                <Label htmlFor="inSus">En Dolares?</Label>
+              </div>
+            </div>
             <div className="grid w-full items-center gap-3">
               <Label htmlFor="incomeFile">Estado de Gestión de Ingresos</Label>
               <Input
