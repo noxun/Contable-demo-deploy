@@ -66,6 +66,10 @@ export default function PdfVoucher({
   const fecha = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
   const hora = now.toLocaleTimeString("es-BO");
 
+  // total de items que tendra las paginas(esto es para asignar un "border" al inicio o final)
+  const firstPageLimit = 24
+  const pageLimit = 31
+
   const { data, isLoading } = useQuery({
     queryKey: ["Vouchers", id, type],
     queryFn: async function (): Promise<Voucher> {
@@ -209,36 +213,35 @@ export default function PdfVoucher({
                     HABER $us.
                   </Text> */}
                 </View>
+
                 {/* Body tabla */}
-                {/* AGREGAR GLOSAS Y TOTAL LITERAL? */}
-                {data?.items?.map((item, index) => (
-                  <View 
-                    wrap={false} 
-                    key={item.id} 
-                    style={tw(`w-full h-8 flex flex-row items-center border-l border-r border-gray-700 ${index===23 || index===54 || index===85 ? "border-b" : index===24 || index===55 || index===86 ? "border-t" : ""} `)}>
-                    <View style={tw("w-[15%] h-full flex items-start justify-center px-2 border-r border-gray-700")}>
-                      <Text style={tw("text-gray-800")}>{item?.code ?? "code"}</Text>
-                    </View>
-                    <View style={tw("flex-1 h-full flex items-start justify-center px-2 border-r border-gray-700")}>
-                      <Text style={tw("text-gray-800")}>{item?.description ?? "desc"}</Text>
-                    </View>
-                    <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-r border-gray-700")}>
-                      <Text style={tw("text-gray-800")}>{item.hojaDeRuta ?? " "}</Text>
-                    </View>
-                    <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-r border-gray7600")}>
-                      <Text style={tw("text-gray-800")}>{numberWithDecimals(item.debitBs ?? 0)}</Text>
-                    </View>
-                    <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-gray-700")}>
-                      <Text style={tw("text-gray-800")}>{numberWithDecimals(item.assetBs ?? 0)}</Text>
-                    </View>
-                    {/* <Text style={tw("w-[10%] border-r text-right")}>
-                      {numberWithDecimals(item.debitSus)}
-                    </Text>
-                    <Text style={tw("w-[10%] border-r text-right")}>
-                      {numberWithDecimals(item.assetSus)}
-                    </Text> */}
-                  </View>
-                ))}
+                {data?.items?.map((item, index) => {
+                  const isFirst = index === firstPageLimit || (index > firstPageLimit && (index - firstPageLimit) % pageLimit === 0)
+                  const isLast = index === firstPageLimit - 1 || (index > firstPageLimit - 1 && (index - firstPageLimit + 1) % pageLimit === 0)
+                  const borders = `${isFirst ? "border-t " : ""}${isLast ? "border-b" : ""}`
+                    return (
+                      <View 
+                        wrap={false} 
+                        key={item.id}
+                        style={tw(`w-full h-8 flex flex-row items-center border-l border-r border-gray-700 ${borders} `)}>
+                        <View style={tw("w-[15%] h-full flex items-start justify-center px-2 border-r border-gray-700")}>
+                          <Text style={tw("text-gray-800")}>{item?.code ?? "code"}</Text>
+                        </View>
+                        <View style={tw("flex-1 h-full flex items-start justify-center px-2 border-r border-gray-700")}>
+                          <Text style={tw("text-gray-800")}>{item?.description ?? "desc"}</Text>
+                        </View>
+                        <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-r border-gray-700")}>
+                          <Text style={tw("text-gray-800")}>{item.hojaDeRuta ?? " "}</Text>
+                        </View>
+                        <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-r border-gray-7600")}>
+                          <Text style={tw("text-gray-800")}>{numberWithDecimals(item.debitBs ?? 0)}</Text>
+                        </View>
+                        <View style={tw("w-[15%] h-full flex items-end justify-center px-2 border-gray-700")}>
+                          <Text style={tw("text-gray-800")}>{numberWithDecimals(item.assetBs ?? 0)}</Text>
+                        </View>
+                      </View>
+                    )
+                })}
               </View>
               {/* Espacio restante abajo de la tabla, abajo de los items */}
               <View wrap={false} style={tw("w-full flex flex-row border flex-1 border-y-0")}>
