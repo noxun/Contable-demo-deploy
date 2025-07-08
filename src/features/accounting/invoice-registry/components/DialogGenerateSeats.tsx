@@ -26,6 +26,7 @@ import {
 } from "../purchases/schemas/generatePurchaseSeatFormSchema";
 import { useGeneratePurchaseSeats } from "../purchases/hooks/useGeneratePurchaseSeats";
 import { GenerateSeatSelect } from "./GenerateSeatsSelect";
+import { useGenerateSaleSeats } from "../sales/hooks/useGenerateSaleSeats";
 
 type Props = {
   mode: "purchase" | "sale";
@@ -40,11 +41,15 @@ export function DialogGenerateSeats({ mode }: Props) {
   });
 
   const generatePurchaseSeatsMutation = useGeneratePurchaseSeats();
+  const generateSalesSeatsMutation = useGenerateSaleSeats();
 
   function onSubmit(values: GeneratePurchaseSeatFormSchema) {
     console.log("Form submitted with values:", values);
     if (mode === "purchase") {
       generatePurchaseSeatsMutation.mutate(values.type);
+    }
+    if (mode === "sale") {
+      generateSalesSeatsMutation.mutate(values.type);
     }
   }
 
@@ -97,9 +102,13 @@ export function DialogGenerateSeats({ mode }: Props) {
             </DialogClose>
             <Button
               type="submit"
-              disabled={generatePurchaseSeatsMutation.isPending}
+              disabled={
+                generatePurchaseSeatsMutation.isPending ||
+                generateSalesSeatsMutation.isPending
+              }
             >
-              {generatePurchaseSeatsMutation.isPending
+              {generatePurchaseSeatsMutation.isPending ||
+              generateSalesSeatsMutation.isPending
                 ? "Generando..."
                 : "Generar Asientos"}
             </Button>
