@@ -36,26 +36,32 @@ export const saleSchema = z.object({
   accountDebit: accountSchema,
 });
 
-export const createSaleSchema = z.object({
-  number: z.coerce.number(),
-  specification: z.coerce.number(),
-  invoiceNumber: z.coerce.number(),
-  totalSaleAmount: z.coerce.number(),
-  iceAmount: z.coerce.number(),
-  ieHdAmount: z.coerce.number(),
-  ipjAmount: z.coerce.number(),
-  taxesAmount: z.coerce.number(),
-  otherNonTaxableAmounts: z.coerce.number(),
-  exportsAndExemptOperations: z.coerce.number(),
-  zeroRateSales: z.coerce.number(),
-  subtotal: z.coerce.number(),
-  discountsBonusesRebates: z.coerce.number(),
-  giftCardAmount: z.coerce.number(),
-  taxDebitBaseAmount: z.coerce.number(),
-  taxDebit: z.coerce.number(),
-  saleType: z.coerce.number(),
-  accountDebitId: z.coerce.number(),
-});
+export const createSaleSchema = saleSchema
+  .omit({
+    id: true,
+    applyVoucher: true,
+    accountDebit: true,
+  })
+  .extend({
+    number: z.coerce.number(),
+    specification: z.coerce.number(),
+    invoiceNumber: z.coerce.number(),
+    totalSaleAmount: z.coerce.number(),
+    iceAmount: z.coerce.number(),
+    ieHdAmount: z.coerce.number(),
+    ipjAmount: z.coerce.number(),
+    taxesAmount: z.coerce.number(),
+    otherNonTaxableAmounts: z.coerce.number(),
+    exportsAndExemptOperations: z.coerce.number(),
+    zeroRateSales: z.coerce.number(),
+    subtotal: z.coerce.number(),
+    discountsBonusesRebates: z.coerce.number(),
+    giftCardAmount: z.coerce.number(),
+    taxDebitBaseAmount: z.coerce.number(),
+    taxDebit: z.coerce.number(),
+    saleType: z.coerce.number(),
+    accountDebitId: z.coerce.number(),
+  });
 
 export const updateSaleSchema = createSaleSchema.extend({
   updatedAt: z.string().datetime(),
