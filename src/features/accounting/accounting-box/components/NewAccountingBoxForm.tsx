@@ -24,7 +24,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import useCostCenter from "@/features/accounting/shared/hooks/useCostCenter";
+import useCostCenter from "@/features/accounting/cost-center/hooks/useCostCenter";
 import useAccountingBox from "@/features/accounting/shared/hooks/useAccountingBox";
 import { es } from "date-fns/locale";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

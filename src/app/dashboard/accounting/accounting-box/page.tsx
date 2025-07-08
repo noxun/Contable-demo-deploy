@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchAccountingBoxItemsById } from "@/lib/data";
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/features/accounting/accounting-box/components/columns";
 import NewAccountingBoxDialog from "@/features/accounting/accounting-box/components/NewAccountingBoxDialog";
 import useAccountingBox from "@/features/accounting/shared/hooks/useAccountingBox";
 import CustomSelect from "@/components/custom/select";
@@ -49,6 +47,16 @@ const AccountingBoxPage = () => {
     isError: isErrorBalance,
   } = useAccountingBoxBalance(accountingBoxId);
 
+  const filteredData = useMemo(() => {
+    return accountingBox?.filter((item) => {
+      if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
+      const itemDate = new Date(item.fecha);
+      return (
+        itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
+      );
+    }) ?? [];
+  }, [accountingBox, dateFilter]);
+
   if (isError) return <div>Error: {error.message}</div>;
 
   const handleDateRangeChange = (values: {
@@ -57,15 +65,6 @@ const AccountingBoxPage = () => {
   }) => {
     setDateFilter(values);
   };
-
-  const filteredData =
-    accountingBox?.filter((item) => {
-      if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
-      const itemDate = new Date(item.fecha);
-      return (
-        itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
-      );
-    }) ?? [];
 
   return (
     <div>
@@ -120,3 +119,4 @@ const AccountingBoxPage = () => {
 };
 
 export default AccountingBoxPage;
+

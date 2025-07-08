@@ -8,7 +8,7 @@ export const columns: ColumnDef<CostCenter>[] = [
   },
   {
     accessorKey:"descripcion",
-    header: "Descripcion"
+    header: "Descripción"
   },
   {
     accessorKey: "account",
