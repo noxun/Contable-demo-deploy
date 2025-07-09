@@ -3,7 +3,7 @@ import { RatioItem as FinancialRatioItem } from "../types/types"
 
 interface Props {
   title: string
-  financialRatios: FinancialRatioItem[]
+  financialRatios: FinancialRatioItem[],
 }
 
 export const FinancialRatiosCard = ({ title, financialRatios }: Props) => {
@@ -14,13 +14,15 @@ export const FinancialRatiosCard = ({ title, financialRatios }: Props) => {
       </CardHeader>
       <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
         {
-          financialRatios.map(({ name, value }, index) => (
+          financialRatios.map(({ name, value, isPercentage }, index) => (
             <Card className="p-4" key={index}>
               <CardHeader className="p-0 m-0">
                 <CardTitle className="text-sm md:text-base text-center" >{name}</CardTitle>
               </CardHeader>
               <CardContent className="p-0 m-0">
-                <div className="text-sm sm:text-base text-center">{value}</div>
+                <div className="text-sm sm:text-base text-center">
+                  {isPercentage ? `${value} %` : value}
+                </div>
               </CardContent>
             </Card>
           ))
