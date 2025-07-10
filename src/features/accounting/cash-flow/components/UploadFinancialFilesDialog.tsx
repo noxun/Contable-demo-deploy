@@ -15,9 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { uploadBalanceSheetFile, uploadStatementIncomeFile } from "@/features/accounting/cash-flow/services/service";
-import { LoaderIcon } from "lucide-react";
+import { useCashFlowFileOperations } from "@/features/accounting/cash-flow/hooks/useCashFlowQueries";
+import { LoaderIcon, CheckCircle, XCircle } from "lucide-react";
 
 interface UploadFinancialFilesDialogProps {
   onUploadSuccess?: () => void;
@@ -31,29 +30,15 @@ export function UploadFinancialFilesDialog({
   const [isOpen, setIsOpen] = useState(false);
   const [inSus, setInSus] = useState<boolean>(false);
 
-  const uploadBalanceSheetMutation = useMutation({
-    mutationFn: (data: { file: File; inSus: boolean }) => 
-      uploadBalanceSheetFile(data.file, data.inSus),
-    onSuccess: () => {
-      toast.success("Balance de gestión subido exitosamente");
-    },
-    onError: (error) => {
-      console.error("Error uploading balance sheet:", error);
-      toast.error("Error al subir el balance de gestión");
-    },
-  });
-
-  const uploadStatementIncomeMutation = useMutation({
-    mutationFn: (data: { file: File; inSus: boolean }) => 
-      uploadStatementIncomeFile(data.file, data.inSus),
-    onSuccess: () => {
-      toast.success("Estado de gestión de ingresos subido exitosamente");
-    },
-    onError: (error) => {
-      console.error("Error uploading statement income:", error);
-      toast.error("Error al subir el estado de gestión de ingresos");
-    },
-  });
+  const {
+    isBalanceConfigured,
+    isLoadingBalanceConfig,
+    isIncomeConfigured,
+    isLoadingIncomeConfig,
+    uploadBalanceSheet,
+    uploadStatementIncome,
+    isUploading,
+  } = useCashFlowFileOperations();
 
   const resetFiles = () => {
     setIncomeFile(null);
@@ -79,11 +64,11 @@ export function UploadFinancialFilesDialog({
     try {
       // Upload both files concurrently
       const uploadPromises = [
-        uploadStatementIncomeMutation.mutateAsync({ 
+        uploadStatementIncome({ 
           file: incomeFile, 
           inSus 
         }),
-        uploadBalanceSheetMutation.mutateAsync({ 
+        uploadBalanceSheet({ 
           file: balanceFile, 
           inSus 
         })
@@ -106,8 +91,6 @@ export function UploadFinancialFilesDialog({
       toast.error("Error al subir los archivos");
     }
   };
-
-  const isUploading = uploadBalanceSheetMutation.isPending || uploadStatementIncomeMutation.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -134,7 +117,24 @@ export function UploadFinancialFilesDialog({
               </div>
             </div>
             <div className="grid w-full items-center gap-3">
-              <Label htmlFor="incomeFile">Estado de Gestión de Ingresos</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="incomeFile">Estado de Gestión de Ingresos</Label>
+                <div className="flex items-center gap-2">
+                  {isLoadingIncomeConfig ? (
+                    <LoaderIcon className="h-4 w-4 animate-spin" />
+                  ) : isIncomeConfigured ? (
+                    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="text-xs">Configurado</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                      <XCircle className="h-4 w-4" />
+                      <span className="text-xs">No configurado</span>
+                    </div>
+                  )}
+                </div>
+              </div>
               <Input
                 id="incomeFile"
                 type="file"
@@ -150,7 +150,24 @@ export function UploadFinancialFilesDialog({
               )}
             </div>
             <div className="grid w-full items-center gap-3">
-              <Label htmlFor="balanceFile">Balance de Gestión</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="balanceFile">Balance de Gestión</Label>
+                <div className="flex items-center gap-2">
+                  {isLoadingBalanceConfig ? (
+                    <LoaderIcon className="h-4 w-4 animate-spin" />
+                  ) : isBalanceConfigured ? (
+                    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="text-xs">Configurado</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                      <XCircle className="h-4 w-4" />
+                      <span className="text-xs">No configurado</span>
+                    </div>
+                  )}
+                </div>
+              </div>
               <Input
                 id="balanceFile"
                 type="file"
