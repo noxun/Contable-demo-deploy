@@ -41,9 +41,9 @@ export const createSaleSchema = saleSchema
     id: true,
     applyVoucher: true,
     accountDebit: true,
+    number: true,
   })
   .extend({
-    number: z.coerce.number(),
     specification: z.coerce.number(),
     invoiceNumber: z.coerce.number(),
     totalSaleAmount: z.coerce.number(),

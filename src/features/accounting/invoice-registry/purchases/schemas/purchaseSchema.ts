@@ -43,8 +43,8 @@ export const createPurchaseSchema = purchaseSchema.omit({
   id: true,
   accountAsset: true,
   accountDebit: true,
+  number: true,
 }).extend({
-  number: z.coerce.number(),
   specification: z.coerce.number(),
   providerNit: z.coerce.number(),
   invoiceNumber: z.coerce.number(),
