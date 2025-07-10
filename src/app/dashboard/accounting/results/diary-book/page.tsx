@@ -85,7 +85,7 @@ export default function DiaryBookPage() {
         <div>
           <SelectAsync
             options={branches || []}
-            label="Seleccione una sucursal..."
+            label="Sucursal..."
             nameGroup="Sucursales"
             labelKey={"nameSucutsal"}
             valueKey={"id"}

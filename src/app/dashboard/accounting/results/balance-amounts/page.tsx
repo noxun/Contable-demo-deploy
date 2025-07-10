@@ -263,7 +263,7 @@ export default function BalanceAmountsPage() {
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
           <SelectAsync
             options={branches || []}
-            label="Seleccione una sucursal..."
+            label="Sucursal..."
             nameGroup="Sucursales"
             labelKey={"nameSucutsal"}
             valueKey={"id"}

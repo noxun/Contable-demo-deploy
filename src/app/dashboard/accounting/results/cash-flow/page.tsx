@@ -170,7 +170,7 @@ export default function ClashFlowPage() {
         <div className="flex items-center flex-wrap gap-4">
           <SelectAsync
             options={branches || []}
-            label="Seleccione una sucursal..."
+            label="Sucursal..."
             nameGroup="Sucursales"
             labelKey={"nameSucutsal"}
             valueKey={"id"}
