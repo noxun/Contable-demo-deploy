@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useCreatePurchaseMutation } from "../hooks/useCreatePurchase";
 import { format } from "date-fns";
 import { useUpdatePurchaseMutation } from "../hooks/useUpdatePurchase";
+import { NitSelect } from "../../components/NitSelect";
 
 type Props = {
   mode: "create" | "update";
@@ -41,7 +42,6 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
     defaultValues:
       mode === "create"
         ? {
-            number: 0,
             specification: 0,
             providerNit: 0,
             providerBusinessName: null,
@@ -68,7 +68,6 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
             accountDebitId: null, // Default to a valid account ID
           }
         : {
-            number: purchase?.number || 0,
             specification: purchase?.specification || 0,
             providerNit: purchase?.providerNit || 0,
             providerBusinessName: purchase?.providerBusinessName || null,
@@ -99,16 +98,16 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
 
   const onSubmit = (data: CreatePurchase | UpdatePurchase) => {
     console.log("Formulario enviado:", data);
-    if (mode === "create") {
-      createPurchaseMutation.mutate(data as CreatePurchase);
-    } else {
-      if (purchase?.id) {
-        updatePurchaseMutation.mutate({
-          id: purchase.id,
-          data: data as UpdatePurchase,
-        });
-      }
-    }
+    // if (mode === "create") {
+    //   createPurchaseMutation.mutate(data as CreatePurchase);
+    // } else {
+    //   if (purchase?.id) {
+    //     updatePurchaseMutation.mutate({
+    //       id: purchase.id,
+    //       data: data as UpdatePurchase,
+    //     });
+    //   }
+    // }
   };
 
   return (
@@ -139,21 +138,6 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
             />
 
             <FormField
-              name="number"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Número</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>Número de la compra.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
               name="specification"
               control={form.control}
               render={({ field }) => (
@@ -162,7 +146,9 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  <FormDescription>Especificación de la compra.</FormDescription>
+                  <FormDescription>
+                    Especificación de la compra.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -172,8 +158,10 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
 
         {/* Provider Information Section */}
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Información del Proveedor</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-lg font-semibold mb-4">
+            Información del Proveedor
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
             <FormField
               name="providerNit"
               control={form.control}
@@ -181,7 +169,18 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                 <FormItem>
                   <FormLabel>NIT del Proveedor</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <NitSelect
+                      value={field.value.toString()}
+                      filter="byBuy"
+                      onChange={(value, companyName) => {
+                        field.onChange(value);
+                        form.setValue(
+                          "providerBusinessName",
+                          companyName ?? ""
+                        );
+                      }}
+                      name="providerNit"
+                    />
                   </FormControl>
                   <FormDescription>NIT del proveedor.</FormDescription>
                   <FormMessage />
@@ -281,7 +280,9 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
-                  <FormDescription>Fecha de la factura o DUA/DIM.</FormDescription>
+                  <FormDescription>
+                    Fecha de la factura o DUA/DIM.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -485,7 +486,9 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                   <FormControl>
                     <Input type="number" step="0.01" {...field} />
                   </FormControl>
-                  <FormDescription>Base para crédito fiscal IVA.</FormDescription>
+                  <FormDescription>
+                    Base para crédito fiscal IVA.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -525,7 +528,8 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                     />
                   </FormControl>
                   <FormDescription>
-                    Selecciona la cuenta que se debitará. Este campo es obligatorio.
+                    Selecciona la cuenta que se debitará. Este campo es
+                    obligatorio.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
