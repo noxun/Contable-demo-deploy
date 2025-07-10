@@ -12,7 +12,7 @@ import ConfigForm from "@/features/accounting/config/components/ConfigForm";
 
 export default function ConfigPage() {
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Ventana de Parámetros</CardTitle>
       </CardHeader>

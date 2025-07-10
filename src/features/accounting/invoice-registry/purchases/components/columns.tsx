@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Purchase } from "../schemas/purchaseSchema";
 import { DialogCreateOrUpdatePurchaseForm } from "./DialogCreateOrUpdatePurchaseForm";
+import { Badge } from "@/components/ui/badge";
+import { ApplyAccountDialog } from "./ApplyAccountDialog";
 
 export const columns: ColumnDef<Purchase>[] = [
   { accessorKey: "number", header: "Número" },
@@ -35,12 +37,28 @@ export const columns: ColumnDef<Purchase>[] = [
   { accessorKey: "accountAsset.description", header: "Cuenta Activo" },
   { accessorKey: "accountDebit.description", header: "Cuenta Débito" },
   {
+    accessorKey: "applyVoucher",
+    header: "Asiento Aplicado?",
+    cell: ({ row }) => {
+      const purchase = row.original;
+      return (
+        <Badge variant={purchase.applyVoucher ? "default" : "destructive"}>
+          {purchase.applyVoucher ? "Sí" : "No"}
+        </Badge>
+      );
+    },
+  },
+  {
     header: "Acciones",
     cell: ({ row }) => {
       const purchase = row.original;
       return (
         <div className="flex gap-2">
           <DialogCreateOrUpdatePurchaseForm mode="update" purchase={purchase} />
+          <ApplyAccountDialog
+            purchaseId={purchase.id}
+            nit={purchase.providerNit}
+          />
         </div>
       );
     },

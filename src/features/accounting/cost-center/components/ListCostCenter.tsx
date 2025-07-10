@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import BiggerBookByAccountCodeDialog from "@/features/accounting/bigger-book/components/BiggerBookByAccountCodeDialog";
 
 export default function ListCostCenter({
@@ -31,7 +31,9 @@ export default function ListCostCenter({
 
           <CollapsibleContent>
             <div className="px-4 py-2 bg-white">
-              <p className="text-sm text-gray-500 mb-3">{center?.descripcion}</p>
+              <p className="text-sm text-gray-500 mb-3">
+                {center?.descripcion}
+              </p>
 
               <div className="space-y-2">
                 {(Array.isArray(center?.accountItems)

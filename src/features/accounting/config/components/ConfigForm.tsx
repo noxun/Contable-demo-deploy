@@ -11,35 +11,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useConfigValues from "@/features/accounting/shared/hooks/useConfigValues";
+import useConfigValues from "@/features/accounting/config/hooks/useConfigValues";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { postUfvValues } from "../../ufv/service/ufvService";
 
-const configFormSchema = z.object({
-  ufvValue: z.coerce.number(),
-  dollarValue: z.coerce.number(),
-  stateMain: z.boolean(),
-  ivaValue: z.coerce.number(),
-  itValue: z.coerce.number(),
-  iceValue: z.coerce.number(),
-  iehdValue: z.coerce.number(),
-  itfValue: z.coerce.number(),
-  tributosAduaneros: z.coerce.number(),
-  ufvDate: z.string(),
-  minimumWage: z.coerce.number()
-});
-
-type ConfigForm = z.infer<typeof configFormSchema>;
+import { ConfigFormType, configFormSchema } from "../schemas/configFormSchema";
+import { useUpdateConfigValues } from "../hooks/useUpdateConfigValues";
+import { AccountSelect } from "../../account/components/AccountSelect";
 
 export default function ConfigForm() {
   const { data: configValues, isLoading, isError } = useConfigValues();
+  const updateConfigValuesMutation = useUpdateConfigValues();
 
-  const configForm = useForm<ConfigForm>({
+  const configForm = useForm<ConfigFormType>({
     resolver: zodResolver(configFormSchema),
     defaultValues: {
       ufvValue: 0,
@@ -52,26 +36,12 @@ export default function ConfigForm() {
       itfValue: 0,
       tributosAduaneros: 0,
       ufvDate: "",
-      minimumWage: 0
+      minimumWage: 0,
     },
     values: configValues,
   });
 
-  const queryClient = useQueryClient();
-
-  const updateConfigValuesMutation = useMutation({
-    mutationFn: postUfvValues,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["configValues"] });
-      toast.success("Valores actualizados correctamente!");
-    },
-    onError: (error: AxiosError) => {
-      console.log(error);
-      toast.error("Hubo un error al actualizar los valores");
-    },
-  });
-
-  function onSubmit(values: ConfigForm) {
+  function onSubmit(values: ConfigFormType) {
     console.log(values);
     updateConfigValuesMutation.mutate(values);
   }
@@ -87,7 +57,7 @@ export default function ConfigForm() {
   return (
     <Form {...configForm}>
       <form
-        className="grid grid-col-4 gap-4"
+        className="grid grid-cols-4 gap-4 w-full"
         onSubmit={configForm.handleSubmit(onSubmit)}
       >
         <FormField
@@ -222,7 +192,110 @@ export default function ConfigForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="col-start-3 col-end-4">
+        <FormField
+          control={configForm.control}
+          name="accountImpId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Impuesto a las transacciones</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  name="accountImpId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para el impuesto a las transacciones
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountSaleId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Ventas y/o Servicios</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  name="accountSaleId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para ventas y/o servicios
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountDebitIvaId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Débito Fiscal IVA</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  name="accountDebitIvaId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para el débito fiscal IVA
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountImpByPayId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Impuesto a las trans. por pagar</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  name="accountImpByPayId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para el impuesto a las transacciones por pagar
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountCreditIvaId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Crédito Fiscal IVA</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  name="accountCreditIvaId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para el crédito fiscal IVA
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          className="col-span-4 justify-self-end mt-6 w-1/3"
+        >
           Guardar
         </Button>
       </form>

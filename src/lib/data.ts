@@ -2,18 +2,13 @@ import {
   AccountingBox,
   AccountingBoxBalance,
   AccountingBoxItems,
-  AccountRelation,
   Bank,
-  BankExcerpt,
   BankExcerptResponse,
   BankExtractPaymentFile,
   BookBiggerData,
   Branch,
   BranchToList,
-  BudgetExecutionData,
   BudgetExecutionResponse,
-  ConfigValues,
-  CostCenter,
   DiaryBookResponse,
   HeritageEvaluationData,
   InvoiceRegistry,
@@ -22,7 +17,6 @@ import {
   InvoiceVoucher,
   ModelSeat,
   ModelSeatDetailResponse,
-  NewConfigValues,
   PostModelSeat,
   RegisterVoucherByDocumentResponse,
   RelationAccount,
@@ -35,7 +29,6 @@ import {
   TrazoCompany,
   TrazoInternCode,
   TypeCompany,
-  Ufv,
   VoucherItemFromExtractedPDF,
 } from "./types";
 import { api } from "./api";
@@ -67,10 +60,6 @@ import { RegisterVoucherByDocuments } from "./trazoTypes";
 import { LevelData } from "@/features/accounting/results/types/types";
 import { BranchEditForm } from "@/features/accounting/branches/components/FormEditBranch";
 
-export async function fetchConfigValues() {
-  const response = await api.get("/api/Ufv/getConfigValues");
-  return response.data as ConfigValues;
-}
 
 export async function fetchVouchers(
   voucherType: VoucherType,
@@ -212,18 +201,6 @@ export async function importBankExcerptFromExcel(data: FormData) {
 export async function fetchAccountingBox(): Promise<AccountingBox[]> {
   const response = await api.get(`/api/AccountingBox`);
   return response.data as AccountingBox[];
-}
-
-export async function fetchCostCenterByRoleData(
-  data: Role[]
-): Promise<CostCenter[]> {
-  const response = await api.post(`/api/CostCenter`, data);
-  return response.data as CostCenter[];
-}
-
-export async function fetchAllCostCenter(): Promise<CostCenter[]> {
-  const response = await api.get(`/api/CostCenter`);
-  return response.data as CostCenter[];
 }
 
 export async function fetchBranches() {

@@ -54,6 +54,7 @@ export default function FinancialRatiosPage() {
             FinancialRatiosData?.liquidityRatios.currentLiquidity ?? 0 >= 1
               ? `Cuenta con ${FinancialRatiosData?.liquidityRatios.currentLiquidity.toFixed(2)} Bs por cada 1 Bs de deuda a corto plazo.`
               : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.currentLiquidity.toFixed(2)} Bs por cada 1 Bs de deuda, lo que puede ser riesgoso.`,
+          isPercentage: false
         },
         {
           name: "Prueba Ácida",
@@ -62,14 +63,16 @@ export default function FinancialRatiosPage() {
             FinancialRatiosData?.liquidityRatios.acidTest ?? 0 >= 1
               ? `Tiene ${FinancialRatiosData?.liquidityRatios.acidTest.toFixed(2)} Bs en activos líquidos (sin inventario) por cada 1 Bs de deuda.`
               : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.acidTest.toFixed(2)} Bs en activos líquidos, lo que puede indicar falta de liquidez.`,
+          isPercentage: false
         },
         {
           name: "Razón de Efectivo",
-          value: FinancialRatiosData?.liquidityRatios.cashRatio ?? 0,
+          value: (FinancialRatiosData?.liquidityRatios.cashRatio ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.liquidityRatios.cashRatio ?? 0 >= 1
-              ? `Tiene ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(2)} Bs en efectivo por cada 1 Bs de deuda, asegurando liquidez inmediata.`
-              : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(2)} Bs en efectivo por cada 1 Bs de deuda, lo que podría ser un riesgo.`,
+              ? `Tiene ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(1)}% de efectivo disponible frente a su deuda a corto plazo.`
+              : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(1)}%, lo que podría ser un riesgo.`,
+          isPercentage: true
         },
         {
           name: "Capital de Trabajo Neto",
@@ -78,6 +81,7 @@ export default function FinancialRatiosPage() {
             FinancialRatiosData?.liquidityRatios.netWorkingCapital ?? 0 >= 0
               ? `Tiene un excedente de ${FinancialRatiosData?.liquidityRatios.netWorkingCapital.toFixed(2)} Bs después de cubrir sus pasivos a corto plazo.`
               : `El capital de trabajo es negativo en ${FinancialRatiosData?.liquidityRatios.netWorkingCapital.toFixed(2)} Bs, posible señal de problemas de liquidez.`,
+          isPercentage: false
         },
       ]
     },
@@ -86,43 +90,48 @@ export default function FinancialRatiosPage() {
       items: [
         {
           name: "Pasivo/Activo",
-          value: FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0,
+          value: (FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0 > 100
-              ? `Un ratio de ${FinancialRatiosData?.debtRatios.liabilityToAsset}% indica que la empresa tiene más pasivos que activos, lo que puede ser riesgoso.`
-              : `Un ratio de ${FinancialRatiosData?.debtRatios.liabilityToAsset}% indica que la empresa tiene más activos que pasivos, lo cual es positivo.`,
+              ? `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) * 100)}% indica que la empresa tiene más pasivos que activos, lo que puede ser riesgoso.`
+              : `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) * 100)}% indica que la empresa tiene más activos que pasivos, lo cual es positivo.`,
+          isPercentage: true
         },
         {
           name: "Pasivo/Patrimonio",
-          value: FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0,
+          value: (FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0 > 100
-              ? `Un ratio de ${FinancialRatiosData?.debtRatios.liabilityToEquity}% indica que la empresa tiene más pasivos que patrimonio, lo que implica un alto nivel de endeudamiento.`
-              : `Un ratio de ${FinancialRatiosData?.debtRatios.liabilityToEquity}% indica que la empresa tiene más patrimonio que pasivos, lo cual reduce el riesgo financiero.`,
+              ? `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0) * 100)}% indica que la empresa tiene más pasivos que patrimonio, lo que implica un alto nivel de endeudamiento.`
+              : `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0) * 100)}% indica que la empresa tiene más patrimonio que pasivos, lo cual reduce el riesgo financiero.`,
+          isPercentage: true
         },
         {
           name: "Deuda/Activo",
-          value: FinancialRatiosData?.debtRatios.debtToAsset ?? 0,
+          value: (FinancialRatiosData?.debtRatios.debtToAsset ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.debtRatios.debtToAsset ?? 0 > 50
-              ? `Un ratio de ${FinancialRatiosData?.debtRatios.debtToAsset}% indica que más de la mitad de los activos están financiados con deuda, lo que puede generar obligaciones financieras elevadas.`
-              : `Un ratio de ${FinancialRatiosData?.debtRatios.debtToAsset}% indica que la empresa depende menos de la deuda para financiar sus activos.`,
+              ? `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToAsset ?? 0) * 100)}% indica que más de la mitad de los activos están financiados con deuda, lo que puede generar obligaciones financieras elevadas.`
+              : `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToAsset ?? 0) * 100)}% indica que la empresa depende menos de la deuda para financiar sus activos.`,
+          isPercentage: true
         },
         {
           name: "Deuda/Patrimonio",
-          value: FinancialRatiosData?.debtRatios.debtToEquity ?? 0,
+          value: (FinancialRatiosData?.debtRatios.debtToEquity ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.debtRatios.debtToEquity ?? 0 > 100
-              ? `Un ratio de ${FinancialRatiosData?.debtRatios.debtToEquity}% indica que la deuda es mayor que el patrimonio, lo que puede aumentar el riesgo financiero.`
-              : `Un ratio de ${FinancialRatiosData?.debtRatios.debtToEquity}% indica que el patrimonio cubre la mayor parte de la deuda, lo cual es positivo.`,
+              ? `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToEquity ?? 0) * 100)}% indica que la deuda es mayor que el patrimonio, lo que puede aumentar el riesgo financiero.`
+              : `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToEquity ?? 0) * 100)}% indica que el patrimonio cubre la mayor parte de la deuda, lo cual es positivo.`,
+          isPercentage: true
         },
         {
           name: "Deuda/Pasivo",
-          value: FinancialRatiosData?.debtRatios.debtToLiability ?? 0,
+          value: (FinancialRatiosData?.debtRatios.debtToLiability ?? 0) * 100,
           interpretation:
             FinancialRatiosData?.debtRatios.debtToLiability ?? 0 > 50
-              ? `Un ratio de ${FinancialRatiosData?.debtRatios.debtToLiability}% indica que más de la mitad de los pasivos corresponden a deuda financiera, lo que puede generar una alta carga financiera.`
-              : `Un ratio de ${FinancialRatiosData?.debtRatios.debtToLiability}% indica que la mayor parte de los pasivos no provienen de deuda financiera, lo cual da más estabilidad.`,
+              ? `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToLiability ?? 0) * 100)}% indica que más de la mitad de los pasivos corresponden a deuda financiera, lo que puede generar una alta carga financiera.`
+              : `Un ratio de ${((FinancialRatiosData?.debtRatios.debtToLiability ?? 0) * 100)}% indica que la mayor parte de los pasivos no provienen de deuda financiera, lo cual da más estabilidad.`,
+          isPercentage: true
         }
       ]
     },
@@ -131,23 +140,27 @@ export default function FinancialRatiosPage() {
       items: [
         {
           name: "Rentabilidad",
-          value: FinancialRatiosData?.profitabilityRatios.profitability ?? 0,
-          interpretation: getMessageProfitability((FinancialRatiosData?.profitabilityRatios.profitability ?? 0) * 100)
+          value: (FinancialRatiosData?.profitabilityRatios.profitability ?? 0) * 100,
+          interpretation: getMessageProfitability((FinancialRatiosData?.profitabilityRatios.profitability ?? 0) * 100),
+          isPercentage: true
         },
         {
           name: "ROI",
-          value: FinancialRatiosData?.profitabilityRatios.roi ?? 0,
-          interpretation: getMessageROI((FinancialRatiosData?.profitabilityRatios.roi ?? 0) * 100)
+          value: (FinancialRatiosData?.profitabilityRatios.roi ?? 0) * 100,
+          interpretation: getMessageROI((FinancialRatiosData?.profitabilityRatios.roi ?? 0) * 100),
+          isPercentage: true
         },
         {
           name: "ROE",
-          value: FinancialRatiosData?.profitabilityRatios.roe ?? 0,
-          interpretation: getMessageROE((FinancialRatiosData?.profitabilityRatios.roe ?? 0) * 100)
+          value: (FinancialRatiosData?.profitabilityRatios.roe ?? 0) * 100,
+          interpretation: getMessageROE((FinancialRatiosData?.profitabilityRatios.roe ?? 0) * 100),
+          isPercentage: true
         },
         {
           name: "ROA",
-          value: FinancialRatiosData?.profitabilityRatios.roa ?? 0,
-          interpretation: getMessageROA((FinancialRatiosData?.profitabilityRatios.roa ?? 0) * 100)
+          value: (FinancialRatiosData?.profitabilityRatios.roa ?? 0) * 100,
+          interpretation: getMessageROA((FinancialRatiosData?.profitabilityRatios.roa ?? 0) * 100),
+          isPercentage: true
         }
       ]
     }

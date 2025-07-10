@@ -57,7 +57,7 @@ import {
   postCompanyOrConcept,
 } from "@/lib/data";
 import CustomSelect from "@/components/custom/select";
-import useCostCenter from "../hooks/useCostCenter";
+import useCostCenter from "../../cost-center/hooks/useCostCenter";
 import useMotionAccounts from "../hooks/useMotionAccounts";
 import useModelSeatsByType from "../hooks/useModelSeatsByType";
 import useModelSeats from "../hooks/useModelSeats";
@@ -810,6 +810,12 @@ export default function FormNewVoucher({
     }
   }, [voucherItems]);
 
+  // Move this function up so it's defined before useEffect
+  const formatDateForText = (date: any) => {
+    if (!date) return "";
+    return format(date, "yyyy-MM-dd") + ": ";
+  };
+
   useEffect(() => {
     if (voucherDate && voucherFromRegisterByDocResponse) {
       // Get current text value without the date prefix
@@ -874,11 +880,6 @@ export default function FormNewVoucher({
   ) {
     return <Spinner />;
   }
-
-  const formatDateForText = (date: any) => {
-    if (!date) return "";
-    return format(date, "yyyy-MM-dd") + ": ";
-  };
 
   return (
     <div>

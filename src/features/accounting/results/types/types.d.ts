@@ -141,6 +141,7 @@ export interface RatioItem {
   name: string;
   value: number;
   interpretation?: string;
+  isPercentage?: boolean;
 }
 
 export interface FinancialRatiosData {
