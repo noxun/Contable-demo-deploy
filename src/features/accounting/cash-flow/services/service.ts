@@ -145,3 +145,21 @@ export async function updateWorkSheetCashFlowDataItem({
   const response = await api.put(`/api/ClashFlow/${id}`, data);
   return response.data;
 }
+
+export async function isBalanceSheetConfigured(): Promise<boolean> {
+  try {
+    const response = await api.get("/api/ClashFlow/is-configurated/balance-sheet");
+    return response.data as boolean;
+  } catch (e) {
+    throw new Error("Error checking balance sheet configuration");
+  }
+}
+
+export async function isStatementIncomeConfigured(): Promise<boolean> {
+  try {
+    const response = await api.get("/api/ClashFlow/is-configurated/state-income");
+    return response.data as boolean;
+  } catch (e) {
+    throw new Error("Error checking statement income configuration");
+  }
+}
