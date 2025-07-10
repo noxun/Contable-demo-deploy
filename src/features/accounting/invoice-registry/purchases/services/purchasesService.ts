@@ -46,4 +46,10 @@ export const purchasesService = {
     );
     return response.data;
   },
+  async downloadPurchaseTemplate() {
+    const response = await api.get("/api/templates/standard-purchase-template", {
+      responseType: "blob",
+    });
+    return response.data;
+  },
 };

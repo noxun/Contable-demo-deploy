@@ -42,4 +42,10 @@ export const saleService = {
     );
     return response.data;
   },
+  async downloadSalesTemplate() {
+    const response = await api.get("/api/templates/standard-sales", {
+      responseType: "blob",
+    });
+    return response.data;
+  },
 };
