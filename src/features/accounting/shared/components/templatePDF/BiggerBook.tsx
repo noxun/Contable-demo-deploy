@@ -12,7 +12,8 @@ import {
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { formatNumber } from "../../utils/validate";
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_NAME, COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
+import { createTw } from "react-pdf-tailwind";
 
 type BiggerBookTemplateProps = {
   dateRange?: DateRange;
@@ -89,7 +90,12 @@ const styles = StyleSheet.create({
     height: "1.5cm",
     objectFit: "cover",
   },
+  zebra: {
+    backgroundColor: '#f8f8f8',
+  },
 });
+
+const tw = createTw({})
 
 export function BiggerBookTemplate({
   dateRange,
@@ -110,6 +116,13 @@ export function BiggerBookTemplate({
   const tSaldoKey = inSus ? "totalSaldoNumSus" : "totalSaldoNum"
   const tPreviousBalanceKey = inSus ? "previousBalanceSus" : "previousBalance"
 
+  // Fechas y hora
+  const now = new Date();
+  const gestion = now.getFullYear();
+  const mesLiteral = now.toLocaleString("es-BO", { month: "long" });
+  const fecha = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+  const hora = now.toLocaleTimeString("es-BO");
+
   const dateText =
     dateRange?.from &&
     (dateRange?.to
@@ -124,48 +137,63 @@ export function BiggerBookTemplate({
       {records.map((record) => {
         return (
           <Page key={record.accountCode} size={"LETTER"} style={styles.page} wrap>
-            <View>
-              <Image
-                style={styles.imageOutOfBounds}
-                src={REPORTS_LOGO_URL}
-              />
+
+            {/* PAGINADO */}
+            <View fixed render={({ pageNumber, totalPages }:any) => (
+                <View style={{
+                    fontSize: '8px',
+                    color: '#2f2f2f',
+                    width: '100%',
+                    textAlign: 'right',
+                    paddingBottom: 4,
+                    borderBottom: pageNumber !== 1 ? '1px solid black' : undefined,
+                  }}
+                >
+                  <Text> Página: {pageNumber} / {totalPages} </Text>
+                </View>
+              )}
+            />
+
+            <View style={tw("w-full flex flex-row justify-between mb-8 text-sm")}>
+              <View style={tw("flex-1")}>
+                <Image
+                  source={REPORTS_LOGO_URL}
+                  style={{ height: 40, width: 120 }}
+                />
+                <Text style={tw("font-semibold text-gray-700 mt-2")}>{COMPANY_NAME} </Text>
+                <Text style={tw("text-gray-700 mb-1")}>NIT {COMPANY_NIT}</Text>
+                <Text style={tw("text-gray-700 w-[170px] text-xs")}>{COMPANY_ADDRESS} </Text>
+              </View>
+              <View style={tw(" flex-1 w-full flex items-center self-end")}>
+                <Text style={{ fontSize: 15, fontFamily: "Helvetica-Bold", paddingBottom: 5}}>Libro Mayor</Text>
+                <Text style={[{fontSize:10,paddingTop:2, fontFamily: "Helvetica", fontWeight:'normal', color:"#232323"}]}>(Expresado en {moneyType})</Text>
+                <Text style={[{fontSize:9,paddingTop:1, textAlign: "center", fontWeight:"normal" }]}>{dateText}</Text>
+              </View>
+              <View style={tw("flex-1 flex flex-col items-end pt-4 text-xs")}>
+                <View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Gestion </Text>  <Text style={tw("text-gray-800")}> {gestion} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Mes </Text>  <Text style={tw("text-gray-800")}> {mesLiteral} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Fecha: </Text>  <Text style={tw("text-gray-800")}> {fecha} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Hora: </Text>  <Text style={tw("text-gray-800")}> {hora} </Text>  </View>
+                </View>
+              </View>
             </View>
-            <Text
-              style={[
-                styles.titlePage,
-                { fontFamily: "Helvetica-Bold", paddingTop: 20 },
-              ]}
-            >
-              Libro Mayor
-            </Text>
+
             <View style={[{ paddingBottom: 5 }]}>
-              <Text
-                style={[
-                  styles.thCell,
-                  { textAlign: "center", fontFamily: "Helvetica-Bold" },
-                ]}
-              >
-                (Expresado en {moneyType})
-              </Text>
-              <Text style={[styles.thCell, { textAlign: "center" }]}>
-                {dateText}
-              </Text>
-            </View>
-            <View style={[{ paddingBottom: 10 }]}>
-              <Text style={[styles.thCell]}>
+              <Text style={[{fontSize:9, fontWeight:"normal"}]}>
                 <Text style={{ fontFamily: "Helvetica-Bold" }}>
                   Nro de Cuenta:
                 </Text>{" "}
                 {record.accountCode}
               </Text>
               <View style={styles.trCell}>
-                <Text style={[styles.thCell]}>
+                <Text style={[{fontSize:9, fontWeight:"normal"}]}>
                   <Text style={{ fontFamily: "Helvetica-Bold" }}>
                     Nombre de Cuenta:
                   </Text>{" "}
                   {record.accountDescription}
                 </Text>
-                <Text style={[styles.thCell]}>
+                <Text style={[{fontSize:9, fontWeight:"normal"}]}>
                   <Text style={{ fontFamily: "Helvetica-Bold" }}>
                     Balance Previo:
                   </Text>{" "}
@@ -241,7 +269,7 @@ export function BiggerBookTemplate({
               </View>
               {record.voucherItems.map((item, index) => {
                 return (
-                  <View style={styles.trCell} key={item.accountId}>
+                  <View wrap={false} style={[styles.trCell,{flexGrow:1, paddingVertical:4}, index % 2 === 0 ? {} : styles.zebra]} key={item.accountId}>
                     <Text style={[styles.col10, styles.tdCell]}>
                       {item?.typeDes ?? index}
                     </Text>
@@ -298,7 +326,7 @@ export function BiggerBookTemplate({
                   style={[
                     styles.col13,
                     styles.tdCell,
-                    { fontFamily: "Helvetica-Bold", textAlign: "right" },
+                    { fontFamily: "Helvetica-Bold", textAlign: "right"},
                   ]}
                 >
                   {formatNumber(record[tDebitKey])}
@@ -329,46 +357,26 @@ export function BiggerBookTemplate({
               </View>
             </View>
 
-            <View
-              style={[
-                styles.trCell,
-                {
-                  borderBottomWidth: 1,
-                  borderLeftWidth: 1,
-                  borderRightWidth: 1,
-                },
-              ]}
-            >
-              <View style={styles.col25}></View>
-              <View
-                style={[
-                  styles.thCell,
-                  styles.col25,
-                  {
-                    paddingTop: "2cm",
-                    alignItems: "center",
-                    borderLeftWidth: 1,
-                    borderRightWidth: 1,
-                  },
-                ]}
-              >
-                <Text style={{ textAlign: "center" }}>CONTADOR</Text>
+           <View wrap={false} style={tw("w-full flex flex-row gap-8 text-sm mt-2")}>
+              <View style={tw("h-36 flex-1 flex")}>
+                <View style={tw("border h-full rounded-lg my-1 flex flex-row items-end justify-center")}>
+                  {/* Aqui podria venir un text mas si se necesita */}
+                  <Text style={tw("border-t py-1 px-2 text-center w-[95%] text-gray-500 border-gray-800 font-semibold")}>CONTADOR</Text>
+                </View>
               </View>
-              <View
-                style={[
-                  styles.thCell,
-                  styles.col25,
-                  {
-                    paddingTop: "2cm",
-                    alignItems: "center",
-                    borderRightWidth: 1,
-                  },
-                ]}
-              >
-                <Text style={{ textAlign: "center" }}>GERENTE</Text>
+              <View style={tw("h-36 flex-1 flex")}>
+                <View style={tw("border h-full rounded-lg my-1 flex flex-row items-end justify-center")}>
+                  {/* Aqui podria venir un text mas si se necesita */}
+                  <Text style={tw("border-t py-1 px-2 text-center w-[95%] text-gray-500 border-gray-800 font-semibold")}>GERENTE</Text>
+                </View>
               </View>
-              <View style={styles.col25}></View>
             </View>
+            {/*Border bottom */}
+            <View fixed render={({ pageNumber, totalPages }: any) =>
+              pageNumber !== totalPages ? (
+                <View style={{width: '100%',height: 1,marginTop: 'auto',borderTop: '1px solid black',}}/>
+              ) : null}
+            />
           </Page>
         );
       })}

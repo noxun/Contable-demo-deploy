@@ -2,10 +2,11 @@
 "use client"
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
 import { formatNumber } from "../../utils/validate";
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_NAME, COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { ItemStatementIncomeType, StatementIncomeResultsType, StatementIncomeType } from "@/features/accounting/results/types/types";
+import { createTw } from "react-pdf-tailwind";
 
 const styles = StyleSheet.create({
   page: {
@@ -100,6 +101,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const tw = createTw({})
+
 interface Props {
   inSus?: boolean
   records: StatementIncomeType
@@ -111,6 +114,14 @@ interface Props {
 export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, currentLevel }: Props) => {
   const moneyType = inSus ? "Dolares" : "Bolivianos";
   const FORMAT_DATE_INITIAL = "dd/MM/yyyy";
+  
+  // Fechas y hora
+  const now = new Date();
+  const gestion = now.getFullYear();
+  const mesLiteral = now.toLocaleString("es-BO", { month: "long" });
+  const fecha = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+  const hora = now.toLocaleTimeString("es-BO");
+
   const messageDate =
     dateRange?.from &&
     (dateRange?.to
@@ -120,19 +131,47 @@ export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, cu
       )}`
       : `Del ${format(dateRange.from, FORMAT_DATE_INITIAL)}`);
 
-
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
+        {/* PAGINADO */}
+        <View fixed render={({ pageNumber, totalPages }:any) => (
+            <View style={{
+                fontSize: '8px',
+                color: '#2f2f2f',
+                width: '100%',
+                textAlign: 'right',
+                paddingBottom: 4,
+                borderBottom: pageNumber !== 1 ? '1px solid black' : undefined,
+              }}
+            >
+              <Text> Página: {pageNumber} / {totalPages} </Text>
+            </View>
+          )}
+        />
         {/* primera pagina */}
-        <View>
-          <Image style={styles.imageOutOfBounds} src={REPORTS_LOGO_URL} />
-          <View style={{ textAlign: "center" }}>
-            <Text style={[styles.txtHeader, { fontSize: 14, marginTop: 25 }]}>ESTADO DE RESULTADOS</Text>
-            <Text style={styles.txtHeader}>{messageDate}</Text>
-            <Text style={[styles.txtHeader, { marginBottom: 8 }]}>
-              (Expresado en {moneyType})
-            </Text>
+        <View style={tw("w-full flex flex-row justify-between mb-8 text-sm")}>
+          <View style={tw("w-[28%]")}>
+            <Image
+              source={REPORTS_LOGO_URL}
+              style={{ height: 40, width: 120 }}
+            />
+            <Text style={tw("font-semibold text-gray-700 mt-2")}>{COMPANY_NAME} </Text>
+            <Text style={tw("text-gray-700 mb-1")}>NIT {COMPANY_NIT}</Text>
+            <Text style={tw("text-gray-700 w-[140px] text-xs")}>{COMPANY_ADDRESS} </Text>
+          </View>
+          <View style={tw("w-[58%] flex items-center self-end")}>
+            <Text style={{ fontSize: 15, fontFamily: "Helvetica-Bold", paddingBottom: 5}}>ESTADO DE RESULTADOS</Text>
+            <Text style={[{fontSize:11,paddingTop:3, textAlign: "center", fontWeight:"normal" }]}>{messageDate}</Text>
+            <Text style={[{fontSize:10, fontFamily: "Helvetica", fontWeight:'normal', color:"#232323"}]}>(Expresado en {moneyType})</Text>
+          </View>
+          <View style={tw("w-[24%] flex flex-col items-end pt-4 text-xs")}>
+            <View>
+              <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Gestion </Text>  <Text style={tw("text-gray-800")}> {gestion} </Text>  </View>
+              <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Mes </Text>  <Text style={tw("text-gray-800")}> {mesLiteral} </Text>  </View>
+              <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Fecha: </Text>  <Text style={tw("text-gray-800")}> {fecha} </Text>  </View>
+              <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Hora: </Text>  <Text style={tw("text-gray-800")}> {hora} </Text>  </View>
+            </View>
           </View>
         </View>
 
@@ -155,21 +194,21 @@ export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, cu
             totalIncome: records.totalIncome
           }, currentLevel, item))}
 
-          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+          <View wrap={false} style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
             <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
             <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>PERIODO DE UTILIDAD</Text>
             <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.periodUtility)}</Text>
             <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
             <View style={styles.col15}><Text>{" "}</Text></View>
           </View>
-          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+          <View wrap={false} style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
             <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
             <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>IMPUESTOS SOBRE BENEFICIOS</Text>
             <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.taxOnProfits)}</Text>
             <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
             <View style={styles.col15}><Text>{" "}</Text></View>
           </View>
-          <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+          <View wrap={false} style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
             <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
             <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>RESULTADOS DE LA GESTION</Text>
             <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(records.managementResult)}</Text>
@@ -180,7 +219,7 @@ export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, cu
 
 
         {/* seccion de la firma */}
-        <View style={[styles.trFooter]}>
+        <View wrap={false} style={[styles.trFooter]}>
           <View style={[styles.tfooter, { paddingTop: '2cm', alignItems: "center" }]}>
             <Text style={{ paddingBottom: 3 }}>_______________________</Text>
             <Text style={styles.txtCenter}>CONTADOR</Text>
@@ -190,16 +229,13 @@ export const EstadoResultadosTemplate = ({ records, inSus = false, dateRange, cu
             <Text style={styles.txtCenter}>GERENTE</Text>
           </View>
         </View>
-
-        {/* Paginación */}
-        <Text
-          style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )}
+        {/*Border bottom */}
+        <View fixed render={({ pageNumber, totalPages }: any) =>
+          pageNumber !== totalPages ? (
+            <View style={{width: '100%',height: 1,marginTop: 'auto',borderTop: '1px solid black',}}/>
+          ) : null}
         />
       </Page>
-
     </Document >
   )
 }
@@ -210,7 +246,7 @@ const renderItem = (results: StatementIncomeResultsType, currentLevel: number, i
   const fontWeight = currentLevel === level ? "Helvetica" : "Helvetica-Bold"
   return (
     <View key={item.code}>
-      <View style={[styles.trCell, styles.border_b_td]}>
+      <View wrap={false} style={[styles.trCell, styles.border_b_td]}>
         <View style={[styles.col15, styles.border_r_td]}>
           <Text style={[styles.tdCell]}>{item.code}</Text>
         </View>
@@ -250,7 +286,7 @@ const renderItem = (results: StatementIncomeResultsType, currentLevel: number, i
 
       {/* Resultados --> INGRESOS */}
       {level === 1 && item.description === "INGRESOS" && (
-        <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+        <View wrap={false} style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
           <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
           <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>TOTAL INGRESOS</Text>
           <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(results.totalIncome)}</Text>
@@ -260,7 +296,7 @@ const renderItem = (results: StatementIncomeResultsType, currentLevel: number, i
       )}
       {/* Resultados --> GASTOS Y COSTOS */}
       {level === 1 && item.description === "GASTOS Y COSTOS" && (
-        <View style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
+        <View wrap={false} style={[styles.trCell, styles.border_b_td, { fontFamily: "Helvetica-Bold" }]}>
           <View style={[styles.col15, styles.border_r_td]}><Text>{" "}</Text></View>
           <Text style={[styles.col40, styles.tdCell, styles.border_r_td, { paddingLeft: 30 }]}>TOTAL GASTOS Y COSTOS</Text>
           <Text style={[styles.col15, styles.tdCell, styles.border_r_td, styles.txtRight]}>{formatNumber(results.totalExpense)}</Text>

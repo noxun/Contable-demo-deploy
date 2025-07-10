@@ -5,8 +5,9 @@ import { Document, Page, StyleSheet, Text, View, Image } from "@react-pdf/render
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { formatNumber } from "../../utils/validate";
-import { REPORTS_LOGO_URL } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_NAME, COMPANY_NIT, REPORTS_LOGO_URL } from "@/lib/constants";
 import { paginatePDFContent } from "@/features/accounting/results/lib/utils";
+import { createTw } from "react-pdf-tailwind";
 
 interface Props {
   records: BalanceAmountsType,
@@ -94,6 +95,7 @@ const styles = StyleSheet.create({
   },
 });
 
+const tw = createTw({});
 
 export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Props) => {
 
@@ -109,10 +111,17 @@ export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Pr
 
   const moneyType = inSus ? "Dolares" : "Bolivianos"
 
+  // Fechas y hora
+  const now = new Date();
+  const gestion = now.getFullYear();
+  const mesLiteral = now.toLocaleString("es-BO", { month: "long" });
+  const fecha = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+  const hora = now.toLocaleTimeString("es-BO");
+
   const paginatedRecords = paginatePDFContent(records.items, {
     firstPageCapacity: 20,
     otherPagesCapacity: 24,
-    signatureFooterHeight: 6
+    signatureFooterHeight: 0
   })
 
   return (
@@ -123,28 +132,40 @@ export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Pr
           {/* Seccion del header de la primera pagina */}
           {pageIndex === 0 && (
             <>
-              <View >
+            {/* Encabezado del documento */}
+            <View style={tw("w-full flex flex-row justify-between mb-8 text-sm")}>
+              <View style={tw("flex-1")}>
                 <Image
-                  style={styles.imageOutOfBounds}
-                  src={REPORTS_LOGO_URL}
+                  source={REPORTS_LOGO_URL}
+                  style={{ height: 40, width: 120 }}
                 />
+                <Text style={tw("font-semibold text-gray-700 mt-2")}>{COMPANY_NAME} </Text>
+                <Text style={tw("text-gray-700 mb-1")}>NIT {COMPANY_NIT}</Text>
+                <Text style={tw("text-gray-700 w-[140px] text-xs")}>{COMPANY_ADDRESS} </Text>
               </View>
-              <View style={{ alignItems: "center" }}>
-                <Text style={[styles.titlePage, { marginTop: 25 }]} >BALANCE DE SUMAS Y SALDOS</Text>
-                <Text style={styles.thCell} >{dateText}</Text>
-                <Text style={[styles.thCell, { marginBottom: 8 }]} >(Expresado en {moneyType})</Text>
+              <View style={tw("flex-1 flex items-center self-end")}>
+                <Text style={{ fontSize: 14, fontFamily: "Helvetica-Bold", paddingBottom: 5}}>BALANCE DE SUMAS Y SALDOS</Text>
+                <Text style={[{fontSize:11,paddingTop:3, textAlign: "center", fontWeight:"normal" }]}>{dateText}</Text>
+                <Text style={[{fontSize:11, fontFamily: "Helvetica", fontWeight:'normal', color:"#232323"}]}>(Expresado en {moneyType})</Text>
               </View>
+              <View style={tw("flex-1 flex flex-col items-end pt-4 text-xs")}>
+                <View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Gestion </Text>  <Text style={tw("text-gray-800")}> {gestion} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Mes </Text>  <Text style={tw("text-gray-800")}> {mesLiteral} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Fecha: </Text>  <Text style={tw("text-gray-800")}> {fecha} </Text>  </View>
+                  <View style={tw("flex flex-row")}> <Text style={tw("font-semibold text-gray-800 pb-1")}>Hora: </Text>  <Text style={tw("text-gray-800")}> {hora} </Text>  </View>
+                </View>
+              </View>
+            </View>
             </>
           )}
 
           {/* Seccion del header*/}
           <View style={[styles.trCell, { justifyContent: "flex-end", borderWidth: 1 }]}>
-            <View style={[styles.col10, { borderRightWidth: 1 }]}>
-              <View><Text>{" "}</Text></View>
+            <View style={[styles.col10, { borderRightWidth: 1, height:"100%", display:"flex", justifyContent:"center"}]}>
               <View style={[styles.thCell]}><Text>Cuenta</Text></View>
             </View>
-            <View style={[styles.col50,]}>
-              <View ><Text>{" "}</Text></View>
+            <View style={[styles.col50,{height:"100%", display:"flex", justifyContent:"center"}]}>
               <View style={[styles.thCell]}><Text>Nombre De Cuenta</Text></View>
             </View>
             <View style={[styles.col20, { borderLeftWidth: 1, display: "flex", flexDirection: "column", textAlign: "center", }]}>
@@ -171,12 +192,12 @@ export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Pr
                   <View style={[styles.col10, styles.tdCell, { borderRightWidth: 1 }]}><Text>{record.code}</Text></View>
                   <View style={[styles.col50, styles.tdCell]}><Text>{record.description}</Text></View>
                   <View style={[styles.trCell, styles.col20, { borderLeftWidth: 1 }]}>
-                    <View style={[styles.col50, styles.tdCell, { textAlign: "right" }]}><Text>{formatNumber(record.debit)}</Text></View>
-                    <View style={[styles.col50, styles.tdCell, { textAlign: "right" }]}><Text>{formatNumber(record.asset)}</Text></View>
+                    <View style={[styles.col50, styles.tdCell, { textAlign: "right",}]}><Text>{formatNumber(record.debit)}</Text></View>
+                    <View style={[styles.col50, styles.tdCell, { textAlign: "right",}]}><Text>{formatNumber(record.asset)}</Text></View>
                   </View>
                   <View style={[styles.trCell, styles.col20, { borderLeftWidth: 1 }]}>
-                    <View style={[styles.tdCell, styles.col50, { textAlign: "right" }]}><Text>{formatNumber(record.debtor)}</Text></View>
-                    <View style={[styles.tdCell, styles.col50, { textAlign: "right" }]}><Text>{formatNumber(record.creditor)}</Text></View>
+                    <View style={[styles.tdCell, styles.col50, { textAlign: "right",}]}><Text>{formatNumber(record.debtor)}</Text></View>
+                    <View style={[styles.tdCell, styles.col50, { textAlign: "right",}]}><Text>{formatNumber(record.creditor)}</Text></View>
                   </View>
                 </View>
               ))
@@ -184,7 +205,7 @@ export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Pr
           </View>
 
           {/* Seccion de resultados y la forma */}
-          <View >
+          <View>
             {pageIndex === paginatedRecords.length - 1 && (
               <>
                 {/* Resultados */}
@@ -201,13 +222,13 @@ export const BalanceAmountsTemplate = ({ records, dateRange, inSus = false }: Pr
                   </View>
                 </View>
                 {/* Firma */}
-                <View style={[styles.trCell, { borderBottomWidth: 1, borderLeftWidth: 1, borderRightWidth: 1 }]}>
+                <View wrap={false} style={[styles.trCell]}>
                   <View style={styles.col25}><Text>{" "}</Text></View>
-                  <View style={[styles.thCell, styles.col25, { paddingTop: "2cm", alignItems: "center", borderLeftWidth: 1, borderRightWidth: 1, },]}>
-                    <Text style={{ textAlign: "center" }}>CONTADOR</Text>
+                  <View style={[styles.thCell, styles.col25, { paddingTop: "3cm", alignItems: "center"},]}>
+                    <Text style={{ textAlign: "center", borderTopWidth: 1,borderColor:"gray", width:"120px", paddingTop:2 }}>CONTADOR</Text>
                   </View>
-                  <View style={[styles.thCell, styles.col25, { paddingTop: "2cm", alignItems: "center", borderRightWidth: 1, }]}>
-                    <Text style={{ textAlign: "center" }}>GERENTE</Text>
+                  <View style={[styles.thCell, styles.col25, { paddingTop: "3cm", alignItems: "center"}]}>
+                    <Text style={{ textAlign: "center", borderTopWidth: 1,borderColor:"gray", width:"120px", paddingTop:2 }}>GERENTE</Text>
                   </View>
                   <View style={styles.col25}><Text>{" "}</Text></View>
                 </View>
