@@ -69,7 +69,7 @@ export async function getAllDataCashFlow({
 export async function exportBalanceSheetXlsx() {
   try {
     const response = await api.get(
-      "/api/FinancialState/ClashFlow/FormatBalanceSheetXlsx"
+      "/api/ClashFlow/FormatBalanceSheetXlsx"
     );
     return response.data;
   } catch (e) {
@@ -80,7 +80,7 @@ export async function exportBalanceSheetXlsx() {
 export async function exportStatementIncomeXlsx() {
   try {
     const response = await api.get(
-      "/api/FinancialState/ClashFlow/FormatStatementIncomeXlsx"
+      "/api/ClashFlow/FormatStatementIncomeXlsx"
     );
     return response.data;
   } catch (e) {
