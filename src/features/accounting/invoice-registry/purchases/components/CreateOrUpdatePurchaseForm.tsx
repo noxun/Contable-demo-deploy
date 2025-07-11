@@ -24,6 +24,7 @@ import { useCreatePurchaseMutation } from "../hooks/useCreatePurchase";
 import { format } from "date-fns";
 import { useUpdatePurchaseMutation } from "../hooks/useUpdatePurchase";
 import { NitSelect } from "../../components/NitSelect";
+import { NitSelectInput } from "../../components/NitSelectInput";
 
 type Props = {
   mode: "create" | "update";
@@ -169,7 +170,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                 <FormItem>
                   <FormLabel>NIT del Proveedor</FormLabel>
                   <FormControl>
-                    <NitSelect
+                    <NitSelectInput
                       value={field.value.toString()}
                       filter="byBuy"
                       onChange={(value, companyName) => {
