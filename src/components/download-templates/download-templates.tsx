@@ -3,25 +3,12 @@
 
 import { Button } from "@/components/ui/button";
 import { LoaderIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { exportBalanceSheetXlsx, exportStatementIncomeXlsx } from "@/features/accounting/cash-flow/services/service";
 
 export function DownloadTemplatesButton() {
   const [isLoading, setIsLoading] = useState(false);
-
-  const { refetch: refetchBalanceSheetXlsx } = useQuery({
-    queryKey: ["BalanceSheetXlsx"],
-    queryFn: () => exportBalanceSheetXlsx(),
-    enabled: false,
-  });
-
-  const { refetch: refetchStatementIncomeXlsx } = useQuery({
-    queryKey: ["StatementIncomeXlsx"],
-    queryFn: () => exportStatementIncomeXlsx(),
-    enabled: false,
-  });
 
   function downloadFromUrl(url: string, filename: string) {
     const link = document.createElement("a");
@@ -38,15 +25,20 @@ export function DownloadTemplatesButton() {
     try {
       toast.info("Descargando plantillas...");
       
-      // Descargar ambas plantillas en paralelo
-      await Promise.all([
-        refetchBalanceSheetXlsx().then(({ data }) => {
-          if (data) downloadFromUrl(data, "Balance-Sheet.xlsx");
-        }),
-        refetchStatementIncomeXlsx().then(({ data }) => {
-          if (data) downloadFromUrl(data, "Income-Statement.xlsx");
-        }),
+      // Fetch both templates in parallel but handle downloads sequentially
+      const [balanceSheetData, incomeStatementData] = await Promise.all([
+        exportBalanceSheetXlsx(),
+        exportStatementIncomeXlsx(),
       ]);
+      
+      // Download files sequentially to avoid race conditions
+      if (balanceSheetData) {
+        downloadFromUrl(balanceSheetData, "Balance-Sheet.xlsx");
+      }
+      
+      if (incomeStatementData) {
+        downloadFromUrl(incomeStatementData, "Income-Statement.xlsx");
+      }
       
       toast.success("Plantillas descargadas correctamente");
     } catch (error) {
