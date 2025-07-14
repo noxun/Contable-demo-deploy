@@ -34,8 +34,8 @@ export const columns: ColumnDef<Purchase>[] = [
   { accessorKey: "vatCredit", header: "Crédito Fiscal" },
   { accessorKey: "purchaseType", header: "Tipo Compra" },
   { accessorKey: "controlCode", header: "Código Control" },
-  { accessorKey: "accountAsset.description", header: "Cuenta Activo" },
-  { accessorKey: "accountDebit.description", header: "Cuenta Débito" },
+  { accessorKey: "accountDebit.description", header: "Cuenta Debe" },
+  { accessorKey: "accountAsset.description", header: "Cuenta Haber" },
   {
     accessorKey: "applyVoucher",
     header: "Asiento Aplicado?",
