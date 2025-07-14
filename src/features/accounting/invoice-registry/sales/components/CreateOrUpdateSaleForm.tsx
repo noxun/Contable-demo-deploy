@@ -42,7 +42,7 @@ export function CreateOrUpdateSaleForm({ mode, sale }: Props) {
     defaultValues:
       mode === "create"
         ? {
-            specification: 0,
+            specification: 1,
             invoiceDate: "",
             invoiceNumber: 0,
             authorizationCode: null,
@@ -68,7 +68,7 @@ export function CreateOrUpdateSaleForm({ mode, sale }: Props) {
             accountDebitId: 0,
           }
         : {
-            specification: sale?.specification || 0,
+            specification: sale?.specification || 1,
             invoiceDate: sale?.invoiceDate || "",
             invoiceNumber: sale?.invoiceNumber || 0,
             authorizationCode: sale?.authorizationCode || null,
@@ -157,7 +157,7 @@ export function CreateOrUpdateSaleForm({ mode, sale }: Props) {
               )}
             />
 
-            <FormField
+            {/* <FormField
               name="specification"
               control={form.control}
               render={({ field }) => (
@@ -170,7 +170,7 @@ export function CreateOrUpdateSaleForm({ mode, sale }: Props) {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               name="invoiceDate"
