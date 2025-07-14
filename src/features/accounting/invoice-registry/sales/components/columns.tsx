@@ -8,7 +8,10 @@ export const columns: ColumnDef<Sale>[] = [
   { accessorKey: "number", header: "Número" },
   { accessorKey: "specification", header: "Especificación" },
   { accessorKey: "clientNitCi", header: "NIT/CI Cliente" },
-  { accessorKey: "clientNameOrBusinessName", header: "Nombre/Razón Social Cliente" },
+  {
+    accessorKey: "clientNameOrBusinessName",
+    header: "Nombre/Razón Social Cliente",
+  },
   { accessorKey: "authorizationCode", header: "Código Autorización" },
   { accessorKey: "invoiceNumber", header: "Nro. Factura" },
   { accessorKey: "invoiceDate", header: "Fecha Factura" },
@@ -21,7 +24,10 @@ export const columns: ColumnDef<Sale>[] = [
     accessorKey: "otherNonTaxableAmounts",
     header: "Otros No Gravados",
   },
-  { accessorKey: "exportsAndExemptOperations", header: "Exportaciones y Exentas" },
+  {
+    accessorKey: "exportsAndExemptOperations",
+    header: "Exportaciones y Exentas",
+  },
   { accessorKey: "zeroRateSales", header: "Ventas Tasa Cero" },
   { accessorKey: "subtotal", header: "Subtotal" },
   {
@@ -34,7 +40,7 @@ export const columns: ColumnDef<Sale>[] = [
   { accessorKey: "status", header: "Estado" },
   { accessorKey: "saleType", header: "Tipo Venta" },
   { accessorKey: "controlCode", header: "Código Control" },
-  { accessorKey: "accountDebit.description", header: "Cuenta Débito" },
+  { accessorKey: "accountDebit.description", header: "Cuenta Debe" },
   {
     accessorKey: "applyVoucher",
     header: "Asiento Aplicado?",
@@ -53,11 +59,17 @@ export const columns: ColumnDef<Sale>[] = [
       const sale = row.original;
       return (
         <div className="flex gap-2">
-          <DialogCreateOrUpdateSaleForm mode="update" sale={sale} />
-          <ApplySaleAccountDialog
-            saleId={sale.id}
-            nit={sale.clientNitCi || ""}
-          />
+          {!sale.applyVoucher ? (
+            <>
+              <DialogCreateOrUpdateSaleForm mode="update" sale={sale} />
+              <ApplySaleAccountDialog
+                saleId={sale.id}
+                nit={sale.clientNitCi || ""}
+              />
+            </>
+          ) : (
+            <div>Sin Acciones.</div>
+          )}
         </div>
       );
     },
