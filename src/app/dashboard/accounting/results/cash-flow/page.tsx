@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
+import { useWorkSheetData } from "@/features/accounting/cash-flow/hooks/useWorkSheetData";
 import {
   Accordion,
   AccordionContent,
@@ -36,6 +37,7 @@ import { DownloadTemplatesButton } from "@/components/download-templates/downloa
 import { getWorkSheetCashFlowData, getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
 import { UploadFinancialFilesDialog } from "@/features/accounting/cash-flow/components/UploadFinancialFilesDialog";
 import { DialogWorkSheet } from "@/features/accounting/cash-flow/components/DialogWorkSheet";
+import { WorkSheetPreview } from "@/features/accounting/cash-flow/components/WorkSheetPreview";
 
 
 export default function ClashFlowPage() {
@@ -54,6 +56,8 @@ export default function ClashFlowPage() {
     queryKey: ["branches"],
     queryFn: fetchBranches,
   });
+
+  const {data: worksheetData, isLoading: isLoadingWorksheet} = useWorkSheetData();
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
     queryKey: ["AllCashFlow", dateRange.from, dateRange.to, pendingLevel, branch],
@@ -249,6 +253,13 @@ export default function ClashFlowPage() {
           dateRange={dateRange}
           data={dataCashFlow}
         />
+      )}
+
+      {/* HOJA DE TRABAJO */}
+      {isLoadingWorksheet ? (
+        <p className="text-center text-sm text-gray-500">Cargando hoja de trabajo...</p>
+      ) : (
+        <WorkSheetPreview data={worksheetData?.items} />
       )}
     </div>
   );
