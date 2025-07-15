@@ -56,27 +56,30 @@ export function UploadFinancialFilesDialog({
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!incomeFile || !balanceFile) {
-      toast.error("Por favor selecciona ambos archivos.");
+    if (!balanceFile) {
+      toast.error("Por favor selecciona al menos el archivo de Balance General");
       return;
     }
 
     try {
       // Upload both files concurrently
-      const uploadPromises = [
-        uploadStatementIncome({ 
+      const uploadPromises = [];
+      
+      if (incomeFile) {
+        uploadPromises.push(uploadStatementIncome({ 
           file: incomeFile, 
           inSus 
-        }),
-        uploadBalanceSheet({ 
-          file: balanceFile, 
-          inSus 
-        })
-      ];
+        }));
+      }
+      
+      uploadPromises.push(uploadBalanceSheet({ 
+        file: balanceFile, 
+        inSus 
+      }));
 
       await Promise.all(uploadPromises);
       
-      toast.success('Ambos archivos subidos exitosamente');
+      toast.success('Archivos subidos exitosamente');
       
       // Reset form and close dialog
       resetFiles();
@@ -118,7 +121,7 @@ export function UploadFinancialFilesDialog({
             </div>
             <div className="grid w-full items-center gap-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="incomeFile">Estado de Gestión de Ingresos</Label>
+                <Label htmlFor="incomeFile">Estado de Resultado</Label>
                 <div className="flex items-center gap-2">
                   {isLoadingIncomeConfig ? (
                     <LoaderIcon className="h-4 w-4 animate-spin" />
@@ -140,7 +143,6 @@ export function UploadFinancialFilesDialog({
                 type="file"
                 accept=".xls,.xlsx"
                 onChange={(e) => handleFileChange("income", e.target.files?.[0] || null)}
-                required
                 disabled={isUploading}
               />
               {incomeFile && (
@@ -151,7 +153,7 @@ export function UploadFinancialFilesDialog({
             </div>
             <div className="grid w-full items-center gap-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="balanceFile">Balance de Gestión</Label>
+                <Label htmlFor="balanceFile">Balance General</Label>
                 <div className="flex items-center gap-2">
                   {isLoadingBalanceConfig ? (
                     <LoaderIcon className="h-4 w-4 animate-spin" />
