@@ -5,41 +5,58 @@ import { Button } from "@/components/ui/button";
 import { LoaderIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { exportBalanceSheetXlsx, exportStatementIncomeXlsx } from "@/features/accounting/cash-flow/services/service";
+import {
+  exportBalanceSheetXlsx,
+  exportStatementIncomeXlsx,
+} from "@/features/accounting/cash-flow/services/service";
+
+function downloadFile(url: string, filename: string) {
+  return new Promise<void>((resolve) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up after a short delay to ensure download started
+    setTimeout(() => {
+      document.body.removeChild(link);
+      resolve();
+    }, 100);
+  });
+}
 
 export function DownloadTemplatesButton() {
   const [isLoading, setIsLoading] = useState(false);
-
-  function downloadFromUrl(url: string, filename: string) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", filename);
-    link.setAttribute("target", "_blank");
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
 
   const handleDownloadTemplates = async () => {
     setIsLoading(true);
     try {
       toast.info("Descargando plantillas...");
-      
-      // Fetch both templates in parallel but handle downloads sequentially
-      const [balanceSheetData, incomeStatementData] = await Promise.all([
-        exportBalanceSheetXlsx(),
-        exportStatementIncomeXlsx(),
-      ]);
-      
-      // Download files sequentially to avoid race conditions
-      if (balanceSheetData) {
-        downloadFromUrl(balanceSheetData, "Balance-Sheet.xlsx");
+
+      // Download each template sequentially to avoid race conditions
+      try {
+        const balanceSheetData = await exportBalanceSheetXlsx();
+        if (balanceSheetData) {
+          await downloadFile(balanceSheetData, "Balance-Sheet.xlsx");
+          // Small delay between downloads
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      } catch (error) {
+        console.error("Error downloading Balance Sheet:", error);
       }
-      
-      if (incomeStatementData) {
-        downloadFromUrl(incomeStatementData, "Income-Statement.xlsx");
+
+      try {
+        const incomeStatementData = await exportStatementIncomeXlsx();
+        if (incomeStatementData) {
+          await downloadFile(incomeStatementData, "Income-Statement.xlsx");
+        }
+      } catch (error) {
+        console.error("Error downloading Income Statement:", error);
       }
-      
+
       toast.success("Plantillas descargadas correctamente");
     } catch (error) {
       console.error("Error al descargar plantillas:", error);
