@@ -34,8 +34,8 @@ export const columns: ColumnDef<Purchase>[] = [
   { accessorKey: "vatCredit", header: "Crédito Fiscal" },
   { accessorKey: "purchaseType", header: "Tipo Compra" },
   { accessorKey: "controlCode", header: "Código Control" },
-  { accessorKey: "accountAsset.description", header: "Cuenta Activo" },
-  { accessorKey: "accountDebit.description", header: "Cuenta Débito" },
+  { accessorKey: "accountDebit.description", header: "Cuenta Debe" },
+  { accessorKey: "accountAsset.description", header: "Cuenta Haber" },
   {
     accessorKey: "applyVoucher",
     header: "Asiento Aplicado?",
@@ -54,11 +54,20 @@ export const columns: ColumnDef<Purchase>[] = [
       const purchase = row.original;
       return (
         <div className="flex gap-2">
-          <DialogCreateOrUpdatePurchaseForm mode="update" purchase={purchase} />
-          <ApplyAccountDialog
-            purchaseId={purchase.id}
-            nit={purchase.providerNit}
-          />
+          {!purchase.applyVoucher ? (
+            <>
+              <DialogCreateOrUpdatePurchaseForm
+                mode="update"
+                purchase={purchase}
+              />
+              <ApplyAccountDialog
+                purchaseId={purchase.id}
+                nit={purchase.providerNit}
+              />
+            </>
+          ) : (
+            <div>Sin Acciones.</div>
+          )}
         </div>
       );
     },

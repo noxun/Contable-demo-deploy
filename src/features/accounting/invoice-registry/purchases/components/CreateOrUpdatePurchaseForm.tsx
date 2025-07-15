@@ -24,6 +24,7 @@ import { useCreatePurchaseMutation } from "../hooks/useCreatePurchase";
 import { format } from "date-fns";
 import { useUpdatePurchaseMutation } from "../hooks/useUpdatePurchase";
 import { NitSelect } from "../../components/NitSelect";
+import { NitSelectInput } from "../../components/NitSelectInput";
 
 type Props = {
   mode: "create" | "update";
@@ -42,7 +43,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
     defaultValues:
       mode === "create"
         ? {
-            specification: 0,
+            specification: 1,
             providerNit: 0,
             providerBusinessName: null,
             authorizationCode: null,
@@ -68,7 +69,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
             accountDebitId: null, // Default to a valid account ID
           }
         : {
-            specification: purchase?.specification || 0,
+            specification: purchase?.specification || 1,
             providerNit: purchase?.providerNit || 0,
             providerBusinessName: purchase?.providerBusinessName || null,
             authorizationCode: purchase?.authorizationCode || null,
@@ -98,16 +99,16 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
 
   const onSubmit = (data: CreatePurchase | UpdatePurchase) => {
     console.log("Formulario enviado:", data);
-    // if (mode === "create") {
-    //   createPurchaseMutation.mutate(data as CreatePurchase);
-    // } else {
-    //   if (purchase?.id) {
-    //     updatePurchaseMutation.mutate({
-    //       id: purchase.id,
-    //       data: data as UpdatePurchase,
-    //     });
-    //   }
-    // }
+    if (mode === "create") {
+      createPurchaseMutation.mutate(data as CreatePurchase);
+    } else {
+      if (purchase?.id) {
+        updatePurchaseMutation.mutate({
+          id: purchase.id,
+          data: data as UpdatePurchase,
+        });
+      }
+    }
   };
 
   return (
@@ -136,23 +137,6 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                 </FormItem>
               )}
             />
-
-            <FormField
-              name="specification"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Especificación</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Especificación de la compra.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
         </div>
 
@@ -169,7 +153,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                 <FormItem>
                   <FormLabel>NIT del Proveedor</FormLabel>
                   <FormControl>
-                    <NitSelect
+                    <NitSelectInput
                       value={field.value.toString()}
                       filter="byBuy"
                       onChange={(value, companyName) => {

@@ -93,26 +93,26 @@ export function DialogGenerateSeats({ mode }: Props) {
                 </FormItem>
               )}
             />
-          </form>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Cancelar
-              </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              disabled={
-                generatePurchaseSeatsMutation.isPending ||
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                disabled={
+                  generatePurchaseSeatsMutation.isPending ||
+                  generateSalesSeatsMutation.isPending
+                }
+              >
+                {generatePurchaseSeatsMutation.isPending ||
                 generateSalesSeatsMutation.isPending
-              }
-            >
-              {generatePurchaseSeatsMutation.isPending ||
-              generateSalesSeatsMutation.isPending
-                ? "Generando..."
-                : "Generar Asientos"}
-            </Button>
-          </DialogFooter>
+                  ? "Generando..."
+                  : "Generar Asientos"}
+              </Button>
+            </DialogFooter>
+          </form>
         </Form>
       </DialogContent>
     </Dialog>
