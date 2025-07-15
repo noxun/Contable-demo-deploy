@@ -60,10 +60,10 @@ export default function ClashFlowPage() {
     queryKey: ["AllCashFlow", dateRange.from, dateRange.to, pendingLevel, branch],
     queryFn: () =>
       getAllDataCashFlow({
-        iDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
-        eDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
+        initDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
+        endDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
         level: pendingLevel,
-        typeFetchBalance: 2,
+        type: 2,
         sucursalId: branch,
       }),
     enabled: false,
@@ -77,9 +77,9 @@ export default function ClashFlowPage() {
     queryKey: ["AllCashFlowExcel", dateRange.from, dateRange.to, branch],
     queryFn: () =>
       getAllDataCashFlow({
-        iDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
-        eDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
-        typeFetchBalance: 1,
+        initDate: format(dateRange.from || new Date(), "yyyy-MM-dd"),
+        endDate: format(dateRange.to || new Date(), "yyyy-MM-dd"),
+        type: 1,
         sucursalId: branch,
       }),
     enabled: false,
@@ -253,7 +253,14 @@ export default function ClashFlowPage() {
       )}
 
       {/* HOJA DE TRABAJO */}
-      <WorkSheetPreview/>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="worksheet">
+          <AccordionTrigger>Hoja de Trabajo</AccordionTrigger>
+          <AccordionContent>
+            <WorkSheetPreview/>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
