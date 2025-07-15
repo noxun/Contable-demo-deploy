@@ -36,6 +36,7 @@ import { DownloadTemplatesButton } from "@/components/download-templates/downloa
 import { getWorkSheetCashFlowData, getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
 import { UploadFinancialFilesDialog } from "@/features/accounting/cash-flow/components/UploadFinancialFilesDialog";
 import { DialogWorkSheet } from "@/features/accounting/cash-flow/components/DialogWorkSheet";
+import { WorkSheetPreview } from "@/features/accounting/cash-flow/components/WorkSheetPreview";
 
 
 export default function ClashFlowPage() {
@@ -250,6 +251,9 @@ export default function ClashFlowPage() {
           data={dataCashFlow}
         />
       )}
+
+      {/* HOJA DE TRABAJO */}
+      <WorkSheetPreview/>
     </div>
   );
 }
