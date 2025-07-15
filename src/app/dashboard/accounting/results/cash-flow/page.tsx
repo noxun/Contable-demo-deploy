@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
-import { useWorkSheetData } from "@/features/accounting/cash-flow/hooks/useWorkSheetData";
 import {
   Accordion,
   AccordionContent,
@@ -56,8 +55,6 @@ export default function ClashFlowPage() {
     queryKey: ["branches"],
     queryFn: fetchBranches,
   });
-
-  const {data: worksheetData, isLoading: isLoadingWorksheet} = useWorkSheetData();
 
   const { data: dataCashFlow, refetch: refetchCashFlow } = useQuery({
     queryKey: ["AllCashFlow", dateRange.from, dateRange.to, pendingLevel, branch],
@@ -256,11 +253,7 @@ export default function ClashFlowPage() {
       )}
 
       {/* HOJA DE TRABAJO */}
-      {isLoadingWorksheet ? (
-        <p className="text-center text-sm text-gray-500">Cargando hoja de trabajo...</p>
-      ) : (
-        <WorkSheetPreview data={worksheetData?.items} />
-      )}
+      <WorkSheetPreview/>
     </div>
   );
 }
