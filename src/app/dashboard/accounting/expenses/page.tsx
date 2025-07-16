@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
+import ListVouchers from "@/features/accounting/vouchers/components/ListVouchers";
 import { VoucherType, VoucherTypeRoute } from "@/features/accounting/shared/types/sharedTypes";
 import Link from "next/link";
 

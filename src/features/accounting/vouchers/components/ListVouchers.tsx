@@ -1,8 +1,8 @@
 "use client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { VoucherType, VoucherTypeRoute } from "../types/sharedTypes";
-import VoucherTable from "./VoucherTable";
-import { fetchVouchers } from "@/lib/data";
+import { VoucherType, VoucherTypeRoute } from "../../shared/types/sharedTypes";
+import VoucherTable from "../../shared/components/VoucherTable";
+import { fetchVouchers } from "@/lib/data"; 
 import {
   Pagination,
   PaginationContent,
@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
@@ -20,9 +20,11 @@ import { format } from "date-fns";
 import { useDebounce } from "use-debounce";
 import { Label } from "@/components/ui/label";
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getVoucherType, getVoucherTypeRoute } from "@/lib/utils";
+import { useSearchParams, useRouter } from "next/navigation";
+
 type ListVouchersProps = {
-  voucherType: VoucherType;
-  voucherTypeRoute: VoucherTypeRoute;
   siat?: "siat" | "";
   glossSuffix?: string;
 };
@@ -34,19 +36,81 @@ const firstDayOfYear = format(
 const today = format(new Date(), "yyyy-MM-dd");
 
 export default function ListVouchers({
-  voucherType,
-  voucherTypeRoute,
   siat = "",
   glossSuffix = "",
 }: ListVouchersProps) {
-  const [page, setPage] = useState(1);
-  const [inputPage, setInputPage] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Esto permite que al recargar la página mantengamos los filtros desde la URL
+  const initialPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const initialType = searchParams.get("type") ?? "0";
+  const initialGloss = searchParams.get("gloss") ?? "";
+  const initialInitDate = searchParams.get("init") ?? firstDayOfYear;
+  const initialEndDate = searchParams.get("end") ?? today;
+
   const pageSize = 10;
 
-  const [initDate, setInitDate] = useState(firstDayOfYear);
-  const [endDate, setEndDate] = useState(today);
-  const [glossQuery, setGlossQuery] = useState("");
+  const [page, setPage] = useState(initialPage);
+  const [inputPage, setInputPage] = useState("");
+  const [selectedOption, setSelectedOption] = useState(initialType);
+  const [glossQuery, setGlossQuery] = useState(initialGloss);
   const [debouncedGlossQuery] = useDebounce(glossQuery, 800);
+  const [initDate, setInitDate] = useState(initialInitDate);
+  const [endDate, setEndDate] = useState(initialEndDate);
+  
+  const updateQueryParams = (params: {
+    page?: number;
+    type?: string;
+    gloss?: string;
+    init?: string;
+    end?: string;
+  }) => {
+    const newParams = new URLSearchParams();
+
+    if (params.page && params.page !== 1) newParams.set("page", params.page.toString());
+    if (params.type && params.type !== "0") newParams.set("type", params.type);
+    if (params.gloss) newParams.set("gloss", params.gloss);
+    if (params.init && params.init !== firstDayOfYear) newParams.set("init", params.init);
+    if (params.end && params.end !== today) newParams.set("end", params.end);
+
+    router.replace(`?${newParams.toString()}`);
+  };
+
+  // Conserva los valores iniciales de la URL para detectar cambios posteriores
+  const initialValues = useRef({
+    type: initialType,
+    gloss: initialGloss,
+    initDate: initialInitDate,
+    endDate: initialEndDate
+  });
+
+  // Resetea a page=1 solo cuando el usuario cambia filtros (no en carga inicial)
+  useEffect(() => {
+    const hasFilterChanged = 
+      selectedOption !== initialValues.current.type ||
+      debouncedGlossQuery !== initialValues.current.gloss ||
+      initDate !== initialValues.current.initDate ||
+      endDate !== initialValues.current.endDate;
+
+    if (hasFilterChanged) {
+      setPage(1);
+    }
+  }, [selectedOption, debouncedGlossQuery, initDate, endDate]);
+
+  //Actualiza los parámetros de la URL
+  useEffect(() => {
+    updateQueryParams({
+      page,
+      type: selectedOption,
+      gloss: debouncedGlossQuery,
+      init: initDate,
+      end: endDate,
+    });
+  }, [page, selectedOption, debouncedGlossQuery, initDate, endDate]);
+
+  const voucherType = selectedOption as VoucherType;
+  const voucherTypeRoute = getVoucherTypeRoute(selectedOption) as VoucherTypeRoute;
 
   const { data, isLoading, isPending, error } = useQuery({
     queryKey: [
@@ -56,9 +120,8 @@ export default function ListVouchers({
       pageSize,
       initDate,
       endDate,
-      debouncedGlossQuery,
+      debouncedGlossQuery + (glossSuffix ? `${glossSuffix}` : ""),
       siat,
-      glossSuffix,
     ],
     queryFn: () =>
       fetchVouchers(
@@ -72,10 +135,6 @@ export default function ListVouchers({
       ),
     placeholderData: keepPreviousData,
   });
-
-  useEffect(() => {
-    setPage(1);
-  }, [voucherType]);
 
   if (isLoading || isPending) return <div>Cargando...</div>;
 
@@ -129,6 +188,9 @@ export default function ListVouchers({
     }
   };
 
+  // SELECT
+  const voucherOptions = ["0", "1", "2"];
+
   // Generate page numbers with ellipsis
   const generatePageNumbers = () => {
     if (!pagination) return [];
@@ -174,6 +236,28 @@ export default function ListVouchers({
 
   return (
     <section className="flex flex-col gap-4">
+
+      <div className="flex justify-between mb-2">
+        <h2 className="text-lg font-semibold">Transacciones</h2>
+        <div>
+          <Select value={selectedOption} onValueChange={setSelectedOption}>
+            <SelectTrigger className="w-80">
+              <SelectValue placeholder="Seleccione el tipo de transacción" />
+            </SelectTrigger>
+            <SelectContent>
+              {voucherOptions.map((option, index) => (
+                <SelectItem
+                  key={index}
+                  value={option}
+                >
+                  {getVoucherType(option)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <div className="flex items-center gap-4">
         <Label className="flex-1 flex flex-col gap-2">
           Rango de Fechas
@@ -181,8 +265,8 @@ export default function ListVouchers({
           showCompare={false}
           locale="es"
           onUpdate={handleDateRangeChange}
-          initialDateFrom={firstDayOfYear}
-          initialDateTo={today}
+          initialDateFrom={initDate}
+          initialDateTo={endDate}
         />
         </Label>
         <Label className="flex-1 flex flex-col gap-2">          
