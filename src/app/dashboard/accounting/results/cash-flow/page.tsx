@@ -32,7 +32,7 @@ import {
 import { LevelData } from "@/features/accounting/results/types/types";
 import { CashFlowPreview } from "@/features/accounting/results/components/CashFlowPreview";
 import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
-import { DownloadTemplatesButton } from "@/components/download-templates/download-templates";
+import { DownloadTemplatesButton } from "@/features/accounting/cash-flow/components/download-templates";
 import { getWorkSheetCashFlowData, getAllDataCashFlow } from "@/features/accounting/cash-flow/services/service";
 import { UploadFinancialFilesDialog } from "@/features/accounting/cash-flow/components/UploadFinancialFilesDialog";
 import { DialogWorkSheet } from "@/features/accounting/cash-flow/components/DialogWorkSheet";
