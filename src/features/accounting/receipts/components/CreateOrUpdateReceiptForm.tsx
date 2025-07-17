@@ -18,7 +18,6 @@ import {
   Receipt,
 } from "../schemas/receiptSchema";
 import { useCreateReceipt, useUpdateReceipt } from "../hooks/useReceipts";
-import { toast } from "sonner";
 
 interface CreateOrUpdateReceiptFormProps {
   receipt?: Receipt;
@@ -89,12 +88,11 @@ export function CreateOrUpdateReceiptForm({
                 <FormLabel>Monto en Bs</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
                     {...field}
-                    onChange={(e) =>
-                      field.onChange(parseFloat(e.target.value) || 0)
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value || 0)
+                      }
                     }
                   />
                 </FormControl>
@@ -111,12 +109,9 @@ export function CreateOrUpdateReceiptForm({
                 <FormLabel>Monto en $US</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
                     {...field}
                     onChange={(e) =>
-                      field.onChange(parseFloat(e.target.value) || 0)
+                      field.onChange(e.target.value || 0)
                     }
                   />
                 </FormControl>

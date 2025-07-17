@@ -19,8 +19,8 @@ export const storeReceiptSchema = receiptSchema.omit({
   createdAt: true
 }).extend({
   concept: z.string().min(1, "El concepto es obligatorio"),
-  amountBs: z.number().positive().min(0, "El monto en Bs es obligatorio"),
-  amountSus: z.number().positive().min(0, "El monto en SUS es obligatorio"),
+  amountBs: z.coerce.number().positive().min(0, "El monto en Bs es obligatorio"),
+  amountSus: z.coerce.number().min(0),
   receiverName: z.string().min(1, "El nombre del receptor es obligatorio"),
   payerName: z.string().min(1, "El nombre del pagador es obligatorio")
 })
