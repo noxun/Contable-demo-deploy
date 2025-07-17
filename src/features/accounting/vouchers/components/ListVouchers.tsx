@@ -9,9 +9,9 @@ import { format } from "date-fns";
 import { useDebounce } from "use-debounce";
 
 import { getVoucherTypeRoute } from "@/lib/utils";
-import { useSearchParams, useRouter } from "next/navigation";
 import VoucherPagination from "./VoucherPagination";
 import VoucherFilters from "./VoucherFilters";
+import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
 
 type ListVouchersProps = {
   siat?: "siat" | "";
@@ -28,75 +28,60 @@ export default function ListVouchers({
   siat = "",
   glossSuffix = "",
 }: ListVouchersProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Esto permite que al recargar la página mantengamos los filtros desde la URL
-  const initialPage = parseInt(searchParams.get("page") ?? "1", 10);
-  const initialType = searchParams.get("type") ?? "0";
-  const initialGloss = searchParams.get("gloss") ?? "";
-  const initialInitDate = searchParams.get("init") ?? firstDayOfYear;
-  const initialEndDate = searchParams.get("end") ?? today;
 
   const pageSize = 10;
 
-  const [page, setPage] = useState(initialPage);
-  const [inputPage, setInputPage] = useState("");
-  const [selectedOption, setSelectedOption] = useState(initialType);
-  const [glossQuery, setGlossQuery] = useState(initialGloss);
-  const [debouncedGlossQuery] = useDebounce(glossQuery, 800);
-  const [initDate, setInitDate] = useState(initialInitDate);
-  const [endDate, setEndDate] = useState(initialEndDate);
+  // Estados con nuqs - se sincronizan automáticamente con la URL
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [selectedOption, setSelectedOption] = useQueryState('type', parseAsString.withDefault('0'));
+  const [glossQuery, setGlossQuery] = useQueryState('gloss', parseAsString.withDefault(''));
+  const [initDate, setInitDate] = useQueryState('init', parseAsString.withDefault(firstDayOfYear));
+  const [endDate, setEndDate] = useQueryState('end', parseAsString.withDefault(today));
   
-  const updateQueryParams = (params: {
-    page?: number;
-    type?: string;
-    gloss?: string;
-    init?: string;
-    end?: string;
-  }) => {
-    const newParams = new URLSearchParams();
+  // Estado local para paginación input y debounce
+  const [inputPage, setInputPage] = useQueryState('inputPage', parseAsString.withDefault(''));
+  const [debouncedGlossQuery] = useDebounce(glossQuery, 800);
 
-    if (params.page && params.page !== 1) newParams.set("page", params.page.toString());
-    if (params.type && params.type !== "0") newParams.set("type", params.type);
-    if (params.gloss) newParams.set("gloss", params.gloss);
-    if (params.init && params.init !== firstDayOfYear) newParams.set("init", params.init);
-    if (params.end && params.end !== today) newParams.set("end", params.end);
-
-    router.replace(`?${newParams.toString()}`);
-  };
-
-  // Conserva los valores iniciales de la URL para detectar cambios posteriores
+  //para rastrear los valores iniciales y detectar cambios reales del usuario
   const initialValues = useRef({
-    type: initialType,
-    gloss: initialGloss,
-    initDate: initialInitDate,
-    endDate: initialEndDate
+    selectedOption,
+    glossQuery,
+    initDate,
+    endDate,
+    isInitialized: false
   });
 
   // Resetea a page=1 solo cuando el usuario cambia filtros (no en carga inicial)
   useEffect(() => {
+    if (!initialValues.current.isInitialized) {
+      initialValues.current = {
+        selectedOption,
+        glossQuery,
+        initDate,
+        endDate,
+        isInitialized: true
+      };
+      return;
+    }
+
+    // Verifica si algún filtro cambió después de la inicialización
     const hasFilterChanged = 
-      selectedOption !== initialValues.current.type ||
-      debouncedGlossQuery !== initialValues.current.gloss ||
+      selectedOption !== initialValues.current.selectedOption ||
+      debouncedGlossQuery !== initialValues.current.glossQuery ||
       initDate !== initialValues.current.initDate ||
       endDate !== initialValues.current.endDate;
 
     if (hasFilterChanged) {
       setPage(1);
+      initialValues.current = {
+        selectedOption,
+        glossQuery: debouncedGlossQuery,
+        initDate,
+        endDate,
+        isInitialized: true
+      };
     }
-  }, [selectedOption, debouncedGlossQuery, initDate, endDate]);
-
-  //Actualiza los parámetros de la URL
-  useEffect(() => {
-    updateQueryParams({
-      page,
-      type: selectedOption,
-      gloss: debouncedGlossQuery,
-      init: initDate,
-      end: endDate,
-    });
-  }, [page, selectedOption, debouncedGlossQuery, initDate, endDate]);
+  }, [selectedOption, debouncedGlossQuery, initDate, endDate, setPage]);
 
   const voucherType = selectedOption as VoucherType;
   const voucherTypeRoute = getVoucherTypeRoute(selectedOption) as VoucherTypeRoute;
