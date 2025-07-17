@@ -6,11 +6,48 @@ import {
 } from "../schemas/purchaseSchema";
 import { UploadPurchaseTemplateSchema } from "../schemas/uploadPurchaseTemplateSchema";
 import { ApplyAccountSchema } from "../schemas/applyAccountSchema";
+import { format, ParseISOOptions } from "date-fns";
+
+export type PaginationInvoice = {
+  CurrentPage: number;
+  ItemsPerPage: number;
+  TotalItems: number;
+  TotalPages: number;
+};
 
 export const purchasesService = {
-  async fetchPurchasesList() {
-    const response = await api.get("/api/Book/buy/list");
-    return response.data as Purchase[];
+  async fetchPurchasesList(
+    applyVoucher?: boolean,
+    orderByDesc?: boolean,
+    initDate?: Date,
+    endDate?: Date,
+    pageNumber?: number,
+    pageSize?: number
+  ) {
+    const parsedInitDate = initDate
+      ? format(initDate, "yyyy-MM-dd")
+      : undefined;
+    const parsedEndDate = endDate ? format(endDate, "yyyy-MM-dd") : undefined;
+
+    const response = await api.get("/api/Book/buy/list", {
+      params: {
+        applyVoucher,
+        orderByDesc,
+        parsedInitDate,
+        parsedEndDate,
+        pageNumber,
+        pageSize,
+      },
+    });
+
+    const pagination: PaginationInvoice = JSON.parse(
+      response.headers["pagination"] || "{}"
+    );
+
+    return {
+      data: response.data as Purchase[],
+      pagination,
+    };
   },
   async postPurchase(data: CreatePurchase) {
     const response = await api.post("/api/Book/buy", data);
@@ -47,9 +84,12 @@ export const purchasesService = {
     return response.data;
   },
   async downloadPurchaseTemplate() {
-    const response = await api.get("/api/templates/standard-purchase-template", {
-      responseType: "blob",
-    });
+    const response = await api.get(
+      "/api/templates/standard-purchase-template",
+      {
+        responseType: "blob",
+      }
+    );
     return response.data;
   },
 };
