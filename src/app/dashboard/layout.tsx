@@ -2,12 +2,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SideMenu } from "@/features/accounting/shared/components/SideMenu";
-import { Bolt, } from "lucide-react";
+import { Bolt } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import UfvRegistrationDialog from "@/features/accounting/ufv/components/UfvRegistrationDialog";
 import { useInitializeUserStore } from "@/features/accounting/shared/hooks/useInitializeUserStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   useInitializeUserStore();
@@ -27,11 +26,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </div>
-        <div className="px-4 min-h-screen">
-          <NuqsAdapter>
-            {children}
-          </NuqsAdapter>
-        </div>
+        <div className="px-4 min-h-screen">{children}</div>
       </main>
       <UfvRegistrationDialog />
     </SidebarProvider>
