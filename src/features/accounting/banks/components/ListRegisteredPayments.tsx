@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
-import useBankExtractPaymentFilesById from "@/features/accounting/shared/hooks/useBankExtractPaymentFilesById";
+import useBankExtractPaymentFilesById from "@/features/accounting/banks/hooks/useBankExtractPaymentFilesById";
 import { columns } from "./bank-excerpt-payment-files-columns";
 
 export default function ListRegisteredPayments({

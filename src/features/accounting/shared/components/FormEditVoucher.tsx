@@ -48,7 +48,7 @@ import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
 import { editVoucher, postCompanyOrConcept } from "@/lib/data";
 import useAccounts from "../hooks/useAccounts";
-import useBanks from "../hooks/useBanks";
+import useBanks from "../../banks/hooks/useBanks";
 import { DateRange } from "react-day-picker";
 import { usePathname, useRouter } from "next/navigation";
 import CustomSelect from "@/components/custom/select";
