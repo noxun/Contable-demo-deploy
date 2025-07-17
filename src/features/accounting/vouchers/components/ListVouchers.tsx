@@ -3,26 +3,15 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { VoucherType, VoucherTypeRoute } from "../../shared/types/sharedTypes";
 import VoucherTable from "../../shared/components/VoucherTable";
 import { fetchVouchers } from "@/lib/data"; 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { useDebounce } from "use-debounce";
-import { Label } from "@/components/ui/label";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getVoucherType, getVoucherTypeRoute } from "@/lib/utils";
+import { getVoucherTypeRoute } from "@/lib/utils";
 import { useSearchParams, useRouter } from "next/navigation";
+import VoucherPagination from "./VoucherPagination";
+import VoucherFilters from "./VoucherFilters";
 
 type ListVouchersProps = {
   siat?: "siat" | "";
@@ -144,30 +133,6 @@ export default function ListVouchers({
   const vouchers = data?.data ?? [];
   const pagination = data.pagination;
 
-  const handlePrevious = () => {
-    if (page > 1) {
-      setPage((prev) => prev - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (pagination && page < pagination.TotalPages) {
-      setPage((prev) => prev + 1);
-    }
-  };
-
-  const handlePageInput = () => {
-    const pageNum = parseInt(inputPage);
-    if (
-      pagination &&
-      !isNaN(pageNum) &&
-      pageNum >= 1 &&
-      pageNum <= pagination.TotalPages
-    ) {
-      setPage(pageNum);
-    }
-  };
-
   const handleGlossSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGlossQuery(e.target.value);
   };
@@ -188,151 +153,31 @@ export default function ListVouchers({
     }
   };
 
-  // SELECT
-  const voucherOptions = ["0", "1", "2"];
-
-  // Generate page numbers with ellipsis
-  const generatePageNumbers = () => {
-    if (!pagination) return [];
-
-    const totalPages = pagination.TotalPages;
-    const currentPage = page;
-    const pageNumbers = [];
-
-    // Always show first page
-    if (totalPages > 1) pageNumbers.push(1);
-
-    // Add ellipsis and surrounding pages if total pages > 5
-    if (totalPages > 5) {
-      // Add ellipsis before current page if needed
-      if (currentPage > 3) {
-        pageNumbers.push(-1); // -1 represents ellipsis
-      }
-
-      // Add surrounding pages
-      const startPage = Math.max(2, currentPage - 1);
-      const endPage = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = startPage; i <= endPage; i++) {
-        if (!pageNumbers.includes(i)) pageNumbers.push(i);
-      }
-
-      // Add ellipsis after current page if needed
-      if (currentPage < totalPages - 2) {
-        pageNumbers.push(-1);
-      }
-
-      // Always show last page
-      if (!pageNumbers.includes(totalPages)) pageNumbers.push(totalPages);
-    } else {
-      // If 5 or fewer pages, show all
-      for (let i = 2; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    }
-
-    return pageNumbers;
-  };
-
   return (
     <section className="flex flex-col gap-4">
-
-      <div className="flex justify-between mb-2">
-        <h2 className="text-lg font-semibold">Transacciones</h2>
-        <div>
-          <Select value={selectedOption} onValueChange={setSelectedOption}>
-            <SelectTrigger className="w-80">
-              <SelectValue placeholder="Seleccione el tipo de transacción" />
-            </SelectTrigger>
-            <SelectContent>
-              {voucherOptions.map((option, index) => (
-                <SelectItem
-                  key={index}
-                  value={option}
-                >
-                  {getVoucherType(option)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-4">
-        <Label className="flex-1 flex flex-col gap-2">
-          Rango de Fechas
-        <DateRangePicker
-          showCompare={false}
-          locale="es"
-          onUpdate={handleDateRangeChange}
-          initialDateFrom={initDate}
-          initialDateTo={endDate}
-        />
-        </Label>
-        <Label className="flex-1 flex flex-col gap-2">          
-          Buscar
-          <Input placeholder="Buscar por glosa" type="search" value={glossQuery} onChange={handleGlossSearch} />
-        </Label>
-      </div>
+      <h2 className="text-lg font-semibold absolute">Transacciones</h2>
+      <VoucherFilters
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        glossQuery={glossQuery}
+        onGlossSearch={handleGlossSearch}
+        initDate={initDate}
+        endDate={endDate}
+        onDateRangeChange={handleDateRangeChange}
+      />
       <VoucherTable
         voucherType={voucherType}
         voucherTypeRoute={voucherTypeRoute}
         data={vouchers ?? []}
       />
       {pagination && (
-        <div className="flex flex-col items-center gap-4">
-          <Pagination className="mt-4">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={handlePrevious}
-                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-              {generatePageNumbers().map((pageNum, index) =>
-                pageNum === -1 ? (
-                  <PaginationItem key={`ellipsis-${index}`}>
-                    <span className="px-2">...</span>
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={pageNum}>
-                    <PaginationLink
-                      onClick={() => setPage(pageNum)}
-                      isActive={page === pageNum}
-                    >
-                      {pageNum}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={handleNext}
-                  className={
-                    page === pagination.TotalPages
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              placeholder="Ir a pagina"
-              value={inputPage}
-              onChange={(e) => setInputPage(e.target.value)}
-              min="1"
-              max={pagination.TotalPages}
-              className="w-24"
-            />
-            <Button onClick={handlePageInput}>Ir</Button>
-            <span className="text-sm text-muted-foreground">
-              (Pagina {page} de {pagination.TotalPages})
-            </span>
-          </div>
-        </div>
+        <VoucherPagination
+          page={page}
+          setPage={setPage}
+          inputPage={inputPage}
+          setInputPage={setInputPage}
+          pagination={pagination}
+        />
       )}
     </section>
   );
