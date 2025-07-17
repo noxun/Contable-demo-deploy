@@ -5,6 +5,7 @@ import { DialogCreateOrUpdatePurchaseForm } from "@/features/accounting/invoice-
 import { DownloadPurchaseTemplateButton } from "@/features/accounting/invoice-registry/purchases/components/DownloadPurchaseTemplateButton";
 import ListPurchases from "@/features/accounting/invoice-registry/purchases/components/ListPurchases";
 import { UploadPurchaseTemplateDialog } from "@/features/accounting/invoice-registry/purchases/components/UploadPurchaseTemplateDialog";
+import { Suspense } from "react";
 
 export default function PurchasesPage() {
   return (
@@ -17,7 +18,9 @@ export default function PurchasesPage() {
         <DialogGenerateSeats mode="purchase" />
       </div>
       <div className="overflow-x-auto">
-        <ListPurchases />
+        <Suspense fallback={<div>Cargando...</div>}>
+          <ListPurchases />
+        </Suspense>
       </div>
     </div>
   );
