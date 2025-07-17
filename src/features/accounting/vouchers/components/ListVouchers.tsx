@@ -2,7 +2,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { VoucherType, VoucherTypeRoute } from "../../shared/types/sharedTypes";
 import VoucherTable from "../../shared/components/VoucherTable";
-import { fetchVouchers } from "@/lib/data"; 
+import { fetchVouchers } from "../services/voucherService";
 import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
@@ -12,6 +12,7 @@ import { getVoucherTypeRoute } from "@/lib/utils";
 import VoucherPagination from "./VoucherPagination";
 import VoucherFilters from "./VoucherFilters";
 import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
+import { useVouchers } from "../hooks/useVouchers";
 
 type ListVouchersProps = {
   siat?: "siat" | "";
@@ -86,28 +87,15 @@ export default function ListVouchers({
   const voucherType = selectedOption as VoucherType;
   const voucherTypeRoute = getVoucherTypeRoute(selectedOption) as VoucherTypeRoute;
 
-  const { data, isLoading, isPending, error } = useQuery({
-    queryKey: [
-      "Vouchers",
-      voucherType,
-      page,
-      pageSize,
-      initDate,
-      endDate,
-      debouncedGlossQuery + (glossSuffix ? `${glossSuffix}` : ""),
-      siat,
-    ],
-    queryFn: () =>
-      fetchVouchers(
-        voucherType,
-        page,
-        pageSize,
-        initDate,
-        endDate,
-        debouncedGlossQuery + (glossSuffix ? `${glossSuffix}` : ""),
-        siat
-      ),
-    placeholderData: keepPreviousData,
+  const { data, isLoading, isPending, error } = useVouchers({
+    voucherType,
+    page,
+    pageSize,
+    initDate,
+    endDate,
+    gloss: debouncedGlossQuery,
+    siat,
+    glossSuffix,
   });
 
   if (isLoading || isPending) return <div>Cargando...</div>;
