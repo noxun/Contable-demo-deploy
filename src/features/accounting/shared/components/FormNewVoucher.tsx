@@ -58,7 +58,7 @@ import {
 } from "@/lib/data";
 import CustomSelect from "@/components/custom/select";
 import useCostCenter from "../../cost-center/hooks/useCostCenter";
-import useMotionAccounts from "../hooks/useMotionAccounts";
+import useMotionAccounts from "../../account/hooks/useMotionAccounts";
 import useModelSeatsByType from "../hooks/useModelSeatsByType";
 import useModelSeats from "../hooks/useModelSeats";
 import useTrazoInternCodesByCompanyId from "../hooks/useTrazoInternCodesByCompanyId";

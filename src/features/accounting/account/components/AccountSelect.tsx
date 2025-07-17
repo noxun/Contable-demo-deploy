@@ -2,7 +2,7 @@
 
 import CustomSelect from "@/components/custom/select";
 import { useMemo } from "react";
-import useAccounts from "../../shared/hooks/useAccounts";
+import useAccounts from "../hooks/useAccounts";
 import { Account } from "../types/account";
 import { SingleValue } from "react-select";
 

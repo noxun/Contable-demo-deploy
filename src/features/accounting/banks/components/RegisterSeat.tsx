@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Spinner from "@/components/ui/spinner";
 import { registerExtractToSeat } from "@/lib/data";
-import useAccounts from "@/features/accounting/shared/hooks/useAccounts";
+import useAccounts from "@/features/accounting/account/hooks/useAccounts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import CustomSelect from "@/components/custom/select";

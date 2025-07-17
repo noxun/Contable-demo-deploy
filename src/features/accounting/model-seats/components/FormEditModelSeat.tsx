@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Trash2 } from "lucide-react";
-import useAccounts from "@/features/accounting/shared/hooks/useAccounts";
+import useAccounts from "@/features/accounting/account/hooks/useAccounts";
 import CustomSelect from "@/components/custom/select";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { putModelSeat } from "@/lib/data";

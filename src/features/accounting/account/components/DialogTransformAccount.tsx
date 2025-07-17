@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { postConvertAccountToAccountingBox, postConvertAccountToBank } from "@/lib/data"
-import useMotionAccounts from "@/features/accounting/shared/hooks/useMotionAccounts"
+import useMotionAccounts from "@/features/accounting/account/hooks/useMotionAccounts"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import Select from 'react-select'

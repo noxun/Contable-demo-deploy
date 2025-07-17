@@ -2,7 +2,7 @@
 import ChildAccounts from "./ChildAccounts";
 import { useState } from "react";
 import ImportAccountDialog from "./ImportAccountDialog";
-import useAccountsByType from "@/features/accounting/shared/hooks/useAccountsByType";
+import useAccountsByType from "@/features/accounting/account/hooks/useAccountsByType";
 import useTypeCompanies from "@/features/accounting/shared/hooks/useTypeCompanies";
 import AccountLayoutSkeleton from "./AccountLayoutSkeleton";
 import {

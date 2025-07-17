@@ -47,7 +47,7 @@ import { Copy, Save } from "lucide-react";
 import FormEditVoucherItems from "./FormEditVoucherItems";
 import Spinner from "@/components/ui/spinner";
 import { editVoucher, postCompanyOrConcept } from "@/lib/data";
-import useAccounts from "../hooks/useAccounts";
+import useAccounts from "../../account/hooks/useAccounts";
 import useBanks from "../../banks/hooks/useBanks";
 import { DateRange } from "react-day-picker";
 import { usePathname, useRouter } from "next/navigation";

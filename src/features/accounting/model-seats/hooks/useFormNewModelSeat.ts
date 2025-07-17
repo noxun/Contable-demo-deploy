@@ -1,6 +1,6 @@
 "use client";
 
-import useMotionAccounts from "@/features/accounting/shared/hooks/useMotionAccounts";
+import useMotionAccounts from "@/features/accounting/account/hooks/useMotionAccounts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { ModelSeatForm } from "../types/modelSeat";
