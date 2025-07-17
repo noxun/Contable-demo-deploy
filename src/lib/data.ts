@@ -61,39 +61,6 @@ import { LevelData } from "@/features/accounting/results/types/types";
 import { BranchEditForm } from "@/features/accounting/branches/components/FormEditBranch";
 
 
-export async function fetchVouchers(
-  voucherType: VoucherType,
-  page: number = 1,
-  pageSize: number = 10,
-  initDate?: string,
-  endDate?: string,
-  gloss?: string,
-  siat: "" | "siat" = ""
-) {
-  const response = await api.get(`/api/Voucher/all${siat}`, {
-    params: {
-      type: voucherType,
-      PageNumber: page,
-      PageSize: pageSize,
-      initDate,
-      endDate,
-      gloss: gloss !== "" ? gloss : undefined,
-    },
-  });
-
-  const paginationHeader = response.headers;
-
-  const paginationInfo = paginationHeader
-    ? JSON.parse(paginationHeader["pagination"])
-    : null;
-
-  //console.log("what",paginationInfo);
-  return {
-    data: response.data as Voucher[],
-    pagination: paginationInfo,
-  };
-}
-
 export async function editVoucher(data: Voucher) {
   const response = await api.put(`/api/Voucher`, data);
   return response.data;

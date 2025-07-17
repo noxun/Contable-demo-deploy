@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SyncAccountsButton from "@/features/accounting/link/components/SyncAccountsButton";
-import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
+import ListVouchers from "@/features/accounting/vouchers/components/ListVouchers";
 import {
   VoucherType,
   VoucherTypeRoute,

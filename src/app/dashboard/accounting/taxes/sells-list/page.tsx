@@ -1,6 +1,6 @@
 "use client";
 
-import ListVouchers from "@/features/accounting/shared/components/ListVouchers";
+import ListVouchers from "@/features/accounting/vouchers/components/ListVouchers";
 import {
   VoucherType,
   VoucherTypeRoute,

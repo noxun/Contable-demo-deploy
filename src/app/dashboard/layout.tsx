@@ -7,6 +7,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import UfvRegistrationDialog from "@/features/accounting/ufv/components/UfvRegistrationDialog";
 import { useInitializeUserStore } from "@/features/accounting/shared/hooks/useInitializeUserStore";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   useInitializeUserStore();
@@ -27,7 +28,9 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="px-4 min-h-screen">
-          {children}
+          <NuqsAdapter>
+            {children}
+          </NuqsAdapter>
         </div>
       </main>
       <UfvRegistrationDialog />
