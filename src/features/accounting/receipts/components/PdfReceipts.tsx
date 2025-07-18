@@ -46,6 +46,12 @@ export default function PdfReceipt({receipt, trigger  }:PdfReceiptProps) {
   const monthNum = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
 
+  function formatCurrency(value: number) {
+    return value.toLocaleString("es-BO", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   return (
     <Dialog>
@@ -91,17 +97,17 @@ export default function PdfReceipt({receipt, trigger  }:PdfReceiptProps) {
                         <View style={tw("")}>
                             <View style={tw("flex flex-row items-center justify-end gap-2")}>
                                 <Text style={tw("text-xl leading-none bg-blue-950 text-gray-100 p-2.5 rounded-lg")}>Bs.</Text> 
-                                <View style={tw("border-2 border-blue-950 rounded-lg min-w-[100px]  h-10 justify-center px-4")}>
+                                <View style={tw("border-2 border-blue-950 rounded-lg min-w-[110px]  h-10 justify-center px-4")}>
                                     <Text style={tw("text-xl leading-none")}>
-                                        {receipt.amountBs}
+                                        {formatCurrency(receipt.amountBs)}
                                     </Text>
                                 </View>
                             </View>
                             <View style={tw("flex flex-row items-center justify-end gap-2 mt-1")}>
                                 <Text style={tw("text-xl leading-none bg-blue-950 text-gray-100 p-2.5 rounded-lg")}>$us.</Text> 
-                                <View style={tw("border-2 border-blue-950 rounded-lg min-w-[100px]  h-10 justify-center px-4")}>
+                                <View style={tw("border-2 border-blue-950 rounded-lg min-w-[110px]  h-10 justify-center px-4")}>
                                     <Text style={tw("text-xl leading-none")}>
-                                        {receipt.amountSus}
+                                        {formatCurrency(receipt.amountSus)}
                                     </Text>
                                 </View>
                             </View>
