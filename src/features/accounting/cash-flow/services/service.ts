@@ -5,7 +5,8 @@ import { CashFlowResponseData } from "../types/types";
 import {
   UpdateWorkSheetCashFlowItem,
   WorkSheetResponse,
-} from "../schemas/cashFlowSchema";
+} from "../schemas/workSheetSchema";
+import { DirectCashFlow, IndirectCashFlow } from "../schemas/cashFlowSchema";
 
 export async function getAllDataCashFlow({
   initDate,
@@ -33,6 +34,24 @@ export async function getAllDataCashFlow({
     }
     });
     return response.data as CashFlowResponseData;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function fetchIndirectCashFlow(){
+  try {
+    const response = await api.get("/api/ClashFlow/ClashFlowIndirect");
+    return response.data as IndirectCashFlow;
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : String(e));
+  }
+}
+
+export async function fetchDirectCashFlow(){
+  try {
+    const response = await api.get("/api/ClashFlow/ClashFlowDirect");
+    return response.data as DirectCashFlow;
   } catch (e) {
     throw new Error(e instanceof Error ? e.message : String(e));
   }
