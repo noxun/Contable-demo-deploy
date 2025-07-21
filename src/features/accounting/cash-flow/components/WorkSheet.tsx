@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import {
   WorkSheetCashFlow,
   UpdateWorkSheetCashFlowItem,
-} from "../schemas/cashFlowSchema";
+} from "../schemas/workSheetSchema";
 import { useUpdateWorkSheetDataItemMutation } from "../hooks/useUpdateWorkSheetDataItemMutation";
+import { ClasificationSelect } from "./ClasificationSelect";
 
 type Props = {
   workSheetData: WorkSheetCashFlow;
@@ -30,6 +31,7 @@ export function WorkSheet({ workSheetData }: Props) {
       saleFixedAssets: item.saleFixedAssets || 0,
       paymentCompensation: item.paymentCompensation || 0,
       paymentDividends: item.paymentDividends || 0,
+      clasification: item.clasification || "",
     })) || []
   );
 
@@ -38,7 +40,7 @@ export function WorkSheet({ workSheetData }: Props) {
   const handleInputChange = (
     index: number,
     field: keyof UpdateWorkSheetCashFlowItem,
-    value: number
+    value: number | string
   ) => {
     setItems((prev) =>
       prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
@@ -108,9 +110,12 @@ export function WorkSheet({ workSheetData }: Props) {
                 {/* Classification - Not editable per schema */}
                 <div>
                   <Label>Clasificación</Label>
-                  <div className="mt-2 px-3 py-2 border border-gray-200 rounded-md bg-gray-50 text-gray-700">
-                    {originalItem.clasification || "N/A"}
-                  </div>
+                  <ClasificationSelect
+                    value={items[index]?.clasification || ""}
+                    onValueChange={(value) =>
+                      handleInputChange(index, "clasification", value)
+                    }
+                  />
                 </div>
               </div>
 
