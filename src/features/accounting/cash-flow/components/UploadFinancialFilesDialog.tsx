@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useCashFlowFileOperations } from "@/features/accounting/cash-flow/hooks/useCashFlowQueries";
 import { LoaderIcon, CheckCircle, XCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UploadFinancialFilesDialogProps {
   onUploadSuccess?: () => void;
@@ -29,6 +30,8 @@ export function UploadFinancialFilesDialog({
   const [balanceFile, setBalanceFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [inSus, setInSus] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
 
   const {
     isBalanceConfigured,
@@ -89,6 +92,12 @@ export function UploadFinancialFilesDialog({
       if (onUploadSuccess) {
         onUploadSuccess();
       }
+
+      queryClient.invalidateQueries({ queryKey: ["WorkSheetData"] });
+      queryClient.invalidateQueries({ queryKey: ['balance-sheet-configured'] });
+      queryClient.invalidateQueries({ queryKey: ['statement-income-configured'] });
+
+
     } catch (error) {
       console.error("Error uploading files:", error);
       toast.error("Error al subir los archivos");
