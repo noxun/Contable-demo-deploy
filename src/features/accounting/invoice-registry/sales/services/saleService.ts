@@ -2,11 +2,48 @@ import { api } from "@/lib/api";
 import { CreateSale, Sale, UpdateSale } from "../schemas/saleSchema";
 import { ApplySaleAccountSchema } from "../schemas/applySaleAccountSchema";
 import { UploadSaleTemplateSchema } from "../schemas/uploadSaleTemplateSchema";
+import { format } from "date-fns";
+
+export type PaginationInvoice = {
+  CurrentPage: number;
+  ItemsPerPage: number;
+  TotalItems: number;
+  TotalPages: number;
+};
 
 export const saleService = {
-  async fetchSalesList() {
-    const response = await api.get("/api/Book/sale/list");
-    return response.data as Sale[];
+  async fetchSalesList(
+    applyVoucher?: boolean,
+    orderByDesc?: boolean,
+    initDate?: Date,
+    endDate?: Date,
+    pageNumber?: number,
+    pageSize?: number
+  ) {
+    const parsedInitDate = initDate
+      ? format(initDate, "yyyy-MM-dd")
+      : undefined;
+    const parsedEndDate = endDate ? format(endDate, "yyyy-MM-dd") : undefined;
+
+    const response = await api.get("/api/Book/sale/list", {
+      params: {
+        applyVoucher,
+        orderByDesc,
+        parsedInitDate,
+        parsedEndDate,
+        pageNumber,
+        pageSize,
+      },
+    });
+
+    const pagination: PaginationInvoice = JSON.parse(
+      response.headers["pagination"] || "{}"
+    );
+
+    return {
+      data: response.data as Sale[],
+      pagination,
+    };
   },
   async postSale(data: CreateSale) {
     const response = await api.post("/api/Book/sale", data);

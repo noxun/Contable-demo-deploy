@@ -5,6 +5,7 @@ import { DialogCreateOrUpdateSaleForm } from "@/features/accounting/invoice-regi
 import { DownloadSalesTemplateButton } from "@/features/accounting/invoice-registry/sales/components/DownloadSalesTemplateButton";
 import ListSales from "@/features/accounting/invoice-registry/sales/components/ListSales";
 import { UploadSaleTemplateDialog } from "@/features/accounting/invoice-registry/sales/components/UploadSaleTemplateDialog";
+import { Suspense } from "react";
 
 export default function SalesPage() {
   return (
@@ -17,7 +18,9 @@ export default function SalesPage() {
         <DialogGenerateSeats mode="sale" />
       </div>
       <div className="overflow-x-auto">
-        <ListSales />
+        <Suspense fallback={<div>Cargando...</div>}>
+          <ListSales />
+        </Suspense>
       </div>
     </div>
   );
