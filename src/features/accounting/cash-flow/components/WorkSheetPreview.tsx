@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { formatNumber } from "@/features/accounting/shared/utils/validate";
-import type { WorkSheetCashFlowItem } from "../schemas/cashFlowSchema";
+import type { WorkSheetCashFlowItem } from "../schemas/workSheetSchema";
 import { mockData } from "../utils/mockData";
 import { useWorkSheetData } from "../hooks/useWorkSheetData";
 
@@ -18,8 +18,7 @@ export const WorkSheetPreview = () => {
     return {
       balanceSheetPresent: rows.reduce((sum, item) => sum + (item.balanceSheetPresent || 0), 0),
       balanceSheetBack: rows.reduce((sum, item) => sum + (item.balanceSheetBack || 0), 0),
-      difference: rows.reduce((sum, item) => sum + (Number(item.difference || 0)), 0),
-
+      diference: rows.reduce((sum, item) => sum + (Number(item.diference || 0)), 0),
       periodDepression: rows.reduce((sum, item) => sum + (item.periodDepression || 0), 0),
       amorOfIntangibleAsset: rows.reduce((sum, item) => sum + (item.amorOfIntangibleAsset || 0), 0),
       aitb: rows.reduce((sum, item) => sum + (item.aitb || 0), 0),
@@ -31,7 +30,7 @@ export const WorkSheetPreview = () => {
       saleFixedAssets: rows.reduce((sum, item) => sum + (item.saleFixedAssets || 0), 0),
       paymentCompensation: rows.reduce((sum, item) => sum + (item.paymentCompensation || 0), 0),
       paymentDividends: rows.reduce((sum, item) => sum + (item.paymentDividends || 0), 0),
-      diference: rows.reduce((sum, item) => sum + (Number(item.diference) || 0), 0),
+      difference: rows.reduce((sum, item) => sum + (Number(item.difference) || 0), 0),
     };
   }, [rows]);
 
@@ -57,11 +56,11 @@ export const WorkSheetPreview = () => {
           <div className="min-w-[250px] border border-gray-300 dark:border-gray-500 px-4 py-2 flex justify-center items-center text-base"><p>Cuenta</p></div>
           <div className="min-w-[120px] border border-gray-300 dark:border-gray-500 flex flex-col justify-betwenn dark:bg-gray-700">
             <p className="border-b border-gray-300 dark:border-gray-500 h-[50%] content-center">Balance General</p>
-            <p className="h-[50%] content-center">31/12/24</p> 
+            <p className="h-[50%] content-center">{new Date().getFullYear() - 1}</p> 
           </div>
           <div className="min-w-[120px] border border-gray-300 dark:border-gray-500 flex flex-col justify-betwenn dark:bg-gray-700">
             <p className="border-b border-gray-300 dark:border-gray-500 h-[50%] content-center">Balance General</p>
-            <p className="h-[50%] content-center">31/12/24</p>
+            <p className="h-[50%] content-center">{new Date().getFullYear()}</p>
           </div>
           <div className="min-w-[120px] border border-gray-300 dark:border-gray-500 px-4 py-2 flex justify-center items-center"><p>Diferencia</p></div>
           <div className="dark:text-white">
@@ -93,7 +92,7 @@ export const WorkSheetPreview = () => {
             <div className="min-w-[250px] border border-inherit  px-4 py-2"><p>{item.nameAccount ?? "-"}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(item.balanceSheetPresent)}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(item.balanceSheetBack)}</p></div>
-            <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(Number(item.difference ?? 0))}</p></div>
+            <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(Number(item.diference ?? 0))}</p></div>
 
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right bg-yellow-50 dark:bg-gray-800"><p>{formatNumber(item.periodDepression)}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right bg-yellow-50 dark:bg-gray-800"><p>{formatNumber(item.amorOfIntangibleAsset)}</p></div>
@@ -108,7 +107,7 @@ export const WorkSheetPreview = () => {
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right bg-yellow-50 dark:bg-gray-800"><p>{formatNumber(item.paymentCompensation)}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right bg-yellow-50 dark:bg-gray-800"><p>{formatNumber(item.paymentDividends)}</p></div>
 
-            <div className="min-w-[120px] border border-inherit px-4 py-2 text-center"><p>{formatNumber(item.diference ?? 0)}</p></div>
+            <div className="min-w-[120px] border border-inherit px-4 py-2 text-center"><p>{item.difference ?? 0}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-center"><p>{item.clasification ?? "-"}</p></div>
           </div>
         ))}
