@@ -10,29 +10,9 @@ export const WorkSheetPreview = () => {
   
   const rows = useMemo(() => {
     return Array.isArray(worksheetData?.items) && worksheetData.items.length > 0 
-      ? worksheetData.items 
-      : mockData.items;
+      ? worksheetData
+      : mockData
   }, [worksheetData?.items]);
-  
-  const totals = useMemo(() => {
-    return {
-      balanceSheetPresent: rows.reduce((sum, item) => sum + (item.balanceSheetPresent || 0), 0),
-      balanceSheetBack: rows.reduce((sum, item) => sum + (item.balanceSheetBack || 0), 0),
-      diference: rows.reduce((sum, item) => sum + (Number(item.diference || 0)), 0),
-      periodDepression: rows.reduce((sum, item) => sum + (item.periodDepression || 0), 0),
-      amorOfIntangibleAsset: rows.reduce((sum, item) => sum + (item.amorOfIntangibleAsset || 0), 0),
-      aitb: rows.reduce((sum, item) => sum + (item.aitb || 0), 0),
-      valueMaintenance: rows.reduce((sum, item) => sum + (item.valueMaintenance || 0), 0),
-      provCompensation: rows.reduce((sum, item) => sum + (item.provCompensation || 0), 0),
-      payCompensation: rows.reduce((sum, item) => sum + (item.payCompensation || 0), 0),
-      payDividends: rows.reduce((sum, item) => sum + (item.payDividends || 0), 0),
-      purchaseFixedAssets: rows.reduce((sum, item) => sum + (item.purchaseFixedAssets || 0), 0),
-      saleFixedAssets: rows.reduce((sum, item) => sum + (item.saleFixedAssets || 0), 0),
-      paymentCompensation: rows.reduce((sum, item) => sum + (item.paymentCompensation || 0), 0),
-      paymentDividends: rows.reduce((sum, item) => sum + (item.paymentDividends || 0), 0),
-      difference: rows.reduce((sum, item) => sum + (Number(item.difference) || 0), 0),
-    };
-  }, [rows]);
 
   if(isLoadingWorksheet){
     return <p className="text-center text-sm text-gray-500">Cargando hoja de trabajo...</p>
@@ -86,12 +66,12 @@ export const WorkSheetPreview = () => {
         </div>
 
         {/* Filas */}
-        {rows.map((item, index) => (
+        {rows?.items?.map((item, index) => (
           <div key={index} className="flex border-b dark:text-white border-gray-50 dark:border-gray-600">
             <div className="min-w-[120px] border border-inherit  px-4 py-2 text-center"><p>{item.codeAccount ?? "-"}</p></div>
             <div className="min-w-[250px] border border-inherit  px-4 py-2"><p>{item.nameAccount ?? "-"}</p></div>
-            <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(item.balanceSheetPresent)}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(item.balanceSheetBack)}</p></div>
+            <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(item.balanceSheetPresent)}</p></div>
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right"><p>{formatNumber(Number(item.diference ?? 0))}</p></div>
 
             <div className="min-w-[120px] border border-inherit px-4 py-2 text-right bg-yellow-50 dark:bg-gray-800"><p>{formatNumber(item.periodDepression)}</p></div>
@@ -115,23 +95,23 @@ export const WorkSheetPreview = () => {
         <div className="flex font-semibold dark:bg-gray-700 bg-gray-100">
           <div className="min-w-[120px] px-4 py-2 text-center bg-inherit">Totales</div>
           <div className="min-w-[250px] px-4 py-2 bg-inherit">-</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.balanceSheetPresent)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.balanceSheetBack)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.difference)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.balanceSheetBackTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.balanceSheetPresentTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(Number(rows?.differenceTotal ?? 0))}</div>
           
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.periodDepression)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.amorOfIntangibleAsset)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.aitb)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.valueMaintenance)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.provCompensation)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.payCompensation)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.payDividends)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.purchaseFixedAssets)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.saleFixedAssets)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.payCompensation)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.payDividends)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(totals.diference)}</div>
-          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">-</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.periodDepressionTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.amorOfIntangibleAssetTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.aitbTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.valueMaintenanceTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.provCompensationTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.payCompensationTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.payDividendsTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.purchaseFixedAssetsTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.saleFixedAssetsTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.paymentCompensationTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.paymentDividendsTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{formatNumber(rows?.diferenceTotal || 0)}</div>
+          <div className="min-w-[120px] px-4 py-2 text-right bg-inherit">{rows?.clasificationTotal || "-"}</div>
         </div>
       </div>
     </div>
