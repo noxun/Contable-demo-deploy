@@ -83,11 +83,11 @@ export default function LoginForm() {
           name="usernameOrEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-[#052f47] text-base">Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email o Usuario" {...field}></Input>
+                <Input placeholder="Email o Usuario" {...field} className=" bg-white/30 backdrop-blur-md  mt-2 mb-4 rounded-xl focus:outline-none focus-visible:ring-0"></Input>
               </FormControl>
-              <FormDescription>
+              <FormDescription className="text-cyan-950">
                 Su correo electrónico o nombre de usuario
               </FormDescription>
               <FormMessage />
@@ -99,16 +99,16 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contraseña</FormLabel>
+              <FormLabel className="text-[#052f47] text-base">Contraseña</FormLabel>
               <FormControl>
                 <PasswordInput {...field} />
               </FormControl>
-              <FormDescription>Su contraseña</FormDescription>
+              <FormDescription className="text-cyan-950">Su contraseña</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button disabled={loginMutation.isPending} type="submit">
+        <Button disabled={loginMutation.isPending} type="submit" className="bg-[#d49306] hover:bg-[#b87d04] text-white font-semibold py-2 rounded-md w-full shadow-sm transition-colors">
           Ingresar
         </Button>
       </form>
