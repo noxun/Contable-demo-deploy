@@ -27,7 +27,7 @@ export function IndirectCashFlowPreview() {
   );
 
   if (isError)
-    return <div>Error al cargar los datos del flujo de efectivo directo.</div>;
+    return <div>Error al cargar los datos del flujo de efectivo indirecto.</div>;
 
   if (!balanceSheetConfigStatus) {
     return (
@@ -52,6 +52,44 @@ export function IndirectCashFlowPreview() {
   if (isLoading || !cashFlowIndirect || isLoadingBalanceSheetStatus)
     return <div>Cargando...</div>;
 
+  const renderActivitySection = (
+    title: string,
+    activities: Array<{
+      description: string | null;
+      isTitle: boolean;
+      amount: number | null;
+    }> | null,
+    colorClass: string
+  ) => {
+    if (!activities) return null;
+
+    return (
+      <>
+        <tr className={`font-bold ${colorClass}`}>
+          <td colSpan={2} className="py-2">{title}</td>
+        </tr>
+        {activities.map((activity, index) => {
+          if (!activity.description) return null;
+          
+          return (
+            <tr 
+              key={index} 
+              className={`${colorClass} ${activity.isTitle ? 'font-bold' : ''}`}
+            >
+              <td className={activity.isTitle ? '' : 'pl-3'}>
+                {activity.description}
+              </td>
+              <td className="text-right">
+                {activity.amount !== null ? formatNumber(activity.amount) : '-'}
+              </td>
+            </tr>
+          );
+        })}
+        <tr className="h-3" />
+      </>
+    );
+  };
+
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem className="dark:text-[#bbbbbb]" value="item-1">
@@ -71,116 +109,59 @@ export function IndirectCashFlowPreview() {
               </tr>
             </thead>
             <tbody>
-              {/* Cobros */}
-              <tr className="font-bold hover:bg-green-500/20 dark:hover:bg-green-500/40">
-                <td>Cobros a clientes</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.cobrosClientes)}
-                </td>
-              </tr>
-              <tr className="hover:bg-green-500/20 dark:hover:bg-green-500/40">
-                <td className="pl-3">Otros cobros</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.otrosCobros)}
-                </td>
-              </tr>
+              {/* Actividades de Operación */}
+              {renderActivitySection(
+                "Actividades de Operación",
+                cashFlowIndirect.operationActivities,
+                "hover:bg-blue-500/20 dark:hover:bg-blue-500/40"
+              )}
+
+              {/* Actividades de Inversión */}
+              {renderActivitySection(
+                "Actividades de Inversión",
+                cashFlowIndirect.investmentActivities,
+                "hover:bg-green-500/20 dark:hover:bg-green-500/40"
+              )}
+
+              {/* Actividades de Financiación */}
+              {renderActivitySection(
+                "Actividades de Financiación",
+                cashFlowIndirect.financingActivities,
+                "hover:bg-yellow-500/20 dark:hover:bg-yellow-500/40"
+              )}
+
+              {/* Resumen */}
               <tr className="h-5" />
-
-              {/* Pagos */}
-              <tr className="font-bold hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td colSpan={2}>Pagos</td>
-              </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Pagos por compras</td>
+              <tr className="font-bold hover:bg-purple-500/20 dark:hover:bg-purple-500/40">
+                <td>Variación neta de efectivo y demás equivalentes de efectivo</td>
                 <td className="text-right">
-                  {formatNumber(cashFlowIndirect.pagosCompras)}
+                  {formatNumber(cashFlowIndirect.netChangeInCash)}
                 </td>
               </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Pagos por gastos de administración</td>
+              <tr className="hover:bg-purple-500/20 dark:hover:bg-purple-500/40">
+                <td>Efectivo y equivalentes al principio del periodo</td>
                 <td className="text-right">
-                  {formatNumber(cashFlowIndirect.pagosGastosAdmin)}
+                  {formatNumber(cashFlowIndirect.cashAndCashEquivalentsStartPeriod)}
                 </td>
               </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Pagos por gastos de comercialización</td>
+              <tr className="hover:bg-purple-500/20 dark:hover:bg-purple-500/40">
+                <td>Efectivo y equivalentes al final del periodo</td>
                 <td className="text-right">
-                  {formatNumber(cashFlowIndirect.pagosGastosComer)}
+                  {formatNumber(cashFlowIndirect.cashAndCashEquivalentsEndPeriod)}
                 </td>
               </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Pagos por gastos financieros</td>
+              
+              <tr className="h-3" />
+              <tr className="font-bold hover:bg-gray-500/20 dark:hover:bg-gray-500/40">
+                <td>SALDO FINAL DE EFECTIVO Y SUS EQUIVALENTES SEGÚN BALANCE GENERAL</td>
                 <td className="text-right">
-                  {formatNumber(cashFlowIndirect.pagosGastosFinan)}
+                  {formatNumber(cashFlowIndirect.finalBalanceBalanceSheet)}
                 </td>
               </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Pagos por impuestos</td>
+              <tr className="font-bold hover:bg-gray-500/20 dark:hover:bg-gray-500/40">
+                <td>DIFERENCIA</td>
                 <td className="text-right">
-                  {formatNumber(cashFlowIndirect.pagosImpuestos)}
-                </td>
-              </tr>
-              <tr className="hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td className="pl-3">Otros pagos</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.otrosPagos)}
-                </td>
-              </tr>
-              <tr className="h-5" />
-
-              {/* Flujo de efectivo en actividades operativas */}
-              <tr className="font-bold hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-                <td>Flujo de efectivo en actividades operativas</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.feao)}
-                </td>
-              </tr>
-
-              {/* Resultado antes de intereses después de impuestos */}
-              <tr className="font-bold hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-                <td>Resultado antes de intereses después de impuestos</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.resultAntesInteresImp)}
-                </td>
-              </tr>
-
-              {/* Partidas que no generan movimientos de efectivo */}
-              <tr className="font-bold hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-                <td>Partidas que no generan movimientos de efectivo</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.partidasNoGeneranMov)}
-                </td>
-              </tr>
-
-              {/* CAPEX */}
-              <tr className="font-bold hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-                <td>CAPEX</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.capex)}
-                </td>
-              </tr>
-
-              {/* Movimientos netos en activos y pasivos operativos */}
-              <tr className="font-bold hover:bg-blue-500/20 dark:hover:bg-blue-500/40">
-                <td>Movimientos netos en activos y pasivos operativos</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.movNetosActivosPasivosOp)}
-                </td>
-              </tr>
-
-              {/* FELF */}
-              <tr className="font-bold hover:bg-green-500/20 dark:hover:bg-green-500/40">
-                <td>FELF</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.felf)}
-                </td>
-              </tr>
-
-              {/* FELP */}
-              <tr className="font-bold hover:bg-red-500/20 dark:hover:bg-red-500/40">
-                <td>FELP</td>
-                <td className="text-right">
-                  {formatNumber(cashFlowIndirect.felp)}
+                  {formatNumber(cashFlowIndirect.difference)}
                 </td>
               </tr>
             </tbody>

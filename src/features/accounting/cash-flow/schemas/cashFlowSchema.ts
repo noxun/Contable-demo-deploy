@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const directCashFlowSchema = z.object({
   netResult: z.number(),
@@ -34,27 +34,43 @@ export const directCashFlowSchema = z.object({
   feafEfectivTotal: z.number(),
   feafSaldoInicio: z.number(),
   feafMonOtrosMetodos: z.number(),
-  saldoFinal: z.number()
-})
+  saldoFinal: z.number(),
+});
 
 export const indirectCashFlowSchema = z.object({
-  cobrosClientes: z.number(),
-  otrosCobros: z.number(),
-  pagosCompras: z.number(),
-  pagosGastosAdmin: z.number(),
-  pagosGastosComer: z.number(),
-  pagosGastosFinan: z.number(),
-  pagosImpuestos: z.number(),
-  otrosPagos: z.number(),
-  feao: z.number(),
-  resultAntesInteresImp: z.number(),
-  partidasNoGeneranMov: z.number(),
-  capex: z.number(),
-  movNetosActivosPasivosOp: z.number(),
-  felf: z.number(),
-  felp: z.number()
-})
+  operationActivities: z
+    .array(
+      z.object({
+        description: z.string().nullable(),
+        isTitle: z.boolean(),
+        amount: z.number().nullable(),
+      })
+    )
+    .nullable(),
+  investmentActivities: z
+    .array(
+      z.object({
+        description: z.string().nullable(),
+        isTitle: z.boolean(),
+        amount: z.number().nullable(),
+      })
+    )
+    .nullable(),
+  financingActivities: z
+    .array(
+      z.object({
+        description: z.string().nullable(),
+        isTitle: z.boolean(),
+        amount: z.number().nullable(),
+      })
+    )
+    .nullable(),
+  netChangeInCash: z.number(),
+  cashAndCashEquivalentsStartPeriod: z.number(),
+  cashAndCashEquivalentsEndPeriod: z.number(),
+  finalBalanceBalanceSheet: z.number(),
+  difference: z.number(),
+});
 
-
-export type DirectCashFlow = z.infer<typeof directCashFlowSchema>
-export type IndirectCashFlow = z.infer<typeof indirectCashFlowSchema>
+export type DirectCashFlow = z.infer<typeof directCashFlowSchema>;
+export type IndirectCashFlow = z.infer<typeof indirectCashFlowSchema>;
