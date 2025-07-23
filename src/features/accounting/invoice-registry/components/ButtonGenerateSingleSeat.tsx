@@ -16,5 +16,12 @@ export function ButtonGenerateSingleSeat({
     generateSingleSeatMutation.mutate({ type, bookId });
   }
 
-  return <Button onClick={handleClick}>Generar asiento</Button>;
+  return (
+    <Button
+      disabled={generateSingleSeatMutation.isPending}
+      onClick={handleClick}
+    >
+      Generar asiento
+    </Button>
+  );
 }

@@ -18,6 +18,7 @@ export function ButtonDeleteAllBookDataWithoutVoucher({
   return (
     <Button
       onClick={handleClick}
+      disabled={deleteAllBookDataWithoutGeneratedSeatMutation.isPending}
       title="Este botón eliminará todos los datos de la lista que no tengan un asiento generado"
     >
       Borrar todos los datos
