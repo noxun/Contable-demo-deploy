@@ -6,6 +6,7 @@ import { columns } from "./columns";
 import InvoicesFilters from "../../components/InvoicesFilters";
 import { useInvoiceFilters } from "../../hooks/useInvoiceFilters";
 import { InvoicesPagination } from "../../components/InvoicesPagination";
+import { DataTableWithColumnsToggle } from "@/components/ui/data-table-column-vis";
 
 export default function ListPurchases() {
   const { data: purchases, isError, isLoading, isFetching } = usePurchases();
@@ -28,7 +29,7 @@ export default function ListPurchases() {
             <div className="text-sm text-muted-foreground">Cargando...</div>
           </div>
         )}
-        <DataTable data={purchases.data} columns={columns} />
+        <DataTableWithColumnsToggle data={purchases.data} columns={columns} />
       </div>
       <InvoicesPagination
         pagination={purchases.pagination}
