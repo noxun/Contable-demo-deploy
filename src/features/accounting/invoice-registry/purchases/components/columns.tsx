@@ -3,6 +3,7 @@ import { Purchase } from "../schemas/purchaseSchema";
 import { DialogCreateOrUpdatePurchaseForm } from "./DialogCreateOrUpdatePurchaseForm";
 import { Badge } from "@/components/ui/badge";
 import { ApplyAccountDialog } from "./ApplyAccountDialog";
+import { ButtonGenerateSingleSeat } from "../../components/ButtonGenerateSingleSeat";
 
 export const columns: ColumnDef<Purchase>[] = [
   { accessorKey: "number", header: "Número" },
@@ -64,6 +65,7 @@ export const columns: ColumnDef<Purchase>[] = [
                 purchaseId={purchase.id}
                 nit={purchase.providerNit}
               />
+              <ButtonGenerateSingleSeat type="buy" bookId={purchase.id} />
             </>
           ) : (
             <div>Sin Acciones.</div>

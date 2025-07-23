@@ -38,4 +38,16 @@ export const invoiceRegistryService = {
     });
     return response.data as string;
   },
+  async generateSingleSeat(params: { bookId: number; type: "sale" | "buy" }) {
+    const { bookId, type } = params;
+    const response = await api.post(
+      `/api/Book/generate-seat/${bookId}/${type}`,
+      {}
+    );
+    return response.data;
+  },
+  async deleteAllBookDataWithoutGeneratedSeats(type: "sale" | "buy") {
+    const response = await api.delete(`/api/Book/without-voucher/${type}`);
+    return response.data;
+  },
 };

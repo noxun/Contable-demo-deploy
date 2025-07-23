@@ -3,6 +3,7 @@ import { Sale } from "../schemas/saleSchema";
 import { DialogCreateOrUpdateSaleForm } from "./DialogCreateOrUpdateSaleForm";
 import { Badge } from "@/components/ui/badge";
 import { ApplySaleAccountDialog } from "./ApplySaleAccountDialog";
+import { ButtonGenerateSingleSeat } from "../../components/ButtonGenerateSingleSeat";
 
 export const columns: ColumnDef<Sale>[] = [
   { accessorKey: "number", header: "Número" },
@@ -66,6 +67,7 @@ export const columns: ColumnDef<Sale>[] = [
                 saleId={sale.id}
                 nit={sale.clientNitCi || ""}
               />
+              <ButtonGenerateSingleSeat type="sale" bookId={sale.id} />
             </>
           ) : (
             <div>Sin Acciones.</div>
