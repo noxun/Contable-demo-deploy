@@ -58,7 +58,11 @@ export const TableBank = (props: { data: Bank[] }) => {
       accessorKey: "saldoTotal",
       header: "Saldo Total",
       cell: ({ row }) => {
-        return <div className="text-right">{numberWithDecimals(row.original.saldoTotal)}</div>;
+        return (
+          <div className="text-right">
+            {numberWithDecimals(row.original.saldoTotal)}
+          </div>
+        );
       },
     },
     {
@@ -70,9 +74,15 @@ export const TableBank = (props: { data: Bank[] }) => {
         return (
           <div className="flex items-center justify-center gap-2">
             {/* <DialogExcerptTable bankId={bank.id}/> */}
-            <BiggerBookByAccountCodeDialog accountCode={bank.code}/>
+            <BiggerBookByAccountCodeDialog accountCode={bank.code} />
             <Button asChild>
-              <Link href={`/dashboard/accounting/banks/${bank.id}/${bank.name}/extracts?bankAccountId=${bank.accountId}`}>
+              <Link
+                href={`/dashboard/accounting/banks/${
+                  bank.id
+                }/${bank.name.replaceAll("/", "-")}/extracts?bankAccountId=${
+                  bank.accountId
+                }`}
+              >
                 Ver Extractos
               </Link>
             </Button>
