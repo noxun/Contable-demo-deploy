@@ -1,6 +1,6 @@
 "use client";
 
-import ListRols from "@/features/accounting/rols/components/ListRols";
+import RolsPage from "@/features/accounting/rols/components/RolsPage";
 import { FormRoleDialog } from "@/features/accounting/rols/components/FormRoleDialog";
 
 export default function ReceiptsPage() {
@@ -13,7 +13,7 @@ export default function ReceiptsPage() {
         </div>
         <FormRoleDialog mode="create-rol"/>
       </div>
-      <ListRols/>
+      <RolsPage/>
     </div>
   );
 }

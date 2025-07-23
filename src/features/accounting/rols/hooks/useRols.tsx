@@ -2,6 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { rolesService } from "../services/rolsService";
 import { CreateRole, Role, UpdateRole } from "../schemas/rolSchema";
+import { toast } from "sonner";
 
 export const useGetRoles = () => {
   return useQuery<Role[]>({
@@ -29,6 +30,10 @@ export function useDeleteRole() {
     mutationFn: (id: number) => rolesService.deleteRole(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
+      toast.success("Rol eliminado correctamente");
+    },
+    onError: () => {
+      toast.error("Error al eliminar el rol");
     },
   });
 }

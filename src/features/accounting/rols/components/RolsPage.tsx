@@ -9,7 +9,7 @@ import { useGetRoles } from "../hooks/useRols";
 import { DeleteRole } from "./DeleteRole-dialog";
 import { FormRoleDialog } from "./FormRoleDialog";
 
-export default function ListRols(){
+export default function RolsPage(){
 
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
@@ -61,7 +61,7 @@ export default function ListRols(){
                       {/* Botones de acción: abren modales para crear subrol, editar o eliminar el rol */}
                       <div className="flex items-center gap-2">
                           <FormRoleDialog mode="create-subrol" parentId={role.id}/>
-                          <FormRoleDialog mode="edit" values={role}/>
+                          <FormRoleDialog mode="edit" values={role} key={role?.id ?? "new"}/>
                           <DeleteRole idRol={role.id} name={role.name}/>
                       </div>
                   </div>

@@ -27,10 +27,7 @@ export function DeleteRole({ idRol, name }: Props) {
 
     const handleDelete = (id: number) => {
         console.log("Eliminado rol: ", id)
-        mutate(id, {
-            onSuccess: () => toast.success("Rol eliminado correctamente"),
-            onError: () => toast.error("Error al eliminar el rol"),
-        });
+        mutate(id);
     };
 
   return (

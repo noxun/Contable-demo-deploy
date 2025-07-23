@@ -45,7 +45,7 @@ export function SubRoleItem({ subRole }: SubRoleItemProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <FormRoleDialog mode="edit" values={subRole}/>
+        <FormRoleDialog mode="edit" values={subRole} key={subRole?.id ?? "new"}/>
         <DeleteRole idRol={subRole.id} name={subRole.title}/>
       </div>
     </div>
