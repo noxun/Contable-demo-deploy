@@ -7,6 +7,7 @@ import ListPurchases from "@/features/accounting/invoice-registry/purchases/comp
 import { UploadPurchaseTemplateDialog } from "@/features/accounting/invoice-registry/purchases/components/UploadPurchaseTemplateDialog";
 import { ButtonGenerateExcelReport } from "@/features/accounting/invoice-registry/components/ButtonGenerateExcelReport";
 import { Suspense } from "react";
+import { ButtonDeleteAllBookDataWithoutVoucher } from "@/features/accounting/invoice-registry/components/ButtonDeleteAllBookDataWithoutVoucher";
 
 export default function PurchasesPage() {
   return (
@@ -20,6 +21,7 @@ export default function PurchasesPage() {
         <Suspense fallback={<div>Cargando...</div>}>
           <ButtonGenerateExcelReport type="buy" />
         </Suspense>
+        <ButtonDeleteAllBookDataWithoutVoucher type="buy" />
       </div>
       <div className="overflow-x-auto">
         <Suspense fallback={<div>Cargando...</div>}>
