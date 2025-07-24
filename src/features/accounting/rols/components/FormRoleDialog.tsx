@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +43,7 @@ export function FormRoleDialog({mode, parentId, values: values}:Props) {
         main: (mode === "create-subrol" && parentId) ? false : true,
         title: "",
         icon: "",
-        isMenu: false,
+        isMenu: true,
       },
   });
 
@@ -88,7 +87,7 @@ export function FormRoleDialog({mode, parentId, values: values}:Props) {
       <DialogTrigger asChild>
         {mode === "create-rol" ? (
           <Button>
-            <Plus className="h-4 w-4" /> Nuevo Rol
+            <Plus className="h-4 w-4" /> Nuevo/Seccion
           </Button>
         ) : mode === "create-subrol" ? (
           <Button variant="outline" size="sm">
@@ -116,7 +115,7 @@ export function FormRoleDialog({mode, parentId, values: values}:Props) {
           {/* Campo: Nombre */}
           <div className="relative">
             <label htmlFor="name" className="absolute left-3 -top-3 text-xs bg-white dark:bg-black dark:text-gray-100 text-gray-500 px-2 font-medium">
-              Nombre del rol
+              {mode === "create-rol" ? "Nombre del Rol" : "Ruta del ROl"}
             </label>
             <Input
               id="name"
@@ -173,14 +172,6 @@ export function FormRoleDialog({mode, parentId, values: values}:Props) {
             {errors.icon && (
               <p className="text-xs text-red-500 mt-1">{errors.icon.message}</p>
             )}
-          </div>
-
-          {/* Checkbox */}
-          <div className="flex items-center gap-3 pt-1">
-            <Checkbox id="isMenu" checked={watch("isMenu")} onCheckedChange={(checked) => setValue("isMenu", !!checked)}/>
-            <label htmlFor="isMenu" className="text-sm text-zinc-600">
-              Mostrar en menú principal
-            </label>
           </div>
 
           {/* Botones */}
