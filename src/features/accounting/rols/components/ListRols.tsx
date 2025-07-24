@@ -46,26 +46,32 @@ export default function ListRols(){
           {roles?.map((role) => (
             <div className="border rounded-lg" key={role.id}>
               <Collapsible open={expandedId === role.id} onOpenChange={() => toggle(role.id)}>
-                  <CollapsibleTrigger asChild>
-                  <div className="flex items-center justify-between p-4 hover:bg-muted/50 cursor-pointer">
-                      <div className="flex items-center gap-3">
-                          {expandedId === role.id ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                          <div className={`w-3 h-3 rounded-full ${colors[role.id % colors.length]}`}/>
-                          <div className="flex flex-col sm:flex-row">
-                              <h3 className="font-semibold">{role.name}</h3>
-                              <Badge variant="secondary" className="ml-2">
-                                  {role.rolsList.length} subroles
-                              </Badge>
-                          </div>
+                  <div className="flex items-center justify-between hover:bg-muted/50">
+                    <CollapsibleTrigger asChild>
+                      <div className="flex items-center gap-3 cursor-pointer w-full px-4 py-6 h-full">
+                        {expandedId === role.id ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                        <div className={`w-3 h-3 rounded-full ${colors[role.id % colors.length]}`} />
+                        <div className="flex flex-col sm:flex-row">
+                          <h3 className="font-semibold">{role.name}</h3>
+                          <Badge variant="secondary" className="ml-2">
+                            {role.rolsList.length} subroles
+                          </Badge>
+                        </div>
                       </div>
-                      {/* Botones de acción: abren modales para crear subrol, editar o eliminar el rol */}
-                      <div className="flex items-center gap-2">
-                          <FormRoleDialog mode="create-subrol" parentId={role.id}/>
-                          <FormRoleDialog mode="edit" values={role} key={role?.id ?? "new"}/>
-                          <DeleteRole idRol={role.id} name={role.name}/>
-                      </div>
+                    </CollapsibleTrigger>
+
+                    {/* Botones de acción */}
+                    <div className="flex items-center gap-2">
+                      <FormRoleDialog mode="create-subrol" parentId={role.id} />
+                      <FormRoleDialog mode="edit" values={role} key={role?.id} />
+                      <DeleteRole idRol={role.id} name={role.name} />
+                    </div>
                   </div>
-                  </CollapsibleTrigger>
+
                   <CollapsibleContent>
                   <div className="px-4 pb-4">
                     <div className="ml-7 space-y-2">
