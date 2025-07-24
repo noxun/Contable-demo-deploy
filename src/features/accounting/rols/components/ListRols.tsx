@@ -9,7 +9,7 @@ import { useGetRoles } from "../hooks/useRols";
 import { DeleteRole } from "./DeleteRole-dialog";
 import { FormRoleDialog } from "./FormRoleDialog";
 
-export default function RolsPage(){
+export default function ListRols(){
 
   const [expandedId, setExpandedId] = useState<number | null>(null);
 

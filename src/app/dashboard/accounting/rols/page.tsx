@@ -1,9 +1,9 @@
 "use client";
 
-import RolsPage from "@/features/accounting/rols/components/RolsPage";
+import ListRols from "@/features/accounting/rols/components/ListRols";
 import { FormRoleDialog } from "@/features/accounting/rols/components/FormRoleDialog";
 
-export default function ReceiptsPage() {
+export default function RolsPage() {
   return (
     <div className="py-2 px-1 md:p-4 space-y-6">
       <div className="flex items-center justify-between">
@@ -13,7 +13,7 @@ export default function ReceiptsPage() {
         </div>
         <FormRoleDialog mode="create-rol"/>
       </div>
-      <RolsPage/>
+      <ListRols/>
     </div>
   );
 }
