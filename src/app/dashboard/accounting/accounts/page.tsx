@@ -12,7 +12,7 @@ export default function AccountsPage() {
         <Link
           prefetch={false}
           download
-          href="/files/plan_cuentas_tradecruz.xlsx"
+          href="/files/plantilla_plan_de_cuentas.xlsx"
         >
           Descargar Plantilla
         </Link>
