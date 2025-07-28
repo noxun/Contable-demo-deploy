@@ -363,6 +363,9 @@ export type TrazoCompany = {
   razonSocial: string;
   id: number;
   ref: "Trazo" | "Contable";
+  code: string | null;
+  nit: string;
+  sigla: string | null;
 };
 
 export type InvoiceVoucher = {
