@@ -42,7 +42,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
             {item.description === 'ACTIVO' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#F0F0F0] font-bold dark:bg-gray-700 dark:text-gray-300">
                   <td></td>
                   <td>Total Activo</td>
                   <td className="text-end">{formatNumber(data.totalActive)}</td>
@@ -55,7 +55,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
             {item.description === 'PASIVOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#F0F0F0] dark:text-gray-300 font-bold dark:bg-gray-700">
                   <td></td>
                   <td>Total Pasivo</td>
                   <td className="text-end">{formatNumber(data.totalPassive)}</td>
@@ -68,21 +68,21 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
             {item.description === 'PATRIMONIO' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#F0F0F0] dark:text-gray-300 font-bold dark:bg-gray-700">
                   <td></td>
                   <td>Total Patrimonio</td>
                   <td className="text-end">{formatNumber(data.totalHeritage)}</td>
                   <td></td>
                   <td></td>
                 </tr>
-                <tr className="bg-[#D0D0D0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#D0D0D0] dark:text-gray-300 font-bold dark:bg-gray-700">
                   <td></td>
                   <td>Resultado</td>
                   <td className="text-end">{formatNumber(data.result)}</td>
                   <td></td>
                   <td></td>
                 </tr>
-                <tr className="bg-[#C0C0C0] dark:text-[#4a4a4a] font-bold">
+                <tr className="bg-[#C0C0C0] dark:text-gray-300 font-bold dark:bg-gray-700">
                   <td></td>
                   <td>Total Pasivo + Patrimonio + Resultado</td>
                   <td className="text-end">{formatNumber(data.liabilityEquityResult)}</td>
@@ -107,7 +107,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
-          <tr className="bg-[#E0E0E0] dark:text-[#4a4a4a]">
+          <tr className="bg-[#E0E0E0] dark:text-gray-300 dark:bg-gray-700">
             <th className="font-semibold">Cuenta</th>
             <th className="font-semibold">Descripción</th>
             <th className="font-semibold">Imp. Niv. {currentLevel}</th>

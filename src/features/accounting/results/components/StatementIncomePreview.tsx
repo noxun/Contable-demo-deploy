@@ -40,7 +40,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             {item.description === 'INGRESOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
+                <tr className="bg-[#F0F0F0] font-bold dark:text-gray-300 dark:bg-gray-700">
                   <td></td>
                   <td>Total Ingresos</td>
                   <td className="text-end">{formatNumber(data.totalIncome)}</td>
@@ -54,7 +54,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             {item.description === 'COSTOS Y GASTOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
+                <tr className="bg-[#F0F0F0] font-bold dark:text-gray-300 dark:bg-gray-700">
                   <td></td>
                   <td>Total Costos y Gastos</td>
                   <td className="text-end">{formatNumber(data.totalExpense)}</td>
@@ -79,7 +79,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
-          <tr className="bg-[#E0E0E0] dark:text-[#4a4a4a]">
+          <tr className="bg-[#E0E0E0] dark:text-gray-300 dark:bg-gray-700">
             <th className="font-semibold">Cuenta</th>
             <th className="font-semibold">Descripción</th>
             <th className="font-semibold">Imp. Niv. {currentLevel}</th>
@@ -91,7 +91,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
           {data.items.map((item) => renderItem(item))}
           <tr className="h-4"></tr>
           {/* Periodo de utilidad */}
-          <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#F0F0F0] dark:text-gray-300 font-bold dark:bg-gray-700">
             <td></td>
             <td>Periodo de Utilidad</td>
             <td className="text-end">{formatNumber(data.periodUtility)}</td>
@@ -99,7 +99,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             <td></td>
           </tr>
           {/* Impuestos sobre beneficios */}
-          <tr className="bg-[#D0D0D0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#D0D0D0] dark:text-gray-300 font-bold dark:bg-gray-700">
             <td></td>
             <td>Impuestos sobre beneficios</td>
             <td className="text-end">{formatNumber(data.taxOnProfits)}</td>
@@ -107,7 +107,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             <td></td>
           </tr>
           {/* Resultado de gestion */}
-          <tr className="bg-[#C0C0C0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#C0C0C0] dark:text-gray-300 font-bold dark:bg-gray-700">
             <td></td>
             <td>Resultado de gestion</td>
             <td className="text-end">{formatNumber(data.managementResult)}</td>
