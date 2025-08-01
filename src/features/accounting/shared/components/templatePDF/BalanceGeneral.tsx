@@ -155,7 +155,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange, curr
           )}
         />
         {/* Encabezado del documento */}
-        <View style={tw("w-full flex flex-row justify-between mb-8 text-sm")}>
+        <View style={tw("w-full flex flex-row justify-between mb-4 text-sm")}>
           <View style={tw("flex-1")}>
             <Image
               source={REPORTS_LOGO_URL}
@@ -165,7 +165,7 @@ export const BalanceGeneralTemplate = ({ records, inSus = false, dateRange, curr
             <Text style={tw("text-gray-700 mb-1")}>NIT {COMPANY_NIT}</Text>
             <Text style={tw("text-gray-700 w-[140px] text-xs")}>{COMPANY_ADDRESS} </Text>
           </View>
-          <View style={tw("flex-1 flex items-center self-end")}>
+          <View style={tw("flex-1 flex items-center self-end mt-24")}>
             <Text style={{ fontSize: 15, fontFamily: "Helvetica-Bold", paddingBottom: 5}}>BALANCE GENERAL</Text>
             <Text style={[{fontSize:11,paddingTop:3, textAlign: "center", fontWeight:"normal" }]}>{messageDate}</Text>
             <Text style={[{fontSize:10, fontFamily: "Helvetica", fontWeight:'normal', color:"#232323"}]}>(Expresado en {moneyType})</Text>
