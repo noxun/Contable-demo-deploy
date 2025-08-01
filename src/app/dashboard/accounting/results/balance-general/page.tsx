@@ -158,7 +158,7 @@ export default function BalanceGeneralPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 h-full">
+      <div className="flex flex-col h-full">
         <BreadcrumbDashboard
           items={[
             {
@@ -175,7 +175,7 @@ export default function BalanceGeneralPage() {
             }
           ]}
         />
-        <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center py-5">
           {/* Rango de fechas */}
           <div className="flex gap-2 flex-col">
             <DateSelector onDateChange={handleOnDateChange} />
@@ -219,7 +219,7 @@ export default function BalanceGeneralPage() {
           </div>
         </div>
         {/* aqui generar el reporte */}
-        <div className="flex gap-4 py-3 items-center">
+        <div className="flex gap-4 items-center">
           <Button
             onClick={handleOnGeneratePDF}
             disabled={!dataBalanceGeneral}
@@ -242,7 +242,7 @@ export default function BalanceGeneralPage() {
         </div>
 
         {/* Descargar pdf */}
-        <div className="h-16 flex items-center">
+        <div className="flex items-center mt-2">
           {pdfFile && (
             <ButtonLinkPDF
               pdfFile={pdfFile}
@@ -257,7 +257,7 @@ export default function BalanceGeneralPage() {
         )}
         {
           dataBalanceGeneral && !isLoadingBalanceGeneral && (
-            <div className="w-full py-3 flex justify-center">
+            <div className="w-full flex justify-center">
               <div className="dark:text-[#bbbbbb] px-2 w-full max-w-5xl">
                 <BalanceGeneralPreview
                   dateRange={dateRange}
