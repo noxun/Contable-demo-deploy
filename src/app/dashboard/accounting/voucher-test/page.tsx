@@ -4,4 +4,5 @@ import { FormCreateOrUpdateVoucher } from "@/features/accounting/vouchers/compon
 
 export default function VoucherTestPage() {
   return <FormCreateOrUpdateVoucher mode="create" />;
+  // return <FormCreateOrUpdateVoucher mode="update" voucherId={2077} type="1" />;
 }
