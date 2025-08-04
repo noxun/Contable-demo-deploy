@@ -61,7 +61,12 @@ const config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+			tradecruz: {
+				DEFAULT: "hsl(var(--tradecruz-primary))",
+				foreground: "hsl(var(--tradecruz-primary-foreground))",
+				hover: "hsl(var(--tradecruz-primary-hover))",
+    		},
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

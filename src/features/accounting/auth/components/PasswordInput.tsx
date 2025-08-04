@@ -19,7 +19,7 @@ const PasswordInput = forwardRef<
       <Input
         {...props}
         ref={ref}
-        className=" bg-white/30 backdrop-blur-md mt-2 mb-4 rounded-xl focus:outline-none focus-visible:ring-0"
+        className="text-black bg-white/30 backdrop-blur-md mt-2 mb-4 rounded-xl focus:outline-none focus-visible:ring-0"
         placeholder="Contraseña"
         type={isVisible ? "text" : "password"}
       />

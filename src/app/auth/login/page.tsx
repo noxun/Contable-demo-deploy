@@ -1,6 +1,7 @@
 import LoginForm from "@/features/accounting/auth/components/LoginForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { APP_LOGO_URL } from "@/lib/constants";
 
 export default function LoginPage() {
   return (
@@ -16,7 +17,7 @@ export default function LoginPage() {
             <LoginForm />
           </CardContent>
           <Image
-            src="/images/tradecruz_logo.png"
+            src={APP_LOGO_URL}
             alt="Logo"
             width={275}
             height={100}

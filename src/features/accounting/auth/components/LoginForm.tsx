@@ -85,7 +85,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel className="text-[#052f47] text-base">Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email o Usuario" {...field} className=" bg-white/30 backdrop-blur-md  mt-2 mb-4 rounded-xl focus:outline-none focus-visible:ring-0"></Input>
+                <Input placeholder="Email o Usuario" {...field} className="text-black bg-white/30 backdrop-blur-md mt-2 mb-4 rounded-xl focus:outline-none focus-visible:ring-0"></Input>
               </FormControl>
               <FormDescription className="text-cyan-950">
                 Su correo electrónico o nombre de usuario
@@ -108,7 +108,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button disabled={loginMutation.isPending} type="submit" className="bg-[#d49306] hover:bg-[#b87d04] text-white font-semibold py-2 rounded-md w-full shadow-sm transition-colors">
+        <Button disabled={loginMutation.isPending} type="submit"  className="bg-tradecruz hover:bg-tradecruz-hover text-tradecruz-foreground font-semibold py-2 rounded-md w-full shadow-sm transition-colors">
           Ingresar
         </Button>
       </form>
