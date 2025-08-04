@@ -1,5 +1,10 @@
 import { api } from "@/lib/api";
-import { Voucher } from "../../shared/types/sharedTypes";
+import {
+  CreateVoucher,
+  UpdateVoucher,
+  Voucher,
+  VoucherCreateResponse,
+} from "../schemas/voucherSchema";
 
 export async function fetchVouchers(
   voucherType: string,
@@ -30,4 +35,25 @@ export async function fetchVouchers(
     data: response.data as Voucher[],
     pagination: paginationInfo,
   };
+}
+
+export async function fetchSingleVoucherDetails(id: number, type: string) {
+  const response = await api.get("/api/Voucher", {
+    params: {
+      id,
+      type,
+    },
+  });
+
+  return response.data as Voucher;
+}
+
+export async function createVoucher(data: CreateVoucher) {
+  const response = await api.post("/api/Voucher", data);
+  return response.data as VoucherCreateResponse
+}
+
+export async function updateVoucher(data: UpdateVoucher) {
+  const response = await api.put(`/api/Voucher/${data.id}`, data);
+  return response.data as Voucher;
 }
