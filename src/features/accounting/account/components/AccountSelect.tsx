@@ -52,6 +52,7 @@ export function AccountSelect({
       placeholder={placeholder}
       noOptionsMessage={() => "No hay cuentas disponibles"}
       loadingMessage={() => "Cargando cuentas..."}
+      menuPlacement="top"
     />
   );
 }
