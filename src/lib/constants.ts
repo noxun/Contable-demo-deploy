@@ -7,3 +7,9 @@ export const COMPANY_PHONES = ["(591)3-3406135","(591)3-385332","(591)3-3852168"
 export const COMPANY_NIT = "3754820020";
 
 export const SIAT_TEMPLATE_LINK = "https://siatinfo.impuestos.gob.bo/index.php/registro-de-compras-y-ventas/descarga-de-formatos"
+
+
+//VOUCHERS
+export const ARE_INVOICE_FIELDS_ENABLED = true;
+export const COMPANY_HAS_MULTIPLE_BRANCHES = true;
+export const SHOW_COST_CENTER_AND_HOJA_DE_RUTA_FIELDS = true;
