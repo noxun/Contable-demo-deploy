@@ -2,9 +2,10 @@ import { api } from "@/lib/api";
 import {
   CreateVoucher,
   UpdateVoucher,
-  Voucher,
   VoucherCreateResponse,
+  Voucher
 } from "../schemas/voucherSchema";
+import { Voucher as VoucherToList } from "../../shared/types/sharedTypes";
 
 export async function fetchVouchers(
   voucherType: string,
@@ -32,7 +33,7 @@ export async function fetchVouchers(
     : null;
 
   return {
-    data: response.data as Voucher[],
+    data: response.data as VoucherToList[],
     pagination: paginationInfo,
   };
 }

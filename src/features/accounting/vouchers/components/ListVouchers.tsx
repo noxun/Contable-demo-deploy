@@ -98,7 +98,7 @@ export default function ListVouchers({
     glossSuffix,
   });
 
-  if (isLoading || isPending) return <div>Cargando...</div>;
+  if (isLoading || isPending || !data) return <div>Cargando...</div>;
 
   if (error)
     return "Ocurrió un error al obtener los vouchers: " + error.message;
