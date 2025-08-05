@@ -258,7 +258,7 @@ export default function BalanceGeneralPage() {
         {
           dataBalanceGeneral && !isLoadingBalanceGeneral && (
             <div className="w-full py-3 flex justify-center">
-              <div className="dark:text-[#bbbbbb] px-2 w-full max-w-5xl">
+              <div className="dark:text-[#bbbbbb] px-10 py-4 w-full max-w-5xl border rounded-xl">
                 <BalanceGeneralPreview
                   dateRange={dateRange}
                   data={dataBalanceGeneral}
