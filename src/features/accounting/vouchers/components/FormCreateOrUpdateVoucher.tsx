@@ -111,6 +111,7 @@ export function FormCreateOrUpdateVoucher({
       gloss: voucherDetails?.gloss || defaultValues?.gloss || "",
       items:
         voucherDetails?.items?.map((item) => ({
+          id: item.id,
           debitBs: item.debitBs,
           debitSus: item.debitSus,
           assetBs: item.assetBs,
@@ -121,7 +122,7 @@ export function FormCreateOrUpdateVoucher({
           typeOfExpense: item.typeOfExpense || null,
           // createdAt: item.createdAt || "",
           voucherId: item.voucherId || 0,
-          // conceptExpenseId: item.conceptExpenseId || null,
+          conceptExpenseId: item.conceptExpenseId || 0,
           carpeta: item.carpeta || null,
         })) ||
         defaultValues?.items ||
@@ -134,7 +135,7 @@ export function FormCreateOrUpdateVoucher({
       createdById:
         voucherDetails?.createdById || defaultValues?.createdById || null,
       costCenterId:
-        voucherDetails?.costCenterId || defaultValues?.costCenterId || null,
+        voucherDetails?.costCenterId || defaultValues?.costCenterId || 0,
       bankId: voucherDetails?.bankId || defaultValues?.bankId || null,
       hojaDeRuta:
         voucherDetails?.hojaDeRuta || defaultValues?.hojaDeRuta || null,

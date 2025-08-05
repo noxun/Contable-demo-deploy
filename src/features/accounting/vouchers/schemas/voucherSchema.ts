@@ -110,6 +110,9 @@ export const createVoucherSchema = voucherSchema
 
 export const updateVoucherSchema = createVoucherSchema.extend({
   id: z.number(),
+  items: z
+    .array(createVoucherItemSchema.extend({ id: z.number() }))
+    .min(2, "Debe agregar al menos dos items al voucher"),
 });
 
 export const voucherCreateResponseSchema = z.object({
