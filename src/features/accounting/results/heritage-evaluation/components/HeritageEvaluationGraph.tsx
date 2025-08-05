@@ -57,7 +57,7 @@ export const HeritageEvaluationGraph = ({
   ];
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[400px] w-full">
+    <ChartContainer config={chartConfig} className="max-h-[300px] w-full">
       <BarChart data={comparisonData} accessibilityLayer>
         <CartesianGrid vertical={false} />
         <XAxis
