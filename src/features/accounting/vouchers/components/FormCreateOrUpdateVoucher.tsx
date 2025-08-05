@@ -58,6 +58,7 @@ type Props = {
   defaultValues?: CreateVoucher;
   voucherId?: number;
   type?: string;
+  onSuccess?: () => void;
 };
 
 export function FormCreateOrUpdateVoucher({
@@ -65,6 +66,7 @@ export function FormCreateOrUpdateVoucher({
   defaultValues,
   voucherId,
   type,
+  onSuccess,
 }: Props) {
   const [applyGlossToAllItems, setApplyGlossToAllItems] = useState(false);
   const [
@@ -256,11 +258,13 @@ export function FormCreateOrUpdateVoucher({
       if (validated.success) {
         await createVoucherMutation.mutateAsync(validated.data);
         form.reset();
+        onSuccess?.();
       }
     } else {
       const validated = updateVoucherSchema.safeParse(data);
       if (validated.success) {
-        updateVoucherMutation.mutate(validated.data);
+        await updateVoucherMutation.mutateAsync(validated.data);
+        onSuccess?.();
       }
     }
   }
