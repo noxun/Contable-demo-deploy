@@ -35,7 +35,7 @@ export default function ListBankExcerpts({
   const [selectedTypes, setSelectedTypes] = useState<TypeSelectionState>({});
   const [filterByAccountId, setFilterByAccountId] = useState<
     "all" | "registered" | "unregistered"
-  >("unregistered");
+  >("all");
 
   const [page, setPage] = useState(1);
   const [inputPage, setInputPage] = useState('');
