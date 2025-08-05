@@ -13,6 +13,7 @@ interface FormValues {
     name: string;
     nroCuentaBancaria: string;
     sigla: string;
+    code: string;
 }
 
 interface EditBankProps {
@@ -29,6 +30,7 @@ const EditBank = ({ isOpen, onClose, bank }: EditBankProps) => {
         name: bank.name,
         nroCuentaBancaria: bank.nroCuentaBancaria,
         sigla: bank.sigla,
+        code: bank.code,
     },
   });
 
@@ -94,12 +96,12 @@ const EditBank = ({ isOpen, onClose, bank }: EditBankProps) => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="nroCuentaBancaria" className="text-right">
-                Nro. de Cuenta Bancaria
+              <Label htmlFor="code" className="text-right">
+                Código
               </Label>
               <Input
-                id="nroCuentaBancaria"
-                {...register("nroCuentaBancaria",)}
+                id="code"
+                {...register("code",)}
                 className="col-span-3"
               />
             </div>
