@@ -1,0 +1,28 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main, nueva-delhi]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+      
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+        
+      - name: Instalar Dependencias
+        run: npm ci
+      
+      - name: Ejecutar ESLint
+        run: npm run lint
+
+      - name: Construir el proyecto
+        run: npm run build
