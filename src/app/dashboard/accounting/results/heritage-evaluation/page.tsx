@@ -14,6 +14,7 @@ import HeritageEvaluationPreview from "@/features/accounting/results/heritage-ev
 import { HeritageEvaluationData } from "@/lib/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import HeritageEvaluationPDF from "@/features/accounting/results/heritage-evaluation/components/HeritageEvaluationPDF";
+import { Loader } from "lucide-react";
 
 const options = [
   // { value: "1", label: "Excel" },
@@ -22,7 +23,10 @@ const options = [
 
 export default function HeritageEvaluationPage() {
   const [inSus, setInSus] = useState<boolean | "indeterminate">(false);
-  const [dateRange, setDateRange] = useState<DateRange | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange | null>({
+    from: new Date(2024, 0, 1),
+    to: new Date(),
+  });
   const [responseType, setResponseType] = useState<"1" | "2">("2");
 
   const {
@@ -51,11 +55,10 @@ export default function HeritageEvaluationPage() {
 
   return (
     <main className="flex flex-col gap-4">
-      <h1 className="text-4xl font-bold">Evolucion del Patrimonio</h1>
-      <div className="flex justify-evenly items-center">
-        <Label className="flex items-center justify-between w-28">
-          En dolares?
+      <div className="flex justify-evenly items-center bg-[#f8f8f8] p-4 rounded-xl dark:bg-gray-800">
+        <Label className="flex items-center justify-between gap-4 bg-white dark:bg-gray-800 px-4 py-3 rounded-lg">
           <Checkbox checked={inSus} onCheckedChange={setInSus} />
+          En dolares?
         </Label>
         <DateRangePicker
           onUpdate={handleUpdateDateRange}
@@ -74,7 +77,10 @@ export default function HeritageEvaluationPage() {
         />
       </div>
       {isLoading || isFetching || !heritageEvaluationData ? (
-        <p>Cargando...</p>
+        <div className="flex flex-row gap-2 items-center">
+          <Loader className="h-5 w-5 animate-spin" />
+          <p>Cargando...</p>
+        </div>
       ) : (
         <>
           {/* <Button
@@ -91,7 +97,7 @@ export default function HeritageEvaluationPage() {
           </Button> */}
           {responseType === "2" ? (
             <>
-              <Button asChild>
+              <Button asChild className="w-fit">
                 <PDFDownloadLink
                   document={
                     <HeritageEvaluationPDF
