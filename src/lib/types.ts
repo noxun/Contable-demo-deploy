@@ -125,7 +125,7 @@ export type BankExcerpt = {
   nroDocument: string;
   amount: number;
   glossInExtract: string;
-  internCode: any;
+  internCode: string;
   accountId: number;
   trazoRegister: boolean;
   accountingEntry: boolean;
