@@ -55,6 +55,6 @@ export async function createVoucher(data: CreateVoucher) {
 }
 
 export async function updateVoucher(data: UpdateVoucher) {
-  const response = await api.put(`/api/Voucher/${data.id}`, data);
+  const response = await api.put(`/api/Voucher/detail`, data);
   return response.data as Voucher;
 }
