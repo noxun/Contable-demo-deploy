@@ -26,9 +26,10 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
     return (
       <Fragment key={item.code}>
         <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40" >
-          <td>{item.code}</td>
+          {/* <td>{item.code}</td> */}
           <td style={{ paddingLeft: `${level * 10}px` }} className={`${currentLevel === level ? "font-normal" : "font-semibold"}`}>
-            {item.description}
+            {(level >= currentLevel && level >= 3)? item.description.toLowerCase(): item.description}
+            {/* {item.description} */}
           </td>
           <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel === item.level ? formatNumber(item.sld) : " "}</td>
           <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 1 === item.level ? formatNumber(item.sld) : " "}</td>
@@ -40,54 +41,39 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
         {level === 1 && (
           <>
             {item.description === 'ACTIVO' && (
-              <>
-                <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] font-bold dark:bg-gray-700 dark:text-gray-300">
-                  <td></td>
-                  <td>Total Activo</td>
-                  <td className="text-end">{formatNumber(data.totalActive)}</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className="h-4"></tr>
-              </>
+            <>
+              <tr className="h-1"></tr>
+              <tr className="font-bold bg-gray-50 dark:bg-gray-800">
+                <td colSpan={2}>TOTAL ACTIVO</td>
+                <td colSpan={3} className="text-end">{formatNumber(data.totalActive)}</td>
+              </tr>
+              <tr className="h-6"></tr>
+            </>
             )}
             {item.description === 'PASIVOS' && (
               <>
-                <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-gray-300 font-bold dark:bg-gray-700">
-                  <td></td>
-                  <td>Total Pasivo</td>
-                  <td className="text-end">{formatNumber(data.totalPassive)}</td>
-                  <td></td>
-                  <td></td>
+                <tr className="h-1"></tr>
+                <tr className="font-bold bg-gray-50 dark:bg-gray-800">
+                  <td colSpan={2}>TOTAL PASIVO</td>
+                  <td colSpan={3} className="text-end">{formatNumber(data.totalPassive)}</td>
                 </tr>
-                <tr className="h-4"></tr>
+                <tr className="h-6"></tr>
               </>
             )}
             {item.description === 'PATRIMONIO' && (
               <>
-                <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] dark:text-gray-300 font-bold dark:bg-gray-700">
-                  <td></td>
-                  <td>Total Patrimonio</td>
-                  <td className="text-end">{formatNumber(data.totalHeritage)}</td>
-                  <td></td>
-                  <td></td>
+                <tr className="h-2"></tr>
+                <tr className="font-bold border-gray-300 dark:bg-gray-800 bg-gray-50">
+                  <td colSpan={2}>TOTAL PATRIMONIO</td>
+                  <td colSpan={3} className="text-right pr-4">{formatNumber(data.totalHeritage)}</td>
                 </tr>
-                <tr className="bg-[#D0D0D0] dark:text-gray-300 font-bold dark:bg-gray-700">
-                  <td></td>
-                  <td>Resultado</td>
-                  <td className="text-end">{formatNumber(data.result)}</td>
-                  <td></td>
-                  <td></td>
+                <tr className="font-bold border-gray-300 dark:bg-gray-800 border-t bg-gray-50">
+                  <td colSpan={2}>RESULTADO</td>
+                  <td colSpan={3} className="text-right pr-4">{formatNumber(data.result)}</td>
                 </tr>
-                <tr className="bg-[#C0C0C0] dark:text-gray-300 font-bold dark:bg-gray-700">
-                  <td></td>
-                  <td>Total Pasivo + Patrimonio + Resultado</td>
-                  <td className="text-end">{formatNumber(data.liabilityEquityResult)}</td>
-                  <td></td>
-                  <td></td>
+                <tr className="font-bold border-gray-400 dark:bg-gray-800 bg-gray-50">
+                  <td colSpan={2}>TOTAL + PATRIMONIO + RESULTADO</td>
+                  <td colSpan={3} className="text-right pr-4">{formatNumber(data.liabilityEquityResult)}</td>
                 </tr>
               </>
             )}
@@ -100,20 +86,20 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center gap-1 pt-2 pb-4">
-        <p className="w-full text-end">{messageDate}</p>
-        <h3 className="text-xl font-bold">BALANCE GENERAL</h3>
-        <p className="w-full text-center">(Expresado en {moneyType})</p>
+      <div className="flex flex-col items-center justify-center pt-2 pb-4">
+        <h3 className="text-2xl font-bold">BALANCE GENERAL</h3>
+        <p className="w-full text-center">{messageDate}</p>
+        <p className="w-full text-center text-sm">(Expresado en {moneyType})</p>
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
-          <tr className="bg-[#E0E0E0] dark:text-gray-300 dark:bg-gray-700">
+          {/* <tr className="bg-[#E0E0E0] dark:text-[#4a4a4a]">
             <th className="font-semibold">Cuenta</th>
             <th className="font-semibold">Descripción</th>
             <th className="font-semibold">Imp. Niv. {currentLevel}</th>
             <th className="font-semibold">{(currentLevel - 1) <= 0 ? ' ' : `Imp. Niv. ${currentLevel - 1}`}</th>
             <th className="font-semibold">{(currentLevel - 2) <= 0 ? ' ' : `Imp. Niv. ${currentLevel - 2}`}</th>
-          </tr>
+          </tr> */}
         </thead>
         <tbody>
           {data.items.map((item) => renderItem(item))}

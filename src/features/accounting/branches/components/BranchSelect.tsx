@@ -15,7 +15,7 @@ type Props = {
 export function BranchSelect({
   value,
   onChange,
-  placeholder = "Selecciona una rama",
+  placeholder = "Selecciona una sucursal",
   name,
   isDisabled = false,
 }: Props) {
