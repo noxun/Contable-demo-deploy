@@ -2,7 +2,8 @@ name: ChecksPr
 
 on:
   pull_request:
-    branches: [main, nueva-delhi]
+    branches: 
+      - main
 
 jobs:
   checks:
