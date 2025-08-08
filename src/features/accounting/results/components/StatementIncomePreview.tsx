@@ -40,7 +40,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             {item.description === 'INGRESOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
+                <tr className="bg-[#f7f7f7] text-gray-700 font-bold border-b dark:text-gray-300 dark:bg-gray-800">
                   <td></td>
                   <td>Total Ingresos</td>
                   <td className="text-end">{formatNumber(data.totalIncome)}</td>
@@ -54,7 +54,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             {item.description === 'COSTOS Y GASTOS' && (
               <>
                 <tr className="h-4"></tr>
-                <tr className="bg-[#F0F0F0] font-bold dark:text-[#4a4a4a]">
+                <tr className="bg-[#f7f7f7] text-gray-700 font-bold border-b dark:text-gray-300 dark:bg-gray-800">
                   <td></td>
                   <td>Total Costos y Gastos</td>
                   <td className="text-end">{formatNumber(data.totalExpense)}</td>
@@ -72,14 +72,14 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center gap-2 py-2">
-        <p className="w-full text-end">{messageDate}</p>
-        <h3 className="text-xl font-bold">ESTADO DE RESULTADOS</h3>
-        <p className="w-full text-center">(Expresado en {moneyType})</p>
+      <div className="flex flex-col items-center justify-center py-2">
+        <h3 className="text-2xl font-bold">ESTADO DE RESULTADOS</h3>
+        <p className="w-full text-center">{messageDate}</p>
+        <p className="w-full text-center text-sm">(Expresado en {moneyType})</p>
       </div>
-      <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
+      <table className="w-full mt-4" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
-          <tr className="bg-[#E0E0E0] dark:text-[#4a4a4a]">
+          <tr className="bg-[#f7f7f7] dark:text-gray-300 dark:bg-gray-800">
             <th className="font-semibold">Cuenta</th>
             <th className="font-semibold">Descripción</th>
             <th className="font-semibold">Imp. Niv. {currentLevel}</th>
@@ -89,9 +89,9 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
         </thead>
         <tbody>
           {data.items.map((item) => renderItem(item))}
-          <tr className="h-4"></tr>
+          <tr className="h-0"></tr>
           {/* Periodo de utilidad */}
-          <tr className="bg-[#F0F0F0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#f3f3f3] border-b dark:text-gray-300 dark:bg-gray-800 font-bold">
             <td></td>
             <td>Periodo de Utilidad</td>
             <td className="text-end">{formatNumber(data.periodUtility)}</td>
@@ -99,7 +99,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             <td></td>
           </tr>
           {/* Impuestos sobre beneficios */}
-          <tr className="bg-[#D0D0D0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#f3f3f3] border-b dark:text-gray-300 dark:bg-gray-900 font-bold">
             <td></td>
             <td>Impuestos sobre beneficios</td>
             <td className="text-end">{formatNumber(data.taxOnProfits)}</td>
@@ -107,7 +107,7 @@ export const StatementIncomePreview = ({ data, dateRange, currentLevel, inSus = 
             <td></td>
           </tr>
           {/* Resultado de gestion */}
-          <tr className="bg-[#C0C0C0] dark:text-[#4a4a4a] font-bold">
+          <tr className="bg-[#f3f3f3] border-b dark:text-gray-300 dark:bg-gray-900 font-bold">
             <td></td>
             <td>Resultado de gestion</td>
             <td className="text-end">{formatNumber(data.managementResult)}</td>
