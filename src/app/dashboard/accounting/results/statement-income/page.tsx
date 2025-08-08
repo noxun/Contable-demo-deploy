@@ -294,7 +294,7 @@ export default function StatementIncomePage() {
   const columnsExpenses = createColumns('Gastos')
 
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div className="flex flex-col h-full">
       <BreadcrumbDashboard
         items={[
           {
@@ -311,7 +311,7 @@ export default function StatementIncomePage() {
           }
         ]}
       />
-      <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center">
+      <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center py-6">
         <div className="flex gap-2 flex-col">
           {/* Rango de fechas */}
           <div className="flex items-center gap-4">
@@ -357,7 +357,7 @@ export default function StatementIncomePage() {
         </div>
       </div>
 
-      <div className="flex gap-4 py-3 items-center">
+      <div className="flex gap-4 items-center">
         <Button
           onClick={handleOnGeneratePDF}
           disabled={!dataStatementIncome}
@@ -413,7 +413,7 @@ export default function StatementIncomePage() {
       {/* <GeneratedFilesTable nameFile="l_diario" data={generatedFiles} /> */}
 
       {/* Descargar PDF (estado de resultados) */}
-      <div className="h-16 flex items-center">
+      <div className="py-5 flex items-center">
         {pdfFile && (
           <ButtonLinkPDF
             pdfFile={pdfFile}
@@ -429,8 +429,8 @@ export default function StatementIncomePage() {
         )}
         {
           dataStatementIncome && !isLoadingStatementIncome && (
-            <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] max-h-screen py-3">
-              <div className="px-2 dark:text-[#bbbbbb]">
+            <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] max-h-screen">
+              <div className="px-10 dark:text-[#bbbbbb] py-4 max-w-5xl border rounded-xl dark:border-2 dark:border-gray-600">
                 <StatementIncomePreview
                   data={dataStatementIncome}
                   dateRange={dateRange}
