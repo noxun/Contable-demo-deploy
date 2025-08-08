@@ -32,6 +32,9 @@ jobs:
         
       - name: Instalar Dependencias
         run: pnpm i
+
+      - name: Copiar Variables de Entorno
+        run: cp .env.example .env
       
       - name: Ejecutar ESLint
         run: pnpm run lint
