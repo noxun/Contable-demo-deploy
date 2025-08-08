@@ -1,0 +1,43 @@
+name: ChecksPr
+
+on:
+  push:
+    branches: 
+      - main
+      - nueva-delhi
+  pull_request:
+    branches: 
+      - main
+      - nueva-delhi
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+        
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+        
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+        
+      - name: Instalar Dependencias
+        run: pnpm i
+
+      - name: Copiar Variables de Entorno
+        run: cp .env.example .env
+      
+      - name: Ejecutar ESLint
+        run: pnpm run lint
+
+      - name: Construir el proyecto
+        run: pnpm run build
