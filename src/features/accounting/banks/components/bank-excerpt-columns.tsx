@@ -14,9 +14,10 @@ import DialogNewExcerptRegisterPayment from "./DialogNewExcerptRegisterPayment";
 import DialogAccountDetailsDollar from "./DialogAccountDetailsDollar";
 import DialogFormNewVoucher from "./DialogFormNewVoucher";
 import { memo } from "react";
+import DialogAdvancedExtractRegistry from "./DialogAdvancedExtractRegistry";
 
 interface MemoizedBankRowProps {
-  bankExtract: BankExcerpt
+  bankExtract: BankExcerpt;
   bankId: string | number;
   selectedAccounts: {
     [key: number]: number | null;
@@ -108,14 +109,11 @@ export function columns(
         const bankExtract = row.original;
         return (
           <div className="flex items-center gap-2">
-            <DialogFormNewVoucher
-              bankAccountId={bankAccountId!}
-              amountFromExtract={bankExtract.amount}
-              dateFromExtract={bankExtract.date}
-              bankId={bankId as string}
-              bankExtractId={bankExtract.id}
+            <DialogAdvancedExtractRegistry
+              bankExtract={bankExtract}
+              bankId={parseInt(bankId as string)}
+              bankAccountId={bankAccountId ? parseInt(bankAccountId) : 0}
               disabled={bankExtract.accountingEntry}
-              gloss={bankExtract.glossInExtract}
             />
             <RegisterTrazoButton
               bankId={bankId}

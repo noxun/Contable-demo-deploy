@@ -1,7 +1,10 @@
 export interface IBank {
-  descripcion: string;
   id: number;
   name: string;
-  nroCuentaBancaria: string;
+  descripcion: string;
   sigla: string;
+  nroCuentaBancaria: string;
+  accountId: number;
+  code: string;
+  saldoTotal: number;
 }

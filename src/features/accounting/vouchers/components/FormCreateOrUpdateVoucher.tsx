@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -43,7 +42,10 @@ import { useCreateVoucher } from "../hooks/useCreateVoucher";
 import { useUpdateVoucher } from "../hooks/useUpdateVoucher";
 import { useVoucherDetails } from "../hooks/useVoucherDetails";
 import { AccountSelect } from "../../account/components/AccountSelect";
-import { ARE_INVOICE_FIELDS_ENABLED } from "@/lib/constants";
+import {
+  ARE_INVOICE_FIELDS_ENABLED,
+  COMPANY_HAS_MULTIPLE_BRANCHES,
+} from "@/lib/constants";
 import { ModelSeatSelect } from "../../model-seats/components/ModelSeatSelect";
 import PdfVoucher from "../../shared/components/PdfVoucher";
 import { VoucherType } from "../../shared/types/sharedTypes";
@@ -52,12 +54,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { useDebouncedCallback } from "use-debounce";
 import { BranchSelect } from "../../branches/components/BranchSelect";
+import { useChangeBankExtractStatus } from "../../banks/hooks/useChangeBankExtractStatus";
 
 type Props = {
   mode: "create" | "update";
-  defaultValues?: CreateVoucher;
+  defaultValues?: Partial<CreateVoucher>;
   voucherId?: number;
   type?: string;
+  onSuccess?: () => void;
 };
 
 export function FormCreateOrUpdateVoucher({
@@ -65,6 +69,7 @@ export function FormCreateOrUpdateVoucher({
   defaultValues,
   voucherId,
   type,
+  onSuccess,
 }: Props) {
   const [applyGlossToAllItems, setApplyGlossToAllItems] = useState(false);
   const [
@@ -91,7 +96,9 @@ export function FormCreateOrUpdateVoucher({
       type: voucherDetails?.type || defaultValues?.type || 0,
       voucherDate: voucherDetails?.voucherDate
         ? format(voucherDetails.voucherDate, "yyyy-MM-dd")
-        : defaultValues?.voucherDate || format(new Date(), "yyyy-MM-dd"),
+        : defaultValues?.voucherDate
+        ? format(defaultValues.voucherDate, "yyyy-MM-dd")
+        : format(new Date(), "yyyy-MM-dd"),
       provider: voucherDetails?.provider || defaultValues?.provider || "",
       invoice: voucherDetails?.invoice || defaultValues?.invoice || "",
       invoiceNumber:
@@ -104,6 +111,7 @@ export function FormCreateOrUpdateVoucher({
       gloss: voucherDetails?.gloss || defaultValues?.gloss || "",
       items:
         voucherDetails?.items?.map((item) => ({
+          id: item.id,
           debitBs: item.debitBs,
           debitSus: item.debitSus,
           assetBs: item.assetBs,
@@ -114,7 +122,7 @@ export function FormCreateOrUpdateVoucher({
           typeOfExpense: item.typeOfExpense || null,
           // createdAt: item.createdAt || "",
           voucherId: item.voucherId || 0,
-          // conceptExpenseId: item.conceptExpenseId || null,
+          conceptExpenseId: item.conceptExpenseId || 0,
           carpeta: item.carpeta || null,
         })) ||
         defaultValues?.items ||
@@ -127,7 +135,7 @@ export function FormCreateOrUpdateVoucher({
       createdById:
         voucherDetails?.createdById || defaultValues?.createdById || null,
       costCenterId:
-        voucherDetails?.costCenterId || defaultValues?.costCenterId || null,
+        voucherDetails?.costCenterId || defaultValues?.costCenterId || 0,
       bankId: voucherDetails?.bankId || defaultValues?.bankId || null,
       hojaDeRuta:
         voucherDetails?.hojaDeRuta || defaultValues?.hojaDeRuta || null,
@@ -256,11 +264,13 @@ export function FormCreateOrUpdateVoucher({
       if (validated.success) {
         await createVoucherMutation.mutateAsync(validated.data);
         form.reset();
+        onSuccess?.();
       }
     } else {
       const validated = updateVoucherSchema.safeParse(data);
       if (validated.success) {
-        updateVoucherMutation.mutate(validated.data);
+        await updateVoucherMutation.mutateAsync(validated.data);
+        onSuccess?.();
       }
     }
   }
@@ -378,23 +388,27 @@ export function FormCreateOrUpdateVoucher({
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    name="sucursalId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs">Sucursal</FormLabel>
-                        <FormControl>
-                          <div className="text-xs">
-                            <BranchSelect
-                              value={field?.value ? field.value.toString() : ""}
-                              onChange={field.onChange}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {COMPANY_HAS_MULTIPLE_BRANCHES ? (
+                    <FormField
+                      name="sucursalId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs">Sucursal</FormLabel>
+                          <FormControl>
+                            <div className="text-xs">
+                              <BranchSelect
+                                value={
+                                  field?.value ? field.value.toString() : ""
+                                }
+                                onChange={field.onChange}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : null}
                   {/* Gloss Field - spans 2 columns */}
                   <div className="col-span-2">
                     <FormField
