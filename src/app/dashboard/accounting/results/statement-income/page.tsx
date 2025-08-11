@@ -357,7 +357,7 @@ export default function StatementIncomePage() {
         </div>
       </div>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center py-1">
         <Button
           onClick={handleOnGeneratePDF}
           disabled={!dataStatementIncome}

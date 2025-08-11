@@ -42,22 +42,22 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
           <>
             {item.description === 'ACTIVO' && (
             <>
-              <tr className="h-4"></tr>
+              <tr className="h-1"></tr>
               <tr className="font-bold bg-gray-50 dark:bg-gray-800">
                 <td colSpan={2}>TOTAL ACTIVO</td>
                 <td colSpan={3} className="text-end">{formatNumber(data.totalActive)}</td>
               </tr>
-              <tr className="h-2"></tr>
+              <tr className="h-6"></tr>
             </>
             )}
             {item.description === 'PASIVOS' && (
               <>
-                <tr className="h-4"></tr>
+                <tr className="h-1"></tr>
                 <tr className="font-bold bg-gray-50 dark:bg-gray-800">
                   <td colSpan={2}>TOTAL PASIVO</td>
                   <td colSpan={3} className="text-end">{formatNumber(data.totalPassive)}</td>
                 </tr>
-                <tr className="h-4"></tr>
+                <tr className="h-6"></tr>
               </>
             )}
             {item.description === 'PATRIMONIO' && (
@@ -86,10 +86,10 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center gap-0.5 pt-2 pb-4">
-        <h3 className="text-xl font-bold">BALANCE GENERAL</h3>
+      <div className="flex flex-col items-center justify-center pt-2 pb-4">
+        <h3 className="text-2xl font-bold">BALANCE GENERAL</h3>
         <p className="w-full text-center">{messageDate}</p>
-        <p className="w-full text-center">(Expresado en {moneyType})</p>
+        <p className="w-full text-center text-sm">(Expresado en {moneyType})</p>
       </div>
       <table className="w-full" border={1} cellPadding="5" style={{ borderCollapse: "collapse" }}>
         <thead>
