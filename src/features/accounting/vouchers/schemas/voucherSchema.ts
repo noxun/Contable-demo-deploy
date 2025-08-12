@@ -20,7 +20,6 @@ export const voucherItemSchema = z.object({
   typeDes: z.string().nullable(),
   hojaDeRuta: z.string().nullable(),
   sucursalId: z.number(),
-  conceptExpenseId: z.number().nullable(),
   carpeta: z.string().nullable(),
 });
 
@@ -86,7 +85,6 @@ export const createVoucherItemSchema = voucherItemSchema
     debitSus: z.coerce.number().nonnegative(),
     assetBs: z.coerce.number().nonnegative(),
     assetSus: z.coerce.number().nonnegative(),
-    conceptExpenseId: z.number().nullish(),
     createdAt: z.string().nullish(),
   });
 

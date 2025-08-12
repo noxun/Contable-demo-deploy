@@ -122,7 +122,6 @@ export function FormCreateOrUpdateVoucher({
           typeOfExpense: item.typeOfExpense || null,
           // createdAt: item.createdAt || "",
           voucherId: item.voucherId || 0,
-          conceptExpenseId: item.conceptExpenseId || 0,
           carpeta: item.carpeta || null,
         })) ||
         defaultValues?.items ||
@@ -509,7 +508,6 @@ export function FormCreateOrUpdateVoucher({
                               description: "",
                               debitSus: 0,
                               assetSus: 0,
-                              conceptExpenseId: 0,
                               // createdAt: "",
                               carpeta: null,
                               voucherId: 0,
@@ -625,7 +623,6 @@ export function FormCreateOrUpdateVoucher({
                         description: "",
                         debitSus: 0,
                         assetSus: 0,
-                        conceptExpenseId: 0,
                         // createdAt: "",
                         carpeta: null,
                         voucherId: 0,
