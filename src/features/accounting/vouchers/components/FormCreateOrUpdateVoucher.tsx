@@ -178,6 +178,40 @@ export function FormCreateOrUpdateVoucher({
     name: "coin",
   });
 
+  // Helper function to check if a field should be disabled based on its counterpart
+  const isFieldDisabled = (index: number, currentField: "debitBs" | "debitSus" | "assetBs" | "assetSus") => {
+    const currentItem = watchedItems?.[index];
+    if (!currentItem) return false;
+
+    // Check if automatic rate conversion is enabled and should disable fields
+    if (isAutomaticRateConversionEnabled) {
+      if (watchedCoin === "USD" && (currentField === "debitBs" || currentField === "assetBs")) {
+        return true;
+      }
+      if (watchedCoin === "BOB" && (currentField === "debitSus" || currentField === "assetSus")) {
+        return true;
+      }
+    }
+
+    // Check mutual exclusion logic
+    switch (currentField) {
+      case "debitBs":
+        // Disable debitBs if assetBs has a value
+        return !!(currentItem.assetBs && currentItem.assetBs !== 0);
+      case "debitSus":
+        // Disable debitSus if assetSus has a value
+        return !!(currentItem.assetSus && currentItem.assetSus !== 0);
+      case "assetBs":
+        // Disable assetBs if debitBs has a value
+        return !!(currentItem.debitBs && currentItem.debitBs !== 0);
+      case "assetSus":
+        // Disable assetSus if debitSus has a value
+        return !!(currentItem.debitSus && currentItem.debitSus !== 0);
+      default:
+        return false;
+    }
+  };
+
   const { totalDebitBs, totalAssetBs, isBalanced } = useMemo(() => {
     const debitTotal = (watchedItems || []).reduce((sum, item) => {
       return sum + (Number(item?.debitBs) || 0);
@@ -700,10 +734,7 @@ export function FormCreateOrUpdateVoucher({
                                 <FormItem>
                                   <FormControl>
                                     <NumericFormat
-                                      disabled={
-                                        watchedCoin === "USD" &&
-                                        isAutomaticRateConversionEnabled
-                                      }
+                                      disabled={isFieldDisabled(index, "debitBs")}
                                       value={field.value}
                                       onValueChange={(values) => {
                                         const newValue = values.floatValue || 0;
@@ -734,10 +765,7 @@ export function FormCreateOrUpdateVoucher({
                                   <FormItem>
                                     <FormControl>
                                       <NumericFormat
-                                        disabled={
-                                          watchedCoin === "BOB" &&
-                                          isAutomaticRateConversionEnabled
-                                        }
+                                        disabled={isFieldDisabled(index, "debitSus")}
                                         value={field.value}
                                         onValueChange={(values) => {
                                           const newValue =
@@ -769,10 +797,7 @@ export function FormCreateOrUpdateVoucher({
                                 <FormItem>
                                   <FormControl>
                                     <NumericFormat
-                                      disabled={
-                                        watchedCoin === "USD" &&
-                                        isAutomaticRateConversionEnabled
-                                      }
+                                      disabled={isFieldDisabled(index, "assetBs")}
                                       value={field.value}
                                       onValueChange={(values) => {
                                         const newValue = values.floatValue || 0;
@@ -803,10 +828,7 @@ export function FormCreateOrUpdateVoucher({
                                   <FormItem>
                                     <FormControl>
                                       <NumericFormat
-                                        disabled={
-                                          watchedCoin === "BOB" &&
-                                          isAutomaticRateConversionEnabled
-                                        }
+                                        disabled={isFieldDisabled(index, "assetSus")}
                                         value={field.value}
                                         onValueChange={(values) => {
                                           const newValue =
