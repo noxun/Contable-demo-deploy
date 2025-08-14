@@ -255,13 +255,15 @@ export async function fetchAccountsByType(type: number) {
 export async function fetchTrazoInternCodes(
   page = 1,
   pageSize = 10,
-  searchQuery: string
+  searchQuery: string,
+  nameQuery: string
 ) {
   const response = await api.get("/api/Trazo/interncode", {
     params: {
       PageNumber: page,
       PageSize: pageSize,
       codeIntern: searchQuery,
+      name: nameQuery,
     },
   });
   console.log(response);

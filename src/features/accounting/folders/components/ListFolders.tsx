@@ -14,18 +14,29 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { parseAsInteger, useQueryState } from "nuqs";
 
 export default function ListFolders() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   const [inputPage, setInputPage] = useState("");
   const pageSize = 10;
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useQueryState("interncode", {
+    defaultValue: "",
+  });
+
+  const [nameQuery, setNameQuery] = useQueryState("name", {
+    defaultValue: "",
+  });
+
   const [debouncedQuery] = useDebounce(searchQuery, 1000);
-  const { data, isLoading, isError } = useTrazoInternCodes(
+  const [debouncedNameQuery] = useDebounce(nameQuery, 1000);
+
+  const { data, isLoading, isError, isFetching } = useTrazoInternCodes(
     page,
     pageSize,
-    debouncedQuery
+    debouncedQuery,
+    debouncedNameQuery
   );
 
   const internCodes = data?.data ?? [];
@@ -119,15 +130,33 @@ export default function ListFolders() {
     setPage(1);
   };
 
+  const handleNameSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNameQuery(e.target.value);
+    setPage(1);
+  };
+
   return (
     <main className="flex flex-col gap-4">
       <Input
         type="search"
         value={searchQuery}
-        placeholder="Buscar por codigo de interno"
+        placeholder="Buscar por código de interno"
         onChange={handleSearch}
       />
-      <DataTable columns={columns} data={internCodes} />
+      <Input
+        type="search"
+        value={nameQuery}
+        placeholder="Buscar por nombre"
+        onChange={handleNameSearch}
+      />
+      <div className="relative">
+        {isFetching && (
+          <div className="absolute inset-0 bg-background/50 flex items-center justify-center z-10">
+            <div className="text-sm text-muted-foreground">Cargando...</div>
+          </div>
+        )}
+        <DataTable columns={columns} data={internCodes} />
+      </div>
       {pagination && (
         <div className="flex flex-col items-center gap-4">
           <Pagination className="mt-4">
