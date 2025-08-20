@@ -11,7 +11,9 @@ export default function CustomSelect<
   return (
     <Select
       // className="my-react-select-container w-full"
+      menuPortalTarget={document.body}
       classNames={{
+        menuPortal: () => cn("my-react-select-container"),
         container: () => cn("my-react-select-container", props.className),
       }}
       classNamePrefix="my-react-select"
