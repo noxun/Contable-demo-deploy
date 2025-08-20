@@ -670,8 +670,8 @@ export function FormCreateOrUpdateVoucher({
               </div>
 
               {/* Table Container with Overflow */}
-              <div className="border rounded-lg overflow-visible">
-                <div className="max-h-[400px] overflow-visible">
+              <div className="border rounded-lg overflow-hidden">
+                <div className="max-h-[400px] overflow-y-auto overflow-x-auto">
                   <Table>
                     <TableHeader className="sticky top-0 bg-background">
                       <TableRow>
