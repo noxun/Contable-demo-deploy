@@ -62,6 +62,7 @@ type Props = {
   voucherId?: number;
   type?: string;
   onSuccess?: () => void;
+  enableSelectPortals?: boolean;
 };
 
 export function FormCreateOrUpdateVoucher({
@@ -70,6 +71,7 @@ export function FormCreateOrUpdateVoucher({
   voucherId,
   type,
   onSuccess,
+  enableSelectPortals = true,
 }: Props) {
   const [applyGlossToAllItems, setApplyGlossToAllItems] = useState(false);
   const [
@@ -179,16 +181,25 @@ export function FormCreateOrUpdateVoucher({
   });
 
   // Helper function to check if a field should be disabled based on its counterpart
-  const isFieldDisabled = (index: number, currentField: "debitBs" | "debitSus" | "assetBs" | "assetSus") => {
+  const isFieldDisabled = (
+    index: number,
+    currentField: "debitBs" | "debitSus" | "assetBs" | "assetSus"
+  ) => {
     const currentItem = watchedItems?.[index];
     if (!currentItem) return false;
 
     // Check if automatic rate conversion is enabled and should disable fields
     if (isAutomaticRateConversionEnabled) {
-      if (watchedCoin === "USD" && (currentField === "debitBs" || currentField === "assetBs")) {
+      if (
+        watchedCoin === "USD" &&
+        (currentField === "debitBs" || currentField === "assetBs")
+      ) {
         return true;
       }
-      if (watchedCoin === "BOB" && (currentField === "debitSus" || currentField === "assetSus")) {
+      if (
+        watchedCoin === "BOB" &&
+        (currentField === "debitSus" || currentField === "assetSus")
+      ) {
         return true;
       }
     }
@@ -712,7 +723,7 @@ export function FormCreateOrUpdateVoucher({
                                   <FormControl>
                                     <div className="text-xs">
                                       <AccountSelect
-                                        usePortal
+                                        usePortal={enableSelectPortals}
                                         value={
                                           field?.value
                                             ? field.value.toString()
@@ -735,7 +746,10 @@ export function FormCreateOrUpdateVoucher({
                                 <FormItem>
                                   <FormControl>
                                     <NumericFormat
-                                      disabled={isFieldDisabled(index, "debitBs")}
+                                      disabled={isFieldDisabled(
+                                        index,
+                                        "debitBs"
+                                      )}
                                       value={field.value}
                                       onValueChange={(values) => {
                                         const newValue = values.floatValue || 0;
@@ -766,7 +780,10 @@ export function FormCreateOrUpdateVoucher({
                                   <FormItem>
                                     <FormControl>
                                       <NumericFormat
-                                        disabled={isFieldDisabled(index, "debitSus")}
+                                        disabled={isFieldDisabled(
+                                          index,
+                                          "debitSus"
+                                        )}
                                         value={field.value}
                                         onValueChange={(values) => {
                                           const newValue =
@@ -798,7 +815,10 @@ export function FormCreateOrUpdateVoucher({
                                 <FormItem>
                                   <FormControl>
                                     <NumericFormat
-                                      disabled={isFieldDisabled(index, "assetBs")}
+                                      disabled={isFieldDisabled(
+                                        index,
+                                        "assetBs"
+                                      )}
                                       value={field.value}
                                       onValueChange={(values) => {
                                         const newValue = values.floatValue || 0;
@@ -829,7 +849,10 @@ export function FormCreateOrUpdateVoucher({
                                   <FormItem>
                                     <FormControl>
                                       <NumericFormat
-                                        disabled={isFieldDisabled(index, "assetSus")}
+                                        disabled={isFieldDisabled(
+                                          index,
+                                          "assetSus"
+                                        )}
                                         value={field.value}
                                         onValueChange={(values) => {
                                           const newValue =
