@@ -507,6 +507,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               )}
               <div>
                 <Calendar
+                  compact={true}
                   mode="range"
                   onSelect={(value: { from?: Date; to?: Date } | undefined) => {
                     if (value?.from != null) {
@@ -551,7 +552,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             size="sm"
             className="h-7 px-2 text-xs"
           >
-            Cancel
+            Cancelar
           </Button>
           <Button
             onClick={() => {
@@ -566,7 +567,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             size="sm"
             className="h-7 px-2 text-xs"
           >
-            Update
+            Actualizar
           </Button>
         </div>
       </PopoverContent>
