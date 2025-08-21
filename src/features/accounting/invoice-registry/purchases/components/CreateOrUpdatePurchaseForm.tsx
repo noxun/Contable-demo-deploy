@@ -507,6 +507,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                   <FormLabel>Cuenta Debe</FormLabel>
                   <FormControl>
                     <AccountSelect
+                      usePortal={false}
                       value={field.value ? field.value.toString() : null}
                       onChange={field.onChange}
                     />
@@ -528,6 +529,7 @@ export function CreateOrUpdatePurchaseForm({ mode, purchase }: Props) {
                   <FormLabel>Cuenta Haber</FormLabel>
                   <FormControl>
                     <AccountSelect
+                      usePortal={false}
                       value={field.value ? field.value.toString() : null}
                       onChange={field.onChange}
                     />

@@ -12,6 +12,7 @@ type AccountSelectProps = {
   placeholder?: string;
   isDisabled?: boolean;
   name?: string;
+  usePortal: boolean;
 };
 
 export function AccountSelect({
@@ -20,6 +21,7 @@ export function AccountSelect({
   placeholder = "Selecciona una cuenta",
   isDisabled = false,
   name,
+  usePortal = false,
 }: AccountSelectProps) {
   const { data: accounts = [], isError, isLoading } = useAccounts();
 
@@ -53,6 +55,7 @@ export function AccountSelect({
       noOptionsMessage={() => "No hay cuentas disponibles"}
       loadingMessage={() => "Cargando cuentas..."}
       menuPlacement="top"
+      menuPortalTarget={typeof window !== "undefined" && usePortal ? document.body : null}
     />
   );
 }

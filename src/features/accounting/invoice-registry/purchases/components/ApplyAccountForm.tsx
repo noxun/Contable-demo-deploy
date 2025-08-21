@@ -58,6 +58,7 @@ export function ApplyAccountForm({ purchaseId, nit }: Props) {
               <FormLabel>Cuenta Débito</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountDebitId"
                   value={field.value ? field.value.toString() : null}
                   onChange={field.onChange}
@@ -78,6 +79,7 @@ export function ApplyAccountForm({ purchaseId, nit }: Props) {
               <FormLabel>Cuenta Haber</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountAssetId"
                   value={field.value ? field.value.toString() : null}
                   onChange={field.onChange}

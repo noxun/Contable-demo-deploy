@@ -200,6 +200,7 @@ export default function ConfigForm() {
               <FormLabel>Impuesto a las transacciones</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountImpId"
                   value={field.value ? field.value.toString() : ""}
                   onChange={field.onChange}
@@ -220,6 +221,7 @@ export default function ConfigForm() {
               <FormLabel>Ventas y/o Servicios</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountSaleId"
                   value={field.value ? field.value.toString() : ""}
                   onChange={field.onChange}
@@ -240,6 +242,7 @@ export default function ConfigForm() {
               <FormLabel>Débito Fiscal IVA</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountDebitIvaId"
                   value={field.value ? field.value.toString() : ""}
                   onChange={field.onChange}
@@ -260,6 +263,7 @@ export default function ConfigForm() {
               <FormLabel>Impuesto a las trans. por pagar</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountImpByPayId"
                   value={field.value ? field.value.toString() : ""}
                   onChange={field.onChange}
@@ -280,6 +284,7 @@ export default function ConfigForm() {
               <FormLabel>Crédito Fiscal IVA</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   name="accountCreditIvaId"
                   value={field.value ? field.value.toString() : ""}
                   onChange={field.onChange}

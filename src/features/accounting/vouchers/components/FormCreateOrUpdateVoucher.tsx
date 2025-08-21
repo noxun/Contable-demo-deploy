@@ -712,6 +712,7 @@ export function FormCreateOrUpdateVoucher({
                                   <FormControl>
                                     <div className="text-xs">
                                       <AccountSelect
+                                        usePortal
                                         value={
                                           field?.value
                                             ? field.value.toString()

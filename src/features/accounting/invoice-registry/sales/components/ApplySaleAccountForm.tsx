@@ -57,6 +57,7 @@ export function ApplySaleAccountForm({ saleId, nit }: Props) {
               <FormLabel>Cuenta Débito</FormLabel>
               <FormControl>
                 <AccountSelect
+                  usePortal={false}
                   value={field.value ? field.value.toString() : ""}
                   onChange={(value) => field.onChange(Number(value))}
                 />

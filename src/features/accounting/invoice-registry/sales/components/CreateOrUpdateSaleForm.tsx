@@ -498,6 +498,7 @@ export function CreateOrUpdateSaleForm({ mode, sale }: Props) {
                   <FormLabel>Cuenta Débito</FormLabel>
                   <FormControl>
                     <AccountSelect
+                      usePortal={false}
                       value={field.value?.toString() || ""}
                       onChange={field.onChange}
                     />
