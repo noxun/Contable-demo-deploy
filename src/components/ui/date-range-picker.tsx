@@ -301,15 +301,15 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
     isSelected: boolean;
   }): JSX.Element => (
     <Button
-      className={cn(isSelected && "pointer-events-none")}
+      className={cn(isSelected && "pointer-events-none", "h-6 px-2 text-xs")}
       variant="ghost"
       onClick={() => {
         setPreset(preset);
       }}
     >
       <>
-        <span className={cn("pr-2 opacity-0", isSelected && "opacity-70")}>
-          <CheckIcon width={18} height={18} />
+        <span className={cn("pr-1 opacity-0", isSelected && "opacity-70")}>
+          <CheckIcon width={12} height={12} />
         </span>
         {label}
       </>
@@ -344,15 +344,15 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       }}
     >
       <PopoverTrigger asChild>
-        <Button size={"lg"} variant="outline">
+        <Button size={"sm"} variant="outline" className="h-8">
           <div className="text-right">
-            <div className="py-1">
-              <div>{`${formatDate(range.from, locale)}${
+            <div className="py-0.5">
+              <div className="text-xs">{`${formatDate(range.from, locale)}${
                 range.to != null ? " - " + formatDate(range.to, locale) : ""
               }`}</div>
             </div>
             {rangeCompare != null && (
-              <div className="opacity-60 text-xs -mt-1">
+              <div className="opacity-60 text-[10px] -mt-0.5">
                 <>
                   vs. {formatDate(rangeCompare.from, locale)}
                   {rangeCompare.to != null
@@ -362,22 +362,22 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               </div>
             )}
           </div>
-          <div className="pl-1 opacity-60 -mr-2 scale-125">
+          <div className="pl-1 opacity-60 -mr-1">
             {isOpen ? (
-              <ChevronUpIcon width={24} />
+              <ChevronUpIcon width={16} />
             ) : (
-              <ChevronDownIcon width={24} />
+              <ChevronDownIcon width={16} />
             )}
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align={align} className="w-auto">
-        <div className="flex py-2">
+      <PopoverContent align={align} className="w-auto p-2">
+        <div className="flex py-1">
           <div className="flex">
             <div className="flex flex-col">
-              <div className="flex flex-col lg:flex-row gap-2 px-3 justify-end items-center lg:items-start pb-4 lg:pb-0">
+              <div className="flex flex-col lg:flex-row gap-1 px-2 justify-end items-center lg:items-start pb-2 lg:pb-0">
                 {showCompare && (
-                  <div className="flex items-center space-x-2 pr-4 py-1">
+                  <div className="flex items-center space-x-1 pr-2 py-0.5">
                     <Switch
                       defaultChecked={Boolean(rangeCompare)}
                       onCheckedChange={(checked: boolean) => {
@@ -412,11 +412,11 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                       }}
                       id="compare-mode"
                     />
-                    <Label htmlFor="compare-mode">Compare</Label>
+                    <Label htmlFor="compare-mode" className="text-xs">Compare</Label>
                   </div>
                 )}
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2">
+                <div className="flex flex-col gap-1">
+                  <div className="flex gap-1">
                     <DateInput
                       value={range.from}
                       onChange={(date) => {
@@ -429,7 +429,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                         }));
                       }}
                     />
-                    <div className="py-1">-</div>
+                    <div className="py-0.5 text-xs">-</div>
                     <DateInput
                       value={range.to}
                       onChange={(date) => {
@@ -443,7 +443,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                     />
                   </div>
                   {rangeCompare != null && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-1">
                       <DateInput
                         value={rangeCompare?.from}
                         onChange={(date) => {
@@ -465,7 +465,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                           }
                         }}
                       />
-                      <div className="py-1">-</div>
+                      <div className="py-0.5 text-xs">-</div>
                       <DateInput
                         value={rangeCompare?.to}
                         onChange={(date) => {
@@ -493,7 +493,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                     setPreset(value);
                   }}
                 >
-                  <SelectTrigger className="w-[180px] mx-auto mb-2">
+                  <SelectTrigger className="w-[160px] mx-auto mb-1 h-7 text-xs">
                     <SelectValue placeholder="Select..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -527,8 +527,8 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             </div>
           </div>
           {!isSmallScreen && (
-            <div className="flex flex-col items-end gap-1 pr-2 pl-6 pb-6">
-              <div className="flex w-full flex-col items-end gap-1 pr-2 pl-6 pb-6">
+            <div className="flex flex-col items-end gap-0.5 pr-1 pl-3 pb-3">
+              <div className="flex w-full flex-col items-end gap-0.5 pr-1 pl-3 pb-3">
                 {PRESETS.map((preset) => (
                   <PresetButton
                     key={preset.name}
@@ -541,13 +541,15 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             </div>
           )}
         </div>
-        <div className="flex justify-end gap-2 py-2 pr-4">
+        <div className="flex justify-end gap-1 py-1 pr-2">
           <Button
             onClick={() => {
               setIsOpen(false);
               resetValues();
             }}
             variant="ghost"
+            size="sm"
+            className="h-7 px-2 text-xs"
           >
             Cancel
           </Button>
@@ -561,6 +563,8 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                 onUpdate?.({ range, rangeCompare });
               }
             }}
+            size="sm"
+            className="h-7 px-2 text-xs"
           >
             Update
           </Button>
