@@ -238,13 +238,13 @@ export function DataTableCustom<TData, TValue>({
             )}
             {/* Fila de totales */}
             <TableRow >
-              {columns.map((column) => {
+              {columns.map((column, index) => {
                 if (!('accessorKey' in column)) return '';
                 const isVisible = table.getColumn(column.accessorKey as string)?.getIsVisible();
                 if (!isVisible) return ''
 
                 return (
-                  <TableCell key={column.id + crypto.randomUUID()} className="font-bold">
+                  <TableCell key={`total-${index}`} className="font-bold">
                     {isVisible && 'sum' in column && column.sum
                       ? formatNumber(totals[column.accessorKey as string]) || 0
                       : ' '}
