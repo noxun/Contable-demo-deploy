@@ -46,8 +46,10 @@ export default function DiaryBookPreview({
           {initDate === endDate ? initDate : `${initDate} al ${endDate}`}
         </span>
       </div>
+      
+      <div className="overflow-x-auto">
       {/* Table Header*/}
-      <div className="grid grid-cols-[15%_40%_15%_15%_15%] font-bold text-base">
+      <div className="grid min-w-[800px] grid-cols-[15%_40%_15%_15%_15%] font-bold text-base">
         <div>Código</div>
         <div>Detalle</div>
         <div className="justify-self-center">Hoja de Ruta</div>
@@ -55,7 +57,7 @@ export default function DiaryBookPreview({
         <div className="justify-self-center">Haber</div>
       </div>
       {/* Virtualized Table Data */}
-      <div>
+      <div className="min-w-[800px]">
         <Virtuoso
           // style={{ height: "calc(100vh - 200px)" }}
           style={{ height: 400 }}
@@ -132,7 +134,7 @@ export default function DiaryBookPreview({
         />
       </div>
       {/* Table footer */}
-      <div id="row4" className="grid grid-cols-5 text-lg">
+      <div id="row4" className="grid min-w-[800px] grid-cols-5 text-lg">
         <div className="col-span-3 font-bold">Total</div>
         <div className="font-bold justify-self-end">
           {formatNumber(
@@ -148,6 +150,7 @@ export default function DiaryBookPreview({
               : diaryBookData?.total.haber ?? 0
           )}
         </div>
+      </div>
       </div>
     </section>
   );
