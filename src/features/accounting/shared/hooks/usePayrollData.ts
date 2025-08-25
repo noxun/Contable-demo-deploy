@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 
 export default function usePayrollData(procedureId: number, isEnabled: boolean = false) {
   return useQuery({
-    queryKey: ["payroll"],
+    queryKey: ["payroll", procedureId],
     queryFn: () => generatePayroll(procedureId),
     enabled: isEnabled,
   })
