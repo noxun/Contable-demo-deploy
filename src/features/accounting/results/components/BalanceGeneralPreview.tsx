@@ -28,8 +28,7 @@ export const BalanceGeneralPreview = ({ data, dateRange, currentLevel, inSus = f
         <tr className="hover:bg-blue-500/20 dark:hover:bg-blue-500/40" >
           {/* <td>{item.code}</td> */}
           <td style={{ paddingLeft: `${level * 10}px` }} className={`${currentLevel === level ? "font-normal" : "font-semibold"}`}>
-            {(level >= currentLevel && level >= 3)? item.description.toLowerCase(): item.description}
-            {/* {item.description} */}
+            {item.description}
           </td>
           <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel === item.level ? formatNumber(item.sld) : " "}</td>
           <td className={`text-end ${currentLevel === level ? "font-normal" : "font-semibold"}`}>{currentLevel - 1 === item.level ? formatNumber(item.sld) : " "}</td>
