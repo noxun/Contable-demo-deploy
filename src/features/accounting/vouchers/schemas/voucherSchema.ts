@@ -39,7 +39,6 @@ export const voucherSchema = z.object({
   bankItemRef: z.number(),
   accountingBoxItemRef: z.number(),
   costCenterId: z.number().nullable(),
-  createdById: z.number().nullable(),
   bookSBRef: z.number(),
   typeDocument: z.string().nullable(),
   provider: z.string().nullable(),

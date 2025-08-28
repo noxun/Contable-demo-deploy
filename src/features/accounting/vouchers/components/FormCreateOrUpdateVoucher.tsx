@@ -133,10 +133,8 @@ export function FormCreateOrUpdateVoucher({
       canceledTo:
         voucherDetails?.canceledTo || defaultValues?.canceledTo || null,
       num: voucherDetails?.num || defaultValues?.num || 0,
-      createdById:
-        voucherDetails?.createdById || defaultValues?.createdById || null,
       costCenterId:
-        voucherDetails?.costCenterId || defaultValues?.costCenterId || 0,
+        voucherDetails?.costCenterId || defaultValues?.costCenterId || null,
       bankId: voucherDetails?.bankId || defaultValues?.bankId || null,
       hojaDeRuta:
         voucherDetails?.hojaDeRuta || defaultValues?.hojaDeRuta || null,
