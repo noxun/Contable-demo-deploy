@@ -96,6 +96,7 @@ export default function DialogAdvancedExtractRegistry({
             mode="create"
             onSuccess={handleOnSuccess}
             defaultValues={defaultValues}
+            enableSelectPortals={false}
           />
         )}
       </DialogContent>
