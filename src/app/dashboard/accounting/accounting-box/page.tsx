@@ -48,13 +48,15 @@ const AccountingBoxPage = () => {
   } = useAccountingBoxBalance(accountingBoxId);
 
   const filteredData = useMemo(() => {
-    return accountingBox?.filter((item) => {
-      if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
-      const itemDate = new Date(item.fecha);
-      return (
-        itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
-      );
-    }) ?? [];
+    return (
+      accountingBox?.filter((item) => {
+        if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
+        const itemDate = new Date(item.fecha);
+        return (
+          itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
+        );
+      }) ?? []
+    );
   }, [accountingBox, dateFilter]);
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -109,7 +111,10 @@ const AccountingBoxPage = () => {
         <div>Selecciona una Caja para mostrar sus datos...</div>
       ) : (
         <div className="flex flex-col gap-4">
-          <BiggerBookByAccountCodeDialog accountCode={selectedAccountingBox.account.code}/>
+          <BiggerBookByAccountCodeDialog
+            accountCode={selectedAccountingBox.account.code}
+            triggerType="button"
+          />
           <BiggerBookTable accountCode={selectedAccountingBox.account.code} />
           {/* <DataTable data={filteredData} columns={columns} /> */}
         </div>
@@ -119,4 +124,3 @@ const AccountingBoxPage = () => {
 };
 
 export default AccountingBoxPage;
-

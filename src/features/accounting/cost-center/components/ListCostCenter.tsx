@@ -49,7 +49,7 @@ export default function ListCostCenter({
                         {item.code}
                       </span>
                       <span className="text-sm flex-1">{item.description}</span>
-                      <BiggerBookByAccountCodeDialog accountCode={item.code} />
+                      <BiggerBookByAccountCodeDialog accountCode={item.code} triggerType="button"/>
                     </div>
                   </div>
                 ))}
