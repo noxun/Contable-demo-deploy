@@ -74,7 +74,7 @@ export const TableBank = (props: { data: Bank[] }) => {
         return (
           <div className="flex items-center justify-center gap-2">
             {/* <DialogExcerptTable bankId={bank.id}/> */}
-            <BiggerBookByAccountCodeDialog accountCode={bank.code} />
+            <BiggerBookByAccountCodeDialog accountCode={bank.code} triggerType="button" />
             <Button asChild>
               <Link
                 href={`/dashboard/accounting/banks/${
