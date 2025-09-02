@@ -12,7 +12,7 @@ import { FormCreateOrUpdateVoucher } from "../../vouchers/components/FormCreateO
 import { Button } from "@/components/ui/button";
 import { ReceiptText } from "lucide-react";
 import { useMemo, useState } from "react";
-import { addDays, format, parse, set } from "date-fns";
+import { addDays, format, parse } from "date-fns";
 
 type Props = {
   bankExtract: BankExcerpt;
