@@ -1,6 +1,7 @@
 import axios from "axios";
 import { DropdownOption, PaymentRoll, ProcedureDataset } from "./trazoTypes";
 import { env } from "@/env";
+import { SubDataResponse } from "@/features/accounting/folders/schemas/subDataSchema";
 
 const trazoUrl = env.NEXT_PUBLIC_TRAZO_URL;
 
@@ -65,7 +66,7 @@ export async function postSubData(values: {
     `${trazoUrl}/api/dataSet/procedure/${procedureId}/field/${fieldId}/subdata`,
     data
   );
-  return response.data;
+  return response.data as SubDataResponse;
 }
 
 export async function putSubData(values: {
@@ -82,14 +83,14 @@ export async function putSubData(values: {
     `${trazoUrl}/api/dataSet/procedure/subData/${subDataId}`,
     data
   );
-  return response.data;
+  return response.data as SubDataResponse;
 }
 
 export async function deleteSubData(subDataId: number) {
   const response = await axios.delete(
     `${trazoUrl}/api/dataSet/procedure/subData/${subDataId}`
   );
-  return response.data;
+  return response.data as SubDataResponse;
 }
 
 //api/dataSet/subData/{subDataId}/receipt
