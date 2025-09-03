@@ -21,8 +21,9 @@ import { postSubData } from "@/lib/trazo-data";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { useAddPayrollSubDataMutation } from "../hooks/useAddPayrollSubDataMutation";
 
-const addPayrollSubDataSchema = z.object({
+export const addPayrollSubDataSchema = z.object({
   label: z.string(),
   description: z.coerce.number(),
   description2: z.coerce.number(),
@@ -54,30 +55,18 @@ export default function AddPayrollSubDataForm({
     },
   });
 
-  const queryClient = useQueryClient();
 
   const { data: dropdownOptions, isLoading, isError } = useDropdownOptions(urlLabel);
 
-  const addPayrollSubDataMutation = useMutation({
-    mutationFn: postSubData,
-    onSuccess: () => {
-      form.reset();
-      toast.success("Campo agregado correctamente");
-      queryClient.invalidateQueries({queryKey: ["procedureDataset", procedureId]});
-    },
-    onError: (error: AxiosError) => {
-      console.error(error);
-      toast.error("Error al agregar el campo");
-    }
-  })
+  const addPayrollSubDataMutation = useAddPayrollSubDataMutation();
 
   const onSubmit = (values: AddPayrollSubDataFormValues) => {
-    console.log(values);
     addPayrollSubDataMutation.mutate({
       procedureId,
       fieldId,
       data: values
     })
+    form.reset();
   };
 
   const { watch, setValue } = form;

@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { SubData } from "@/lib/trazoTypes";
+import { useEditPayrollSubDataMutation } from "../hooks/useEditPayrollSubDataMutation";
 
 const editPayrollSubDataSchema = z.object({
   label: z.string(),
@@ -61,37 +62,30 @@ export default function EditPayrollSubDataForm({
 
   const queryClient = useQueryClient();
 
-  const { data: dropdownOptions, isLoading, isError } = useDropdownOptions(urlLabel);
+  const {
+    data: dropdownOptions,
+    isLoading,
+    isError,
+  } = useDropdownOptions(urlLabel);
 
-  const editPayrollSubDataMutation = useMutation({
-    mutationFn: putSubData,
-    onSuccess: () => {
-      form.reset();
-      toast.success("Campo editado correctamente");
-      queryClient.invalidateQueries({queryKey: ["procedureDataset", procedureId]});
-    },
-    onError: (error: AxiosError) => {
-      console.error(error);
-      toast.error("Error al editar el campo");
-    }
-  })
+  const editPayrollSubDataMutation = useEditPayrollSubDataMutation();
 
   const onSubmit = (values: EditPayrollSubDataFormValues) => {
     console.log(values);
     editPayrollSubDataMutation.mutate({
       data: values,
-      subDataId
-    })
+      subDataId,
+    });
+    form.reset();
   };
 
   const { watch, setValue } = form;
-  const description = watch("description"); 
+  const description = watch("description");
   const description2 = watch("description2");
 
   useEffect(() => {
-    setValue("observation", (description-description2)); // Sync description2 with description
+    setValue("observation", description - description2); // Sync description2 with description
   }, [description, description2, setValue]);
-
 
   if (isError) {
     return <div>Hubo un error al obtener las opciones del dropdown</div>;
@@ -107,9 +101,13 @@ export default function EditPayrollSubDataForm({
             <FormItem>
               <FormLabel>Lista de Campos</FormLabel>
               <FormControl>
-                <CustomSelect 
-                  value={dropdownOptions?.find((option) => option.name === field.value)}
-                  options={Array.isArray(dropdownOptions) ? dropdownOptions : []}
+                <CustomSelect
+                  value={dropdownOptions?.find(
+                    (option) => option.name === field.value
+                  )}
+                  options={
+                    Array.isArray(dropdownOptions) ? dropdownOptions : []
+                  }
                   isLoading={isLoading}
                   getOptionLabel={(option) => option.name}
                   getOptionValue={(option) => option.name}
