@@ -20,6 +20,7 @@ export default function ProcedureTablesList({
 }: ProcedureTablesListProps) {
   return (
     <div className="space-y-4">
+      <h1>Planilla {value}</h1>
       <SendAllSubDatasButton
         totalProformaBs={totalProformaBs}
         procedureDataset={procedureDataset}
