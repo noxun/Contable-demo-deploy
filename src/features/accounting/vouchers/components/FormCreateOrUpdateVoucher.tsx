@@ -340,6 +340,7 @@ export function FormCreateOrUpdateVoucher({
                       <FormItem>
                         <FormLabel className="text-xs">Tipo</FormLabel>
                         <Select
+                          disabled={mode === "update"}
                           onValueChange={field.onChange}
                           value={field.value.toString()}
                         >
