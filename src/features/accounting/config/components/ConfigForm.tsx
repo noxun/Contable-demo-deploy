@@ -297,6 +297,69 @@ export default function ConfigForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={configForm.control}
+          name="accountBuyId"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Cuenta de Compras</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  usePortal={false}
+                  name="accountBuyId"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para las compras de inventario o mercadería
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountSalariesAndWages"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Cuenta de Sueldos y Salarios</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  usePortal={false}
+                  name="accountSalariesAndWages"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para los sueldos y salarios del personal
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={configForm.control}
+          name="accountFixedAsset"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Cuenta de Activo Fijo</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  usePortal={false}
+                  name="accountFixedAsset"
+                  value={field.value ? field.value.toString() : ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Cuenta contable para los activos fijos de la empresa
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
           type="submit"
           className="col-span-4 justify-self-end mt-6 w-1/3"

@@ -18,6 +18,9 @@ export const configValuesSchema = z.object({
   accountDebitIvaId: z.number(),
   accountImpByPayId: z.number(),
   accountCreditIvaId: z.number(),
+  accountBuyId: z.number(),
+  accountSalariesAndWages: z.number(),
+  accountFixedAsset: z.number()
 });
 
 export const configFormSchema = configValuesSchema.omit({ id: true }).extend({
@@ -37,6 +40,9 @@ export const configFormSchema = configValuesSchema.omit({ id: true }).extend({
   accountDebitIvaId: z.coerce.number(),
   accountImpByPayId: z.coerce.number(),
   accountCreditIvaId: z.coerce.number(),
+  accountBuyId: z.coerce.number(),
+  accountSalariesAndWages: z.coerce.number(),
+  accountFixedAsset: z.coerce.number()
 });
 
 export type ConfigValuesType = z.infer<typeof configValuesSchema>;
