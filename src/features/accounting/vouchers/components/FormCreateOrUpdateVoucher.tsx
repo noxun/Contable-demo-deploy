@@ -36,7 +36,7 @@ import {
 import { NumericFormat } from "react-number-format";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import { Trash, Upload, FileIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useCreateVoucher } from "../hooks/useCreateVoucher";
 import { useUpdateVoucher } from "../hooks/useUpdateVoucher";
@@ -55,6 +55,8 @@ import { Switch } from "@/components/ui/switch";
 import { useDebouncedCallback } from "use-debounce";
 import { BranchSelect } from "../../branches/components/BranchSelect";
 import { useChangeBankExtractStatus } from "../../banks/hooks/useChangeBankExtractStatus";
+import { VoucherFileUploadDialog } from "./VoucherFileUploadDialog";
+import { VoucherFilesManagerDialog } from "./VoucherFilesManagerDialog";
 
 type Props = {
   mode: "create" | "update";
@@ -79,6 +81,7 @@ export function FormCreateOrUpdateVoucher({
     setIsAutomaticRateConversionEnabled,
   ] = useState(false);
   const [isDollarEditionActive, setIsDollarEditionActive] = useState(false);
+  const [createdVoucherId, setCreatedVoucherId] = useState<number | null>(null);
 
   const createVoucherMutation = useCreateVoucher();
   const updateVoucherMutation = useUpdateVoucher();
@@ -304,7 +307,11 @@ export function FormCreateOrUpdateVoucher({
     if (mode === "create") {
       const validated = createVoucherSchema.safeParse(data);
       if (validated.success) {
-        await createVoucherMutation.mutateAsync(validated.data);
+        const result = await createVoucherMutation.mutateAsync(validated.data);
+        // Store the created voucher ID for file upload
+        if (result && typeof result === 'object' && 'id' in result) {
+          setCreatedVoucherId(result.id as number);
+        }
         form.reset();
         onSuccess?.();
       }
@@ -1009,6 +1016,50 @@ export function FormCreateOrUpdateVoucher({
                       />
                     </div>
                   ) : null}
+                </div>
+
+                {/* File Management Actions */}
+                <div className="space-y-2 border-t pt-3">
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Gestión de archivos:
+                  </p>
+                  <div className="space-y-2">
+                    {/* Upload files for newly created voucher */}
+                    {mode === "create" && (createdVoucherId || createVoucherMutation.data?.id) ? (
+                      <VoucherFileUploadDialog
+                        voucherId={createdVoucherId || createVoucherMutation.data?.id || 0}
+                        trigger={
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full justify-start text-sm h-8"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            📎 Adjuntar Archivos al Último Voucher Creado
+                          </Button>
+                        }
+                      />
+                    ) : null}
+                    
+                    {/* Manage files for existing voucher */}
+                    {mode === "update" && voucherId ? (
+                      <VoucherFilesManagerDialog
+                        voucherId={voucherId}
+                        trigger={
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full justify-start text-sm h-8"
+                          >
+                            <FileIcon className="w-4 h-4 mr-2" />
+                            📁 Gestionar Archivos
+                          </Button>
+                        }
+                      />
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
