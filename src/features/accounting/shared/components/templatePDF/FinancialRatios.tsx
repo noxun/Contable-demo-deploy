@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    marginTop: 60,
+    marginTop: 40,
     gap: 2,
     textAlign: "center"
   },
