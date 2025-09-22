@@ -57,8 +57,8 @@ export default function FinancialRatiosPage() {
           ],
           interpretation:
             FinancialRatiosData?.liquidityRatios.currentLiquidity ?? 0 >= 1
-              ? `Cuenta con ${FinancialRatiosData?.liquidityRatios.currentLiquidity.toFixed(2)} Bs por cada 1 Bs de deuda a corto plazo.`
-              : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.currentLiquidity.toFixed(2)} Bs por cada 1 Bs de deuda, lo que puede ser riesgoso.`,
+              ? `Con un ratio de ${FinancialRatiosData?.liquidityRatios.currentLiquidity.toFixed(2)}, la empresa puede pagar sus deudas a corto plazo.`
+              : `con un resultado menor a 1, la empresa no puede pagar sus deudas con sus activos más líquidos.`,
           isPercentage: false
         },
         {
@@ -72,8 +72,8 @@ export default function FinancialRatiosPage() {
           ],
           interpretation:
             FinancialRatiosData?.liquidityRatios.acidTest ?? 0 >= 1
-              ? `Tiene ${FinancialRatiosData?.liquidityRatios.acidTest.toFixed(2)} Bs en activos líquidos (sin inventario) por cada 1 Bs de deuda.`
-              : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.acidTest.toFixed(2)} Bs en activos líquidos, lo que puede indicar falta de liquidez.`,
+              ? `Con un ratio de ${FinancialRatiosData?.liquidityRatios.acidTest.toFixed(2)}, la empresa tiene suficientes activos líquidos para cubrir sus obligaciones a corto plazo.`
+              : `Con un ratio menor a 1, indica que la empresa podría tener dificultades para pagar sus obligaciones a corto plazo`,
           isPercentage: false
         },
         {
@@ -86,8 +86,8 @@ export default function FinancialRatiosPage() {
           ],
           interpretation:
             FinancialRatiosData?.liquidityRatios.cashRatio ?? 0 >= 1
-              ? `Tiene ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(1)}% de efectivo disponible frente a su deuda a corto plazo.`
-              : `Solo dispone de ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(1)}%, lo que podría ser un riesgo.`,
+              ? `Con un ratio de ${FinancialRatiosData?.liquidityRatios.cashRatio.toFixed(1)}, la empresa dispone de suficiente efectivo para cubrir sus pasivos corrientes.`
+              : `Un valor inferior a 1 indica que la empresa no tiene suficiente efectivo para pagar sus pasivos corrientes. `,
           isPercentage: true
         },
         {
@@ -100,8 +100,8 @@ export default function FinancialRatiosPage() {
           ],
           interpretation:
             FinancialRatiosData?.liquidityRatios.netWorkingCapital ?? 0 >= 0
-              ? `Tiene un excedente de ${FinancialRatiosData?.liquidityRatios.netWorkingCapital.toFixed(2)} Bs después de cubrir sus pasivos a corto plazo.`
-              : `El capital de trabajo es negativo en ${FinancialRatiosData?.liquidityRatios.netWorkingCapital.toFixed(2)} Bs, posible señal de problemas de liquidez.`,
+              ? `Con un capital de trabajo neto positivo de ${FinancialRatiosData?.liquidityRatios.netWorkingCapital.toFixed(2)}, la empresa es más capaz de enfrentar emergencias financieras y aprovechar oportunidades comerciales.`
+              : `Con un capital de trabajo neto negativo, la empresa tendría dificultades para enfrentar emergencias financieras y no podría aprovechar oportunidades comerciales.`,
           isPercentage: false
         },
       ]
@@ -119,7 +119,7 @@ export default function FinancialRatiosPage() {
             {title:"Activo Total", monto: FinancialRatiosData?.debtRatios.ltaAssetTotal},
           ],
           interpretation:
-            FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0 > 100
+            ((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) > 1)
               ? `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) * 100)}% indica que la empresa tiene más pasivos que activos, lo que puede ser riesgoso.`
               : `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) * 100)}% indica que la empresa tiene más activos que pasivos, lo cual es positivo.`,
           isPercentage: true
@@ -134,7 +134,7 @@ export default function FinancialRatiosPage() {
             {title:"Patrimonio Neto Total", monto: FinancialRatiosData?.debtRatios.lteNetEquity},
           ],
           interpretation:
-            FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0 > 100
+            ((FinancialRatiosData?.debtRatios.liabilityToAsset ?? 0) > 1)
               ? `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0) * 100)}% indica que la empresa tiene más pasivos que patrimonio, lo que implica un alto nivel de endeudamiento.`
               : `Un ratio de ${((FinancialRatiosData?.debtRatios.liabilityToEquity ?? 0) * 100)}% indica que la empresa tiene más patrimonio que pasivos, lo cual reduce el riesgo financiero.`,
           isPercentage: true
