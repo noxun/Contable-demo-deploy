@@ -137,11 +137,18 @@ export interface FinancialRatiosResponse {
   };
 }
 
+export interface ValorItem {
+  title?: string;
+  monto?: string | number;
+}
+
 export interface RatioItem {
   name: string;
   value: number;
   interpretation?: string;
   isPercentage?: boolean;
+  formula?: string;
+  valores?: ValorItem[];
 }
 
 export interface FinancialRatiosData {
