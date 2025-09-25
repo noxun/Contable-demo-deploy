@@ -339,41 +339,41 @@ export default function FormNewVoucher({
     },
   });
 
-  async function handleCreateCompany(inputValue: string) {
-    setIsCreatingOption(true);
-    try {
-      const dataToSend = {
-        name: inputValue,
-      };
-      const response = await postCompanyOrConcept(dataToSend);
-      queryClient.setQueryData(
-        ["TrazoCompanies"],
-        (oldData: TrazoCompany[]) => [
-          ...oldData,
-          {
-            id: response.id,
-            razonSocial: response.name,
-            ref: "Contable", // Adapt this to your backend response
-          },
-        ]
-      );
+  // async function handleCreateCompany(inputValue: string) {
+  //   setIsCreatingOption(true);
+  //   try {
+  //     const dataToSend = {
+  //       name: inputValue,
+  //     };
+  //     const response = await postCompanyOrConcept(dataToSend);
+  //     queryClient.setQueryData(
+  //       ["TrazoCompanies"],
+  //       (oldData: TrazoCompany[]) => [
+  //         ...oldData,
+  //         {
+  //           id: response.id,
+  //           razonSocial: response.name,
+  //           ref: "Contable", // Adapt this to your backend response
+  //         },
+  //       ]
+  //     );
 
-      const newOption = {
-        value: response.id,
-        label: response.name,
-      };
+  //     const newOption = {
+  //       value: response.id,
+  //       label: response.name,
+  //     };
 
-      setSelectedCompanyOption(newOption);
-      setSelectedCompanyId(response.id);
+  //     setSelectedCompanyOption(newOption);
+  //     setSelectedCompanyId(response.id);
 
-      toast.success("Nueva opcion agregada correctamente");
-    } catch (error) {
-      toast.error("Error al agregar una nueva opcion");
-      console.log(error);
-    } finally {
-      setIsCreatingOption(false);
-    }
-  }
+  //     toast.success("Nueva opcion agregada correctamente");
+  //   } catch (error) {
+  //     toast.error("Error al agregar una nueva opcion");
+  //     console.log(error);
+  //   } finally {
+  //     setIsCreatingOption(false);
+  //   }
+  // }
 
   const {
     data: modelSeats,
@@ -383,16 +383,16 @@ export default function FormNewVoucher({
 
   const accountsQuery = useMotionAccounts();
 
-  const {
-    data: trazoCompanies,
-    isLoading: isLoadingTrazoCompanies,
-    isError: isErrorTrazoCompanies,
-  } = useTrazoCompanies();
-  const {
-    data: trazoInternCodes,
-    isPending: isPendingTrazoInternCodes,
-    isError: isErrorInternCodes,
-  } = useTrazoInternCodesByCompanyId(selectedCompanyId);
+  // const {
+  //   data: trazoCompanies,
+  //   isLoading: isLoadingTrazoCompanies,
+  //   isError: isErrorTrazoCompanies,
+  // } = useTrazoCompanies();
+  // const {
+  //   data: trazoInternCodes,
+  //   isPending: isPendingTrazoInternCodes,
+  //   isError: isErrorInternCodes,
+  // } = useTrazoInternCodesByCompanyId(selectedCompanyId);
 
   const branchListQuery = useQuery({
     queryKey: ["branchList"],
@@ -616,7 +616,7 @@ export default function FormNewVoucher({
       id: z.number().optional(),
       num: z.number().optional(),
       sucursalId: z.string().optional(),
-      costCenterId: z.string().optional(),
+      costCenterId: z.coerce.number().nullable().optional(),
       voucherDate: z
         .string({
           required_error: "Fecha requerida.",
@@ -661,8 +661,8 @@ export default function FormNewVoucher({
     gloss: gloss ?? "",
     bankId: bankId ?? null,
     bankItemRef: bankExtractId, //ironico
-    costCenterId: "",
-    sucursalId: "",
+    costCenterId: null,
+    sucursalId: "1",
     invoice: "",
     invoiceNumber: "",
     provider: "",
@@ -680,8 +680,8 @@ export default function FormNewVoucher({
       bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
       costCenterId:
-        voucherFromRegisterByDocResponse.costCenterId.toString() ?? "",
-      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "",
+        voucherFromRegisterByDocResponse.costCenterId ?? null,
+      sucursalId: voucherFromRegisterByDocResponse.sucursalId.toString() ?? "1",
       hojaDeRuta: voucherFromRegisterByDocResponse.hojaDeRuta ?? "",
     };
   } else {
@@ -874,9 +874,9 @@ export default function FormNewVoucher({
     accountsQuery.isLoading ||
     accountsQuery.data === undefined ||
     costCenter === undefined ||
-    isLoadingCostCenter ||
-    isLoadingTrazoCompanies ||
-    trazoCompanies === undefined
+    isLoadingCostCenter
+    // isLoadingTrazoCompanies ||
+    // trazoCompanies === undefined
   ) {
     return <Spinner />;
   }
@@ -952,7 +952,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="provider"
               render={({ field }) => (
@@ -1003,7 +1003,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={voucherForm.control}
               name="coin"
@@ -1027,7 +1027,7 @@ export default function FormNewVoucher({
             />
           </div>
           <div className="flex gap-2 items-center mb-2">
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="checkNum"
               render={({ field }) => (
@@ -1039,7 +1039,7 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             {/* <FormField
               control={voucherForm.control}
               name="bankId"
@@ -1070,7 +1070,7 @@ export default function FormNewVoucher({
                 </FormItem>
               )}
             /> */}
-            <FormField
+            {/* <FormField
               control={voucherForm.control}
               name="sucursalId"
               render={({ field }) => (
@@ -1099,8 +1099,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
+            /> */}
+            {/* <FormField
               control={voucherForm.control}
               name="costCenterId"
               render={({ field }) => (
@@ -1131,6 +1131,8 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
+            /> */}
+            {/* <div
             />
             <div
               className={`space-y-2 ${
@@ -1213,7 +1215,7 @@ export default function FormNewVoucher({
                   </FormItem>
                 )}
               />
-            ) : null}
+            ) : null} */}
             {/* <FormField
               control={voucherForm.control}
               name="branch"

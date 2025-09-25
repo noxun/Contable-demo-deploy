@@ -86,16 +86,16 @@ export default function FormEditVoucher({
   }>(null);
   const [isCreatingOption, setIsCreatingOption] = useState(false);
 
-  const {
-    data: trazoCompanies,
-    isLoading: isLoadingTrazoCompanies,
-    isError: isErrorTrazoCompanies,
-  } = useTrazoCompanies();
-  const {
-    data: trazoInternCodes,
-    isLoading: isLoadingTrazoInternCodes,
-    isError: isErrorInternCodes,
-  } = useTrazoInternCodesByCompanyId(selectedCompanyId);
+  // const {
+  //   data: trazoCompanies,
+  //   isLoading: isLoadingTrazoCompanies,
+  //   isError: isErrorTrazoCompanies,
+  // } = useTrazoCompanies();
+  // const {
+  //   data: trazoInternCodes,
+  //   isLoading: isLoadingTrazoInternCodes,
+  //   isError: isErrorInternCodes,
+  // } = useTrazoInternCodesByCompanyId(selectedCompanyId);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -139,41 +139,41 @@ export default function FormEditVoucher({
     },
   });
 
-  async function handleCreateCompany(inputValue: string) {
-    setIsCreatingOption(true);
-    try {
-      const dataToSend = {
-        name: inputValue,
-      };
-      const response = await postCompanyOrConcept(dataToSend);
-      queryClient.setQueryData(
-        ["TrazoCompanies"],
-        (oldData: TrazoCompany[]) => [
-          ...oldData,
-          {
-            id: response.id,
-            razonSocial: response.name,
-            ref: "Contable", // Adapt this to your backend response
-          },
-        ]
-      );
+  // async function handleCreateCompany(inputValue: string) {
+  //   setIsCreatingOption(true);
+  //   try {
+  //     const dataToSend = {
+  //       name: inputValue,
+  //     };
+  //     const response = await postCompanyOrConcept(dataToSend);
+  //     queryClient.setQueryData(
+  //       ["TrazoCompanies"],
+  //       (oldData: TrazoCompany[]) => [
+  //         ...oldData,
+  //         {
+  //           id: response.id,
+  //           razonSocial: response.name,
+  //           ref: "Contable", // Adapt this to your backend response
+  //         },
+  //       ]
+  //     );
 
-      const newOption = {
-        value: response.id,
-        label: response.name,
-      };
+  //     const newOption = {
+  //       value: response.id,
+  //       label: response.name,
+  //     };
 
-      setSelectedCompanyOption(newOption);
-      setSelectedCompanyId(response.id);
+  //     setSelectedCompanyOption(newOption);
+  //     setSelectedCompanyId(response.id);
 
-      toast.success("Nueva opcion agregada correctamente");
-    } catch (error) {
-      toast.error("Error al agregar una nueva opcion");
-      console.log(error);
-    } finally {
-      setIsCreatingOption(false);
-    }
-  }
+  //     toast.success("Nueva opcion agregada correctamente");
+  //   } catch (error) {
+  //     toast.error("Error al agregar una nueva opcion");
+  //     console.log(error);
+  //   } finally {
+  //     setIsCreatingOption(false);
+  //   }
+  // }
 
   function onSubmit(values: Voucher) {
     values["type"] = parseInt(type);
@@ -270,9 +270,7 @@ export default function FormEditVoucher({
     banksQuery.isLoading ||
     !banksQuery.data ||
     accountsQuery.isLoading ||
-    !accountsQuery.data ||
-    isLoadingTrazoCompanies ||
-    !trazoCompanies
+    !accountsQuery.data
   ) {
     return <Spinner />;
   }
@@ -460,7 +458,7 @@ export default function FormEditVoucher({
                 </FormItem>
               )}
             />
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label>Cliente</Label>
               <CreatableSelect
                 value={selectedCompanyOption}
@@ -510,7 +508,7 @@ export default function FormEditVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <FormField
             control={voucherForm.control}
