@@ -4,11 +4,11 @@ import { DataTable } from "@/components/ui/data-table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { deleteFixedAsset, getAllFixedAssets, getAllFixedAssetsExcelByDate } from "@/lib/data"
-import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog"
-import { DialogAssetDetail } from "@/modules/fixed-assets/components/DialogAssetDetail"
-import DialogNewFixedAssetItem from "@/modules/fixed-assets/components/DialogNewFixedAssetItem"
-import { DataTablePayrollsSalaries } from "@/modules/salaries-payrolls/components/TablePayrolls"
-import { formatNumber } from "@/modules/shared/utils/validate"
+import { ConfirmDeleteDialog } from "@/features/accounting/fixed-assets/components/ConfirmDeleteDialog"
+import { DialogAssetDetail } from "@/features/accounting/fixed-assets/components/DialogAssetDetail"
+import DialogNewFixedAssetItem from "@/features/accounting/fixed-assets/components/DialogNewFixedAssetItem"
+import { DataTablePayrollsSalaries } from "@/features/accounting/salaries-payrolls/components/TablePayrolls"
+import { formatNumber } from "@/features/accounting/shared/utils/validate"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { FilePenLineIcon, SheetIcon } from "lucide-react"
@@ -150,7 +150,7 @@ function FixedAssetPage() {
   ];
 
   return (
-    <main className="max-w-xl">
+    <main className="w-full">
       <div className="w-full flex justify-between items-center">
         <h1 className="text-2xl font-bold">Activos Fijos</h1>
         <Button asChild>

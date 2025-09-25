@@ -17,7 +17,7 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import useToken from "@/modules/shared/hooks/useToken";
+import useToken from "@/features/accounting/shared/hooks/useToken";
 
 interface registerFormInputs {
   descripcion: string;

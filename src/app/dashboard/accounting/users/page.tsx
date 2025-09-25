@@ -3,10 +3,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import Link from "next/link";
-import { TableUser } from "@/modules/users/components/TableUser";
+import { TableUser } from "@/features/accounting/users/components/TableUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IUserResponse } from "@/modules/users/types/users";
-import useToken from "@/modules/shared/hooks/useToken";
+import { IUserResponse } from "@/features/accounting/users/types/users";
+import useToken from "@/features/accounting/shared/hooks/useToken";
 
 
 function Users() {

@@ -17,17 +17,17 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, getAllDataReportByType } from "@/lib/data";
-import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { BalanceAmountsTemplate } from "@/modules/shared/components/templatePDF/BalanceAmounts";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
-import { formatNumber } from "@/modules/shared/utils/validate";
-import { DataTableCustom } from "@/modules/shared/components/DataTableCustom";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
+import { BalanceAmountsTemplate } from "@/features/accounting/shared/components/templatePDF/BalanceAmounts";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
+import { formatNumber } from "@/features/accounting/shared/utils/validate";
+import { DataTableCustom } from "@/features/accounting/shared/components/DataTableCustom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LevelData } from "@/modules/results/types/types";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { LevelData } from "@/features/accounting/results/types/types";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 
 export default function BalanceAmountsPage() {
@@ -263,7 +263,7 @@ export default function BalanceAmountsPage() {
         <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
           <SelectAsync
             options={branches || []}
-            label="Seleccione una sucursal..."
+            label="Sucursal..."
             nameGroup="Sucursales"
             labelKey={"nameSucutsal"}
             valueKey={"id"}

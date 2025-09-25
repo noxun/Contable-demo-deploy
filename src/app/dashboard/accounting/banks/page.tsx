@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { TableBank } from "@/modules/banks/components/TableBank";
+import { TableBank } from "@/features/accounting/banks/components/TableBank";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllBanks } from "@/lib/data";
 

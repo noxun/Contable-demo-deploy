@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ListBranches from "@/modules/branches/components/ListBranches";
+import ListBranches from "@/features/accounting/branches/components/ListBranches";
 import Link from "next/link";
 
 export default function BranchesPage() {

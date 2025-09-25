@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ListEntities from "@/modules/entities/components/ListEntities";
+import ListEntities from "@/features/accounting/entities/components/ListEntities";
 import Link from "next/link";
 
 export default function EntitiesPage() {

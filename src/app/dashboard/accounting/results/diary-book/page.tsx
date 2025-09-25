@@ -6,19 +6,19 @@ import { DataTable } from "@/components/ui/data-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { ReportGeneratorFile } from "@/modules/shared/components/ReportGeneratorFile";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
+import { ReportGeneratorFile } from "@/features/accounting/shared/components/ReportGeneratorFile";
 import { PDFDownloadLink, PDFViewer, usePDF } from "@react-pdf/renderer";
-import { GeneratedFilesTable } from "@/modules/shared/components/GeneratedFilesTable";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { GeneratedFilesTable } from "@/features/accounting/shared/components/GeneratedFilesTable";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import DiaryBookPreview from "./DiaryBookPreview";
 import { Button } from "@/components/ui/button";
-import useDiaryBookExcel from "@/modules/shared/hooks/useDiaryBookExcel";
+import useDiaryBookExcel from "@/features/accounting/shared/hooks/useDiaryBookExcel";
 import DiaryBookExcelButton from "./DiaryBookExcelButton";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
 import { fetchBranches } from "@/lib/data";
 import { useQuery } from "@tanstack/react-query";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 export default function DiaryBookPage() {
   // --- Estados del formulario ---
@@ -85,7 +85,7 @@ export default function DiaryBookPage() {
         <div>
           <SelectAsync
             options={branches || []}
-            label="Seleccione una sucursal..."
+            label="Sucursal..."
             nameGroup="Sucursales"
             labelKey={"nameSucutsal"}
             valueKey={"id"}

@@ -1,4 +1,4 @@
-import { ListInvoices } from "@/modules/invoices/components/ListInvoices";
+import { ListInvoices } from "@/features/accounting/invoices/components/ListInvoices";
 
 const InvoicesPage = () => {
   return (

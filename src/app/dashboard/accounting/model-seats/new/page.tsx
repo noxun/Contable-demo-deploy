@@ -1,4 +1,4 @@
-import FormNewModelSeat from '@/modules/model-seats/components/FormNewModelSeat'
+import FormNewModelSeat from '@/features/accounting/model-seats/components/FormNewModelSeat'
 
 export default function NewModelSeatPage() {
   return (

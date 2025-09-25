@@ -2,11 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { DeletePayroll, GetPayrollExcelByDate, GetPayrollsAndSalaries, updatePaymentStatusByEmployeeId } from "@/lib/data";
-import { ConfirmDeleteDialog } from "@/modules/fixed-assets/components/ConfirmDeleteDialog";
-import { PayrollsDialogEdit } from "@/modules/salaries-payrolls/components/PayrollDialogEdit";
-import { PayrollsDialogForm } from "@/modules/salaries-payrolls/components/PayrollsDialogForm";
-import PaySlipDialog from "@/modules/salaries-payrolls/components/PaySlipDialog";
-import { formatNumber } from "@/modules/shared/utils/validate";
+import { ConfirmDeleteDialog } from "@/features/accounting/fixed-assets/components/ConfirmDeleteDialog";
+import { PayrollsDialogEdit } from "@/features/accounting/salaries-payrolls/components/PayrollDialogEdit";
+import { PayrollsDialogForm } from "@/features/accounting/salaries-payrolls/components/PayrollsDialogForm";
+import PaySlipDialog from "@/features/accounting/salaries-payrolls/components/PaySlipDialog";
+import { formatNumber } from "@/features/accounting/shared/utils/validate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CheckIcon, CircleDollarSignIcon, Clock3Icon, ClockIcon, EyeIcon, HandCoinsIcon, ReceiptIcon, SheetIcon, XIcon } from "lucide-react";
@@ -14,8 +14,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { SalaryDialogEdit } from "@/modules/salaries-payrolls/components/SalaryDialogEdit";
-import { DataTablePayrollsSalaries } from "@/modules/salaries-payrolls/components/TablePayrolls";
+import { SalaryDialogEdit } from "@/features/accounting/salaries-payrolls/components/SalaryDialogEdit";
+import { DataTablePayrollsSalaries } from "@/features/accounting/salaries-payrolls/components/TablePayrolls";
 
 function SalariesPayrollsPage() {
 
@@ -264,7 +264,7 @@ function SalariesPayrollsPage() {
   ];
 
   return (
-    <section className="max-w-7xl">
+    <section className="w-full">
       <div className="w-full flex justify-between items-center">
         <h2 className="text-lg font-semibold">Planillas y salarios</h2>
         <PayrollsDialogForm />
@@ -292,7 +292,7 @@ function SalariesPayrollsPage() {
       {
         listPayrolls && (
           <>
-            <div className="overflow-x-auto max-w-full w-[90vw] md:w-[70vw]">
+            <div className="w-auto py-3 overflow-x-scroll">
               <DataTablePayrollsSalaries
                 filter={{ type: "text", placeholder: "Buscar personal...", columnName: "nombres" }}
                 columns={columnsPayrolls}

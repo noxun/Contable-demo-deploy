@@ -1,4 +1,4 @@
-import NewLinkAccounts from "@/modules/link/components/NewLinkAccounts";
+import NewLinkAccounts from "@/features/accounting/link/components/NewLinkAccounts";
 
 export default function LinkAccountsPage() {
   return (

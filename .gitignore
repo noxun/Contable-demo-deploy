@@ -26,7 +26,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+.env*.local.*
 
 # vercel
 .vercel
@@ -36,5 +38,12 @@ yarn-error.log*
 next-env.d.ts
 
 # pnpm
-pnpm-lock.yaml
+package-lock.json
 commit_messages.txt
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

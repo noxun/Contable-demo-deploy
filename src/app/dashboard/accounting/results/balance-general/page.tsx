@@ -8,19 +8,19 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-import { DateSelector } from "@/modules/shared/components/DateSelector";
-import { ReportExcelGenerate } from "@/modules/shared/components/ReportExcelGenerator";
-import { formatNumber, ReportPaths } from "@/modules/shared/utils/validate";
-import { BreadcrumbDashboard } from "@/modules/shared/components/BreadcrumDash";
+import { DateSelector } from "@/features/accounting/shared/components/DateSelector";
+import { ReportExcelGenerate } from "@/features/accounting/shared/components/ReportExcelGenerator";
+import { formatNumber, ReportPaths } from "@/features/accounting/shared/utils/validate";
+import { BreadcrumbDashboard } from "@/features/accounting/shared/components/BreadcrumDash";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBranches, getAllDataBalanceGeneral, getAllDataReportByType } from "@/lib/data";
-import { ButtonLinkPDF } from "@/modules/results/components/ButtonLinkPDF";
-import { BalanceGeneralPreview } from "@/modules/results/components/BalanceGeneralPreview";
+import { ButtonLinkPDF } from "@/features/accounting/results/components/ButtonLinkPDF";
+import { BalanceGeneralPreview } from "@/features/accounting/results/components/BalanceGeneralPreview";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LevelData } from "@/modules/results/types/types";
+import { LevelData } from "@/features/accounting/results/types/types";
 import { LoaderIcon } from "lucide-react";
-import { BalanceGeneralTemplate } from "@/modules/shared/components/templatePDF/BalanceGeneral";
-import { SelectAsync } from "@/modules/results/components/SelectAsync";
+import { BalanceGeneralTemplate } from "@/features/accounting/shared/components/templatePDF/BalanceGeneral";
+import { SelectAsync } from "@/features/accounting/results/components/SelectAsync";
 
 export default function BalanceGeneralPage() {
 
@@ -154,9 +154,11 @@ export default function BalanceGeneralPage() {
     setIsLoadingBalanceGeneral(false)
   }
 
+  console.log(isLoadingBalanceGeneral, dataBalanceGeneral)
+
   return (
     <>
-      <div className="flex flex-col gap-6 h-full">
+      <div className="flex flex-col h-full">
         <BreadcrumbDashboard
           items={[
             {
@@ -173,7 +175,7 @@ export default function BalanceGeneralPage() {
             }
           ]}
         />
-        <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-evenly md:flex-row md:items-center py-6">
           {/* Rango de fechas */}
           <div className="flex gap-2 flex-col">
             <DateSelector onDateChange={handleOnDateChange} />
@@ -185,7 +187,7 @@ export default function BalanceGeneralPage() {
           <div className="flex gap-4 py-3 flex-row justify-end lg:flex-row w-full md:flex-col md:w-auto sm:justify-start">
             <SelectAsync
               options={branches || []}
-              label="Seleccione una sucursal..."
+              label="Sucursal..."
               nameGroup="Sucursales"
               labelKey={"nameSucutsal"}
               valueKey={"id"}
@@ -217,7 +219,7 @@ export default function BalanceGeneralPage() {
           </div>
         </div>
         {/* aqui generar el reporte */}
-        <div className="flex gap-4 py-3 items-center">
+        <div className="flex gap-4 items-center py-1">
           <Button
             onClick={handleOnGeneratePDF}
             disabled={!dataBalanceGeneral}
@@ -240,33 +242,34 @@ export default function BalanceGeneralPage() {
         </div>
 
         {/* Descargar pdf */}
-        <div className="h-16 flex items-center">
+        <div className="py-5 flex items-center">
           {pdfFile && (
             <ButtonLinkPDF
               pdfFile={pdfFile}
               nameFile="R_balance_general"
             />
           )}
-        </div>
-        {/* Vista Previa */}
-      </div>
-      {isLoadingBalanceGeneral && (
-        <LoaderIcon className="mx-auto animate-spin size-10 text-[#2563EB]" />
-      )}
-      {
-        dataBalanceGeneral && !isLoadingBalanceGeneral && (
-          <div className="overflow-x-auto mx-auto w-[90vw] md:w-[900px] min-h-screen py-3">
-            <div className="dark:text-[#bbbbbb] px-2">
-              <BalanceGeneralPreview
-                dateRange={dateRange}
-                data={dataBalanceGeneral}
-                currentLevel={selectedLevel}
-                inSus={inSusSelected}
-              />
-            </div>
+        </div>        {/* Vista Previa */}
+        {isLoadingBalanceGeneral && (
+          <div className="flex justify-center">
+            <LoaderIcon className="animate-spin size-10 text-[#2563EB]" />
           </div>
-        )
-      }
+        )}
+        {
+          dataBalanceGeneral && !isLoadingBalanceGeneral && (
+            <div className="w-full py-3 flex justify-center">
+              <div className="dark:text-[#bbbbbb] px-10 py-4 w-full max-w-5xl border rounded-xl">
+                <BalanceGeneralPreview
+                  dateRange={dateRange}
+                  data={dataBalanceGeneral}
+                  currentLevel={selectedLevel}
+                  inSus={inSusSelected}
+                />
+              </div>
+            </div>
+          )
+        }
+      </div>
     </>
   );
 }

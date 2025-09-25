@@ -1,23 +1,33 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import DownloadMassPurchaseFormButton from "@/modules/invoice-registry/components/DownloadMassTransactionFormButton";
-import ImportInvoiceRegistryDialog from "@/modules/invoice-registry/components/ImportInvoiceRegistryDialog";
-import ListInvoiceRegistry from "@/modules/invoice-registry/components/ListInvoiceRegistry";
-import Link from "next/link";
+"use client";
 
-export default function InvoiceRegistryPurchasesPage() {
-  const purchase = 0;
+import { DialogGenerateSeats } from "@/features/accounting/invoice-registry/components/DialogGenerateSeats";
+import { DialogCreateOrUpdatePurchaseForm } from "@/features/accounting/invoice-registry/purchases/components/DialogCreateOrUpdatePurchaseForm";
+import { DownloadPurchaseTemplateButton } from "@/features/accounting/invoice-registry/purchases/components/DownloadPurchaseTemplateButton";
+import ListPurchases from "@/features/accounting/invoice-registry/purchases/components/ListPurchases";
+import { UploadPurchaseTemplateDialog } from "@/features/accounting/invoice-registry/purchases/components/UploadPurchaseTemplateDialog";
+import { ButtonGenerateExcelReport } from "@/features/accounting/invoice-registry/components/ButtonGenerateExcelReport";
+import { Suspense } from "react";
+import { ButtonDeleteAllBookDataWithoutVoucher } from "@/features/accounting/invoice-registry/components/ButtonDeleteAllBookDataWithoutVoucher";
+
+export default function PurchasesPage() {
   return (
-    <main className="overflow-x-visible space-y-4">
-      <h1>Registro de Compras</h1>
-      <div className="flex gap-6">
-        <Button asChild>
-          <Link href="/dashboard/accounting/invoice-registry/new">Nuevo Registro</Link>
-        </Button>
-        <DownloadMassPurchaseFormButton type={purchase}/> 
-        <ImportInvoiceRegistryDialog/>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Registro de Compras</h1>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        <DownloadPurchaseTemplateButton />
+        <UploadPurchaseTemplateDialog />
+        <DialogCreateOrUpdatePurchaseForm mode="create" />
+        <DialogGenerateSeats mode="purchase" />
+        <Suspense fallback={<div>Cargando...</div>}>
+          <ButtonGenerateExcelReport type="buy" />
+        </Suspense>
+        <ButtonDeleteAllBookDataWithoutVoucher type="buy" />
       </div>
-      <ListInvoiceRegistry type={purchase}/>
-    </main>
-  )
+      <div className="overflow-x-auto">
+        <Suspense fallback={<div>Cargando...</div>}>
+          <ListPurchases />
+        </Suspense>
+      </div>
+    </div>
+  );
 }

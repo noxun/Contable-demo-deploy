@@ -2,18 +2,13 @@ import {
   AccountingBox,
   AccountingBoxBalance,
   AccountingBoxItems,
-  AccountRelation,
   Bank,
-  BankExcerpt,
   BankExcerptResponse,
   BankExtractPaymentFile,
   BookBiggerData,
   Branch,
   BranchToList,
-  BudgetExecutionData,
   BudgetExecutionResponse,
-  ConfigValues,
-  CostCenter,
   DiaryBookResponse,
   HeritageEvaluationData,
   InvoiceRegistry,
@@ -22,7 +17,6 @@ import {
   InvoiceVoucher,
   ModelSeat,
   ModelSeatDetailResponse,
-  NewConfigValues,
   PostModelSeat,
   RegisterVoucherByDocumentResponse,
   RelationAccount,
@@ -35,24 +29,24 @@ import {
   TrazoCompany,
   TrazoInternCode,
   TypeCompany,
-  Ufv,
   VoucherItemFromExtractedPDF,
 } from "./types";
 import { api } from "./api";
-import { UfvRegister } from "@/modules/ufv/components/UfvRegisterForm";
-import { Voucher, VoucherType } from "@/modules/shared/types/sharedTypes";
-import { LinkAccountForm } from "@/modules/link/components/LinkAccountForm";
-import { Account } from "@/modules/account/types/account";
-import { NewAccountingBox } from "@/modules/accounting-box/components/NewAccountingBoxForm";
+import {
+  Voucher,
+  VoucherType,
+} from "@/features/accounting/shared/types/sharedTypes";
+import { LinkAccountForm } from "@/features/accounting/link/components/LinkAccountForm";
+import { Account } from "@/features/accounting/account/types/account";
+import { NewAccountingBox } from "@/features/accounting/accounting-box/components/NewAccountingBoxForm";
 import { RegisterForm } from "@/app/dashboard/accounting/users/new/page";
-import { EditModelSeat } from "@/modules/model-seats/components/FormEditModelSeat";
-import { NewInvoiceForm } from "@/modules/invoice-registry/components/FormNewInvoiceRegistry";
-import { VoucherDeleteVariables } from "@/modules/shared/components/DeleteVoucherDialog";
+import { EditModelSeat } from "@/features/accounting/model-seats/components/FormEditModelSeat";
+import { VoucherDeleteVariables } from "@/features/accounting/shared/components/DeleteVoucherDialog";
 import {
   FixedAsset,
   FixedAssetsAll,
   SchemaFixedAsset,
-} from "@/modules/fixed-assets/types/types";
+} from "@/features/accounting/fixed-assets/types/types";
 import {
   ItemPayment,
   Payroll,
@@ -61,93 +55,13 @@ import {
   Salaries,
   SchemaPayrollType,
   SchemaSalaryType,
-} from "@/modules/salaries-payrolls/types/types";
+} from "@/features/accounting/salaries-payrolls/types/types";
 import { RegisterVoucherByDocuments } from "./trazoTypes";
-import { LevelData } from "@/modules/results/types/types";
-import { BranchEditForm } from "@/modules/branches/components/FormEditBranch";
+import { LevelData } from "@/features/accounting/results/types/types";
+import { BranchEditForm } from "@/features/accounting/branches/components/FormEditBranch";
 
-export function setAuthToken(token: string | undefined | null) {
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
-  }
-}
-
-export async function fetchUfvValues(): Promise<Ufv> {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.get(`/api/Ufv/get`);
-  return response.data;
-}
-
-export async function postUfvValues(data: UfvRegister | NewConfigValues) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.post(`/api/Ufv/registerUfvDollar`, data);
-  return response.data;
-}
-
-export async function fetchConfigValues() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.get("/api/Ufv/getConfigValues");
-  return response.data as ConfigValues;
-}
-
-export async function fetchVouchers(
-  voucherType: VoucherType,
-  page: number = 1,
-  pageSize: number = 10,
-  initDate?: string,
-  endDate?: string,
-  gloss?: string,
-  siat: "" | "siat" = ""
-) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.get(`/api/Voucher/all${siat}`, {
-    params: {
-      type: voucherType,
-      PageNumber: page,
-      PageSize: pageSize,
-      initDate,
-      endDate,
-      gloss: gloss !== "" ? gloss : undefined,
-    },
-  });
-
-  const paginationHeader = response.headers;
-
-  const paginationInfo = paginationHeader
-    ? JSON.parse(paginationHeader["pagination"])
-    : null;
-
-  //console.log("what",paginationInfo);
-  return {
-    data: response.data as Voucher[],
-    pagination: paginationInfo,
-  };
-}
 
 export async function editVoucher(data: Voucher) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.put(`/api/Voucher`, data);
   return response.data;
 }
@@ -156,11 +70,6 @@ export async function deleteVoucher({
   voucherId,
   voucherType,
 }: VoucherDeleteVariables) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.delete("/api/Voucher", {
     params: {
       id: voucherId,
@@ -171,53 +80,27 @@ export async function deleteVoucher({
 }
 
 export async function fetchAllMotionAccountsWithRelations() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Account/Relations`);
-  return response.data as RelationAccount[]
+  return response.data as RelationAccount[];
 }
 
 export async function fetchAllSiatMotionAccounts() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Account/SiatMotion`);
   return response.data as SiatMotionAccount[];
 }
 
 export async function postConciliation(data: LinkAccountForm) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/Conciliation`, data);
   return response.data;
 }
 
 export async function deleteConciliation(data: LinkAccountForm) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   //cambiar esto para que reciba ya sea paths o queryStrings
   const response = await api.delete(`/api/Conciliation`, { data: data });
   return response.data;
 }
 
 export async function fetchAllModelSeats(type: number | null = null) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/ModelSeat`, {
     params: {
       Type: type,
@@ -227,12 +110,6 @@ export async function fetchAllModelSeats(type: number | null = null) {
 }
 
 export async function deleteModelSeat(modelSeatId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.delete("api/ModelSeat", {
     params: {
       modelSeatId,
@@ -242,11 +119,6 @@ export async function deleteModelSeat(modelSeatId: number) {
 }
 
 export async function fetchAllMotionAccounts() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Account/Filter`, {
     params: {
       isMotion: true,
@@ -256,21 +128,11 @@ export async function fetchAllMotionAccounts() {
 }
 
 export async function postModelSeat(data: PostModelSeat) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/api/ModelSeat", data);
   return response.data;
 }
 
 export async function fetchModelSeatsItems(modelSeatId: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/ModelSeat/detail`, {
     params: {
       modelSeatId: modelSeatId,
@@ -280,31 +142,16 @@ export async function fetchModelSeatsItems(modelSeatId: string) {
 }
 
 export async function putModelSeat(data: EditModelSeat) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.put("/api/ModelSeat", data);
   return response.data;
 }
 
 export async function fetchTypeCompanies() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/TypeCompany`);
   return response.data as TypeCompany[];
 }
 
 export async function importAccountFromExcel(data: FormData) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/Account/ReadXlxs`, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -312,11 +159,6 @@ export async function importAccountFromExcel(data: FormData) {
 }
 
 export async function importBankExcerptFromExcel(data: FormData) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/bank/extract`, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -324,81 +166,40 @@ export async function importBankExcerptFromExcel(data: FormData) {
 }
 
 export async function fetchAccountingBox(): Promise<AccountingBox[]> {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/AccountingBox`);
   return response.data as AccountingBox[];
 }
 
-export async function fetchCostCenter(): Promise<CostCenter[]> {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.get(`/api/CostCenter`);
-  return response.data as CostCenter[];
-}
-
 export async function fetchBranches() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Sucursal`);
   return response.data as Branch[];
 }
 
 export async function createNewBranch(data: Branch) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/Sucursal`, data);
   return response.data;
 }
 
 export async function updateBranch(data: BranchEditForm) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.put(`/api/Sucursal`, data);
   return response.data;
 }
 
 export async function fetchAllRoles() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Rol`);
   return response.data as RoleMenu[];
 }
 
 export async function fetchUserRoles(userId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Users/getRol/${userId}`);
   return response.data as Role[];
 }
 
-export async function fetchBankExcerpt(bankId: string, page:number, pageSize:number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
+export async function fetchBankExcerpt(
+  bankId: string,
+  page: number,
+  pageSize: number
+) {
   const response = await api.get(`/api/bank/getextract/${bankId}`, {
     params: {
       pageNumber: page,
@@ -409,21 +210,14 @@ export async function fetchBankExcerpt(bankId: string, page:number, pageSize:num
 }
 
 // export async function fetchBankExcerptData(bankExcerptId: string) {
-//   let token;
 //   if (typeof window !== "undefined") {
 //     token = localStorage.getItem("token");
 //   }
-//   setAuthToken(token);
 //   const response = await api.get(`/api/bank/getextractDetail/${bankExcerptId}`);
 //   return response.data as BankExcerptData[];
 // }
 
 export async function fetchBranchList() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Sucursal/list`);
   return response.data as BranchToList[];
 }
@@ -433,21 +227,11 @@ export async function registerExtractToSeat(data: {
   bankExtractId: number;
   accountId: number; //accountId de contra cuenta
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/api/Bank/registerSeat", data);
   return response.data;
 }
 
 export async function registerToTrazo(bankExtractId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/api/Bank/registerTrazo", {
     bankExtractId,
   });
@@ -455,21 +239,11 @@ export async function registerToTrazo(bankExtractId: number) {
 }
 
 export async function fetchAllAccounts() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Account/Filter?isMotion=true");
   return response.data as Account[];
 }
 
 export async function fetchAccountsByType(type: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Account/All", {
     params: {
       typeCompanyId: type,
@@ -481,18 +255,15 @@ export async function fetchAccountsByType(type: number) {
 export async function fetchTrazoInternCodes(
   page = 1,
   pageSize = 10,
-  searchQuery: string
+  searchQuery: string,
+  nameQuery: string
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Trazo/interncode", {
     params: {
       PageNumber: page,
       PageSize: pageSize,
       codeIntern: searchQuery,
+      name: nameQuery,
     },
   });
   console.log(response);
@@ -511,11 +282,6 @@ export async function fetchTrazoInternCodes(
 }
 
 export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(
     `/api/Trazo/interncodes/companies/${companyId}`
   );
@@ -523,21 +289,11 @@ export async function fetchTrazoInternCodesByCompanyId(companyId: number) {
 }
 
 export async function fetchTrazoCompanies() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Trazo/companies");
   return response.data as TrazoCompany[];
 }
 
 export async function postCompanyOrConcept(data: { name: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/api/Company", data);
   return response.data as {
     id: number;
@@ -548,11 +304,6 @@ export async function postCompanyOrConcept(data: { name: string }) {
 }
 
 export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/AccountingBox/items", {
     params: {
       AccountingBoxId: accountingBoxId,
@@ -562,21 +313,11 @@ export async function fetchAccountingBoxItemsById(accountingBoxId: number) {
 }
 
 export async function createAccountingBoxItems(data: NewAccountingBox) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/api/AccountingBox/createItems", data);
   return response.data;
 }
 
 export async function getAccountingBoxBalance(accountingBoxId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(
     `/api/AccountingBox/balance/${accountingBoxId}`
   );
@@ -584,31 +325,16 @@ export async function getAccountingBoxBalance(accountingBoxId: number) {
 }
 
 export async function fetchAllBanks() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Bank");
   return response.data as Bank[];
 }
 
 export async function deleteBankExtract(bankExtractId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.delete(`/api/Bank/delete/${bankExtractId}`);
   return response.data;
 }
 
 export async function registerPayment(data: FormData) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/Bank/RegisterPaymet`, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -616,11 +342,6 @@ export async function registerPayment(data: FormData) {
 }
 
 export async function fetchBankExtractFiles(bankExtractId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(
     `/api/Bank/GetFilesBankExtract/${bankExtractId}`
   );
@@ -628,21 +349,11 @@ export async function fetchBankExtractFiles(bankExtractId: number) {
 }
 
 export async function changeBankExtractStatus(bankExtractId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/Bank/ChangeStatus/${bankExtractId}`);
   return response.data as boolean;
 }
 
 export async function registerUser(data: RegisterForm) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post("/Auth/register", data);
   return response.data;
 }
@@ -651,11 +362,6 @@ export async function fetchBankExtractAccountDetails(
   BankExtractId: number,
   AccountId: number
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Bank/seatContable", {
     params: {
       BankExtractId,
@@ -666,31 +372,16 @@ export async function fetchBankExtractAccountDetails(
 }
 
 export async function fetchInvoiceRegistryList() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get("/api/Invoice"); //TODO:ADD CORRECT ENDPOINT
   return response.data as InvoiceRegistry[];
 }
 
-export async function postInvoiceRegistry(data: NewInvoiceForm) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  const response = await api.post(`/api/Invoice/`, data);
-  return response.data;
-}
+// export async function postInvoiceRegistry(data: NewInvoiceForm) {
+//   const response = await api.post(`/api/Invoice/`, data);
+//   return response.data;
+// }
 
 export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/GenerateInvoice/${type}`, {
     responseType: "text",
   });
@@ -698,11 +389,6 @@ export async function getMassPurchaseFormInExcel(type: InvoiceRegistryType) {
 }
 
 export async function getSingleAccountReport(data: any) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(`/api/report/printbook`, data, {
     responseType: "text",
   });
@@ -710,11 +396,6 @@ export async function getSingleAccountReport(data: any) {
 }
 
 export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.delete(`/api/Invoice/${InvoiceRegistryId}`);
   return response.data;
 }
@@ -722,32 +403,16 @@ export async function deleteInvoiceRegistryById(InvoiceRegistryId: number) {
 export async function fetchSingleInvoiceRegistryById(
   InvoiceRegistryId: number
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/api/Invoice/${InvoiceRegistryId}`);
   return response.data as InvoiceRegistry;
 }
 
 export async function editInvoiceRegistryById(data: InvoiceRegistry) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.put(`/api/Invoice/${data.id}`, data);
   return response.data;
 }
 
 export async function importInvoiceRegistryExcel(data: FormData) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const numType = data.get("InvoiceRegistryType");
 
   data.delete("InvoiceRegistryType");
@@ -757,11 +422,6 @@ export async function importInvoiceRegistryExcel(data: FormData) {
 }
 
 export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/CompraVentaType/${type}`);
   return response.data as InvoiceRegistryResponseByType[];
 }
@@ -769,11 +429,6 @@ export async function fetchInvoiceRegistryByType(type: InvoiceRegistryType) {
 export async function fetchInvoiceVoucherDetailsById(
   invoiceRegistryId: number
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(
     `api/invoice/SeatContable/${invoiceRegistryId}`
   );
@@ -781,11 +436,6 @@ export async function fetchInvoiceVoucherDetailsById(
 }
 
 export async function numberToLiteral(number: number, inSus: boolean = false) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.get(`/Auth/NumberToLiteral/${number}`, {
     params: {
       inSus,
@@ -807,14 +457,9 @@ export async function getApiReportExcel(
   queryParams: QueryParams,
   pathType?: string
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
   const typePath = pathType ? `/${pathType}` : "";
   const URLRequest = `/api/Report/${path}${typePath}`;
 
-  setAuthToken(token);
   const response = await api.get(URLRequest, {
     params: queryParams,
   });
@@ -822,13 +467,8 @@ export async function getApiReportExcel(
 }
 //BIGGER BOOK
 export async function searchByAccountBigguerBook(search: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
   const URLRequest = `/api/Report/BookBiggerData`;
 
-  setAuthToken(token);
   const response = await api.get(URLRequest, {
     params: { search },
   });
@@ -840,59 +480,43 @@ export async function getBigguerBookinExcel({
   endDate,
   search,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   initDate?: string;
   endDate?: string;
   search?: string;
   inSus?: boolean;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
   const URLRequest = `/api/Report/BookBigguerDataExel`;
 
-  setAuthToken(token);
   const response = await api.get(URLRequest, {
     params: {
       initDate: initDate,
       endDate: endDate,
       search: search,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data;
 }
 
 //obtener el listado de activos
-interface Assets {
+export interface Assets {
   id: number;
   typeActive: string;
 }
 export async function getAllAssets() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
   const URLRequest = `/FixedAssets/FixedAssets`;
 
-  setAuthToken(token);
   const { data } = await api.get<Assets[]>(URLRequest);
   return data;
 }
 
 //crear un nuevo activo Fijo
 export async function postAssetFixed(FixedAsset: SchemaFixedAsset) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `/FixedAssets`;
 
-  setAuthToken(token);
   const { data } = await api.post(URLRequest, FixedAsset);
   return data;
 }
@@ -905,14 +529,8 @@ export async function putAssetFixed({
   IdAssets: string;
   fixedAsset: SchemaFixedAsset;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `/FixedAssets`;
 
-  setAuthToken(token);
   const { data } = await api.put(URLRequest, fixedAsset, {
     params: { IdAseets: IdAssets },
   });
@@ -921,16 +539,10 @@ export async function putAssetFixed({
 
 // obtener un activoFijo por Id
 export async function getFixedAsset({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   if (!id || id.length === 0) return null;
 
   const URLRequest = `/FixedAssets/items/${id}`;
 
-  setAuthToken(token);
   try {
     const { data } = await api.get<FixedAsset>(URLRequest);
     return data;
@@ -941,14 +553,8 @@ export async function getFixedAsset({ id }: { id: string }) {
 }
 // obtener la lista de activos fijos
 export async function getAllFixedAssets({ dateTime }: { dateTime: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `/FixedAssets`;
 
-  setAuthToken(token);
   const { data } = await api.get<FixedAssetsAll[]>(URLRequest, {
     params: { dateTime },
   });
@@ -957,14 +563,8 @@ export async function getAllFixedAssets({ dateTime }: { dateTime: string }) {
 
 // eliminar un elemento de la lista de activos fijos
 export async function deleteFixedAsset({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `/FixedAssets?IdAssets=${id}`;
 
-  setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
     params: {
       IdAseets: id,
@@ -975,13 +575,8 @@ export async function deleteFixedAsset({ id }: { id: string }) {
 
 // GET; obtener el archivo excel de activos fijos
 export async function getAllFixedAssetsExcelByDate({ date }: { date: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
   const URLRequest = `/FixedAssets/FixedAssetsItems/exel`;
 
-  setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: { date: date },
   });
@@ -990,14 +585,8 @@ export async function getAllFixedAssetsExcelByDate({ date }: { date: string }) {
 
 //Crear una banco apartir de una cuenta
 export async function postConvertAccountToBank(accountId: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/Bank/ByAccount/${accountId}`;
 
-  setAuthToken(token);
   const { data } = await api.post(URLRequest, accountId);
   return data;
 }
@@ -1005,27 +594,15 @@ export async function postConvertAccountToBank(accountId: string) {
 //CRUD: Planillas --> Payrolls
 //POST: Payrolls
 export async function PostPayroll({ payroll }: { payroll: SchemaPayrollType }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages`;
 
-  setAuthToken(token);
   const { data } = await api.post(URLRequest, payroll);
   return data;
 }
 //GET: Payrolls
 export async function GetPayrolls({ date }: { date: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/itemsGeneral`;
 
-  setAuthToken(token);
   const { data } = await api.get<ResponsePayrolls>(URLRequest, {
     params: {
       date: date,
@@ -1035,14 +612,8 @@ export async function GetPayrolls({ date }: { date: string }) {
 }
 //GET Payrolls and Salaries
 export async function GetPayrollsAndSalaries({ date }: { date: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `/api/SalariesAndWages/itemsMonth`;
 
-  setAuthToken(token);
   const { data } = await api.get<ResponseSalariesAndPayrolls>(URLRequest, {
     params: {
       date: date,
@@ -1052,14 +623,8 @@ export async function GetPayrollsAndSalaries({ date }: { date: string }) {
 }
 //GET By Id: Payrolls
 export async function GetPayrollExcelByDate({ date }: { date: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/itemsExel`;
 
-  setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
       date: date,
@@ -1069,14 +634,8 @@ export async function GetPayrollExcelByDate({ date }: { date: string }) {
 }
 //GET By Id: Payrolls
 export async function GetPayrollById({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/id`;
 
-  setAuthToken(token);
   const { data } = await api.get(URLRequest, {
     params: {
       id: id,
@@ -1094,14 +653,8 @@ export async function UpdatePayrollById({
   idItem: string;
   payroll: Payroll & ItemPayment;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/id`;
 
-  setAuthToken(token);
   const { data } = await api.put(URLRequest, payroll, {
     params: {
       id: id,
@@ -1118,14 +671,8 @@ export async function updatePaymentStatusByEmployeeId({
   idEmployee: string;
   paid: boolean;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/items/IsPaid`;
 
-  setAuthToken(token);
   const { data } = await api.put(URLRequest, idEmployee, {
     params: {
       id: idEmployee,
@@ -1136,14 +683,8 @@ export async function updatePaymentStatusByEmployeeId({
 }
 //DELETE: Payrolls
 export async function DeletePayroll({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/id`;
 
-  setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
     params: {
       id: id,
@@ -1158,14 +699,8 @@ export async function GetSalariesByPayrollId({
 }: {
   idPayroll: string;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/items/id`;
 
-  setAuthToken(token);
   const { data } = await api.get<Payroll>(URLRequest, {
     params: {
       id: idPayroll,
@@ -1175,14 +710,8 @@ export async function GetSalariesByPayrollId({
 }
 //GET: Items of Payrolls
 export async function GetSalariesById({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/itemsDatos/id`;
 
-  setAuthToken(token);
   const { data } = await api.get<Salaries>(URLRequest, {
     params: {
       id: id,
@@ -1192,27 +721,15 @@ export async function GetSalariesById({ id }: { id: string }) {
 }
 //POST: Items of Payrolls
 export async function PostSalary({ Item }: { Item: SchemaSalaryType }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/items`;
 
-  setAuthToken(token);
   const { data } = await api.post(URLRequest, Item);
   return data;
 }
 //DELETE: Items of Payrolls
 export async function DeleteSalary({ id }: { id: string }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/items/id`;
 
-  setAuthToken(token);
   const { data } = await api.delete(URLRequest, {
     params: {
       id: id,
@@ -1228,14 +745,8 @@ export async function UpdateSalary({
   id: string;
   item: SchemaSalaryType;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/SalariesAndWages/items/id`;
 
-  setAuthToken(token);
   const { data } = await api.put(URLRequest, item, {
     params: {
       id: id,
@@ -1246,25 +757,13 @@ export async function UpdateSalary({
 
 //Crear una a caja apartir de una cuenta
 export async function postConvertAccountToAccountingBox(accountId: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
   const URLRequest = `api/AccountingBox/ByAccount/${accountId}`;
 
-  setAuthToken(token);
   const { data } = await api.post(URLRequest, accountId);
   return data;
 }
 
 export async function fetchVoucherItemsFromExtractedPDF(bankExtractId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
-  setAuthToken(token);
   const response = await api.get(`/api/Bank/Extract/Entries/${bankExtractId}`);
   return response.data as VoucherItemFromExtractedPDF[];
 }
@@ -1273,18 +772,13 @@ export async function fetchPaySlipData(
   idSalaryWages: number,
   datePaySlip: string
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-
-  setAuthToken(token);
   const response = await api.get(
-    `/api/SalariesAndWages/payment-slip/${idSalaryWages}`, {
-    params: {
-      datePaySlip
+    `/api/SalariesAndWages/payment-slip/${idSalaryWages}`,
+    {
+      params: {
+        datePaySlip,
+      },
     }
-  }
   );
   return response.data;
 }
@@ -1295,11 +789,6 @@ export async function registerVoucherByDocuments(values: {
 }) {
   const { data, type } = values;
 
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   const response = await api.post(
     "/api/Voucher/RegisterVoucherByDocuments",
     data,
@@ -1313,12 +802,6 @@ export async function registerVoucherByDocuments(values: {
 }
 
 export async function fetchBookBiggerDataByAccountCode(accountCode: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(
     `/api/Report/BookBiggerData/ByAccountCode/${accountCode}`
   );
@@ -1331,18 +814,12 @@ export async function fetchDiaryBookData(
   inSus: boolean,
   sucursalId?: string
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/Report/diarybook`, {
     params: {
       InitDate,
       EndDate,
       inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data as DiaryBookResponse;
@@ -1357,7 +834,7 @@ export async function getAllDataReportByType({
   typePath,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
@@ -1366,46 +843,35 @@ export async function getAllDataReportByType({
   inSus?: boolean;
   sucursalId?: string;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/Report/XlxsData/${typePath}`, {
     params: {
       InitDate: iDate,
       EndDate: eDate,
       Level: level,
       InSus: inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data;
 }
 
-// 1 --> excel  2 --> data 
-type TypeFetchBalance = 1 | 2
+// 1 --> excel  2 --> data
+export type TypeFetchBalance = 1 | 2;
 export async function getAllDataBalanceGeneral({
   iDate,
   eDate,
   typeFetchBalance,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
   inSus?: boolean;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   try {
     const response = await api.get(`/api/FinancialState/BalanceSheet`, {
       params: {
@@ -1414,7 +880,7 @@ export async function getAllDataBalanceGeneral({
         EndDate: eDate,
         Type: typeFetchBalance,
         inSus,
-        sucursalId
+        sucursalId,
       },
     });
     return response.data;
@@ -1429,20 +895,15 @@ export async function getAllDataStatementIncome({
   typeFetchBalance,
   level,
   inSus = false,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   typeFetchBalance: TypeFetchBalance;
   level?: LevelData;
-  inSus?: boolean
-  sucursalId?: string
+  inSus?: boolean;
+  sucursalId?: string;
 }) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
   try {
     const response = await api.get(`/api/FinancialState/StatementIncome`, {
       params: {
@@ -1451,7 +912,7 @@ export async function getAllDataStatementIncome({
         EndDate: eDate,
         Type: typeFetchBalance,
         InSus: inSus,
-        sucursalId
+        sucursalId,
       },
     });
     return response.data;
@@ -1460,58 +921,37 @@ export async function getAllDataStatementIncome({
   }
 }
 
-export async function getAllDataCashFlow({
-  iDate,
-  eDate,
-  typeFetchBalance,
-  level,
-  sucursalId
-}: {
-  iDate: string;
-  eDate: string;
-  typeFetchBalance: TypeFetchBalance;
-  level?: LevelData;
-  sucursalId?: string
-}) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-  try {
-    const response = await api.get(`/api/FinancialState/ClashFlow`, {
-      params: {
-        Level: level,
-        InitDate: iDate,
-        EndDate: eDate,
-        Type: typeFetchBalance,
-        sucursalId
-      },
-    });
-    return response.data;
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : String(e));
-  }
-}
 
 export async function getAllDataCashFlowTemporal({
   iDate,
   eDate,
   level,
-  sucursalId
+  sucursalId,
 }: {
   iDate: string;
   eDate: string;
   level?: LevelData;
-  sucursalId?: string
+  sucursalId?: string;
 }) {
-  const balanceGeneral = await getAllDataReportByType({ eDate, iDate, typePath: "balanceGeneral", level, sucursalId })
-  const estadoResultados = await getAllDataReportByType({ eDate, iDate, typePath: "estadoDeResultado", level, sucursalId })
-  console.log('tenemos los datos de: ', balanceGeneral, estadoResultados)
+  const balanceGeneral = await getAllDataReportByType({
+    eDate,
+    iDate,
+    typePath: "balanceGeneral",
+    level,
+    sucursalId,
+  });
+  const estadoResultados = await getAllDataReportByType({
+    eDate,
+    iDate,
+    typePath: "estadoDeResultado",
+    level,
+    sucursalId,
+  });
+  console.log("tenemos los datos de: ", balanceGeneral, estadoResultados);
   return {
     balanceSheet: balanceGeneral,
-    statementIncome: estadoResultados
-  }
+    statementIncome: estadoResultados,
+  };
 }
 
 export async function generateDiaryBookExcel(
@@ -1520,31 +960,19 @@ export async function generateDiaryBookExcel(
   inSus: boolean,
   sucursalId?: string
 ) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/Report/BookDiaryBookExel`, {
     responseType: "text",
     params: {
       InitDate,
       endDate,
       inSus,
-      sucursalId
+      sucursalId,
     },
   });
   return response.data as string;
 }
 
 export async function synchronizeAccounts() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.post(`/api/Voucher/Syncronize`);
   return response.data;
 }
@@ -1568,11 +996,6 @@ export async function fetchHeritageEvaluationData(
   type: "1" | "2"
 ) {
   // 1: XLSX, 2: DATA
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
 
   const response = await api.get(`/api/FinancialState/HeritageEvaluation`, {
     params: {
@@ -1591,12 +1014,6 @@ export async function fetchHeritageEvaluationData(
 }
 
 export async function fetchContableNotesBlob() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/Report/ContableNotes`, {
     responseType: "blob",
   });
@@ -1605,12 +1022,6 @@ export async function fetchContableNotesBlob() {
 }
 
 export async function postAllSubDatas(data: SendAllSubDatas) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.post(
     `/api/Voucher/RegisterVoucherByDocumentsInvert`,
     data,
@@ -1625,12 +1036,6 @@ export async function postAllSubDatas(data: SendAllSubDatas) {
 }
 
 export async function fetchSalariesAndWagesAccounts() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(
     `/api/SalariesAndWages/accounts/salaries-to-pay`
   );
@@ -1639,12 +1044,6 @@ export async function fetchSalariesAndWagesAccounts() {
 }
 
 export async function postSalariesAndWagesAccounts(name: string) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.post(
     `/api/SalariesAndWages/accounts/salaries-to-pay`,
     name
@@ -1655,25 +1054,37 @@ export async function postSalariesAndWagesAccounts(name: string) {
 }
 
 export async function fetchBudgetExecutionData() {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.get(`/api/Budget`);
 
   return response.data as BudgetExecutionResponse;
 }
 
 export async function deleteAllBankExtracts(bankId: number) {
-  let token;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("token");
-  }
-  setAuthToken(token);
-
   const response = await api.delete(`/api/Bank/getextract/${bankId}`);
 
   return response.data;
+}
+
+export async function exportSingleAccountDataToExcel(params: {
+  account: any;
+  initDate: string;
+  endDate: string;
+  inSus: boolean;
+}) {
+  const { account, initDate, endDate, inSus } = params;
+
+  const response = await api.post(
+    `/api/Report/BookBigguerDataExelUnit`,
+    account,
+    {
+      responseType: "text",
+      params: {
+        InitDate: initDate,
+        endDate,
+        inSus,
+      },
+    }
+  );
+
+  return response.data as string;
 }

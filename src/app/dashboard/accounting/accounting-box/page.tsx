@@ -1,20 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchAccountingBoxItemsById } from "@/lib/data";
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/modules/accounting-box/components/columns";
-import NewAccountingBoxDialog from "@/modules/accounting-box/components/NewAccountingBoxDialog";
-import useAccountingBox from "@/modules/shared/hooks/useAccountingBox";
+import NewAccountingBoxDialog from "@/features/accounting/accounting-box/components/NewAccountingBoxDialog";
+import useAccountingBox from "@/features/accounting/accounting-box/hooks/useAccountingBox";
 import CustomSelect from "@/components/custom/select";
-import useAccountingBoxBalance from "@/modules/shared/hooks/useAccountingBoxBalance";
+import useAccountingBoxBalance from "@/features/accounting/accounting-box/hooks/useAccountingBoxBalance";
 import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { numberWithDecimals } from "@/modules/shared/utils/validate";
+import { numberWithDecimals } from "@/features/accounting/shared/utils/validate";
 import { AccountingBox } from "@/lib/types";
-import BiggerBookByAccountCodeDialog from "@/modules/bigger-book/components/BiggerBookByAccountCodeDialog";
-import BiggerBookTable from "@/modules/bigger-book/components/BiggerBookTableByAccountCode";
+import BiggerBookByAccountCodeDialog from "@/features/accounting/bigger-book/components/BiggerBookByAccountCodeDialog";
+import BiggerBookTable from "@/features/accounting/bigger-book/components/BiggerBookTableByAccountCode";
 
 const AccountingBoxPage = () => {
   const [dateFilter, setDateFilter] = useState<
@@ -49,6 +47,18 @@ const AccountingBoxPage = () => {
     isError: isErrorBalance,
   } = useAccountingBoxBalance(accountingBoxId);
 
+  const filteredData = useMemo(() => {
+    return (
+      accountingBox?.filter((item) => {
+        if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
+        const itemDate = new Date(item.fecha);
+        return (
+          itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
+        );
+      }) ?? []
+    );
+  }, [accountingBox, dateFilter]);
+
   if (isError) return <div>Error: {error.message}</div>;
 
   const handleDateRangeChange = (values: {
@@ -57,15 +67,6 @@ const AccountingBoxPage = () => {
   }) => {
     setDateFilter(values);
   };
-
-  const filteredData =
-    accountingBox?.filter((item) => {
-      if (!dateFilter?.range?.from || !dateFilter?.range?.to) return true;
-      const itemDate = new Date(item.fecha);
-      return (
-        itemDate >= dateFilter.range.from && itemDate <= dateFilter.range.to
-      );
-    }) ?? [];
 
   return (
     <div>
@@ -110,7 +111,10 @@ const AccountingBoxPage = () => {
         <div>Selecciona una Caja para mostrar sus datos...</div>
       ) : (
         <div className="flex flex-col gap-4">
-          <BiggerBookByAccountCodeDialog accountCode={selectedAccountingBox.account.code}/>
+          <BiggerBookByAccountCodeDialog
+            accountCode={selectedAccountingBox.account.code}
+            triggerType="button"
+          />
           <BiggerBookTable accountCode={selectedAccountingBox.account.code} />
           {/* <DataTable data={filteredData} columns={columns} /> */}
         </div>

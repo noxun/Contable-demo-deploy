@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchModelSeatsItems } from "@/lib/data";
-import FormEditModelSeat from "@/modules/model-seats/components/FormEditModelSeat";
+import FormEditModelSeat from "@/features/accounting/model-seats/components/FormEditModelSeat";
 import { useQuery } from "@tanstack/react-query";
 
 export default function EditModelSeatPage({

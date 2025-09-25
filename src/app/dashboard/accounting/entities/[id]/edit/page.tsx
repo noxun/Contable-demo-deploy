@@ -1,4 +1,4 @@
-import EditEntity from "@/modules/entities/components/EditEntity";
+import EditEntity from "@/features/accounting/entities/components/EditEntity";
 
 export default function EditEntityPage({
     params,

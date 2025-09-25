@@ -1,4 +1,4 @@
-import ListBankExcerpts from "@/modules/banks/components/ListBankExcerpts";
+import ListBankExcerpts from "@/features/accounting/banks/components/ListBankExcerpts";
 
 export default function BankExtractsPage({
   params,

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ListConcepts from "@/modules/concepts/components/ListConcepts";
+import ListConcepts from "@/features/accounting/concepts/components/ListConcepts";
 import Link from "next/link";
 
 export default function ConceptsPage() {

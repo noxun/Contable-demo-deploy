@@ -32,6 +32,9 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --tradecruz-primary: 42 72% 50%;
+    --tradecruz-primary-foreground: 0 0% 100%;
+    --tradecruz-primary-hover: 42 80% 40%;
   }
 
   .dark {
@@ -177,4 +180,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::-ms-reveal {
+    display: none;
 }

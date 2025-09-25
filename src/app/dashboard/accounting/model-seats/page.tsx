@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ListModelSeats from "@/modules/model-seats/components/ListModelSeats";
+import ListModelSeats from "@/features/accounting/model-seats/components/ListModelSeats";
 import Link from "next/link";
 
 export default function ModelSeatsPage() {

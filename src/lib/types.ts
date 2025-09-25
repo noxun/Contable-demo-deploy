@@ -12,6 +12,7 @@ export type Role = {
   nameRef: number;
   icon: string;
   title?: string;
+  isMenu: boolean;
 };
 
 export type RoleMenu = {
@@ -124,7 +125,7 @@ export type BankExcerpt = {
   nroDocument: string;
   amount: number;
   glossInExtract: string;
-  internCode: any;
+  internCode: string;
   accountId: number;
   trazoRegister: boolean;
   accountingEntry: boolean;
@@ -289,6 +290,11 @@ export type ConfigValues = {
   tributosAduaneros: number;
   ufvDate: string;
   minimumWage: number;
+  accountImpId: number;
+  accountSaleId: number;
+  accountDebitIvaId: number;
+  accountImpByPayId: number;
+  accountCreditIvaId: number;
 };
 
 export type NewConfigValues = Omit<ConfigValues, "id">;
@@ -357,6 +363,9 @@ export type TrazoCompany = {
   razonSocial: string;
   id: number;
   ref: "Trazo" | "Contable";
+  code: string | null;
+  nit: string;
+  sigla: string | null;
 };
 
 export type InvoiceVoucher = {
