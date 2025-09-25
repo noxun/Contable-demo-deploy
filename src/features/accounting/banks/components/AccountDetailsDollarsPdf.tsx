@@ -63,11 +63,7 @@ export default function AccountDetailsDollarsPdf({
               source={REPORTS_LOGO_URL}
               style={{ height: 57, width: 207 }}
             />
-<<<<<<< HEAD:src/modules/banks/components/AccountDetailsDollarsPdf.tsx
-            <Text>NIT 418769027</Text>
-=======
             <Text>NIT {COMPANY_NIT}</Text>
->>>>>>> main:src/features/accounting/banks/components/AccountDetailsDollarsPdf.tsx
           </View>
         </View>
         {/* Fila Titulo */}
@@ -86,11 +82,7 @@ export default function AccountDetailsDollarsPdf({
         </View>
         {/* Fila fecha */}
         <View style={tw("flex flex-row justify-between")}>
-<<<<<<< HEAD:src/modules/banks/components/AccountDetailsDollarsPdf.tsx
-          <Text>La Paz, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
-=======
           <Text>{COMPANY_MAIN_CITY}, {format(data.voucherDate ?? new Date(), "dd 'de' MMMM 'de' yyyy", {locale: es})}</Text>
->>>>>>> main:src/features/accounting/banks/components/AccountDetailsDollarsPdf.tsx
           <Text>T/C: {data.exchangeRate}</Text>
         </View>
         {/* Header Tabla */}

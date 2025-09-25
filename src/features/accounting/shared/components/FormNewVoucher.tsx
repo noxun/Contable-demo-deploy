@@ -676,11 +676,7 @@ export default function FormNewVoucher({
       exchangeRate: voucherFromRegisterByDocResponse.exchangeRate ?? 6.97,
       coin: (voucherFromRegisterByDocResponse.coin as "USD" | "BOB") ?? "BOB",
       checkNum: voucherFromRegisterByDocResponse.checkNum ?? "0",
-<<<<<<< HEAD:src/modules/shared/components/FormNewVoucher.tsx
-      gloss: voucherFromRegisterByDocResponse.gloss ?? "0",
-=======
       gloss: voucherFromRegisterByDocResponse.gloss ?? "",
->>>>>>> main:src/features/accounting/shared/components/FormNewVoucher.tsx
       bankId: voucherFromRegisterByDocResponse.bankId ?? null,
       bankItemRef: bankExtractId, //ironico
       costCenterId:
@@ -1135,13 +1131,10 @@ export default function FormNewVoucher({
                   <FormMessage />
                 </FormItem>
               )}
-<<<<<<< HEAD:src/modules/shared/components/FormNewVoucher.tsx
             /> */}
             {/* <div
-=======
             />
             <div
->>>>>>> main:src/features/accounting/shared/components/FormNewVoucher.tsx
               className={`space-y-2 ${
                 voucherFromRegisterByDocResponse ? "hidden" : ""
               }`}

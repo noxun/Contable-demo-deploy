@@ -59,11 +59,7 @@ export default function SettlementDocument({
                   {isQuotation ? data.nroQuotation : data.codigoDeInterno}
                 </Text>
                 <Text fontSize="10px" padding="0px 3px" textAlign="end">
-<<<<<<< HEAD:src/modules/folders/components/SettlementDocument.tsx
-                  {format(new Date(), "'La Paz' dd 'de' MMMM 'del' yyyy", {
-=======
                   {format(new Date(), `'${COMPANY_MAIN_CITY}' dd 'de' MMMM 'del' yyyy`, {
->>>>>>> main:src/features/accounting/folders/components/SettlementDocument.tsx
                     locale: es,
                   })}
                 </Text>
@@ -507,11 +503,7 @@ export default function SettlementDocument({
                   BANCO UNION S.A. (Cta. Corriente)
                 </Text>
                 <Text padding="2px 3px">Cuenta En Bs.: {accountNumber}</Text>
-<<<<<<< HEAD:src/modules/folders/components/SettlementDocument.tsx
-                <Text padding="2px 3px">NOXUN S.R.L</Text>
-=======
                 <Text padding="2px 3px">{COMPANY_NAME}</Text>
->>>>>>> main:src/features/accounting/folders/components/SettlementDocument.tsx
               </View>
               <View width="50%" flexDirection="column">
                 <Text padding="2px 3px">
@@ -524,11 +516,7 @@ export default function SettlementDocument({
             </View>
             <Text padding="2px 3px" fontSize="7px">
               Nota.: La presente Proforma esta sujeta a Cambio dentro del plazo
-<<<<<<< HEAD:src/modules/folders/components/SettlementDocument.tsx
-              requerido por Noxun SRL por variacion en el T./C.
-=======
               requerido por {COMPANY_NAME} por variacion en el T./C.
->>>>>>> main:src/features/accounting/folders/components/SettlementDocument.tsx
             </Text>
           </View>
           <View
@@ -582,11 +570,7 @@ export default function SettlementDocument({
                 "• El presente documento es emitido conforme solicitud del comitente o consignatario a partir de la presentación de documentación soporte suficiente para determinar lo estipulado según Art. 20 del Reglamento a la Ley General de Aduanas D.S. 25870.",
                 "• La validez del presente documento tiene una duración de 7 días calendario a partir de la fecha de emisión, siempre y cuando los valores finales de la documentación soporte no sufran ningún cambio en relación a la cotización de monedas vigente emitida por el Banco Central de Bolivia y exigida por Aduana Nacional.",
                 "• La presente proforma/cotización en ninguno de los casos ampara transporte de mercadería antes y después de las gestiones dentro del Recinto Aduanero de turno, siendo esta responsabilidad exclusiva del comitente, consignatario y/o agente de carga contratado directamente por el comitente o consignatario.",
-<<<<<<< HEAD:src/modules/folders/components/SettlementDocument.tsx
-                "• El presente documento queda sujeto a modificación sin previo aviso por parte de la Agencia Despachante de Aduana NOXUN SRL, estableciendo que los valores que cite el mismo son temporales y/o aproximados.",
-=======
                 `• El presente documento queda sujeto a modificación sin previo aviso por parte de la Agencia Despachante de Aduana ${COMPANY_NAME}, estableciendo que los valores que cite el mismo son temporales y/o aproximados.`,
->>>>>>> main:src/features/accounting/folders/components/SettlementDocument.tsx
                 "• Las proformas/cotizaciones están expresadas en dólares al tipo de cambio a la fecha de la emisión del documento; en caso que este cambiara, la deuda se actualizará en moneda extranjera dólares.",
                 "• El pago de la siguiente cotización/proforma por transferencia, efectivo, depósito, cheque o cualquier otro medio genera la aceptación de la misma, sujetándose el comitente, consignatario o intermediario a las condiciones antes estipuladas sin derecho a reclamos posteriores.",
                 "• El valor final del presente documento debe ser cancelado a las siguientes cuentas habilitadas:",
@@ -597,11 +581,7 @@ export default function SettlementDocument({
                   color={index === 2 ? "#ff0000" : undefined}
                 />
               ))}
-<<<<<<< HEAD:src/modules/folders/components/SettlementDocument.tsx
-              <TextSubTitle text="CUENTAS NOXUN SRL BANCO UNION S.A. MONEDA NACIONAL (Bolivianos)" />
-=======
               <TextSubTitle text={`CUENTAS ${COMPANY_NAME} BANCO UNION S.A. MONEDA NACIONAL (Bolivianos)`} />
->>>>>>> main:src/features/accounting/folders/components/SettlementDocument.tsx
               {[
                 "a)	10000030319095",
                 "b)	10000030108464",
