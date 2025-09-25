@@ -15,7 +15,7 @@ export const FinancialRatiosCard = ({ title, financialRatios }: Props) => {
       <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
         {
           financialRatios.map(({ name, value, isPercentage, formula, valores }, index) => (
-            <Card className="group relative w-full overflow-hidden bg-white rounded-lg border transition-shadow duration-300 cursor-pointer">
+            <Card key={name} className="group relative w-full overflow-hidden bg-white rounded-lg border transition-shadow duration-300 cursor-pointer">
               <div className="flex w-[200%] h-full transition-transform duration-500 ease-in-out group-hover:-translate-x-1/2">
                 <div className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center p-4">
                   <div className="text-xs sm:text-sm text-gray-500 font-medium uppercase tracking-wide text-center">
